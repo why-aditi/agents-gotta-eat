@@ -1,0 +1,26 @@
+node_modules/
+.next/
+dist/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+
+.env
+.env.*
+!.env.example
+
+__pycache__/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+coverage/
+.DS_Store
+
+# Claude Code remember plugin
+.remember/
+
+# Playwright MCP screenshots and logs
+.playwright-mcp/

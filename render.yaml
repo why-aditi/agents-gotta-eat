@@ -1,0 +1,91 @@
+# Render blueprint: api, gateway, agents on free web services.
+# web is on Vercel (Root Directory = apps/web), not here.
+# Free services sleep after 15 min idle; everything must tolerate a cold start.
+# sync: false values are prompted once at blueprint creation; set them in the dashboard after that.
+
+services:
+  - type: web
+    name: gottaeat-api
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile
+    # Pre-deploy is paid-only on Render, so the start script runs migrations first.
+    startCommand: pnpm --filter @gottaeat/api start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: PAYPAL_API_BASE
+        value: https://api-m.sandbox.paypal.com
+      - key: GATEWAY_URL
+        sync: false
+      - key: LITELLM_MASTER_KEY
+        sync: false
+      - key: LLM_DAILY_REQUEST_BUDGET
+        value: "1000"
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        value: gottaeat
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RUNNER_GITHUB_TOKEN
+        sync: false
+      - key: RUNNER_REPO
+        sync: false
+      - key: RUNNER_HMAC_SECRET
+        sync: false
+      - key: AGENTS_WAKE_URL
+        sync: false
+      - key: AGENTS_WAKE_SECRET
+        sync: false
+
+  - type: web
+    name: gottaeat-gateway
+    runtime: docker
+    plan: free
+    dockerfilePath: ./gateway/Dockerfile
+    dockerContext: ./gateway
+    healthCheckPath: /health/liveliness
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: LITELLM_MASTER_KEY
+        sync: false
+
+  - type: web
+    name: gottaeat-agents
+    runtime: python
+    plan: free
+    rootDir: agents
+    buildCommand: uv sync --locked --no-dev
+    startCommand: uv run --no-dev uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      # Render reads .python-version only at the repo root, so pin it here.
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: API_URL
+        sync: false
+      - key: GATEWAY_URL
+        sync: false
+      - key: LITELLM_MASTER_KEY
+        sync: false
+      - key: AGENTS_WAKE_SECRET
+        sync: false
+      - key: HOUSE_AGENT_API_KEYS
+        sync: false

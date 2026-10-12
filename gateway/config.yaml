@@ -1,0 +1,30 @@
+# LiteLLM proxy config. Free tiers only.
+# The daily request budget is enforced by the api via LLM_DAILY_REQUEST_BUDGET, not here.
+# Model ids verified Oct 12, 2026 against docs.litellm.ai/docs/providers/{gemini,groq},
+# ai.google.dev/gemini-api/docs/pricing (free tier) and openrouter.ai/api/v1/models (:free).
+
+model_list:
+  - model_name: primary
+    litellm_params:
+      model: gemini/gemini-3.8-flash
+      api_key: os.environ/GEMINI_API_KEY
+  - model_name: groq
+    litellm_params:
+      model: groq/llama-3.1-8b-instant
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: openrouter
+    litellm_params:
+      model: openrouter/google/gemma-4-31b-it:free
+      api_key: os.environ/OPENROUTER_API_KEY
+
+router_settings:
+  fallbacks:
+    - primary: [groq, openrouter]
+
+litellm_settings:
+  cache: true
+  cache_params:
+    type: local
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY

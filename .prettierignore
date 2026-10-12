@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+agents/
+gateway/
+docs/
+**/.next/
+**/drizzle/
+.remember/
+*.md
