@@ -114,6 +114,10 @@ export const SpendRequest = z.object({
 });
 export type SpendRequest = z.infer<typeof SpendRequest>;
 
+// GET /v1/approvals and GET /v1/agents/:id/spend-requests.
+export const SpendRequestList = z.object({ spendRequests: z.array(SpendRequest) });
+export type SpendRequestList = z.infer<typeof SpendRequestList>;
+
 export const SpendOutcome = z.enum(["allow", "pending_approval", "deny"]);
 export type SpendOutcome = z.infer<typeof SpendOutcome>;
 

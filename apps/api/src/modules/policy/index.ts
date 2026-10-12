@@ -19,5 +19,6 @@ export {
 } from "./mandates";
 export { getSpendRequestFor, listAgentSpendRequests } from "./queries";
 export { APPROVAL_TTL_MS, toSpendRequestDto, todaySpentCents, withDecisions } from "./requests";
+export { policyRoutes } from "./routes";
 export { createSpendRequest, type SpendDeps } from "./spend";
 export { InvalidTransitionError, transition, type SpendFrom } from "./state";

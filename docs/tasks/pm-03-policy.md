@@ -115,3 +115,12 @@ New error code: `approval_expired` (409).
 - `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` pass.
 - `pnpm openapi:export` leaves no diff.
 - Migration applies cleanly on top of pm-02.
+
+## Changes made during the build
+
+- New error code `already_decided` (409) for approving or denying a request that is no longer `pending_approval`.
+- `DenyReason` also has `payee_inactive`; responses use `PolicyReason` = `DenyReason` plus `above_ask_threshold`, `intent_ask`, `intent_deny`.
+- A `tool` spend to another owner locks both wallets in id order (same order as `ledger.settle`), so opposite spends can't deadlock.
+- Expiry records an `owner`/`deny` decision with `detail.expired = true`.
+- List routes return `SpendRequestList` `{ spendRequests }`.
+- The dev-credit "disabled" check runs in a route `onRequest` hook (after auth, before validation and idempotency), so a disabled route looks absent to admins. Journal `refType` is `dev_credit`.

@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import type { MandateRules } from "@gottaeat/schemas";
 import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
-import { buildApp } from "../src/app";
+import { type AppEnv, buildApp } from "../src/app";
 import { createDb, type Db } from "../src/db";
 import { agents, mandates, users } from "../src/db/schema";
 import { AGENT_KEY_PREFIX, hashApiKey } from "../src/http/auth";
@@ -52,11 +52,11 @@ export async function createUserWithWallet(db: Db): Promise<string> {
 
 export const TEST_JWT_SECRET = "test-secret-at-least-32-bytes-long-0123456789";
 
-export function buildTestApp(db: Db) {
+export function buildTestApp(db: Db, env?: Partial<AppEnv>) {
   return buildApp({
     db,
     logger: false,
-    env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001" },
+    env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001", ...env },
   });
 }
 
