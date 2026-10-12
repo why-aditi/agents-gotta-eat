@@ -1,14 +1,17 @@
-import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { db, pool } from "./db";
+import { createDb, requireDatabaseUrl, type Db } from "./db";
 
-const migrationsFolder = "./drizzle";
+const migrationsFolder = fileURLToPath(new URL("../drizzle", import.meta.url));
 
-// drizzle's migrator throws if the journal is missing, which is the case until the first `db:generate`.
-if (!existsSync(`${migrationsFolder}/meta/_journal.json`)) {
-  console.log("migrate: no migrations yet, skipping");
-} else {
+export async function runMigrations(db: Db) {
   await migrate(db, { migrationsFolder });
-  console.log("migrate: done");
 }
-await pool.end();
+
+// Run as a script (`start`, `db:migrate`), not when imported by tests.
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const { db, pool } = createDb(requireDatabaseUrl());
+  await runMigrations(db);
+  console.log("migrate: done");
+  await pool.end();
+}

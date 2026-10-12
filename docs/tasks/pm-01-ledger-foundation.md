@@ -96,3 +96,12 @@ Test DB setup: `apps/api/vitest.config.ts` with a `globalSetup` that connects to
 - `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` pass with Postgres running.
 - Migration applies cleanly to an empty database.
 - `CLAUDE.md` commands table notes the test DB requirement.
+
+## Changes made during the build
+
+- Bigint column defaults are `sql\`0\`` (drizzle-kit 0.31 cannot serialise `0n`). Same SQL.
+- The hand-written SQL is its own migration, `0001_ledger_triggers.sql` (`drizzle-kit generate --custom`).
+- `settle` and `release` lock the wallet row too. `settle` locks payer and payee wallets in id order, so opposite settles can't deadlock (test added).
+- `hold`, `settle` and `release` check the idempotency key after taking the lock, so a replay returns the original journal instead of failing a balance or open-hold check.
+- Extra error cases: settle with `amount + fee` ≠ hold balance → `INVALID_AMOUNT`; unknown hold → `UNKNOWN_ACCOUNT`; a journal that would take a cached wallet or held total below zero → `INSUFFICIENT_FUNDS`. A zero fee omits the fee line.
+- The property test creates fresh owners per run instead of truncating, and also compares balances against a model.
