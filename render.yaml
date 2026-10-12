@@ -19,6 +19,10 @@ services:
         sync: false
       - key: WEB_ORIGINS
         sync: false
+      - key: POLICY_GATE2_STUB
+        value: allow
+      - key: ALLOW_DEV_CREDIT
+        value: "true"
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_CLIENT_SECRET

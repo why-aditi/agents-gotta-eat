@@ -9,12 +9,17 @@ import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { identityRoutes } from "./modules/identity";
+import { policyRoutes } from "./modules/policy";
 
 export interface AppEnv {
   API_JWT_SECRET: string;
   WEB_ORIGINS?: string;
   API_URL?: string;
   PUBLIC_API_URL?: string;
+  // Gate 2 stub until pm-06: "allow", or anything else for "ask".
+  POLICY_GATE2_STUB?: string;
+  // "true" enables POST /v1/admin/wallets/:userId/credit (dev money until pm-04).
+  ALLOW_DEV_CREDIT?: string;
 }
 
 export interface BuildAppOptions {
@@ -58,6 +63,7 @@ export function buildApp(opts: BuildAppOptions) {
 
     // Route modules go here, one register per module. Each declares config.auth on every route.
     await api.register(identityRoutes);
+    await api.register(policyRoutes);
   });
 
   return app;

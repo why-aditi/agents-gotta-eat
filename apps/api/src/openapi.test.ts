@@ -19,6 +19,15 @@ describe("OpenAPI document", () => {
       "/v1/agents/me",
       "/v1/agents/{id}/rotate-key",
       "/v1/agents/{id}/key",
+      "/v1/agents/{id}/mandate",
+      "/v1/agents/{id}/mandate/confirm",
+      "/v1/wallet",
+      "/v1/spend-requests",
+      "/v1/spend-requests/{id}",
+      "/v1/approvals",
+      "/v1/approvals/{spendRequestId}",
+      "/v1/agents/{id}/spend-requests",
+      "/v1/admin/wallets/{userId}/credit",
     ]) {
       expect(doc.paths).toHaveProperty([path]);
     }

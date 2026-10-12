@@ -12,6 +12,8 @@ export const ErrorCode = z.enum([
   "insufficient_funds",
   "hold_not_open",
   "invalid_amount",
+  "approval_expired",
+  "already_decided",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

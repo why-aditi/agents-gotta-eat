@@ -1,9 +1,10 @@
 import { randomBytes } from "node:crypto";
-import { sql } from "drizzle-orm";
+import type { MandateRules } from "@gottaeat/schemas";
+import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
-import { buildApp } from "../src/app";
+import { type AppEnv, buildApp } from "../src/app";
 import { createDb, type Db } from "../src/db";
-import { agents, users } from "../src/db/schema";
+import { agents, mandates, users } from "../src/db/schema";
 import { AGENT_KEY_PREFIX, hashApiKey } from "../src/http/auth";
 import { newId } from "../src/lib/ids";
 import { openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../src/modules/ledger";
@@ -17,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,
@@ -51,11 +52,11 @@ export async function createUserWithWallet(db: Db): Promise<string> {
 
 export const TEST_JWT_SECRET = "test-secret-at-least-32-bytes-long-0123456789";
 
-export function buildTestApp(db: Db) {
+export function buildTestApp(db: Db, env?: Partial<AppEnv>) {
   return buildApp({
     db,
     logger: false,
-    env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001" },
+    env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001", ...env },
   });
 }
 
@@ -99,4 +100,48 @@ export async function signUserToken(opts: {
   if (!opts.omit?.includes("iat")) jwt.setIssuedAt(opts.iat ?? now);
   if (!opts.omit?.includes("exp")) jwt.setExpirationTime(opts.exp ?? now + 300);
   return jwt.sign(new TextEncoder().encode(opts.secret ?? TEST_JWT_SECRET));
+}
+
+export const TEST_RULES: MandateRules = {
+  perTxMaxCents: 1000,
+  dailyMaxCents: 2000,
+  allowedCategories: ["subcontract", "tool"],
+  payeeAllowlist: null,
+  scope: "any",
+  expiresAt: null,
+};
+
+// Inserts a mandate version straight into the table. Confirmed unless `confirmed: false`.
+export async function createMandate(
+  db: Db,
+  opts: { agentId: string; createdBy: string; rules?: Partial<MandateRules>; version?: number; confirmed?: boolean },
+): Promise<string> {
+  const id = newId("mdt");
+  await db.insert(mandates).values({
+    id,
+    agentId: opts.agentId,
+    version: opts.version ?? 1,
+    sourceText: "test mandate",
+    rules: { ...TEST_RULES, ...opts.rules },
+    createdBy: opts.createdBy,
+    confirmedAt: opts.confirmed === false ? null : new Date(),
+  });
+  return id;
+}
+
+// An owner with a funded wallet, a spending agent with a confirmed mandate, and a payee agent of another owner.
+export async function createSpendFixture(
+  db: Db,
+  opts?: { balanceCents?: bigint; rules?: Partial<MandateRules>; payeeRating?: number },
+) {
+  const ownerId = await createUserWithWallet(db);
+  const payeeOwnerId = await createUserWithWallet(db);
+  const { agentId } = await createAgent(db, ownerId);
+  const { agentId: payeeAgentId } = await createAgent(db, payeeOwnerId);
+  if (opts?.payeeRating !== undefined) {
+    await db.update(agents).set({ rating: opts.payeeRating }).where(eq(agents.id, payeeAgentId));
+  }
+  if (opts?.balanceCents !== undefined && opts.balanceCents > 0n) await topUp(db, ownerId, opts.balanceCents);
+  await createMandate(db, { agentId, createdBy: ownerId, rules: opts?.rules });
+  return { ownerId, payeeOwnerId, agentId, payeeAgentId, principal: { type: "agent" as const, agentId, ownerId } };
 }

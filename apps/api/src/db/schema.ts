@@ -152,3 +152,81 @@ export const idempotencyKeys = pgTable(
     check("idempotency_keys_status", sql`${t.status} in ('in_progress', 'done')`),
   ],
 );
+
+export const mandates = pgTable(
+  "mandates",
+  {
+    id: text().primaryKey(),
+    agentId: text("agent_id")
+      .notNull()
+      .references(() => agents.id),
+    version: integer().notNull(),
+    sourceText: text("source_text").notNull(),
+    rules: jsonb().notNull(),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => users.id),
+    createdAt: createdAt(),
+    confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+  },
+  (t) => [uniqueIndex("mandates_agent_version_idx").on(t.agentId, t.version)],
+);
+
+export const spendCategory = pgEnum("spend_category", ["subcontract", "stake", "tool"]);
+export const spendStatus = pgEnum("spend_status", ["pending_approval", "allowed", "settled", "denied", "released"]);
+export const gateName = pgEnum("gate_name", ["hard_rules", "intent", "owner"]);
+export const verdict = pgEnum("verdict", ["allow", "ask", "deny"]);
+
+export const spendRequests = pgTable(
+  "spend_requests",
+  {
+    id: text().primaryKey(),
+    agentId: text("agent_id")
+      .notNull()
+      .references(() => agents.id),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id),
+    bountyId: text("bounty_id"),
+    payeeType: text("payee_type").notNull().default("agent"),
+    // Null when the request named an agent that doesn't exist (denied as unknown_payee).
+    payeeId: text("payee_id"),
+    payeeOwnerId: text("payee_owner_id").references(() => users.id),
+    amountCents: bigint("amount_cents", { mode: "bigint" }).notNull(),
+    feeCents: bigint("fee_cents", { mode: "bigint" })
+      .notNull()
+      .default(sql`0`),
+    category: spendCategory().notNull(),
+    reason: text().notNull(),
+    status: spendStatus().notNull(),
+    mandateId: text("mandate_id").references(() => mandates.id),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("spend_requests_amount_pos", sql`${t.amountCents} > 0 and ${t.feeCents} >= 0`),
+    index("spend_requests_agent_created_idx").on(t.agentId, t.createdAt),
+    index("spend_requests_status_expires_idx").on(t.status, t.expiresAt),
+    index("spend_requests_owner_status_idx").on(t.ownerId, t.status),
+  ],
+);
+
+export const spendDecisions = pgTable(
+  "spend_decisions",
+  {
+    id: text().primaryKey(),
+    spendRequestId: text("spend_request_id")
+      .notNull()
+      .references(() => spendRequests.id),
+    gate: gateName().notNull(),
+    verdict: verdict().notNull(),
+    confidence: integer(),
+    detail: jsonb().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("spend_decisions_confidence_range", sql`${t.confidence} is null or ${t.confidence} between 0 and 100`),
+    index("spend_decisions_request_idx").on(t.spendRequestId),
+  ],
+);

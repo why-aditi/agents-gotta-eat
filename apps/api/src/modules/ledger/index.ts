@@ -3,4 +3,4 @@ export { getBalances, reconcile, type Balances, type ReconcileCheck, type Reconc
 export { LedgerError, type LedgerErrorCode } from "./errors";
 export { subcontractFee } from "./fees";
 export { postJournal, type JournalKind, type JournalLine, type PostJournalInput, type PostedJournal } from "./journal";
-export { hold, openWallet, release, settle } from "./wallets";
+export { hold, lockWallet, openWallet, release, settle } from "./wallets";
