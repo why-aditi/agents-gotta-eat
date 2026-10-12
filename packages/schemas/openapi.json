@@ -192,11 +192,54 @@
                             "Authorization"
                           ],
                           "additionalProperties": false
+                        },
+                        "stdio": {
+                          "type": "object",
+                          "properties": {
+                            "command": {
+                              "type": "string",
+                              "enum": [
+                                "npx"
+                              ]
+                            },
+                            "args": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "env": {
+                              "type": "object",
+                              "properties": {
+                                "GOTTAEAT_API_KEY": {
+                                  "type": "string",
+                                  "enum": [
+                                    "<your API key>"
+                                  ]
+                                },
+                                "GOTTAEAT_API_URL": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "GOTTAEAT_API_KEY",
+                                "GOTTAEAT_API_URL"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "command",
+                            "args",
+                            "env"
+                          ],
+                          "additionalProperties": false
                         }
                       },
                       "required": [
                         "url",
-                        "headers"
+                        "headers",
+                        "stdio"
                       ],
                       "additionalProperties": false
                     }
@@ -229,6 +272,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -283,6 +327,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -337,6 +382,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -391,6 +437,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -445,6 +492,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -582,6 +630,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -636,6 +685,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -763,6 +813,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -817,6 +868,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -871,6 +923,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1027,6 +1080,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1081,6 +1135,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1135,6 +1190,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1189,6 +1245,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1243,6 +1300,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1297,6 +1355,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1381,6 +1440,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1435,6 +1495,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1489,6 +1550,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1543,6 +1605,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1854,6 +1917,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1908,6 +1972,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -1962,6 +2027,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2016,6 +2082,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2249,6 +2316,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2303,6 +2371,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2357,6 +2426,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2411,6 +2481,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2619,6 +2690,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2798,6 +2870,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2852,6 +2925,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2906,6 +2980,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -2960,6 +3035,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3014,6 +3090,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3261,6 +3338,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3315,6 +3393,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3369,6 +3448,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3626,6 +3706,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3680,6 +3761,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -3734,6 +3816,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4000,6 +4083,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4054,6 +4138,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4108,6 +4193,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4162,6 +4248,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4216,6 +4303,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4270,6 +4358,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4525,6 +4614,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4579,6 +4669,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4633,6 +4724,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4687,6 +4779,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4924,6 +5017,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -4978,6 +5072,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -5032,6 +5127,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -5086,6 +5182,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -5140,6 +5237,7 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",
@@ -5194,6 +5292,510 @@
                             "unauthorized",
                             "forbidden",
                             "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp": {
+      "post": {
+        "summary": "MCP endpoint (Streamable HTTP, stateless)",
+        "tags": [
+          "mcp"
+        ],
+        "description": "JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request; each maps to one REST call with the same auth, validation, idempotency and policy.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "A JSON-RPC message or batch"
+              }
+            }
+          },
+          "description": "A JSON-RPC message or batch"
+        },
+        "security": [
+          {
+            "agentKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON-RPC response, as JSON or an SSE stream",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "JSON-RPC response, as JSON or an SSE stream"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Not supported (stateless MCP server): GET answers 405",
+        "tags": [
+          "mcp"
+        ],
+        "security": [
+          {
+            "agentKey": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Not supported (stateless MCP server): DELETE answers 405",
+        "tags": [
+          "mcp"
+        ],
+        "security": [
+          {
+            "agentKey": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
                             "idempotency_in_progress",
                             "idempotency_key_reuse",
                             "insufficient_funds",

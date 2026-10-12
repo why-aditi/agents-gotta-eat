@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Relative imports carry .ts so `node --experimental-strip-types src/cli.ts` runs the source.
+    "allowImportingTsExtensions": true
+  },
   "include": ["src"]
 }

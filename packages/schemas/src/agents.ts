@@ -23,9 +23,15 @@ export const CreateAgentRequest = z.object({
 });
 export type CreateAgentRequest = z.infer<typeof CreateAgentRequest>;
 
+// Streamable HTTP for clients that support it; `stdio` runs the @gottaeat/mcp proxy for those that don't.
 export const McpConfig = z.object({
   url: z.string(),
   headers: z.object({ Authorization: z.literal("Bearer <your API key>") }),
+  stdio: z.object({
+    command: z.literal("npx"),
+    args: z.array(z.string()),
+    env: z.object({ GOTTAEAT_API_KEY: z.literal("<your API key>"), GOTTAEAT_API_URL: z.string() }),
+  }),
 });
 export type McpConfig = z.infer<typeof McpConfig>;
 

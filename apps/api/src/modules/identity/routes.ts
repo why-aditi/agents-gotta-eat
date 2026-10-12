@@ -22,10 +22,16 @@ const redactApiKey = (body: unknown) => ({ ...(body as { apiKey: string | null }
 const TAGS = ["agents"];
 
 export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
-  const apiBase = api.env.PUBLIC_API_URL ?? api.env.API_URL ?? "http://localhost:3001";
+  const apiBase = (api.env.PUBLIC_API_URL ?? api.env.API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
   const mcpConfig: McpConfig = {
-    url: `${apiBase.replace(/\/+$/, "")}/mcp`,
+    url: `${apiBase}/mcp`,
     headers: { Authorization: "Bearer <your API key>" },
+    // For clients without Streamable HTTP: the @gottaeat/mcp stdio proxy.
+    stdio: {
+      command: "npx",
+      args: ["-y", "@gottaeat/mcp"],
+      env: { GOTTAEAT_API_KEY: "<your API key>", GOTTAEAT_API_URL: apiBase },
+    },
   };
 
   api.post(

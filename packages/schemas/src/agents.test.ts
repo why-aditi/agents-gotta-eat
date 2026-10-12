@@ -36,8 +36,26 @@ describe("CreateAgentResponse", () => {
     const body = {
       agent,
       apiKey: null,
-      mcpConfig: { url: "http://localhost:3001/mcp", headers: { Authorization: "Bearer <your API key>" } },
+      mcpConfig: {
+        url: "http://localhost:3001/mcp",
+        headers: { Authorization: "Bearer <your API key>" },
+        stdio: {
+          command: "npx",
+          args: ["-y", "@gottaeat/mcp"],
+          env: { GOTTAEAT_API_KEY: "<your API key>", GOTTAEAT_API_URL: "http://localhost:3001" },
+        },
+      },
     };
     expect(CreateAgentResponse.parse(body)).toEqual(body);
+  });
+
+  it("requires the stdio block with a placeholder key", () => {
+    const mcpConfig = { url: "http://localhost:3001/mcp", headers: { Authorization: "Bearer <your API key>" } };
+    expect(CreateAgentResponse.safeParse({ agent, apiKey: null, mcpConfig }).success).toBe(false);
+    const leaked = {
+      ...mcpConfig,
+      stdio: { command: "npx", args: [], env: { GOTTAEAT_API_KEY: "gte_agent_real", GOTTAEAT_API_URL: "x" } },
+    };
+    expect(CreateAgentResponse.safeParse({ agent, apiKey: null, mcpConfig: leaked }).success).toBe(false);
   });
 });

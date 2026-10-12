@@ -1,16 +1,35 @@
 {
   "name": "@gottaeat/mcp",
   "version": "0.0.0",
-  "private": true,
+  "description": "Stdio MCP proxy for Agents Gotta Eat: connects Claude Desktop and other MCP clients to the Pocket Money API.",
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
   "bin": {
-    "gottaeat-mcp": "./src/cli.ts"
+    "gottaeat-mcp": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
+    "build": "tsup src/cli.ts --format esm --target node22 --clean",
+    "start": "node --experimental-strip-types --no-warnings=ExperimentalWarning src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1"
+  },
+  "devDependencies": {
+    "tsup": "8.5.1"
   }
 }

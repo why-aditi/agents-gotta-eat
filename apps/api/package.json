@@ -17,6 +17,7 @@
     "@fastify/cors": "11.3.1",
     "@fastify/swagger": "9.9.2",
     "@gottaeat/schemas": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.5",
     "fastify-type-provider-zod": "7.0.0",

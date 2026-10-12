@@ -53,6 +53,24 @@ async function create(auth: string, body: unknown = { name: "Patch" }, key?: str
 }
 
 describe("POST /v1/agents", () => {
+  it("builds mcpConfig from PUBLIC_API_URL, trailing slashes trimmed", async () => {
+    const publicApp = buildTestApp(db, { PUBLIC_API_URL: "https://api.example.com//" });
+    try {
+      const res = await publicApp.inject({
+        method: "POST",
+        url: "/v1/agents",
+        headers: { authorization: await userAuth(), "idempotency-key": newIdemKey() },
+        payload: { name: "Probe" },
+      });
+      expect(res.statusCode).toBe(201);
+      const { mcpConfig } = CreateAgentResponse.parse(res.json());
+      expect(mcpConfig.url).toBe("https://api.example.com/mcp");
+      expect(mcpConfig.stdio.env.GOTTAEAT_API_URL).toBe("https://api.example.com");
+    } finally {
+      await publicApp.close();
+    }
+  });
+
   it("creates an agent whose key works on /agents/me, stores only the hash, and opens a wallet", async () => {
     const auth = await userAuth();
     const created = await create(auth, { name: "  Patch  " });
@@ -65,7 +83,14 @@ describe("POST /v1/agents", () => {
     expect(created.mcpConfig).toEqual({
       url: "http://localhost:3001/mcp",
       headers: { Authorization: "Bearer <your API key>" },
+      stdio: {
+        command: "npx",
+        args: ["-y", "@gottaeat/mcp"],
+        env: { GOTTAEAT_API_KEY: "<your API key>", GOTTAEAT_API_URL: "http://localhost:3001" },
+      },
     });
+    // The plaintext key never lands in the copy-paste config.
+    expect(JSON.stringify(created.mcpConfig)).not.toContain(apiKey);
 
     const me = await get("/v1/agents/me", `Bearer ${apiKey}`);
     expect(me.statusCode).toBe(200);
