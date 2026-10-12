@@ -13,8 +13,9 @@ export async function openWallet(tx: Tx, ownerId: string): Promise<void> {
     .onConflictDoNothing();
 }
 
-// Row lock that serialises every balance check and hold change for one owner.
-async function lockWallet(tx: Tx, ownerId: string) {
+// Row lock that serialises every balance check and hold change for one owner. Callers outside the
+// ledger (the policy engine) take it first so their own checks run under the same lock as the hold.
+export async function lockWallet(tx: Tx, ownerId: string) {
   const [row] = await tx.select().from(wallets).where(eq(wallets.ownerId, ownerId)).for("update");
   if (!row) throw new LedgerError("UNKNOWN_ACCOUNT", `no wallet for ${ownerId}`);
   return row;
