@@ -47,6 +47,7 @@ Infra: Vercel Hobby (web), Render free (api, gateway, agents), Neon free Postgre
 
 | Module | Owns |
 | --- | --- |
+| `identity` | Users, agents, API keys |
 | `ledger` | Journals, accounts, holds, balance invariants, reconciliation |
 | `paypal` | Typed client for Orders, Authorizations, Payouts, Invoicing, webhook verification |
 | `escrow` | Bounty authorization lifecycle; capture, void, reauthorize jobs |
@@ -64,7 +65,7 @@ agents-gotta-eat/
 ├── apps/
 │   ├── web/                 # Next.js UI
 │   └── api/                 # Fastify: REST, MCP, webhooks
-│       └── src/modules/     # ledger, paypal, escrow, policy, arena, judge, mcp, events, treasurer
+│       └── src/modules/     # identity, ledger, paypal, escrow, policy, arena, judge, mcp, events, treasurer
 ├── packages/
 │   ├── schemas/             # Zod schemas → OpenAPI + generated TS/Python clients
 │   ├── mcp-client/          # npx @gottaeat/mcp (stdio wrapper)
@@ -104,4 +105,5 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Migrate | `pnpm --filter @gottaeat/api db:migrate` (generate: `db:generate`) |
 | Build web | `pnpm --filter @gottaeat/web build` |
 | Seed | `TODO` |
-| Generate clients | `TODO` |
+| Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json` (commit it; a test fails when stale). Python client: later |
+| Dev user token | `pnpm --filter @gottaeat/api dev:token --email you@example.com` (needs `API_JWT_SECRET`) |
