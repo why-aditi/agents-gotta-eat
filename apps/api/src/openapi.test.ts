@@ -1,0 +1,33 @@
+import { readFileSync } from "node:fs";
+import { afterAll, describe, expect, it } from "vitest";
+import { buildTestApp, createTestDb } from "../test/db";
+
+const { db, pool } = createTestDb();
+afterAll(() => pool.end());
+
+describe("OpenAPI document", () => {
+  it("is 3.1, lists every route, and matches the committed packages/schemas/openapi.json", async () => {
+    const app = buildTestApp(db);
+    await app.ready();
+    const res = await app.inject({ method: "GET", url: "/v1/openapi.json" });
+    expect(res.statusCode).toBe(200);
+    const doc = res.json();
+    expect(doc.openapi).toMatch(/^3\.1\./);
+    for (const path of [
+      "/health",
+      "/v1/agents",
+      "/v1/agents/me",
+      "/v1/agents/{id}/rotate-key",
+      "/v1/agents/{id}/key",
+    ]) {
+      expect(doc.paths).toHaveProperty([path]);
+    }
+
+    const committed = JSON.parse(
+      readFileSync(new URL("../../../packages/schemas/openapi.json", import.meta.url), "utf8"),
+    );
+    // If this fails, run `pnpm openapi:export` and commit the result.
+    expect(doc).toEqual(committed);
+    await app.close();
+  });
+});

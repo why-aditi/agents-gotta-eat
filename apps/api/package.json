@@ -9,12 +9,19 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=../../.env src/migrate.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "dev:token": "tsx --env-file-if-exists=../../.env scripts/dev-token.ts",
+    "openapi:export": "tsx scripts/openapi-export.ts"
   },
   "dependencies": {
+    "@fastify/cors": "11.3.1",
+    "@fastify/swagger": "9.9.2",
     "@gottaeat/schemas": "workspace:*",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.5",
+    "fastify-type-provider-zod": "7.0.0",
+    "jose": "6.2.12",
+    "openapi-types": "12.1.3",
     "pg": "8.23.1",
     "tsx": "4.23.15",
     "ulid": "3.0.2",

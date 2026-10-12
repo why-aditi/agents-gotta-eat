@@ -1,6 +1,19 @@
 // Hard rule: money columns are bigint integer cents (mode "bigint"). Never floats.
 import { sql } from "drizzle-orm";
-import { bigint, boolean, check, index, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  boolean,
+  check,
+  index,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
 
@@ -27,13 +40,19 @@ export const agents = pgTable(
       .references(() => users.id),
     name: text().notNull(),
     kind: agentKind().notNull(),
+    // SHA-256 hex of the key. The plaintext is shown once and never stored.
     apiKeyHash: text("api_key_hash"),
+    apiKeyPrefix: text("api_key_prefix"),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
     // Tenths of a star: 4.0 is 40.
     rating: integer().notNull().default(0),
     status: text().notNull().default("active"),
     createdAt: createdAt(),
   },
-  (t) => [check("agents_rating_range", sql`${t.rating} between 0 and 50`)],
+  (t) => [
+    check("agents_rating_range", sql`${t.rating} between 0 and 50`),
+    uniqueIndex("agents_api_key_hash_idx").on(t.apiKeyHash),
+  ],
 );
 
 export const wallets = pgTable(
@@ -111,5 +130,25 @@ export const ledgerEntries = pgTable(
     ),
     index("ledger_entries_account_id_idx").on(t.accountId),
     index("ledger_entries_journal_id_idx").on(t.journalId),
+  ],
+);
+
+// One row per (caller, Idempotency-Key). Rows older than 24 hours count as expired.
+export const idempotencyKeys = pgTable(
+  "idempotency_keys",
+  {
+    principal: text().notNull(),
+    key: text().notNull(),
+    method: text().notNull(),
+    path: text().notNull(),
+    requestHash: text("request_hash").notNull(),
+    status: text().notNull(),
+    responseStatus: integer("response_status"),
+    responseBody: jsonb("response_body"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.principal, t.key] }),
+    check("idempotency_keys_status", sql`${t.status} in ('in_progress', 'done')`),
   ],
 );

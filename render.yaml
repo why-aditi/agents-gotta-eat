@@ -15,6 +15,10 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
+      - key: API_JWT_SECRET
+        sync: false
+      - key: WEB_ORIGINS
+        sync: false
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_CLIENT_SECRET
