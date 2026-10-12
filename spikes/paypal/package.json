@@ -1,0 +1,23 @@
+{
+  "name": "@gottaeat/spike-paypal",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "order": "tsx --env-file-if-exists=../../.env src/01-create-order.ts",
+    "authorize": "tsx --env-file-if-exists=../../.env src/02-authorize.ts",
+    "reauthorize": "tsx --env-file-if-exists=../../.env src/03-reauthorize.ts",
+    "capture": "tsx --env-file-if-exists=../../.env src/04-capture.ts",
+    "void": "tsx --env-file-if-exists=../../.env src/05-void.ts",
+    "payout": "tsx --env-file-if-exists=../../.env src/06-payout-batch.ts",
+    "payout-status": "tsx --env-file-if-exists=../../.env src/07-payout-status.ts",
+    "cancel-item": "tsx --env-file-if-exists=../../.env src/08-cancel-item.ts",
+    "toolkit": "tsx --env-file-if-exists=../../.env src/09-toolkit.ts"
+  },
+  "dependencies": {
+    "@paypal/agent-toolkit": "1.11.0",
+    "tsx": "4.23.15"
+  }
+}
