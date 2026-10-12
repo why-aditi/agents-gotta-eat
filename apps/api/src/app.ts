@@ -9,6 +9,7 @@ import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { identityRoutes } from "./modules/identity";
+import { mcpRoutes } from "./modules/mcp";
 import { policyRoutes } from "./modules/policy";
 
 export interface AppEnv {
@@ -64,6 +65,7 @@ export function buildApp(opts: BuildAppOptions) {
     // Route modules go here, one register per module. Each declares config.auth on every route.
     await api.register(identityRoutes);
     await api.register(policyRoutes);
+    await api.register(mcpRoutes);
   });
 
   return app;

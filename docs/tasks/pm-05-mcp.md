@@ -60,3 +60,10 @@ End-to-end check (manual, reported): running api + built `dist/cli.js` driven ov
 - `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` pass.
 - `pnpm openapi:export` leaves no diff.
 - `pnpm --filter @gottaeat/mcp build` produces a runnable `dist/cli.js`.
+
+## Changes made during the build
+
+- The SDK validates tool input against the zod schema before the handler runs, so bad input (e.g. a fractional `amountCents`) comes back as `isError` with the SDK's "Input validation error" text, without the REST error envelope and without a REST call. REST errors (404 etc.) do carry the envelope in `structuredContent`.
+- `GET`/`DELETE /mcp` also need an agent key (401 without), and the 405 sets `Allow: POST`.
+- Proxy: option names are `remoteTransport`/`localTransport`; `src/main.ts` holds the CLI logic so it can be tested without a subprocess; the `start` script uses `node --experimental-strip-types` (no tsx in that package), which needs `.ts` import extensions there.
+- `mcpConfig.stdio.env.GOTTAEAT_API_URL` uses `PUBLIC_API_URL ?? API_URL`; set one of them on Render so the snippet points at the hosted api.

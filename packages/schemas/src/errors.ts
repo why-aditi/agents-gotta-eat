@@ -7,6 +7,7 @@ export const ErrorCode = z.enum([
   "unauthorized",
   "forbidden",
   "not_found",
+  "method_not_allowed",
   "idempotency_in_progress",
   "idempotency_key_reuse",
   "insufficient_funds",

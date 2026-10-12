@@ -10,4 +10,5 @@ export type HealthResponse = z.infer<typeof HealthResponse>;
 
 export * from "./agents";
 export * from "./errors";
+export * from "./mcp";
 export * from "./policy";
