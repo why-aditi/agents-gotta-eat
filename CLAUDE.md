@@ -97,7 +97,7 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Local Postgres | `docker compose up -d` (needs `.env` from `.env.example`) |
 | Dev (web :3000, api :3001) | `pnpm dev` |
 | Dev (agents :8000) | `cd agents && uv run uvicorn app:app --reload --port 8000` |
-| Test (TS, Vitest) | `pnpm test` |
+| Test (TS, Vitest) | `pnpm test` (needs Postgres running; uses `gottaeat_test`, created and migrated automatically from `DATABASE_URL` or `TEST_DATABASE_URL`) |
 | Test (Python) | `cd agents && uv run pytest`; `cd gateway && uv run pytest` |
 | Lint + format | `pnpm lint && pnpm format:check`; Python: `uv run ruff check . && uv run ruff format --check .` |
 | Typecheck | `pnpm typecheck`; `cd agents && uv run mypy .` |
