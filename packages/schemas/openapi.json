@@ -234,6 +234,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -286,6 +288,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -338,6 +342,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -390,6 +396,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -442,6 +450,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -577,6 +587,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -629,6 +641,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -754,6 +768,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -806,6 +822,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -858,6 +876,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1012,6 +1032,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1064,6 +1086,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1116,6 +1140,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1168,6 +1194,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1220,6 +1248,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1272,6 +1302,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1354,6 +1386,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1406,6 +1440,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1458,6 +1494,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },
@@ -1510,6 +1548,8 @@
                             "insufficient_funds",
                             "hold_not_open",
                             "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
                             "internal"
                           ]
                         },

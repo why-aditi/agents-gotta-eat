@@ -1,6 +1,6 @@
 import { monotonicFactory } from "ulid";
 
-export type IdPrefix = "usr" | "agt" | "jnl" | "len";
+export type IdPrefix = "usr" | "agt" | "jnl" | "len" | "mdt" | "spr" | "sdc";
 
 // Monotonic so ids minted in the same millisecond still sort in creation order.
 const ulid = monotonicFactory();

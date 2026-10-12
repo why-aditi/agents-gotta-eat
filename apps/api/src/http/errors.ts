@@ -15,6 +15,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   insufficient_funds: 409,
   hold_not_open: 409,
   invalid_amount: 400,
+  approval_expired: 409,
+  already_decided: 409,
   internal: 500,
 };
 
@@ -29,6 +31,8 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   insufficient_funds: "Insufficient funds",
   hold_not_open: "Hold is not open",
   invalid_amount: "Invalid amount",
+  approval_expired: "This approval request has expired and its hold was released",
+  already_decided: "This spend request has already been decided",
   internal: "Internal server error",
 };
 
