@@ -83,3 +83,15 @@ Spec sections: "Public API and MCP tools" (Auth, Idempotency, Errors, Spec, Huma
 - `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` pass.
 - `pnpm openapi:export` leaves no diff.
 - Migration applies cleanly on top of pm-01.
+
+## Changes made during the build
+
+- Auth runs on `onRequest` (before body validation), so callers without credentials never see validation details. Idempotency runs on `preHandler`, after auth and validation, so rejected requests never hold a key.
+- `UNBALANCED` and `UNKNOWN_ACCOUNT` ledger errors map to 500 `internal`: they are our bugs, not the caller's.
+- Startup guards: a `/v1` route without `config.auth`, or an idempotent route without an authenticated principal, throws when registered.
+- `revokeKey` also clears `api_key_prefix`. Rotating a revoked key issues a new working key.
+- The exported OpenAPI document has no `servers` entry, so it is the same in every environment. `packages/schemas/openapi.json` is in `.prettierignore` (generated).
+
+## Follow-ups
+
+- A request that crashes the process mid-handler leaves its idempotency key `in_progress` until it expires (24 h); retries get 409. Money is still safe through journal idempotency. Consider reclaiming `in_progress` rows older than a few minutes.

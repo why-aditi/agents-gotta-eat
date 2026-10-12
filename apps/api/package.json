@@ -10,7 +10,8 @@
     "db:migrate": "tsx --env-file-if-exists=../../.env src/migrate.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "dev:token": "tsx --env-file-if-exists=../../.env scripts/dev-token.ts"
+    "dev:token": "tsx --env-file-if-exists=../../.env scripts/dev-token.ts",
+    "openapi:export": "tsx scripts/openapi-export.ts"
   },
   "dependencies": {
     "@fastify/cors": "11.3.1",
