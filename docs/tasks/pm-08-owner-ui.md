@@ -66,3 +66,12 @@ CI: web unit tests run in the `ts` job (already `pnpm test`); new `e2e` job with
 - `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` pass; `pnpm --filter @gottaeat/web build` passes.
 - Playwright e2e passes locally with screenshots reviewed.
 - `pnpm openapi:export` leaves no diff.
+
+## Changes made during the build
+
+- New api route `GET /v1/agents/:id/mandates` (`MandateList`) for the version list; the agent header reads the agent from `GET /v1/agents`.
+- Dates and the mandate expiry field are shown and entered in UTC, so server and browser render the same.
+- Each approval card has one idempotency key per decision, so retrying the same decision replays it.
+- Approve and deny revalidate the layout so the nav's pending count updates.
+- `apps/api/scripts/grant-admin.ts` (`pnpm --filter @gottaeat/api grant-admin --email …`) replaces the manual SQL for making a user admin; the e2e test uses it.
+- Playwright label lookups that are prefixes of other names (`API key` vs `Copy API key`, `Agents` vs `Agents Gotta Eat`) need `exact: true`.
