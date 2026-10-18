@@ -14,7 +14,8 @@
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "openapi:export": "pnpm --filter @gottaeat/api openapi:export"
+    "openapi:export": "pnpm --filter @gottaeat/api openapi:export",
+    "e2e": "playwright test"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

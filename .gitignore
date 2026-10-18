@@ -24,3 +24,8 @@ coverage/
 
 # Playwright MCP screenshots and logs
 .playwright-mcp/
+
+# Playwright
+test-results/
+playwright-report/
+tests/e2e/screenshots/
