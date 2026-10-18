@@ -78,6 +78,10 @@ export type Mandate = z.infer<typeof Mandate>;
 export const ConfirmMandateRequest = z.object({ version: z.int().min(1) });
 export type ConfirmMandateRequest = z.infer<typeof ConfirmMandateRequest>;
 
+// GET /v1/agents/:id/mandates, newest version first.
+export const MandateList = z.object({ mandates: z.array(Mandate) });
+export type MandateList = z.infer<typeof MandateList>;
+
 export const CreateSpendRequest = z.object({
   payeeAgentId: z.string().min(1).max(64),
   amountCents: PositiveCents,

@@ -7,6 +7,7 @@ import {
   DevCreditRequest,
   ErrorBody,
   Mandate,
+  MandateList,
   PutMandateRequest,
   SpendRequest,
   SpendRequestList,
@@ -24,7 +25,7 @@ import { toJsonCents } from "../../lib/cents";
 import { getBalances, openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../ledger";
 import { decideApproval, listPendingApprovals } from "./approvals";
 import { stubIntentCheck } from "./gate2";
-import { confirmMandate, getActiveMandate, putMandate } from "./mandates";
+import { confirmMandate, getActiveMandate, listMandates, putMandate } from "./mandates";
 import { getSpendRequestFor, listAgentSpendRequests } from "./queries";
 import { todaySpentCents } from "./requests";
 import { createSpendRequest } from "./spend";
@@ -80,6 +81,24 @@ export const policyRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const user = requireUser(req);
       return confirmMandate(api.db, user.userId, req.params.id, req.body.version);
+    },
+  );
+
+  api.get(
+    "/v1/agents/:id/mandates",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["mandates"],
+        summary: "Every mandate version for an agent, newest first",
+        description: "Includes unconfirmed versions. The highest confirmed version is the active mandate.",
+        params: AgentIdParams,
+        response: { 200: MandateList, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 404: ErrorBody },
+      },
+    },
+    async (req) => {
+      const user = requireUser(req);
+      return { mandates: await listMandates(api.db, user.userId, req.params.id) };
     },
   );
 

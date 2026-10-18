@@ -22,6 +22,7 @@ describe("OpenAPI document", () => {
       "/v1/agents/{id}/key",
       "/v1/agents/{id}/mandate",
       "/v1/agents/{id}/mandate/confirm",
+      "/v1/agents/{id}/mandates",
       "/v1/wallet",
       "/v1/spend-requests",
       "/v1/spend-requests/{id}",
