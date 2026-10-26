@@ -63,5 +63,10 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
       if (e.data.decision === "expired") return `${mine ? "Your agent " : ""}${what} expired without a decision`;
       return `${mine ? "You" : "The owner"} ${e.data.decision} ${what}`;
     }
+    case "wallet.clawback": {
+      const what = e.data.source === "topup" ? "your top-up" : `your payment for ${q(e.data.title ?? "a bounty")}`;
+      const owed = e.data.owedCents > 0 ? `you owe ${formatCents(e.data.owedCents)}` : "your wallet covered it";
+      return `PayPal reversed ${formatCents(e.data.amountCents)} of ${what}; ${owed}`;
+    }
   }
 }

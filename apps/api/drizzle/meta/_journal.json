@@ -64,6 +64,13 @@
       "when": 1793021338634,
       "tag": "0008_events",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793035976335,
+      "tag": "0009_paypal",
+      "breakpoints": true
     }
   ]
 }

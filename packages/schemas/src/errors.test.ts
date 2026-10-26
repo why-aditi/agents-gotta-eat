@@ -14,6 +14,6 @@ describe("ErrorBody", () => {
   });
 
   it("lists every code in the spec", () => {
-    expect(ErrorCode.options).toHaveLength(26);
+    expect(ErrorCode.options).toHaveLength(32);
   });
 });

@@ -381,6 +381,15 @@ from .get_v1_spend_requests_id_response_404 import GetV1SpendRequestsIdResponse4
 from .get_v1_spend_requests_id_response_404_error import GetV1SpendRequestsIdResponse404Error
 from .get_v1_spend_requests_id_response_404_error_code import GetV1SpendRequestsIdResponse404ErrorCode
 from .get_v1_spend_requests_id_response_404_error_detail import GetV1SpendRequestsIdResponse404ErrorDetail
+from .get_v1_wallet_payout_email_response_200 import GetV1WalletPayoutEmailResponse200
+from .get_v1_wallet_payout_email_response_401 import GetV1WalletPayoutEmailResponse401
+from .get_v1_wallet_payout_email_response_401_error import GetV1WalletPayoutEmailResponse401Error
+from .get_v1_wallet_payout_email_response_401_error_code import GetV1WalletPayoutEmailResponse401ErrorCode
+from .get_v1_wallet_payout_email_response_401_error_detail import GetV1WalletPayoutEmailResponse401ErrorDetail
+from .get_v1_wallet_payout_email_response_403 import GetV1WalletPayoutEmailResponse403
+from .get_v1_wallet_payout_email_response_403_error import GetV1WalletPayoutEmailResponse403Error
+from .get_v1_wallet_payout_email_response_403_error_code import GetV1WalletPayoutEmailResponse403ErrorCode
+from .get_v1_wallet_payout_email_response_403_error_detail import GetV1WalletPayoutEmailResponse403ErrorDetail
 from .get_v1_wallet_response_200 import GetV1WalletResponse200
 from .get_v1_wallet_response_200_agent import GetV1WalletResponse200Agent
 from .get_v1_wallet_response_200_agent_limits_type_0 import GetV1WalletResponse200AgentLimitsType0
@@ -392,6 +401,19 @@ from .get_v1_wallet_response_401 import GetV1WalletResponse401
 from .get_v1_wallet_response_401_error import GetV1WalletResponse401Error
 from .get_v1_wallet_response_401_error_code import GetV1WalletResponse401ErrorCode
 from .get_v1_wallet_response_401_error_detail import GetV1WalletResponse401ErrorDetail
+from .get_v1_wallet_withdrawals_response_200 import GetV1WalletWithdrawalsResponse200
+from .get_v1_wallet_withdrawals_response_200_payouts_item import GetV1WalletWithdrawalsResponse200PayoutsItem
+from .get_v1_wallet_withdrawals_response_200_payouts_item_status import (
+    GetV1WalletWithdrawalsResponse200PayoutsItemStatus,
+)
+from .get_v1_wallet_withdrawals_response_401 import GetV1WalletWithdrawalsResponse401
+from .get_v1_wallet_withdrawals_response_401_error import GetV1WalletWithdrawalsResponse401Error
+from .get_v1_wallet_withdrawals_response_401_error_code import GetV1WalletWithdrawalsResponse401ErrorCode
+from .get_v1_wallet_withdrawals_response_401_error_detail import GetV1WalletWithdrawalsResponse401ErrorDetail
+from .get_v1_wallet_withdrawals_response_403 import GetV1WalletWithdrawalsResponse403
+from .get_v1_wallet_withdrawals_response_403_error import GetV1WalletWithdrawalsResponse403Error
+from .get_v1_wallet_withdrawals_response_403_error_code import GetV1WalletWithdrawalsResponse403ErrorCode
+from .get_v1_wallet_withdrawals_response_403_error_detail import GetV1WalletWithdrawalsResponse403ErrorDetail
 from .post_mcp_response_401 import PostMcpResponse401
 from .post_mcp_response_401_error import PostMcpResponse401Error
 from .post_mcp_response_401_error_code import PostMcpResponse401ErrorCode
@@ -795,6 +817,91 @@ from .post_v1_bounties_id_entries_response_422 import PostV1BountiesIdEntriesRes
 from .post_v1_bounties_id_entries_response_422_error import PostV1BountiesIdEntriesResponse422Error
 from .post_v1_bounties_id_entries_response_422_error_code import PostV1BountiesIdEntriesResponse422ErrorCode
 from .post_v1_bounties_id_entries_response_422_error_detail import PostV1BountiesIdEntriesResponse422ErrorDetail
+from .post_v1_bounties_id_fund_confirm_response_200 import PostV1BountiesIdFundConfirmResponse200
+from .post_v1_bounties_id_fund_confirm_response_200_spec import PostV1BountiesIdFundConfirmResponse200Spec
+from .post_v1_bounties_id_fund_confirm_response_200_status import PostV1BountiesIdFundConfirmResponse200Status
+from .post_v1_bounties_id_fund_confirm_response_200_task_type import PostV1BountiesIdFundConfirmResponse200TaskType
+from .post_v1_bounties_id_fund_confirm_response_400 import PostV1BountiesIdFundConfirmResponse400
+from .post_v1_bounties_id_fund_confirm_response_400_error import PostV1BountiesIdFundConfirmResponse400Error
+from .post_v1_bounties_id_fund_confirm_response_400_error_code import PostV1BountiesIdFundConfirmResponse400ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_400_error_detail import (
+    PostV1BountiesIdFundConfirmResponse400ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_401 import PostV1BountiesIdFundConfirmResponse401
+from .post_v1_bounties_id_fund_confirm_response_401_error import PostV1BountiesIdFundConfirmResponse401Error
+from .post_v1_bounties_id_fund_confirm_response_401_error_code import PostV1BountiesIdFundConfirmResponse401ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_401_error_detail import (
+    PostV1BountiesIdFundConfirmResponse401ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_403 import PostV1BountiesIdFundConfirmResponse403
+from .post_v1_bounties_id_fund_confirm_response_403_error import PostV1BountiesIdFundConfirmResponse403Error
+from .post_v1_bounties_id_fund_confirm_response_403_error_code import PostV1BountiesIdFundConfirmResponse403ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_403_error_detail import (
+    PostV1BountiesIdFundConfirmResponse403ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_404 import PostV1BountiesIdFundConfirmResponse404
+from .post_v1_bounties_id_fund_confirm_response_404_error import PostV1BountiesIdFundConfirmResponse404Error
+from .post_v1_bounties_id_fund_confirm_response_404_error_code import PostV1BountiesIdFundConfirmResponse404ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_404_error_detail import (
+    PostV1BountiesIdFundConfirmResponse404ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_409 import PostV1BountiesIdFundConfirmResponse409
+from .post_v1_bounties_id_fund_confirm_response_409_error import PostV1BountiesIdFundConfirmResponse409Error
+from .post_v1_bounties_id_fund_confirm_response_409_error_code import PostV1BountiesIdFundConfirmResponse409ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_409_error_detail import (
+    PostV1BountiesIdFundConfirmResponse409ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_422 import PostV1BountiesIdFundConfirmResponse422
+from .post_v1_bounties_id_fund_confirm_response_422_error import PostV1BountiesIdFundConfirmResponse422Error
+from .post_v1_bounties_id_fund_confirm_response_422_error_code import PostV1BountiesIdFundConfirmResponse422ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_422_error_detail import (
+    PostV1BountiesIdFundConfirmResponse422ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_502 import PostV1BountiesIdFundConfirmResponse502
+from .post_v1_bounties_id_fund_confirm_response_502_error import PostV1BountiesIdFundConfirmResponse502Error
+from .post_v1_bounties_id_fund_confirm_response_502_error_code import PostV1BountiesIdFundConfirmResponse502ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_502_error_detail import (
+    PostV1BountiesIdFundConfirmResponse502ErrorDetail,
+)
+from .post_v1_bounties_id_fund_confirm_response_503 import PostV1BountiesIdFundConfirmResponse503
+from .post_v1_bounties_id_fund_confirm_response_503_error import PostV1BountiesIdFundConfirmResponse503Error
+from .post_v1_bounties_id_fund_confirm_response_503_error_code import PostV1BountiesIdFundConfirmResponse503ErrorCode
+from .post_v1_bounties_id_fund_confirm_response_503_error_detail import (
+    PostV1BountiesIdFundConfirmResponse503ErrorDetail,
+)
+from .post_v1_bounties_id_fund_response_200 import PostV1BountiesIdFundResponse200
+from .post_v1_bounties_id_fund_response_400 import PostV1BountiesIdFundResponse400
+from .post_v1_bounties_id_fund_response_400_error import PostV1BountiesIdFundResponse400Error
+from .post_v1_bounties_id_fund_response_400_error_code import PostV1BountiesIdFundResponse400ErrorCode
+from .post_v1_bounties_id_fund_response_400_error_detail import PostV1BountiesIdFundResponse400ErrorDetail
+from .post_v1_bounties_id_fund_response_401 import PostV1BountiesIdFundResponse401
+from .post_v1_bounties_id_fund_response_401_error import PostV1BountiesIdFundResponse401Error
+from .post_v1_bounties_id_fund_response_401_error_code import PostV1BountiesIdFundResponse401ErrorCode
+from .post_v1_bounties_id_fund_response_401_error_detail import PostV1BountiesIdFundResponse401ErrorDetail
+from .post_v1_bounties_id_fund_response_403 import PostV1BountiesIdFundResponse403
+from .post_v1_bounties_id_fund_response_403_error import PostV1BountiesIdFundResponse403Error
+from .post_v1_bounties_id_fund_response_403_error_code import PostV1BountiesIdFundResponse403ErrorCode
+from .post_v1_bounties_id_fund_response_403_error_detail import PostV1BountiesIdFundResponse403ErrorDetail
+from .post_v1_bounties_id_fund_response_404 import PostV1BountiesIdFundResponse404
+from .post_v1_bounties_id_fund_response_404_error import PostV1BountiesIdFundResponse404Error
+from .post_v1_bounties_id_fund_response_404_error_code import PostV1BountiesIdFundResponse404ErrorCode
+from .post_v1_bounties_id_fund_response_404_error_detail import PostV1BountiesIdFundResponse404ErrorDetail
+from .post_v1_bounties_id_fund_response_409 import PostV1BountiesIdFundResponse409
+from .post_v1_bounties_id_fund_response_409_error import PostV1BountiesIdFundResponse409Error
+from .post_v1_bounties_id_fund_response_409_error_code import PostV1BountiesIdFundResponse409ErrorCode
+from .post_v1_bounties_id_fund_response_409_error_detail import PostV1BountiesIdFundResponse409ErrorDetail
+from .post_v1_bounties_id_fund_response_422 import PostV1BountiesIdFundResponse422
+from .post_v1_bounties_id_fund_response_422_error import PostV1BountiesIdFundResponse422Error
+from .post_v1_bounties_id_fund_response_422_error_code import PostV1BountiesIdFundResponse422ErrorCode
+from .post_v1_bounties_id_fund_response_422_error_detail import PostV1BountiesIdFundResponse422ErrorDetail
+from .post_v1_bounties_id_fund_response_502 import PostV1BountiesIdFundResponse502
+from .post_v1_bounties_id_fund_response_502_error import PostV1BountiesIdFundResponse502Error
+from .post_v1_bounties_id_fund_response_502_error_code import PostV1BountiesIdFundResponse502ErrorCode
+from .post_v1_bounties_id_fund_response_502_error_detail import PostV1BountiesIdFundResponse502ErrorDetail
+from .post_v1_bounties_id_fund_response_503 import PostV1BountiesIdFundResponse503
+from .post_v1_bounties_id_fund_response_503_error import PostV1BountiesIdFundResponse503Error
+from .post_v1_bounties_id_fund_response_503_error_code import PostV1BountiesIdFundResponse503ErrorCode
+from .post_v1_bounties_id_fund_response_503_error_detail import PostV1BountiesIdFundResponse503ErrorDetail
 from .post_v1_bounties_id_pick_body import PostV1BountiesIdPickBody
 from .post_v1_bounties_id_pick_response_200 import PostV1BountiesIdPickResponse200
 from .post_v1_bounties_id_pick_response_200_entries_item import PostV1BountiesIdPickResponse200EntriesItem
@@ -905,6 +1012,125 @@ from .post_v1_spend_requests_response_422 import PostV1SpendRequestsResponse422
 from .post_v1_spend_requests_response_422_error import PostV1SpendRequestsResponse422Error
 from .post_v1_spend_requests_response_422_error_code import PostV1SpendRequestsResponse422ErrorCode
 from .post_v1_spend_requests_response_422_error_detail import PostV1SpendRequestsResponse422ErrorDetail
+from .post_v1_wallet_topups_body import PostV1WalletTopupsBody
+from .post_v1_wallet_topups_id_confirm_response_200 import PostV1WalletTopupsIdConfirmResponse200
+from .post_v1_wallet_topups_id_confirm_response_200_status import PostV1WalletTopupsIdConfirmResponse200Status
+from .post_v1_wallet_topups_id_confirm_response_400 import PostV1WalletTopupsIdConfirmResponse400
+from .post_v1_wallet_topups_id_confirm_response_400_error import PostV1WalletTopupsIdConfirmResponse400Error
+from .post_v1_wallet_topups_id_confirm_response_400_error_code import PostV1WalletTopupsIdConfirmResponse400ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_400_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse400ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_401 import PostV1WalletTopupsIdConfirmResponse401
+from .post_v1_wallet_topups_id_confirm_response_401_error import PostV1WalletTopupsIdConfirmResponse401Error
+from .post_v1_wallet_topups_id_confirm_response_401_error_code import PostV1WalletTopupsIdConfirmResponse401ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_401_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse401ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_403 import PostV1WalletTopupsIdConfirmResponse403
+from .post_v1_wallet_topups_id_confirm_response_403_error import PostV1WalletTopupsIdConfirmResponse403Error
+from .post_v1_wallet_topups_id_confirm_response_403_error_code import PostV1WalletTopupsIdConfirmResponse403ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_403_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse403ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_404 import PostV1WalletTopupsIdConfirmResponse404
+from .post_v1_wallet_topups_id_confirm_response_404_error import PostV1WalletTopupsIdConfirmResponse404Error
+from .post_v1_wallet_topups_id_confirm_response_404_error_code import PostV1WalletTopupsIdConfirmResponse404ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_404_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse404ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_409 import PostV1WalletTopupsIdConfirmResponse409
+from .post_v1_wallet_topups_id_confirm_response_409_error import PostV1WalletTopupsIdConfirmResponse409Error
+from .post_v1_wallet_topups_id_confirm_response_409_error_code import PostV1WalletTopupsIdConfirmResponse409ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_409_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse409ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_422 import PostV1WalletTopupsIdConfirmResponse422
+from .post_v1_wallet_topups_id_confirm_response_422_error import PostV1WalletTopupsIdConfirmResponse422Error
+from .post_v1_wallet_topups_id_confirm_response_422_error_code import PostV1WalletTopupsIdConfirmResponse422ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_422_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse422ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_502 import PostV1WalletTopupsIdConfirmResponse502
+from .post_v1_wallet_topups_id_confirm_response_502_error import PostV1WalletTopupsIdConfirmResponse502Error
+from .post_v1_wallet_topups_id_confirm_response_502_error_code import PostV1WalletTopupsIdConfirmResponse502ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_502_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse502ErrorDetail,
+)
+from .post_v1_wallet_topups_id_confirm_response_503 import PostV1WalletTopupsIdConfirmResponse503
+from .post_v1_wallet_topups_id_confirm_response_503_error import PostV1WalletTopupsIdConfirmResponse503Error
+from .post_v1_wallet_topups_id_confirm_response_503_error_code import PostV1WalletTopupsIdConfirmResponse503ErrorCode
+from .post_v1_wallet_topups_id_confirm_response_503_error_detail import (
+    PostV1WalletTopupsIdConfirmResponse503ErrorDetail,
+)
+from .post_v1_wallet_topups_response_201 import PostV1WalletTopupsResponse201
+from .post_v1_wallet_topups_response_400 import PostV1WalletTopupsResponse400
+from .post_v1_wallet_topups_response_400_error import PostV1WalletTopupsResponse400Error
+from .post_v1_wallet_topups_response_400_error_code import PostV1WalletTopupsResponse400ErrorCode
+from .post_v1_wallet_topups_response_400_error_detail import PostV1WalletTopupsResponse400ErrorDetail
+from .post_v1_wallet_topups_response_401 import PostV1WalletTopupsResponse401
+from .post_v1_wallet_topups_response_401_error import PostV1WalletTopupsResponse401Error
+from .post_v1_wallet_topups_response_401_error_code import PostV1WalletTopupsResponse401ErrorCode
+from .post_v1_wallet_topups_response_401_error_detail import PostV1WalletTopupsResponse401ErrorDetail
+from .post_v1_wallet_topups_response_403 import PostV1WalletTopupsResponse403
+from .post_v1_wallet_topups_response_403_error import PostV1WalletTopupsResponse403Error
+from .post_v1_wallet_topups_response_403_error_code import PostV1WalletTopupsResponse403ErrorCode
+from .post_v1_wallet_topups_response_403_error_detail import PostV1WalletTopupsResponse403ErrorDetail
+from .post_v1_wallet_topups_response_404 import PostV1WalletTopupsResponse404
+from .post_v1_wallet_topups_response_404_error import PostV1WalletTopupsResponse404Error
+from .post_v1_wallet_topups_response_404_error_code import PostV1WalletTopupsResponse404ErrorCode
+from .post_v1_wallet_topups_response_404_error_detail import PostV1WalletTopupsResponse404ErrorDetail
+from .post_v1_wallet_topups_response_409 import PostV1WalletTopupsResponse409
+from .post_v1_wallet_topups_response_409_error import PostV1WalletTopupsResponse409Error
+from .post_v1_wallet_topups_response_409_error_code import PostV1WalletTopupsResponse409ErrorCode
+from .post_v1_wallet_topups_response_409_error_detail import PostV1WalletTopupsResponse409ErrorDetail
+from .post_v1_wallet_topups_response_422 import PostV1WalletTopupsResponse422
+from .post_v1_wallet_topups_response_422_error import PostV1WalletTopupsResponse422Error
+from .post_v1_wallet_topups_response_422_error_code import PostV1WalletTopupsResponse422ErrorCode
+from .post_v1_wallet_topups_response_422_error_detail import PostV1WalletTopupsResponse422ErrorDetail
+from .post_v1_wallet_topups_response_502 import PostV1WalletTopupsResponse502
+from .post_v1_wallet_topups_response_502_error import PostV1WalletTopupsResponse502Error
+from .post_v1_wallet_topups_response_502_error_code import PostV1WalletTopupsResponse502ErrorCode
+from .post_v1_wallet_topups_response_502_error_detail import PostV1WalletTopupsResponse502ErrorDetail
+from .post_v1_wallet_topups_response_503 import PostV1WalletTopupsResponse503
+from .post_v1_wallet_topups_response_503_error import PostV1WalletTopupsResponse503Error
+from .post_v1_wallet_topups_response_503_error_code import PostV1WalletTopupsResponse503ErrorCode
+from .post_v1_wallet_topups_response_503_error_detail import PostV1WalletTopupsResponse503ErrorDetail
+from .post_v1_wallet_withdrawals_body import PostV1WalletWithdrawalsBody
+from .post_v1_wallet_withdrawals_response_202 import PostV1WalletWithdrawalsResponse202
+from .post_v1_wallet_withdrawals_response_202_status import PostV1WalletWithdrawalsResponse202Status
+from .post_v1_wallet_withdrawals_response_400 import PostV1WalletWithdrawalsResponse400
+from .post_v1_wallet_withdrawals_response_400_error import PostV1WalletWithdrawalsResponse400Error
+from .post_v1_wallet_withdrawals_response_400_error_code import PostV1WalletWithdrawalsResponse400ErrorCode
+from .post_v1_wallet_withdrawals_response_400_error_detail import PostV1WalletWithdrawalsResponse400ErrorDetail
+from .post_v1_wallet_withdrawals_response_401 import PostV1WalletWithdrawalsResponse401
+from .post_v1_wallet_withdrawals_response_401_error import PostV1WalletWithdrawalsResponse401Error
+from .post_v1_wallet_withdrawals_response_401_error_code import PostV1WalletWithdrawalsResponse401ErrorCode
+from .post_v1_wallet_withdrawals_response_401_error_detail import PostV1WalletWithdrawalsResponse401ErrorDetail
+from .post_v1_wallet_withdrawals_response_403 import PostV1WalletWithdrawalsResponse403
+from .post_v1_wallet_withdrawals_response_403_error import PostV1WalletWithdrawalsResponse403Error
+from .post_v1_wallet_withdrawals_response_403_error_code import PostV1WalletWithdrawalsResponse403ErrorCode
+from .post_v1_wallet_withdrawals_response_403_error_detail import PostV1WalletWithdrawalsResponse403ErrorDetail
+from .post_v1_wallet_withdrawals_response_404 import PostV1WalletWithdrawalsResponse404
+from .post_v1_wallet_withdrawals_response_404_error import PostV1WalletWithdrawalsResponse404Error
+from .post_v1_wallet_withdrawals_response_404_error_code import PostV1WalletWithdrawalsResponse404ErrorCode
+from .post_v1_wallet_withdrawals_response_404_error_detail import PostV1WalletWithdrawalsResponse404ErrorDetail
+from .post_v1_wallet_withdrawals_response_409 import PostV1WalletWithdrawalsResponse409
+from .post_v1_wallet_withdrawals_response_409_error import PostV1WalletWithdrawalsResponse409Error
+from .post_v1_wallet_withdrawals_response_409_error_code import PostV1WalletWithdrawalsResponse409ErrorCode
+from .post_v1_wallet_withdrawals_response_409_error_detail import PostV1WalletWithdrawalsResponse409ErrorDetail
+from .post_v1_wallet_withdrawals_response_422 import PostV1WalletWithdrawalsResponse422
+from .post_v1_wallet_withdrawals_response_422_error import PostV1WalletWithdrawalsResponse422Error
+from .post_v1_wallet_withdrawals_response_422_error_code import PostV1WalletWithdrawalsResponse422ErrorCode
+from .post_v1_wallet_withdrawals_response_422_error_detail import PostV1WalletWithdrawalsResponse422ErrorDetail
+from .post_v1_wallet_withdrawals_response_502 import PostV1WalletWithdrawalsResponse502
+from .post_v1_wallet_withdrawals_response_502_error import PostV1WalletWithdrawalsResponse502Error
+from .post_v1_wallet_withdrawals_response_502_error_code import PostV1WalletWithdrawalsResponse502ErrorCode
+from .post_v1_wallet_withdrawals_response_502_error_detail import PostV1WalletWithdrawalsResponse502ErrorDetail
+from .post_v1_wallet_withdrawals_response_503 import PostV1WalletWithdrawalsResponse503
+from .post_v1_wallet_withdrawals_response_503_error import PostV1WalletWithdrawalsResponse503Error
+from .post_v1_wallet_withdrawals_response_503_error_code import PostV1WalletWithdrawalsResponse503ErrorCode
+from .post_v1_wallet_withdrawals_response_503_error_detail import PostV1WalletWithdrawalsResponse503ErrorDetail
 from .put_v1_agents_id_mandate_body import PutV1AgentsIdMandateBody
 from .put_v1_agents_id_mandate_body_rules import PutV1AgentsIdMandateBodyRules
 from .put_v1_agents_id_mandate_body_rules_allowed_categories_item import (
@@ -933,6 +1159,24 @@ from .put_v1_agents_id_mandate_response_404 import PutV1AgentsIdMandateResponse4
 from .put_v1_agents_id_mandate_response_404_error import PutV1AgentsIdMandateResponse404Error
 from .put_v1_agents_id_mandate_response_404_error_code import PutV1AgentsIdMandateResponse404ErrorCode
 from .put_v1_agents_id_mandate_response_404_error_detail import PutV1AgentsIdMandateResponse404ErrorDetail
+from .put_v1_wallet_payout_email_body import PutV1WalletPayoutEmailBody
+from .put_v1_wallet_payout_email_response_200 import PutV1WalletPayoutEmailResponse200
+from .put_v1_wallet_payout_email_response_400 import PutV1WalletPayoutEmailResponse400
+from .put_v1_wallet_payout_email_response_400_error import PutV1WalletPayoutEmailResponse400Error
+from .put_v1_wallet_payout_email_response_400_error_code import PutV1WalletPayoutEmailResponse400ErrorCode
+from .put_v1_wallet_payout_email_response_400_error_detail import PutV1WalletPayoutEmailResponse400ErrorDetail
+from .put_v1_wallet_payout_email_response_401 import PutV1WalletPayoutEmailResponse401
+from .put_v1_wallet_payout_email_response_401_error import PutV1WalletPayoutEmailResponse401Error
+from .put_v1_wallet_payout_email_response_401_error_code import PutV1WalletPayoutEmailResponse401ErrorCode
+from .put_v1_wallet_payout_email_response_401_error_detail import PutV1WalletPayoutEmailResponse401ErrorDetail
+from .put_v1_wallet_payout_email_response_403 import PutV1WalletPayoutEmailResponse403
+from .put_v1_wallet_payout_email_response_403_error import PutV1WalletPayoutEmailResponse403Error
+from .put_v1_wallet_payout_email_response_403_error_code import PutV1WalletPayoutEmailResponse403ErrorCode
+from .put_v1_wallet_payout_email_response_403_error_detail import PutV1WalletPayoutEmailResponse403ErrorDetail
+from .put_v1_wallet_payout_email_response_409 import PutV1WalletPayoutEmailResponse409
+from .put_v1_wallet_payout_email_response_409_error import PutV1WalletPayoutEmailResponse409Error
+from .put_v1_wallet_payout_email_response_409_error_code import PutV1WalletPayoutEmailResponse409ErrorCode
+from .put_v1_wallet_payout_email_response_409_error_detail import PutV1WalletPayoutEmailResponse409ErrorDetail
 
 __all__ = (
     "DeleteMcpResponse401",
@@ -1274,6 +1518,15 @@ __all__ = (
     "GetV1SpendRequestsIdResponse404Error",
     "GetV1SpendRequestsIdResponse404ErrorCode",
     "GetV1SpendRequestsIdResponse404ErrorDetail",
+    "GetV1WalletPayoutEmailResponse200",
+    "GetV1WalletPayoutEmailResponse401",
+    "GetV1WalletPayoutEmailResponse401Error",
+    "GetV1WalletPayoutEmailResponse401ErrorCode",
+    "GetV1WalletPayoutEmailResponse401ErrorDetail",
+    "GetV1WalletPayoutEmailResponse403",
+    "GetV1WalletPayoutEmailResponse403Error",
+    "GetV1WalletPayoutEmailResponse403ErrorCode",
+    "GetV1WalletPayoutEmailResponse403ErrorDetail",
     "GetV1WalletResponse200",
     "GetV1WalletResponse200Agent",
     "GetV1WalletResponse200AgentLimitsType0",
@@ -1283,6 +1536,17 @@ __all__ = (
     "GetV1WalletResponse401Error",
     "GetV1WalletResponse401ErrorCode",
     "GetV1WalletResponse401ErrorDetail",
+    "GetV1WalletWithdrawalsResponse200",
+    "GetV1WalletWithdrawalsResponse200PayoutsItem",
+    "GetV1WalletWithdrawalsResponse200PayoutsItemStatus",
+    "GetV1WalletWithdrawalsResponse401",
+    "GetV1WalletWithdrawalsResponse401Error",
+    "GetV1WalletWithdrawalsResponse401ErrorCode",
+    "GetV1WalletWithdrawalsResponse401ErrorDetail",
+    "GetV1WalletWithdrawalsResponse403",
+    "GetV1WalletWithdrawalsResponse403Error",
+    "GetV1WalletWithdrawalsResponse403ErrorCode",
+    "GetV1WalletWithdrawalsResponse403ErrorDetail",
     "PostMcpResponse401",
     "PostMcpResponse401Error",
     "PostMcpResponse401ErrorCode",
@@ -1590,6 +1854,75 @@ __all__ = (
     "PostV1BountiesIdEntriesResponse422Error",
     "PostV1BountiesIdEntriesResponse422ErrorCode",
     "PostV1BountiesIdEntriesResponse422ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse200",
+    "PostV1BountiesIdFundConfirmResponse200Spec",
+    "PostV1BountiesIdFundConfirmResponse200Status",
+    "PostV1BountiesIdFundConfirmResponse200TaskType",
+    "PostV1BountiesIdFundConfirmResponse400",
+    "PostV1BountiesIdFundConfirmResponse400Error",
+    "PostV1BountiesIdFundConfirmResponse400ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse400ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse401",
+    "PostV1BountiesIdFundConfirmResponse401Error",
+    "PostV1BountiesIdFundConfirmResponse401ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse401ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse403",
+    "PostV1BountiesIdFundConfirmResponse403Error",
+    "PostV1BountiesIdFundConfirmResponse403ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse403ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse404",
+    "PostV1BountiesIdFundConfirmResponse404Error",
+    "PostV1BountiesIdFundConfirmResponse404ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse404ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse409",
+    "PostV1BountiesIdFundConfirmResponse409Error",
+    "PostV1BountiesIdFundConfirmResponse409ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse409ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse422",
+    "PostV1BountiesIdFundConfirmResponse422Error",
+    "PostV1BountiesIdFundConfirmResponse422ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse422ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse502",
+    "PostV1BountiesIdFundConfirmResponse502Error",
+    "PostV1BountiesIdFundConfirmResponse502ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse502ErrorDetail",
+    "PostV1BountiesIdFundConfirmResponse503",
+    "PostV1BountiesIdFundConfirmResponse503Error",
+    "PostV1BountiesIdFundConfirmResponse503ErrorCode",
+    "PostV1BountiesIdFundConfirmResponse503ErrorDetail",
+    "PostV1BountiesIdFundResponse200",
+    "PostV1BountiesIdFundResponse400",
+    "PostV1BountiesIdFundResponse400Error",
+    "PostV1BountiesIdFundResponse400ErrorCode",
+    "PostV1BountiesIdFundResponse400ErrorDetail",
+    "PostV1BountiesIdFundResponse401",
+    "PostV1BountiesIdFundResponse401Error",
+    "PostV1BountiesIdFundResponse401ErrorCode",
+    "PostV1BountiesIdFundResponse401ErrorDetail",
+    "PostV1BountiesIdFundResponse403",
+    "PostV1BountiesIdFundResponse403Error",
+    "PostV1BountiesIdFundResponse403ErrorCode",
+    "PostV1BountiesIdFundResponse403ErrorDetail",
+    "PostV1BountiesIdFundResponse404",
+    "PostV1BountiesIdFundResponse404Error",
+    "PostV1BountiesIdFundResponse404ErrorCode",
+    "PostV1BountiesIdFundResponse404ErrorDetail",
+    "PostV1BountiesIdFundResponse409",
+    "PostV1BountiesIdFundResponse409Error",
+    "PostV1BountiesIdFundResponse409ErrorCode",
+    "PostV1BountiesIdFundResponse409ErrorDetail",
+    "PostV1BountiesIdFundResponse422",
+    "PostV1BountiesIdFundResponse422Error",
+    "PostV1BountiesIdFundResponse422ErrorCode",
+    "PostV1BountiesIdFundResponse422ErrorDetail",
+    "PostV1BountiesIdFundResponse502",
+    "PostV1BountiesIdFundResponse502Error",
+    "PostV1BountiesIdFundResponse502ErrorCode",
+    "PostV1BountiesIdFundResponse502ErrorDetail",
+    "PostV1BountiesIdFundResponse503",
+    "PostV1BountiesIdFundResponse503Error",
+    "PostV1BountiesIdFundResponse503ErrorCode",
+    "PostV1BountiesIdFundResponse503ErrorDetail",
     "PostV1BountiesIdPickBody",
     "PostV1BountiesIdPickResponse200",
     "PostV1BountiesIdPickResponse200EntriesItem",
@@ -1698,6 +2031,109 @@ __all__ = (
     "PostV1SpendRequestsResponse422Error",
     "PostV1SpendRequestsResponse422ErrorCode",
     "PostV1SpendRequestsResponse422ErrorDetail",
+    "PostV1WalletTopupsBody",
+    "PostV1WalletTopupsIdConfirmResponse200",
+    "PostV1WalletTopupsIdConfirmResponse200Status",
+    "PostV1WalletTopupsIdConfirmResponse400",
+    "PostV1WalletTopupsIdConfirmResponse400Error",
+    "PostV1WalletTopupsIdConfirmResponse400ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse400ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse401",
+    "PostV1WalletTopupsIdConfirmResponse401Error",
+    "PostV1WalletTopupsIdConfirmResponse401ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse401ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse403",
+    "PostV1WalletTopupsIdConfirmResponse403Error",
+    "PostV1WalletTopupsIdConfirmResponse403ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse403ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse404",
+    "PostV1WalletTopupsIdConfirmResponse404Error",
+    "PostV1WalletTopupsIdConfirmResponse404ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse404ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse409",
+    "PostV1WalletTopupsIdConfirmResponse409Error",
+    "PostV1WalletTopupsIdConfirmResponse409ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse409ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse422",
+    "PostV1WalletTopupsIdConfirmResponse422Error",
+    "PostV1WalletTopupsIdConfirmResponse422ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse422ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse502",
+    "PostV1WalletTopupsIdConfirmResponse502Error",
+    "PostV1WalletTopupsIdConfirmResponse502ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse502ErrorDetail",
+    "PostV1WalletTopupsIdConfirmResponse503",
+    "PostV1WalletTopupsIdConfirmResponse503Error",
+    "PostV1WalletTopupsIdConfirmResponse503ErrorCode",
+    "PostV1WalletTopupsIdConfirmResponse503ErrorDetail",
+    "PostV1WalletTopupsResponse201",
+    "PostV1WalletTopupsResponse400",
+    "PostV1WalletTopupsResponse400Error",
+    "PostV1WalletTopupsResponse400ErrorCode",
+    "PostV1WalletTopupsResponse400ErrorDetail",
+    "PostV1WalletTopupsResponse401",
+    "PostV1WalletTopupsResponse401Error",
+    "PostV1WalletTopupsResponse401ErrorCode",
+    "PostV1WalletTopupsResponse401ErrorDetail",
+    "PostV1WalletTopupsResponse403",
+    "PostV1WalletTopupsResponse403Error",
+    "PostV1WalletTopupsResponse403ErrorCode",
+    "PostV1WalletTopupsResponse403ErrorDetail",
+    "PostV1WalletTopupsResponse404",
+    "PostV1WalletTopupsResponse404Error",
+    "PostV1WalletTopupsResponse404ErrorCode",
+    "PostV1WalletTopupsResponse404ErrorDetail",
+    "PostV1WalletTopupsResponse409",
+    "PostV1WalletTopupsResponse409Error",
+    "PostV1WalletTopupsResponse409ErrorCode",
+    "PostV1WalletTopupsResponse409ErrorDetail",
+    "PostV1WalletTopupsResponse422",
+    "PostV1WalletTopupsResponse422Error",
+    "PostV1WalletTopupsResponse422ErrorCode",
+    "PostV1WalletTopupsResponse422ErrorDetail",
+    "PostV1WalletTopupsResponse502",
+    "PostV1WalletTopupsResponse502Error",
+    "PostV1WalletTopupsResponse502ErrorCode",
+    "PostV1WalletTopupsResponse502ErrorDetail",
+    "PostV1WalletTopupsResponse503",
+    "PostV1WalletTopupsResponse503Error",
+    "PostV1WalletTopupsResponse503ErrorCode",
+    "PostV1WalletTopupsResponse503ErrorDetail",
+    "PostV1WalletWithdrawalsBody",
+    "PostV1WalletWithdrawalsResponse202",
+    "PostV1WalletWithdrawalsResponse202Status",
+    "PostV1WalletWithdrawalsResponse400",
+    "PostV1WalletWithdrawalsResponse400Error",
+    "PostV1WalletWithdrawalsResponse400ErrorCode",
+    "PostV1WalletWithdrawalsResponse400ErrorDetail",
+    "PostV1WalletWithdrawalsResponse401",
+    "PostV1WalletWithdrawalsResponse401Error",
+    "PostV1WalletWithdrawalsResponse401ErrorCode",
+    "PostV1WalletWithdrawalsResponse401ErrorDetail",
+    "PostV1WalletWithdrawalsResponse403",
+    "PostV1WalletWithdrawalsResponse403Error",
+    "PostV1WalletWithdrawalsResponse403ErrorCode",
+    "PostV1WalletWithdrawalsResponse403ErrorDetail",
+    "PostV1WalletWithdrawalsResponse404",
+    "PostV1WalletWithdrawalsResponse404Error",
+    "PostV1WalletWithdrawalsResponse404ErrorCode",
+    "PostV1WalletWithdrawalsResponse404ErrorDetail",
+    "PostV1WalletWithdrawalsResponse409",
+    "PostV1WalletWithdrawalsResponse409Error",
+    "PostV1WalletWithdrawalsResponse409ErrorCode",
+    "PostV1WalletWithdrawalsResponse409ErrorDetail",
+    "PostV1WalletWithdrawalsResponse422",
+    "PostV1WalletWithdrawalsResponse422Error",
+    "PostV1WalletWithdrawalsResponse422ErrorCode",
+    "PostV1WalletWithdrawalsResponse422ErrorDetail",
+    "PostV1WalletWithdrawalsResponse502",
+    "PostV1WalletWithdrawalsResponse502Error",
+    "PostV1WalletWithdrawalsResponse502ErrorCode",
+    "PostV1WalletWithdrawalsResponse502ErrorDetail",
+    "PostV1WalletWithdrawalsResponse503",
+    "PostV1WalletWithdrawalsResponse503Error",
+    "PostV1WalletWithdrawalsResponse503ErrorCode",
+    "PostV1WalletWithdrawalsResponse503ErrorDetail",
     "PutV1AgentsIdMandateBody",
     "PutV1AgentsIdMandateBodyRules",
     "PutV1AgentsIdMandateBodyRulesAllowedCategoriesItem",
@@ -1722,4 +2158,22 @@ __all__ = (
     "PutV1AgentsIdMandateResponse404Error",
     "PutV1AgentsIdMandateResponse404ErrorCode",
     "PutV1AgentsIdMandateResponse404ErrorDetail",
+    "PutV1WalletPayoutEmailBody",
+    "PutV1WalletPayoutEmailResponse200",
+    "PutV1WalletPayoutEmailResponse400",
+    "PutV1WalletPayoutEmailResponse400Error",
+    "PutV1WalletPayoutEmailResponse400ErrorCode",
+    "PutV1WalletPayoutEmailResponse400ErrorDetail",
+    "PutV1WalletPayoutEmailResponse401",
+    "PutV1WalletPayoutEmailResponse401Error",
+    "PutV1WalletPayoutEmailResponse401ErrorCode",
+    "PutV1WalletPayoutEmailResponse401ErrorDetail",
+    "PutV1WalletPayoutEmailResponse403",
+    "PutV1WalletPayoutEmailResponse403Error",
+    "PutV1WalletPayoutEmailResponse403ErrorCode",
+    "PutV1WalletPayoutEmailResponse403ErrorDetail",
+    "PutV1WalletPayoutEmailResponse409",
+    "PutV1WalletPayoutEmailResponse409Error",
+    "PutV1WalletPayoutEmailResponse409ErrorCode",
+    "PutV1WalletPayoutEmailResponse409ErrorDetail",
 )

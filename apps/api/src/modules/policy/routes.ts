@@ -24,7 +24,7 @@ import { IDEMPOTENCY_HEADER } from "../../http/idempotency";
 import { principalKey, requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
-import { getBalances, openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../ledger";
+import { getBalances, openWallet, owedCents, PAYPAL_CLEARING, postJournal, walletAccount } from "../ledger";
 import { decideApproval, listPendingApprovals } from "./approvals";
 import { llmConfigFromEnv } from "../llm";
 import { compileMandate } from "./compile";
@@ -44,7 +44,12 @@ const ApprovalsQuery = z.object({ status: z.enum(["pending"]).default("pending")
 async function walletOf(db: Db, ownerId: string): Promise<Wallet> {
   // A user with no wallet yet has no ledger entries, so this reads as zeros.
   const { balanceCents, heldCents } = await getBalances(db, ownerId);
-  return { ownerId, balanceCents: toJsonCents(balanceCents), heldCents: toJsonCents(heldCents) };
+  return {
+    ownerId,
+    balanceCents: toJsonCents(balanceCents),
+    heldCents: toJsonCents(heldCents),
+    owedCents: toJsonCents(await owedCents(db, ownerId)),
+  };
 }
 
 export const policyRoutes: FastifyPluginAsyncZod = async (api) => {

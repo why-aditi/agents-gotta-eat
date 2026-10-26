@@ -42,6 +42,8 @@ export const DenyReason = z.enum([
   "own_bounty",
   "scope_requires_entry",
   "over_bounty_spend_rule",
+  // The owner owes the platform money after a PayPal reversal (pm-04c).
+  "account_frozen",
 ]);
 export type DenyReason = z.infer<typeof DenyReason>;
 
@@ -158,6 +160,9 @@ export const Wallet = z.object({
   ownerId: z.string(),
   balanceCents: Cents,
   heldCents: Cents,
+  // What the owner owes the platform after a PayPal refund or reversal. Above zero the account is frozen: no
+  // spends, withdrawals or new bounties until a top-up repays it.
+  owedCents: Cents,
   agent: z
     .object({
       agentId: z.string(),

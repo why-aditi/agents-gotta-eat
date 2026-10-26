@@ -25,12 +25,14 @@ class GetV1WalletResponse200:
         owner_id (str):
         balance_cents (int):
         held_cents (int):
+        owed_cents (int):
         agent (GetV1WalletResponse200Agent | Unset):
     """
 
     owner_id: str
     balance_cents: int
     held_cents: int
+    owed_cents: int
     agent: GetV1WalletResponse200Agent | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
@@ -41,6 +43,8 @@ class GetV1WalletResponse200:
         balance_cents = self.balance_cents
 
         held_cents = self.held_cents
+
+        owed_cents = self.owed_cents
 
         agent: dict[str, Any] | Unset = UNSET
         if not isinstance(self.agent, Unset):
@@ -53,6 +57,7 @@ class GetV1WalletResponse200:
                 "ownerId": owner_id,
                 "balanceCents": balance_cents,
                 "heldCents": held_cents,
+                "owedCents": owed_cents,
             }
         )
         if agent is not UNSET:
@@ -71,6 +76,8 @@ class GetV1WalletResponse200:
 
         held_cents = d.pop("heldCents")
 
+        owed_cents = d.pop("owedCents")
+
         _agent = d.pop("agent", UNSET)
         agent: GetV1WalletResponse200Agent | Unset
         if isinstance(_agent, Unset):
@@ -82,6 +89,7 @@ class GetV1WalletResponse200:
             owner_id=owner_id,
             balance_cents=balance_cents,
             held_cents=held_cents,
+            owed_cents=owed_cents,
             agent=agent,
         )
 

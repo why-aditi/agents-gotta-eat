@@ -100,6 +100,16 @@ export const EventData = {
     category: SpendCategory,
     decision: z.enum(["approved", "denied", "expired"]),
   }),
+  // PayPal refunded or reversed money the owner paid in: a top-up, or a bounty's escrow capture.
+  "wallet.clawback": z.object({
+    source: z.enum(["topup", "bounty"]),
+    refId: z.string(),
+    // The bounty title for source "bounty", else null.
+    title: z.string().nullable(),
+    amountCents: Cents,
+    // What the owner owes in total after this clawback.
+    owedCents: Cents,
+  }),
 } as const;
 
 export const ArenaEventType = z.enum([
@@ -114,6 +124,7 @@ export const ArenaEventType = z.enum([
   "agent.run_step",
   "spend.decided",
   "approval.decided",
+  "wallet.clawback",
 ]);
 export type ArenaEventType = z.infer<typeof ArenaEventType>;
 export type EventDataOf<T extends ArenaEventType> = z.infer<(typeof EventData)[T]>;
@@ -131,6 +142,7 @@ export const EVENT_SCOPE: Record<ArenaEventType, EventScope> = {
   "agent.run_step": "public",
   "spend.decided": "owner",
   "approval.decided": "owner",
+  "wallet.clawback": "owner",
 };
 
 const EventBase = z.object({
@@ -158,5 +170,6 @@ export const ArenaEvent = z.discriminatedUnion("type", [
   variant("agent.run_step"),
   variant("spend.decided"),
   variant("approval.decided"),
+  variant("wallet.clawback"),
 ]);
 export type ArenaEvent = z.infer<typeof ArenaEvent>;

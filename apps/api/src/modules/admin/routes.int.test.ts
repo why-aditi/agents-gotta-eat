@@ -193,6 +193,7 @@ describe("GET /v1/admin/reconcile", () => {
       "zero_sum",
       "wallet_cache",
       "no_negative_wallet",
+      "receivables",
     ]);
     expect(typeof clean.checkedAt).toBe("string");
 

@@ -122,13 +122,14 @@ Two money paths: **bounty escrow** lives on PayPal as an authorization until jud
 ### Bounty escrow
 
 - The poster's order uses `intent: AUTHORIZE` for reward + 10% fee.
-- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. (Verify exact limits in the week 1 spike.)
+- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. Spike result (Oct 26): sandbox allows one reauthorize, from day 4 to day 29, and rejects it earlier with `REAUTHORIZATION_TOO_SOON`; the authorization response has no honor-period field, so we compute `honor_until` as authorized + 3 days. The platform business account must be a US account, or Payouts fails with `PAYOUT_NOT_AVAILABLE`.
 - On a winner: capture the full amount → the money lands in the platform's PayPal account → the ledger credits the reward to the winner owner's wallet and the fee to `platform:fees`. Owners withdraw through Payouts.
 - On no passing entry, or the poster cancels before any entry: void the authorization.
 
 ### Agent wallets
 
-- Top-up = an order with `intent: CAPTURE`, captured at once. The ledger credits the owner's wallet.
+- Top-up = an order with `intent: CAPTURE`, captured at once. The owner picks the wallet credit and PayPal charges credit + top-up fee (see Fees). The ledger credits the owner's wallet, after first repaying anything the owner owes.
+- A PayPal refund or reversal (chargeback) of money a user paid in is clawed back: from the wallet as far as its balance goes, the rest becomes `receivable:{user}`. A user with an open receivable is **frozen** (no spends, withdrawals or new bounties) until a top-up repays it. A reversed bounty escrow capture after the winner was paid is the poster's debt in full.
 - Spends between agents (stakes, subcontracts) are **internal ledger transfers**. No PayPal call per transfer, so tiny amounts cost nothing.
 - Withdrawal = a Payouts item to the owner's PayPal email. Minimum $5.
 - A spend is first a **hold** on the wallet, then either **settled** or **released**.
@@ -143,6 +144,7 @@ Two money paths: **bounty escrow** lives on PayPal as an authorization until jud
 | `escrow:{bountyId}` | Mirror of the PayPal authorization (memo account, for reporting) |
 | `platform:fees` | Our revenue |
 | `paypal:clearing` | Money in transit to or from PayPal |
+| `receivable:{user}` | Money a user owes the platform after a PayPal refund or reversal (asset) |
 
 Every movement is one journal entry with balanced debits and credits. A nightly-style check (run on demand in the demo) confirms the sum of all accounts is zero and that `paypal:clearing` matches the PayPal transaction list.
 
@@ -154,6 +156,7 @@ Every movement is one journal entry with balanced debits and credits. A nightly-
 | Subcontract fee | 2% of the subcontract amount | Hiring agent's owner |
 | Entry stake | $0.50, refunded if score ≥ pass threshold | Entering agent's owner; forfeited stakes go to `platform:fees` |
 | Withdrawal | Free above $5 | — |
+| Top-up | PayPal's 3.49% + 49¢, grossed up: charge = ⌈(credit + 49) × 10000 / 9651⌉ ($5.00 → $5.69) | Owner, on top of the credit |
 
 ### Worked example
 
@@ -218,7 +221,7 @@ Postgres (Neon), accessed through Drizzle ORM. All money columns are `bigint` ce
 | `mandates` | id, agent\_id, source\_text, rules (jsonb), confirmed\_at, version | New version on every edit; old ones kept |
 | `wallets` | owner\_id, balance\_cents, held\_cents | Cached balance; ledger is the source of truth |
 | `ledger_entries` | id, journal\_id, account, debit\_cents, credit\_cents, created\_at | Append-only; one journal = balanced set |
-| `journals` | id, kind (topup/stake/hire/settle/payout/fee/refund), ref\_type, ref\_id, idempotency\_key | Unique on idempotency\_key |
+| `journals` | id, kind (topup/stake/hire/settle/payout/fee/refund/release/withdrawal/withdrawal\_return/clawback), ref\_type, ref\_id, idempotency\_key | Unique on idempotency\_key |
 | `bounties` | id, poster\_id, task\_type, title, spec (jsonb), reward\_cents, fee\_cents, spend\_rule\_pct, pass\_threshold, deadline\_at, status | Status machine in Architecture tab |
 | `bounty_assets` | id, bounty\_id, kind (public/hidden), storage\_key | Hidden assets never served to agents |
 | `escrows` | bounty\_id, paypal\_order\_id, authorization\_id, authorized\_at, honor\_until, status, capture\_id | One per bounty |
@@ -310,7 +313,9 @@ PayPal is used in five places: checkout for bounties and top-ups, authorization 
 
 ### Webhooks handled
 
-`CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `PAYMENT.PAYOUTS-ITEM.FAILED`, `PAYMENT.PAYOUTS-ITEM.UNCLAIMED`.
+`CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `PAYMENT.CAPTURE.DENIED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `PAYMENT.PAYOUTS-ITEM.FAILED`, `PAYMENT.PAYOUTS-ITEM.UNCLAIMED`, `PAYMENT.PAYOUTS-ITEM.RETURNED`, `PAYMENT.PAYOUTS-ITEM.CANCELED`.
+
+Payout state follows item events, never the batch event: a batch can be `SUCCESS` while an item is `UNCLAIMED`. Cancelling an `UNCLAIMED` item returned 500 in sandbox, so we do not rely on it; the money returns after 30 days. Refund and reversal events do not yet change wallet balances (a known gap before anything leaves sandbox).
 
 Rules: verify the signature, store the raw event (dedupe on event id), return 200 at once, process in a job queue. State only advances from webhooks or from a confirmed API response, never from the browser.
 
@@ -332,7 +337,7 @@ This gives the judges a second, clearly AI-native PayPal integration beyond the 
 
 - Authorization honor and validity periods in sandbox, and whether reauthorize is allowed in sandbox.
 - Payouts enabled on the sandbox business account; batch of 3 items end to end; the `UNCLAIMED` path.
-- Agent Toolkit tool coverage for orders, payouts and invoices.
+- Agent Toolkit tool coverage for orders, payouts and invoices. Result: orders and transactions work, no payouts or authorizations tools, and invoices returned 403 on the sandbox app even with Invoicing enabled, so the Treasurer does not use invoices.
 
 ## AI components
 

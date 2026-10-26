@@ -113,6 +113,23 @@ describe("describeEvent", () => {
     ).toBe("Your agent Sieve's $0.50 stake expired without a decision");
   });
 
+  it("describes PayPal clawbacks", () => {
+    const clawback: ArenaEvent = {
+      ...base,
+      scope: "owner",
+      ownerId: "usr_me",
+      type: "wallet.clawback",
+      data: { source: "topup", refId: "tup_1", title: null, amountCents: 500, owedCents: 120 },
+    };
+    expect(describeEvent(clawback, "usr_me")).toBe("PayPal reversed $5.00 of your top-up; you owe $1.20");
+    expect(
+      describeEvent(
+        { ...clawback, data: { ...clawback.data, source: "bounty", title: "Tagline <b>", owedCents: 0 } } as ArenaEvent,
+        "usr_me",
+      ),
+    ).toBe("PayPal reversed $5.00 of your payment for “Tagline <b>”; your wallet covered it");
+  });
+
   it("shortTitle keeps short titles and cuts long ones", () => {
     expect(shortTitle("  Tagline ")).toBe("Tagline");
     expect(shortTitle("x".repeat(41))).toBe(`${"x".repeat(39)}…`);

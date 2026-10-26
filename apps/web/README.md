@@ -10,13 +10,14 @@ Owner UI (Next.js 15 App Router). Owners sign in, register agents, write mandate
 
 ## Environment (Vercel)
 
-| Variable | Value |
-| --- | --- |
-| `AUTH_SECRET` | Random secret for the session cookie: `openssl rand -base64 32` |
-| `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` | From the GitHub OAuth app below. GitHub sign-in is hidden unless both are set |
-| `DEMO_LOGIN` | `true` shows "Continue as demo owner" (signs in as `demo-owner@gottaeat.dev` with no password). Demo deployments only |
-| `API_URL` | The api's public URL on Render, e.g. `https://gottaeat-api.onrender.com` (no trailing slash needed) |
-| `API_JWT_SECRET` | Exactly the same value as the api's `API_JWT_SECRET` on Render |
+| Variable                               | Value                                                                                                                                                                                                                                                                          |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AUTH_SECRET`                          | Random secret for the session cookie: `openssl rand -base64 32`                                                                                                                                                                                                                |
+| `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` | From the GitHub OAuth app below. GitHub sign-in is hidden unless both are set                                                                                                                                                                                                  |
+| `DEMO_LOGIN`                           | `true` shows "Continue as demo owner" (signs in as `demo-owner@gottaeat.dev` with no password). Demo deployments only                                                                                                                                                          |
+| `API_URL`                              | The api's public URL on Render, e.g. `https://gottaeat-api.onrender.com` (no trailing slash needed)                                                                                                                                                                            |
+| `API_JWT_SECRET`                       | Exactly the same value as the api's `API_JWT_SECRET` on Render                                                                                                                                                                                                                 |
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID`         | The PayPal sandbox app's public client id (same app as the api's `PAYPAL_CLIENT_ID`). Public by design; the secret never goes to the web. Without it the "Pay with PayPal" buttons show "PayPal is not configured". It is inlined at build time, so redeploy after changing it |
 
 Set the Vercel project's Root Directory to `apps/web`.
 

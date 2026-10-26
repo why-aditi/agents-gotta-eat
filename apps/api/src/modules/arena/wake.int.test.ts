@@ -1,5 +1,5 @@
-// The dev open route wakes the agents service: with the secret header, never when the URL is unset, and a failing
-// or hanging agents service never breaks funding.
+// Opening a bounty wakes the agents service once the bounty.opened event is delivered: with the secret header, never
+// when the URL is unset, and a failing or hanging agents service never breaks funding.
 import { createServer, type IncomingHttpHeaders, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { eq } from "drizzle-orm";
@@ -47,6 +47,8 @@ async function fakeAgents(
 async function openWith(env: Partial<AppEnv>) {
   const app = buildTestApp(db, { ALLOW_DEV_FUNDING: "true", ...env });
   await app.ready();
+  // The bus starts from the newest event; ready it before the open so the open's event is delivered.
+  await app.eventBus.ready();
   const adminId = await createUser(db);
   await db
     .update(users)
@@ -62,11 +64,12 @@ async function openWith(env: Partial<AppEnv>) {
     payload: {},
   });
   const elapsedMs = Date.now() - started;
+  await app.eventBus.pollOnce();
   await app.close();
   return { res, bountyId, elapsedMs };
 }
 
-describe("agents wake on dev open", () => {
+describe("agents wake on bounty open", () => {
   let agents: Awaited<ReturnType<typeof fakeAgents>> | undefined;
   afterEach(async () => {
     await agents?.close();

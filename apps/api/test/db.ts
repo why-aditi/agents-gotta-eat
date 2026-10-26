@@ -18,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate events, agent_runs, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate events, agent_runs, webhook_events, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,
@@ -211,6 +211,9 @@ export async function createTestBounty(
     deadlineAt: opts.deadlineAt ?? new Date(Date.now() + 24 * 3_600_000),
     status,
     openedAt: status === "draft" ? null : new Date(),
+    // Set from the JS clock like createBounty does: the column default (Postgres now(), in microseconds) could
+    // sort a fixture after a bounty the app creates in the same millisecond.
+    createdAt: new Date(),
   });
   if (taskType === "extract_data") {
     await db.insert(bountyAssets).values({

@@ -10,7 +10,7 @@ const { addDevCredit } = await import("./actions");
 const { toast } = await import("sonner");
 const { DevCreditForm } = await import("./dev-credit-form");
 
-const wallet = { ownerId: "usr_1", balanceCents: 5000, heldCents: 0 };
+const wallet = { ownerId: "usr_1", balanceCents: 5000, heldCents: 0, owedCents: 0 };
 
 describe("DevCreditForm", () => {
   beforeEach(() => {

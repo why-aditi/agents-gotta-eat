@@ -45,12 +45,13 @@ describe("captureEscrow / voidEscrow", () => {
     expect((await escrowOf(voided))?.status).toBe("voided");
   });
 
-  it("a real (PayPal) escrow throws until pm-04 and stays authorized", async () => {
+  it("a real (PayPal) escrow without PayPal configured throws paypal_not_configured and stays authorized", async () => {
     const id = await bounty(false);
-    await expect(db.transaction((tx) => captureEscrow(tx, id))).rejects.toThrow(
-      "PayPal escrow capture is not configured yet (pm-04)",
-    );
-    await expect(db.transaction((tx) => voidEscrow(tx, id))).rejects.toThrow(/pm-04/);
+    await db.update(escrows).set({ authorizationId: "AUTH1" }).where(eq(escrows.bountyId, id));
+    await expect(db.transaction((tx) => captureEscrow(tx, id))).rejects.toMatchObject({
+      code: "paypal_not_configured",
+    });
+    await expect(db.transaction((tx) => voidEscrow(tx, id))).rejects.toMatchObject({ code: "paypal_not_configured" });
     expect((await escrowOf(id))?.status).toBe("authorized");
   });
 

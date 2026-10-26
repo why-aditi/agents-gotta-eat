@@ -2,7 +2,19 @@
 // inside the api. Never floats.
 import { z } from "zod";
 
-export const JournalKind = z.enum(["topup", "stake", "hire", "settle", "payout", "fee", "refund", "release"]);
+export const JournalKind = z.enum([
+  "topup",
+  "stake",
+  "hire",
+  "settle",
+  "payout",
+  "fee",
+  "refund",
+  "release",
+  "withdrawal",
+  "withdrawal_return",
+  "clawback",
+]);
 export type JournalKind = z.infer<typeof JournalKind>;
 
 export const LedgerAccountType = z.enum(["asset", "liability", "revenue"]);

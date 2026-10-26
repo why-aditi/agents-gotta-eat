@@ -1,11 +1,13 @@
-import { PolicyReason, type SpendDecision, type SpendRequest, SpendStatus } from "@gottaeat/schemas";
+import { PayoutStatus, PolicyReason, type SpendDecision, type SpendRequest, SpendStatus } from "@gottaeat/schemas";
 import { describe, expect, it } from "vitest";
 import { formatCountdown, formatDateTime } from "./format";
 import {
   decisionNote,
+  describePaymentError,
   decisionReasons,
   describeReason,
   outcomeSummary,
+  PAYOUT_STATUS_LABEL,
   REASON_TEXT,
   spendRequestReasons,
   STATUS_LABEL,
@@ -103,5 +105,22 @@ describe("format", () => {
     expect(formatCountdown(5)).toBe("0:05");
     expect(formatCountdown(3661)).toBe("1:01:01");
     expect(formatCountdown(-3)).toBe("0:00");
+  });
+});
+
+describe("payments", () => {
+  it("maps known api codes to friendly text and keeps the api message otherwise", () => {
+    expect(describePaymentError("no_paypal_email", "x")).toMatch(/Add a PayPal email/);
+    expect(describePaymentError("insufficient_funds", "x")).toMatch(/available balance/);
+    for (const code of ["below_minimum", "paypal_error", "paypal_not_configured"]) {
+      expect(describePaymentError(code, "raw")).not.toBe("raw");
+    }
+    expect(describePaymentError("forbidden", "Only owners")).toBe("Only owners");
+  });
+
+  it("labels every payout status", () => {
+    expect(Object.keys(PAYOUT_STATUS_LABEL).sort()).toEqual([...PayoutStatus.options].sort());
+    expect(PAYOUT_STATUS_LABEL.unclaimed).toBe("waiting for the recipient to claim");
+    expect(PAYOUT_STATUS_LABEL.returned).toBe("returned to your wallet");
   });
 });

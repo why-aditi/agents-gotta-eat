@@ -44,6 +44,7 @@ describe("ArenaEvent", () => {
     expect(ArenaEventType.options.filter((t) => EVENT_SCOPE[t] === "owner").sort()).toEqual([
       "approval.decided",
       "spend.decided",
+      "wallet.clawback",
     ]);
   });
 });

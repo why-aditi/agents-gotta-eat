@@ -147,11 +147,13 @@ describe("GET /v1/events", () => {
 
   it("each viewer gets what it may see, live", async () => {
     const w = await world();
+    // The arena routes keep one subscriber of their own (the agents wake).
+    const before = app.eventBus.subscriberCount;
     const stranger = await open("/v1/events", await userAuth(w.ownerB));
     const owner = await open("/v1/events", await userAuth(w.ownerA));
     const admin = await open("/v1/events", await userAuth(w.admin));
     const agent = await open("/v1/events", `Bearer ${w.agentA.apiKey}`);
-    expect(app.eventBus.subscriberCount).toBe(4);
+    expect(app.eventBus.subscriberCount).toBe(before + 4);
 
     await judging(w.bounty1);
     await spend(w.ownerA, "spr_a");
@@ -236,11 +238,12 @@ describe("GET /v1/events", () => {
 
   it("removes the subscriber when the client goes away", async () => {
     const w = await world();
+    const before = app.eventBus.subscriberCount;
     const s = await open("/v1/events", await userAuth(w.ownerA));
-    expect(app.eventBus.subscriberCount).toBe(1);
+    expect(app.eventBus.subscriberCount).toBe(before + 1);
     s.close();
     const end = Date.now() + 2000;
-    while (app.eventBus.subscriberCount > 0 && Date.now() < end) await new Promise((r) => setTimeout(r, 20));
-    expect(app.eventBus.subscriberCount).toBe(0);
+    while (app.eventBus.subscriberCount > before && Date.now() < end) await new Promise((r) => setTimeout(r, 20));
+    expect(app.eventBus.subscriberCount).toBe(before);
   });
 });

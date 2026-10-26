@@ -9,6 +9,7 @@ import {
   Entry,
   EntryList,
   ErrorBody,
+  FundBountyResponse,
   ListBountiesQuery,
   MAX_SUBMISSION_BYTES,
   PickWinnerRequest,
@@ -25,6 +26,7 @@ import { selectIntentCheck } from "../policy";
 import { cancelBounty, createBounty, devOpenBounty, getBountyFor, listBounties } from "./bounties";
 import { sweepDeadlines } from "./deadlines";
 import { enterBounty, getEntryFor, listBountyEntriesFor } from "./entries";
+import { confirmFunding, fundBounty } from "./funding";
 import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
 import { submitWork } from "./submissions";
 import { wakeAgents } from "./wake";
@@ -36,6 +38,14 @@ const IdParams = z.object({ id: Id });
 const SUBMISSION_BODY_LIMIT = 4 * MAX_SUBMISSION_BYTES;
 
 export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
+  // Every way a bounty opens (dev funding, the poster's PayPal confirm, the authorization webhook job) publishes
+  // bounty.opened in its transaction; waking the house agents here means they hear about each one once committed.
+  // Not awaited: a slow or failing agents service never holds anything up.
+  const wake = { url: api.env.AGENTS_WAKE_URL, secret: api.env.AGENTS_WAKE_SECRET };
+  const stopWake = api.eventBus.subscribe((row) => {
+    if (row.type === "bounty.opened" && row.bountyId) void wakeAgents(wake, api.log, row.bountyId);
+  });
+  api.addHook("onClose", async () => stopWake());
   // Stakes skip the model, so the LLM check never makes a call inside the enter transaction.
   const intentCheck = selectIntentCheck(api.env.POLICY_GATE2_STUB, llmConfigFromEnv(api.db, api.env));
   // Reads sweep first; a bounty that fails to judge is logged and the read still answers.
@@ -152,6 +162,43 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
       const user = requireUser(req);
       return cancelBounty(api.db, user, req.params.id);
     },
+  );
+
+  const fundErrors = { 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 404: ErrorBody, 409: ErrorBody, 422: ErrorBody };
+
+  api.post(
+    "/v1/bounties/:id/fund",
+    {
+      config: { auth: "user", idempotent: true },
+      schema: {
+        tags: ["bounties"],
+        summary: "Create the PayPal order that escrows a draft bounty",
+        description:
+          "Poster only (404 otherwise). The amount is the bounty's reward + fee, computed on the server; the body takes none. " +
+          "Returns only the PayPal order id for the JS SDK. Calling again while the order is open returns the same id. " +
+          "503 `paypal_not_configured` without PayPal credentials; 502 `paypal_error` when PayPal refuses.",
+        params: IdParams,
+        response: { 200: FundBountyResponse, ...fundErrors, 502: ErrorBody, 503: ErrorBody },
+      },
+    },
+    async (req) => fundBounty(api.db, requireUser(req), req.params.id),
+  );
+
+  api.post(
+    "/v1/bounties/:id/fund/confirm",
+    {
+      config: { auth: "user", idempotent: true },
+      schema: {
+        tags: ["bounties"],
+        summary: "Authorize the approved PayPal order and open the bounty",
+        description:
+          "Poster only (404 otherwise). The server authorizes the order with PayPal, records the escrow and moves the " +
+          "bounty draft -> open. Already authorized: returns the bounty unchanged. 409 `escrow_not_authorized` before /fund.",
+        params: IdParams,
+        response: { 200: Bounty, ...fundErrors, 502: ErrorBody, 503: ErrorBody },
+      },
+    },
+    async (req) => confirmFunding(api.db, requireUser(req), req.params.id),
   );
 
   api.post(
@@ -338,10 +385,7 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const admin = requireUser(req);
       if (!admin.roles.includes("admin")) throw new ApiError("forbidden", "Only admins can open bounties directly");
-      const bounty = await devOpenBounty(api.db, req.params.id);
-      // Not awaited: a slow or failing agents service never holds up or fails the open.
-      void wakeAgents({ url: api.env.AGENTS_WAKE_URL, secret: api.env.AGENTS_WAKE_SECRET }, req.log, bounty.id);
-      return bounty;
+      return devOpenBounty(api.db, req.params.id);
     },
   );
 };

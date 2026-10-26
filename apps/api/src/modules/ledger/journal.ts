@@ -84,7 +84,8 @@ export async function postJournal(tx: Tx, input: PostJournalInput): Promise<Post
   const deltas = new Map<string, { balance: bigint; held: bigint }>();
   for (const l of input.lines) {
     const ownerId = owners.get(l.accountId);
-    if (!ownerId) continue;
+    // Only wallet and hold accounts feed the wallets cache; an owned receivable does not.
+    if (!ownerId || !(l.accountId.startsWith("wallet:") || l.accountId.startsWith("hold:"))) continue;
     const delta = deltas.get(ownerId) ?? { balance: 0n, held: 0n };
     const net = (l.creditCents ?? 0n) - (l.debitCents ?? 0n);
     if (l.accountId.startsWith("hold:")) delta.held += net;

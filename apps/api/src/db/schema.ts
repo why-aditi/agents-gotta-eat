@@ -95,6 +95,9 @@ export const journalKind = pgEnum("journal_kind", [
   "fee",
   "refund",
   "release",
+  "withdrawal",
+  "withdrawal_return",
+  "clawback",
 ]);
 
 export const journals = pgTable("journals", {
@@ -303,11 +306,63 @@ export const escrows = pgTable("escrows", {
   authorizationId: text("authorization_id"),
   authorizedAt: timestamp("authorized_at", { withTimezone: true }),
   honorUntil: timestamp("honor_until", { withTimezone: true }),
+  // order_created | authorized | captured | voided | abandoned | reversed (PayPal refunded or reversed the capture)
   status: text().notNull(),
   captureId: text("capture_id"),
+  // Authorization ids replaced by a reauthorize (allowed once, day 4 to day 29).
+  previousAuthorizationIds: text("previous_authorization_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  reauthorizedAt: timestamp("reauthorized_at", { withTimezone: true }),
   // True for the dev stand-in (ALLOW_DEV_FUNDING), which moves no PayPal money.
   dev: boolean().notNull().default(false),
   createdAt: createdAt(),
+});
+
+export const topups = pgTable("topups", {
+  id: text().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  // The wallet credit. The PayPal order is for amount + fee.
+  amountCents: bigint("amount_cents", { mode: "bigint" }).notNull(),
+  feeCents: bigint("fee_cents", { mode: "bigint" })
+    .notNull()
+    .default(sql`0`),
+  // Clawed back so far by PayPal refunds and reversals (credit and fee parts together), at most amount + fee.
+  refundedCents: bigint("refunded_cents", { mode: "bigint" })
+    .notNull()
+    .default(sql`0`),
+  paypalOrderId: text("paypal_order_id").notNull(),
+  captureId: text("capture_id"),
+  status: text().notNull(), // created | captured | failed | refunded | denied
+  createdAt: createdAt(),
+});
+
+export const payouts = pgTable("payouts", {
+  id: text().primaryKey(),
+  paypalBatchId: text("paypal_batch_id"),
+  itemId: text("item_id"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  amountCents: bigint("amount_cents", { mode: "bigint" }).notNull(),
+  status: text().notNull(), // pending | succeeded | failed | unclaimed | returned | canceled
+  refType: text("ref_type"),
+  refId: text("ref_id"),
+  createdAt: createdAt(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const webhookEvents = pgTable("webhook_events", {
+  id: text().primaryKey(),
+  paypalEventId: text("paypal_event_id").notNull().unique(),
+  type: text().notNull(),
+  payload: jsonb().notNull(),
+  receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+  processedAt: timestamp("processed_at", { withTimezone: true }),
+  error: text(),
 });
 
 export const stakeOutcome = pgEnum("stake_outcome", ["refunded", "forfeited"]);

@@ -5,6 +5,7 @@ import { defineConfig } from "@playwright/test";
 const DATABASE_URL = process.env.DATABASE_URL ?? "postgres://gottaeat:gottaeat@localhost:5432/gottaeat";
 const API_JWT_SECRET = "e2e-jwt-secret";
 const API_URL = "http://localhost:3001";
+const FAKE_PAYPAL_URL = "http://localhost:4010";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -20,6 +21,14 @@ export default defineConfig({
   },
   webServer: [
     {
+      // Fake PayPal REST API (the api refuses non-loopback, non-sandbox hosts, so no real money can move).
+      command: "node tests/e2e/fake-paypal.mjs",
+      url: `${FAKE_PAYPAL_URL}/health`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 30_000,
+      env: { PORT: "4010" },
+    },
+    {
       command: "pnpm --filter @gottaeat/api start",
       url: `${API_URL}/health`,
       reuseExistingServer: !process.env.CI,
@@ -32,6 +41,10 @@ export default defineConfig({
         ALLOW_DEV_CREDIT: "true",
         ALLOW_DEV_FUNDING: "true",
         POLICY_GATE2_STUB: "allow",
+        PAYPAL_CLIENT_ID: "e2e-client",
+        PAYPAL_CLIENT_SECRET: "e2e-secret",
+        PAYPAL_API_BASE: FAKE_PAYPAL_URL,
+        PAYPAL_WEBHOOK_ID: "e2e-webhook",
       },
     },
     {
@@ -45,6 +58,8 @@ export default defineConfig({
         API_URL,
         API_JWT_SECRET,
         DEMO_LOGIN: "true",
+        // Inlined at build time (the command above builds first); the specs swap the SDK script for a fake.
+        NEXT_PUBLIC_PAYPAL_CLIENT_ID: "e2e-client",
       },
     },
   ],

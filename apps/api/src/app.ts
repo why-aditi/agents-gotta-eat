@@ -13,6 +13,7 @@ import { arenaRoutes, registerArenaHooks } from "./modules/arena";
 import { DEFAULT_HEARTBEAT_MS, EventBus, eventsRoutes } from "./modules/events";
 import { identityRoutes } from "./modules/identity";
 import { mcpRoutes } from "./modules/mcp";
+import { paymentsRoutes } from "./modules/payments";
 import { policyRoutes } from "./modules/policy";
 
 export interface AppEnv {
@@ -31,6 +32,8 @@ export interface AppEnv {
   ALLOW_DEV_CREDIT?: string;
   // "true" enables POST /v1/admin/bounties/:id/open (dev escrow until pm-04).
   ALLOW_DEV_FUNDING?: string;
+  // PayPal webhook id the signature check runs against (PAYPAL_WEBHOOK_ID).
+  PAYPAL_WEBHOOK_ID?: string;
   // The agents service's wake URL (POSTed when a bounty opens) and its shared secret. Unset URL → no call.
   AGENTS_WAKE_URL?: string;
   AGENTS_WAKE_SECRET?: string;
@@ -88,6 +91,7 @@ export function buildApp(opts: BuildAppOptions) {
     await api.register(identityRoutes);
     await api.register(policyRoutes);
     await api.register(arenaRoutes);
+    await api.register(paymentsRoutes);
     await api.register(eventsRoutes);
     await api.register(mcpRoutes);
     await api.register(adminRoutes);

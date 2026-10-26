@@ -42,6 +42,7 @@ function input(over: Partial<HardRulesInput> & { rules?: Partial<MandateRules> }
     todaySpentCents: 0n,
     recentCount: 0,
     balanceCents: 10_000n,
+    owedCents: 0n,
     ...rest,
   };
 }
@@ -56,6 +57,7 @@ describe("evaluateHardRules", () => {
     ["mandate_expired", { rules: { expiresAt: "2026-10-12T11:59:59.000Z" } }],
     ["mandate_expired", { rules: { expiresAt: NOW.toISOString() } }],
     ["insufficient_funds", { balanceCents: 99n }],
+    ["account_frozen", { owedCents: 1n }],
     ["over_per_tx", { totalCents: 1001n, rules: { askAboveCents: undefined } }],
     ["over_daily", { todaySpentCents: 1950n, totalCents: 51n }],
     ["category_not_allowed", { category: "subcontract", rules: { allowedCategories: ["tool"] } }],
@@ -263,5 +265,10 @@ describe("evaluateHardRules: bounties and stakes", () => {
       stake({ bounty: { ...BOUNTY, status: "draft", posterId: "usr_me" }, balanceCents: 0n }),
     );
     expect([...result.reasons].sort()).toEqual(["bounty_not_open", "insufficient_funds", "own_bounty"]);
+  });
+
+  it("denies stakes too while the owner is frozen, whatever else holds", () => {
+    expect(evaluateHardRules(stake({ owedCents: 120n }))).toEqual({ verdict: "deny", reasons: ["account_frozen"] });
+    expect(evaluateHardRules(stake({ owedCents: 0n })).verdict).toBe("allow");
   });
 });

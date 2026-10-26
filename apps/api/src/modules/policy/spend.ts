@@ -23,7 +23,7 @@ import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
 import { agentName, publish } from "../events";
-import { hold, lockWallet, settle, stakeFromHold, subcontractFee } from "../ledger";
+import { hold, lockWallet, owedCents, settle, stakeFromHold, subcontractFee } from "../ledger";
 import { combine } from "./combine";
 import { type BountyFacts, evaluateHardRules, type PayeeFacts } from "./gate1";
 import { type IntentCheck, type IntentCheckInput, INTENT_UNAVAILABLE, type IntentResult } from "./gate2";
@@ -137,6 +137,7 @@ async function evaluateGate1(conn: Conn, principal: AgentPrincipal, core: SpendC
     todaySpentCents: spent,
     recentCount: recent,
     balanceCents,
+    owedCents: await owedCents(conn, principal.ownerId),
   });
   return { gate1, mandate };
 }

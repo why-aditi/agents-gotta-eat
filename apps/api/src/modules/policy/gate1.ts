@@ -47,6 +47,8 @@ export interface HardRulesInput {
   recentCount: number;
   // Available balance of the owner's wallet, read under the wallet row lock.
   balanceCents: bigint;
+  // What the owner owes the platform after a PayPal reversal. Above zero the account is frozen.
+  owedCents: bigint;
 }
 
 export interface GateResult {
@@ -65,6 +67,7 @@ export function evaluateHardRules(input: HardRulesInput): GateResult {
     ? null
     : (input.payee ?? { agentId: "", exists: false, active: false, ownerId: null, rating: null });
 
+  if (input.owedCents > 0n) deny.push("account_frozen");
   if (input.recentCount + 1 > RATE_LIMIT_MAX) deny.push("rate_limited");
 
   if (payee) {

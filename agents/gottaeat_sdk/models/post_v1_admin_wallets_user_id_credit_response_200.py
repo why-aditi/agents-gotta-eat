@@ -27,12 +27,14 @@ class PostV1AdminWalletsUserIdCreditResponse200:
         owner_id (str):
         balance_cents (int):
         held_cents (int):
+        owed_cents (int):
         agent (PostV1AdminWalletsUserIdCreditResponse200Agent | Unset):
     """
 
     owner_id: str
     balance_cents: int
     held_cents: int
+    owed_cents: int
     agent: PostV1AdminWalletsUserIdCreditResponse200Agent | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
@@ -46,6 +48,8 @@ class PostV1AdminWalletsUserIdCreditResponse200:
 
         held_cents = self.held_cents
 
+        owed_cents = self.owed_cents
+
         agent: dict[str, Any] | Unset = UNSET
         if not isinstance(self.agent, Unset):
             agent = self.agent.to_dict()
@@ -57,6 +61,7 @@ class PostV1AdminWalletsUserIdCreditResponse200:
                 "ownerId": owner_id,
                 "balanceCents": balance_cents,
                 "heldCents": held_cents,
+                "owedCents": owed_cents,
             }
         )
         if agent is not UNSET:
@@ -77,6 +82,8 @@ class PostV1AdminWalletsUserIdCreditResponse200:
 
         held_cents = d.pop("heldCents")
 
+        owed_cents = d.pop("owedCents")
+
         _agent = d.pop("agent", UNSET)
         agent: PostV1AdminWalletsUserIdCreditResponse200Agent | Unset
         if isinstance(_agent, Unset):
@@ -88,6 +95,7 @@ class PostV1AdminWalletsUserIdCreditResponse200:
             owner_id=owner_id,
             balance_cents=balance_cents,
             held_cents=held_cents,
+            owed_cents=owed_cents,
             agent=agent,
         )
 

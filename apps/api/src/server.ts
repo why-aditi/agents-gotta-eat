@@ -3,6 +3,9 @@
 import { buildApp, type AppEnv } from "./app";
 import { createDb, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
+import { startReauthorizeSweep } from "./modules/escrow";
+import { startPaymentJobs } from "./modules/payments";
+import { configurePayPal, createPayPalClient } from "./modules/paypal";
 import { startPruneSweep } from "./modules/events";
 import { aiRanker } from "./modules/judge";
 import { llmConfigFromEnv } from "./modules/llm";
@@ -22,6 +25,7 @@ function envFromProcess(): AppEnv {
     LLM_DAILY_REQUEST_BUDGET: process.env.LLM_DAILY_REQUEST_BUDGET,
     ALLOW_DEV_CREDIT: process.env.ALLOW_DEV_CREDIT,
     ALLOW_DEV_FUNDING: process.env.ALLOW_DEV_FUNDING,
+    PAYPAL_WEBHOOK_ID: process.env.PAYPAL_WEBHOOK_ID,
     AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
     AGENTS_WAKE_SECRET: process.env.AGENTS_WAKE_SECRET,
   };
@@ -30,16 +34,31 @@ function envFromProcess(): AppEnv {
 const env = envFromProcess();
 const { pool, db } = createDb(requireDatabaseUrl());
 const app = buildApp({ db, env });
+const paypalConfigured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
+if (paypalConfigured) {
+  configurePayPal(
+    createPayPalClient({
+      clientId: process.env.PAYPAL_CLIENT_ID!,
+      clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+      apiBase: process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com",
+      logger: (entry) => app.log.debug({ paypal: entry }, "paypal call"),
+    }),
+  );
+}
 let stopSweep: (() => void) | undefined;
 let stopDeadlineSweep: (() => void) | undefined;
+let stopPaymentJobs: (() => Promise<void>) | undefined;
+let stopReauthorizeSweep: (() => void) | undefined;
 let stopEvents: (() => void) | undefined;
 let stopPrune: (() => void) | undefined;
 // Hooks run in order: stop the sweeps before the pool closes.
 app.addHook("onClose", async () => {
   stopSweep?.();
   stopDeadlineSweep?.();
+  stopReauthorizeSweep?.();
   stopEvents?.();
   stopPrune?.();
+  await stopPaymentJobs?.();
 });
 app.addHook("onClose", () => pool.end());
 
@@ -56,6 +75,13 @@ try {
     (err, bountyId) => app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
     llm ? { rankCreativeWriting: aiRanker(llm) } : undefined,
   );
+  if (paypalConfigured) {
+    stopPaymentJobs = await startPaymentJobs(db, requireDatabaseUrl(), (err) => app.log.error({ err }, "payment jobs"));
+    // Moves authorizations older than 4 days to a fresh one (allowed once, day 4 to day 29).
+    stopReauthorizeSweep = startReauthorizeSweep(db, 60 * 60_000, (err, bountyId) =>
+      app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),
+    );
+  }
   // Fans new events out to the open SSE streams, polling once a second.
   stopEvents = app.eventBus.start(1000, (err) => app.log.error({ err }, "event poll failed"));
   // Deletes events and agent runs older than 30 days, at startup and then daily.
