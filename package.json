@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "openapi:export": "pnpm --filter @gottaeat/api openapi:export",
+    "openapi:python": "cd agents && uv run python scripts/gen_client.py",
     "e2e": "playwright test",
     "seed": "pnpm --filter @gottaeat/api exec tsx --env-file-if-exists=../../.env ../../seed/seed.ts"
   },

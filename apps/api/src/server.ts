@@ -16,6 +16,8 @@ function envFromProcess(): AppEnv {
     POLICY_GATE2_STUB: process.env.POLICY_GATE2_STUB,
     ALLOW_DEV_CREDIT: process.env.ALLOW_DEV_CREDIT,
     ALLOW_DEV_FUNDING: process.env.ALLOW_DEV_FUNDING,
+    AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
+    AGENTS_WAKE_SECRET: process.env.AGENTS_WAKE_SECRET,
   };
 }
 

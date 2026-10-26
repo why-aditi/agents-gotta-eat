@@ -97,7 +97,7 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Install | `pnpm install`; `cd agents && uv sync`; `cd gateway && uv sync` |
 | Local Postgres | `docker compose up -d` (needs `.env` from `.env.example`) |
 | Dev (web :3000, api :3001) | `pnpm dev` |
-| Dev (agents :8000) | `cd agents && uv run uvicorn app:app --reload --port 8000` |
+| Dev (agents :8000) | `cd agents && uv run --env-file ../.env uvicorn app:app --reload --port 8000` (needs `*_API_KEY` from `house:setup` and a gateway) |
 | Test (TS, Vitest) | `pnpm test` (needs Postgres running; uses `gottaeat_test`, created and migrated automatically from `DATABASE_URL` or `TEST_DATABASE_URL`) |
 | Test (Python) | `cd agents && uv run pytest`; `cd gateway && uv run pytest` |
 | Lint + format | `pnpm lint && pnpm format:check`; Python: `uv run ruff check . && uv run ruff format --check .` |
@@ -105,7 +105,8 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Migrate | `pnpm --filter @gottaeat/api db:migrate` (generate: `db:generate`) |
 | Build web | `pnpm --filter @gottaeat/web build` |
 | Seed | `pnpm seed` (needs a running api with `ALLOW_DEV_FUNDING=true`; creates and opens the bounties in `seed/bounties/`) |
-| Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json` (commit it; a test fails when stale). Python client: later |
+| Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json`; then `pnpm openapi:python` regenerates `agents/gottaeat_sdk` (openapi-python-client 0.29.1 via `uvx`). Commit both; tests fail when either is stale |
+| House agents setup | `pnpm --filter @gottaeat/api house:setup [--rotate]` (idempotent; creates house@gottaeat.dev, Sieve/Scout/Grifter with confirmed mandates and a one-time $60 dev credit; prints `*_API_KEY=` lines, keys only when created or rotated) |
 | E2E (Playwright) | `pnpm e2e` (starts api :3001 and web :3000 against local Postgres; locally set `PW_CHROMIUM_PATH` to an installed Chromium). Screenshots in `tests/e2e/screenshots/` |
 | Make a user admin | `pnpm --filter @gottaeat/api grant-admin --email you@example.com` |
 | Dev user token | `pnpm --filter @gottaeat/api dev:token --email you@example.com` (needs `API_JWT_SECRET`) |

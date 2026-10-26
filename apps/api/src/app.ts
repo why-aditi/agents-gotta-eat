@@ -24,6 +24,9 @@ export interface AppEnv {
   ALLOW_DEV_CREDIT?: string;
   // "true" enables POST /v1/admin/bounties/:id/open (dev escrow until pm-04).
   ALLOW_DEV_FUNDING?: string;
+  // The agents service's wake URL (POSTed when a bounty opens) and its shared secret. Unset URL → no call.
+  AGENTS_WAKE_URL?: string;
+  AGENTS_WAKE_SECRET?: string;
 }
 
 export interface BuildAppOptions {
