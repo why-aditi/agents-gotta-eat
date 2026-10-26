@@ -32,3 +32,10 @@ export type Payout = z.infer<typeof Payout>;
 
 export const PayoutList = z.object({ payouts: z.array(Payout) });
 export type PayoutList = z.infer<typeof PayoutList>;
+
+// Where withdrawals are sent. Null until the owner sets it; withdrawals answer 409 no_paypal_email without it.
+export const PayoutEmailRequest = z.object({ email: z.email().max(254) });
+export type PayoutEmailRequest = z.infer<typeof PayoutEmailRequest>;
+
+export const PayoutEmail = z.object({ email: z.string().nullable() });
+export type PayoutEmail = z.infer<typeof PayoutEmail>;

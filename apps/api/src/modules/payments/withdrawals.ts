@@ -1,6 +1,6 @@
 // Withdrawals: hold the cents, send one Payouts item, then settle or return the hold from item events.
 // Only a terminal item status moves the hold. UNCLAIMED keeps it (we never rely on cancelling in sandbox).
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { ulid } from "ulid";
 import type { Payout } from "@gottaeat/schemas";
 import type { Db } from "../../db";
@@ -32,6 +32,26 @@ export async function listWithdrawals(db: Db, userId: string): Promise<Payout[]>
     .orderBy(desc(payouts.createdAt), desc(payouts.id))
     .limit(100);
   return rows.map(toDto);
+}
+
+export async function getPayoutEmail(db: Db, userId: string): Promise<string | null> {
+  const [user] = await db.select({ email: users.paypalEmail }).from(users).where(eq(users.id, userId));
+  return user?.email ?? null;
+}
+
+// sendPayout reads the address at send time, so a payout that is still pending could be redirected by a change.
+export async function setPayoutEmail(db: Db, userId: string, email: string): Promise<string> {
+  const normalised = email.trim().toLowerCase();
+  const [inFlight] = await db
+    .select({ id: payouts.id })
+    .from(payouts)
+    .where(and(eq(payouts.userId, userId), eq(payouts.status, "pending")))
+    .limit(1);
+  if (inFlight) {
+    throw new ApiError("invalid_transition", "A withdrawal is still pending, so the PayPal email cannot change yet");
+  }
+  await db.update(users).set({ paypalEmail: normalised }).where(eq(users.id, userId));
+  return normalised;
 }
 
 // Hold and payout row in one transaction. Sending the batch is a separate step (see sendPayout).

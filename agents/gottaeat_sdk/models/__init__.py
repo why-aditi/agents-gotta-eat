@@ -299,6 +299,15 @@ from .get_v1_spend_requests_id_response_404 import GetV1SpendRequestsIdResponse4
 from .get_v1_spend_requests_id_response_404_error import GetV1SpendRequestsIdResponse404Error
 from .get_v1_spend_requests_id_response_404_error_code import GetV1SpendRequestsIdResponse404ErrorCode
 from .get_v1_spend_requests_id_response_404_error_detail import GetV1SpendRequestsIdResponse404ErrorDetail
+from .get_v1_wallet_payout_email_response_200 import GetV1WalletPayoutEmailResponse200
+from .get_v1_wallet_payout_email_response_401 import GetV1WalletPayoutEmailResponse401
+from .get_v1_wallet_payout_email_response_401_error import GetV1WalletPayoutEmailResponse401Error
+from .get_v1_wallet_payout_email_response_401_error_code import GetV1WalletPayoutEmailResponse401ErrorCode
+from .get_v1_wallet_payout_email_response_401_error_detail import GetV1WalletPayoutEmailResponse401ErrorDetail
+from .get_v1_wallet_payout_email_response_403 import GetV1WalletPayoutEmailResponse403
+from .get_v1_wallet_payout_email_response_403_error import GetV1WalletPayoutEmailResponse403Error
+from .get_v1_wallet_payout_email_response_403_error_code import GetV1WalletPayoutEmailResponse403ErrorCode
+from .get_v1_wallet_payout_email_response_403_error_detail import GetV1WalletPayoutEmailResponse403ErrorDetail
 from .get_v1_wallet_response_200 import GetV1WalletResponse200
 from .get_v1_wallet_response_200_agent import GetV1WalletResponse200Agent
 from .get_v1_wallet_response_200_agent_limits_type_0 import GetV1WalletResponse200AgentLimitsType0
@@ -1037,6 +1046,24 @@ from .put_v1_agents_id_mandate_response_404 import PutV1AgentsIdMandateResponse4
 from .put_v1_agents_id_mandate_response_404_error import PutV1AgentsIdMandateResponse404Error
 from .put_v1_agents_id_mandate_response_404_error_code import PutV1AgentsIdMandateResponse404ErrorCode
 from .put_v1_agents_id_mandate_response_404_error_detail import PutV1AgentsIdMandateResponse404ErrorDetail
+from .put_v1_wallet_payout_email_body import PutV1WalletPayoutEmailBody
+from .put_v1_wallet_payout_email_response_200 import PutV1WalletPayoutEmailResponse200
+from .put_v1_wallet_payout_email_response_400 import PutV1WalletPayoutEmailResponse400
+from .put_v1_wallet_payout_email_response_400_error import PutV1WalletPayoutEmailResponse400Error
+from .put_v1_wallet_payout_email_response_400_error_code import PutV1WalletPayoutEmailResponse400ErrorCode
+from .put_v1_wallet_payout_email_response_400_error_detail import PutV1WalletPayoutEmailResponse400ErrorDetail
+from .put_v1_wallet_payout_email_response_401 import PutV1WalletPayoutEmailResponse401
+from .put_v1_wallet_payout_email_response_401_error import PutV1WalletPayoutEmailResponse401Error
+from .put_v1_wallet_payout_email_response_401_error_code import PutV1WalletPayoutEmailResponse401ErrorCode
+from .put_v1_wallet_payout_email_response_401_error_detail import PutV1WalletPayoutEmailResponse401ErrorDetail
+from .put_v1_wallet_payout_email_response_403 import PutV1WalletPayoutEmailResponse403
+from .put_v1_wallet_payout_email_response_403_error import PutV1WalletPayoutEmailResponse403Error
+from .put_v1_wallet_payout_email_response_403_error_code import PutV1WalletPayoutEmailResponse403ErrorCode
+from .put_v1_wallet_payout_email_response_403_error_detail import PutV1WalletPayoutEmailResponse403ErrorDetail
+from .put_v1_wallet_payout_email_response_409 import PutV1WalletPayoutEmailResponse409
+from .put_v1_wallet_payout_email_response_409_error import PutV1WalletPayoutEmailResponse409Error
+from .put_v1_wallet_payout_email_response_409_error_code import PutV1WalletPayoutEmailResponse409ErrorCode
+from .put_v1_wallet_payout_email_response_409_error_detail import PutV1WalletPayoutEmailResponse409ErrorDetail
 
 __all__ = (
     "DeleteMcpResponse401",
@@ -1298,6 +1325,15 @@ __all__ = (
     "GetV1SpendRequestsIdResponse404Error",
     "GetV1SpendRequestsIdResponse404ErrorCode",
     "GetV1SpendRequestsIdResponse404ErrorDetail",
+    "GetV1WalletPayoutEmailResponse200",
+    "GetV1WalletPayoutEmailResponse401",
+    "GetV1WalletPayoutEmailResponse401Error",
+    "GetV1WalletPayoutEmailResponse401ErrorCode",
+    "GetV1WalletPayoutEmailResponse401ErrorDetail",
+    "GetV1WalletPayoutEmailResponse403",
+    "GetV1WalletPayoutEmailResponse403Error",
+    "GetV1WalletPayoutEmailResponse403ErrorCode",
+    "GetV1WalletPayoutEmailResponse403ErrorDetail",
     "GetV1WalletResponse200",
     "GetV1WalletResponse200Agent",
     "GetV1WalletResponse200AgentLimitsType0",
@@ -1898,4 +1934,22 @@ __all__ = (
     "PutV1AgentsIdMandateResponse404Error",
     "PutV1AgentsIdMandateResponse404ErrorCode",
     "PutV1AgentsIdMandateResponse404ErrorDetail",
+    "PutV1WalletPayoutEmailBody",
+    "PutV1WalletPayoutEmailResponse200",
+    "PutV1WalletPayoutEmailResponse400",
+    "PutV1WalletPayoutEmailResponse400Error",
+    "PutV1WalletPayoutEmailResponse400ErrorCode",
+    "PutV1WalletPayoutEmailResponse400ErrorDetail",
+    "PutV1WalletPayoutEmailResponse401",
+    "PutV1WalletPayoutEmailResponse401Error",
+    "PutV1WalletPayoutEmailResponse401ErrorCode",
+    "PutV1WalletPayoutEmailResponse401ErrorDetail",
+    "PutV1WalletPayoutEmailResponse403",
+    "PutV1WalletPayoutEmailResponse403Error",
+    "PutV1WalletPayoutEmailResponse403ErrorCode",
+    "PutV1WalletPayoutEmailResponse403ErrorDetail",
+    "PutV1WalletPayoutEmailResponse409",
+    "PutV1WalletPayoutEmailResponse409Error",
+    "PutV1WalletPayoutEmailResponse409ErrorCode",
+    "PutV1WalletPayoutEmailResponse409ErrorDetail",
 )

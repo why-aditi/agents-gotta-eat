@@ -2,6 +2,8 @@
 import {
   ErrorBody,
   Payout,
+  PayoutEmail,
+  PayoutEmailRequest,
   PayoutList,
   Topup,
   TopupRequest,
@@ -17,7 +19,7 @@ import { ApiError } from "../../http/errors";
 import { getPayPal, verifyWebhook, type PayPalWebhookEvent } from "../paypal";
 import { enqueuePayout, enqueueWebhook } from "./jobs";
 import { confirmTopup, createTopup } from "./topups";
-import { createWithdrawal, listWithdrawals } from "./withdrawals";
+import { createWithdrawal, getPayoutEmail, listWithdrawals, setPayoutEmail } from "./withdrawals";
 
 const IdParams = z.object({ id: z.string().min(1).max(64) });
 const errors = { 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 404: ErrorBody, 409: ErrorBody, 422: ErrorBody };
@@ -101,6 +103,36 @@ export const paymentsRoutes: FastifyPluginAsyncZod = async (api) => {
       },
     },
     async (req) => ({ payouts: await listWithdrawals(api.db, requireUser(req).userId) }),
+  );
+
+  api.get(
+    "/v1/wallet/payout-email",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["wallet"],
+        summary: "The PayPal email withdrawals are sent to (null until set)",
+        response: { 200: PayoutEmail, 401: ErrorBody, 403: ErrorBody },
+      },
+    },
+    async (req) => ({ email: await getPayoutEmail(api.db, requireUser(req).userId) }),
+  );
+
+  api.put(
+    "/v1/wallet/payout-email",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["wallet"],
+        summary: "Set the PayPal email withdrawals are sent to",
+        description:
+          "Trimmed and lower-cased. 409 `invalid_transition` while a withdrawal is pending, so money in flight " +
+          "cannot be redirected.",
+        body: PayoutEmailRequest,
+        response: { 200: PayoutEmail, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 409: ErrorBody },
+      },
+    },
+    async (req) => ({ email: await setPayoutEmail(api.db, requireUser(req).userId, req.body.email) }),
   );
 
   // Its own plugin, so the raw-body parser applies to this route only.

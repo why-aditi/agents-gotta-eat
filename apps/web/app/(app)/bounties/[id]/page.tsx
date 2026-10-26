@@ -23,6 +23,7 @@ import { AutoRefresh } from "../../approvals/auto-refresh";
 import { BountyStatusBadge, taskTypeLabel } from "../bounty-labels";
 import { BountyActions } from "./bounty-actions";
 import { Countdown } from "./countdown";
+import { FundCard } from "./fund-card";
 import { type PickableSubmission, PickCard } from "./pick-card";
 
 export const metadata = { title: "Bounty · Agents Gotta Eat" };
@@ -227,6 +228,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
   const live = bounty.status === "open" || bounty.status === "judging";
   const resultsByEntry = results && !submissions ? new Map(results.entries.map((e) => [e.entryId, e])) : null;
   const canFund = bounty.status === "draft" && isPoster && me.roles.includes("admin");
+  const needsFunding = bounty.status === "draft" && isPoster;
   const canCancel = isPoster && bounty.entryCount === 0 && (bounty.status === "draft" || bounty.status === "open");
 
   return (
@@ -263,6 +265,9 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
         <BountyActions bountyId={bounty.id} canFund={canFund} canCancel={canCancel} />
       </div>
 
+      {needsFunding ? (
+        <FundCard bountyId={bounty.id} rewardCents={bounty.rewardCents} feeCents={bounty.feeCents} />
+      ) : null}
       {submissions ? (
         <PickCard bountyId={bounty.id} rewardCents={bounty.rewardCents} submissions={submissions} />
       ) : null}

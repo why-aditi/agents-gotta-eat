@@ -1,7 +1,9 @@
 // Plain-English wording for policy outcomes, shared by the spend timeline and the approvals queue.
 // Pure data and functions (no React), so server and client components can both use it.
 import {
+  type ErrorCode,
   type GateName,
+  PayoutStatus,
   PolicyReason,
   type SpendDecision,
   type SpendRequest,
@@ -109,3 +111,28 @@ export function outcomeSummary(spend: Pick<SpendRequest, "status" | "decisions">
       return owner?.detail.expired === true ? "Approval window expired" : "Released";
   }
 }
+
+// PayPal money in and out. Friendly wording for the api error codes these screens can hit; anything else keeps
+// the api's own message.
+const PAYMENT_ERROR_TEXT: Partial<Record<ErrorCode, string>> = {
+  below_minimum: "That amount is below the minimum.",
+  insufficient_funds: "Your wallet doesn't have enough available balance for that.",
+  no_paypal_email: "Add a PayPal email first, so we know where to send the money.",
+  paypal_error: "PayPal had a problem with that. Nothing was charged or moved; try again in a moment.",
+  paypal_not_configured: "PayPal isn't set up on this server yet.",
+  escrow_not_authorized: "PayPal hasn't approved this payment yet. Wait a moment and try again.",
+};
+
+export function describePaymentError(code: string, message: string): string {
+  return PAYMENT_ERROR_TEXT[code as ErrorCode] ?? message;
+}
+
+// How a withdrawal reads to its owner. Failed, returned and canceled all mean the money is back in the wallet.
+export const PAYOUT_STATUS_LABEL: Record<PayoutStatus, string> = {
+  pending: "pending",
+  unclaimed: "waiting for the recipient to claim",
+  succeeded: "succeeded",
+  failed: "returned to your wallet",
+  returned: "returned to your wallet",
+  canceled: "returned to your wallet",
+};

@@ -267,6 +267,61 @@ describe("top-ups", () => {
   });
 });
 
+describe("payout email", () => {
+  const url = "/v1/wallet/payout-email";
+  const call = async (owner: string, method: "GET" | "PUT", payload?: unknown) =>
+    app.inject({
+      method,
+      url,
+      headers: { authorization: await authFor(owner) },
+      ...(payload === undefined ? {} : { payload: payload as Record<string, unknown> }),
+    });
+
+  it("is null until set, then returns the lower-cased address", async () => {
+    const owner = await newOwner({ paypalEmail: null });
+    expect((await call(owner, "GET")).json()).toEqual({ email: null });
+    const put = await call(owner, "PUT", { email: "Payee@Personal.Example.com" });
+    expect(put.statusCode, put.body).toBe(200);
+    expect(put.json()).toEqual({ email: "payee@personal.example.com" });
+    expect((await call(owner, "GET")).json()).toEqual({ email: "payee@personal.example.com" });
+  });
+
+  it("rejects an invalid email and an agent", async () => {
+    const owner = await newOwner({ paypalEmail: null });
+    expectError(await call(owner, "PUT", { email: "not-an-email" }), 400, "validation_error");
+    expectError(await call(owner, "PUT", {}), 400, "validation_error");
+    const { apiKey } = await createAgent(db, owner);
+    for (const method of ["GET", "PUT"] as const) {
+      const res = await app.inject({
+        method,
+        url,
+        headers: { authorization: `Bearer ${apiKey}` },
+        ...(method === "PUT" ? { payload: { email: "a@b.example" } } : {}),
+      });
+      expectError(res, 403, "forbidden");
+    }
+    expect((await call(owner, "GET")).json()).toEqual({ email: null });
+  });
+
+  it("cannot change while a withdrawal is pending", async () => {
+    const owner = await newOwner({ cents: 1000n });
+    const res = await post(owner, "/v1/wallet/withdrawals", { amountCents: 500 });
+    expect(res.statusCode, res.body).toBe(202);
+    expectError(await call(owner, "PUT", { email: "other@personal.example.com" }), 409, "invalid_transition");
+    expect((await call(owner, "GET")).json()).toEqual({ email: "payee@personal.example.com" });
+    await db.update(payouts).set({ status: "succeeded" });
+    expect((await call(owner, "PUT", { email: "other@personal.example.com" })).statusCode).toBe(200);
+  });
+
+  it("a withdrawal fails with no_paypal_email before it is set and works after", async () => {
+    const owner = await newOwner({ paypalEmail: null, cents: 1000n });
+    expectError(await post(owner, "/v1/wallet/withdrawals", { amountCents: 500 }), 409, "no_paypal_email");
+    await call(owner, "PUT", { email: "New@Personal.example.com" });
+    expect((await post(owner, "/v1/wallet/withdrawals", { amountCents: 500 })).statusCode).toBe(202);
+    expect(JSON.parse(sent()[0]!.body!).items[0].receiver).toBe("new@personal.example.com");
+  });
+});
+
 describe("withdrawals", () => {
   async function withdraw(owner: string, amountCents = 1000) {
     const res = await post(owner, "/v1/wallet/withdrawals", { amountCents });

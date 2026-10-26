@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { PayPalError } from "./errors";
 
 const SANDBOX_BASE = "https://api-m.sandbox.paypal.com";
+// Local fake PayPal for e2e only: no real money can move through a loopback host.
+const LOCAL_BASE = /^http:\/\/(localhost|127\.0\.0\.1):\d{1,5}$/;
 const MAX_RETRIES = 3;
 const TOKEN_MARGIN_MS = 60_000;
 
@@ -31,8 +33,11 @@ export interface PayPalClient {
 }
 
 export function createPayPalClient(config: PayPalClientConfig): PayPalClient {
-  if (config.apiBase.replace(/\/+$/, "") !== SANDBOX_BASE) {
-    throw new Error(`PAYPAL_API_BASE must be ${SANDBOX_BASE} (sandbox only)`);
+  const base = config.apiBase.replace(/\/+$/, "");
+  if (base !== SANDBOX_BASE && !LOCAL_BASE.test(base)) {
+    throw new Error(
+      `PAYPAL_API_BASE must be ${SANDBOX_BASE} (sandbox only) or http://localhost:<port> for a local fake`,
+    );
   }
   const doFetch = config.fetch ?? fetch;
   const log = config.logger ?? (() => {});
@@ -53,7 +58,7 @@ export function createPayPalClient(config: PayPalClientConfig): PayPalClient {
       let res: Response | null = null;
       let networkError: unknown;
       try {
-        res = await doFetch(`${SANDBOX_BASE}${path}`, { method, headers, body });
+        res = await doFetch(`${base}${path}`, { method, headers, body });
       } catch (err) {
         networkError = err;
       }

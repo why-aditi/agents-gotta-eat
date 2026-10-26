@@ -122,7 +122,7 @@ Two money paths: **bounty escrow** lives on PayPal as an authorization until jud
 ### Bounty escrow
 
 - The poster's order uses `intent: AUTHORIZE` for reward + 10% fee.
-- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. (Verify exact limits in the week 1 spike.)
+- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. Spike result (Oct 26): sandbox allows one reauthorize, from day 4 to day 29, and rejects it earlier with `REAUTHORIZATION_TOO_SOON`; the authorization response has no honor-period field, so we compute `honor_until` as authorized + 3 days. The platform business account must be a US account, or Payouts fails with `PAYOUT_NOT_AVAILABLE`.
 - On a winner: capture the full amount → the money lands in the platform's PayPal account → the ledger credits the reward to the winner owner's wallet and the fee to `platform:fees`. Owners withdraw through Payouts.
 - On no passing entry, or the poster cancels before any entry: void the authorization.
 
@@ -310,7 +310,9 @@ PayPal is used in five places: checkout for bounties and top-ups, authorization 
 
 ### Webhooks handled
 
-`CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `PAYMENT.PAYOUTS-ITEM.FAILED`, `PAYMENT.PAYOUTS-ITEM.UNCLAIMED`.
+`CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `PAYMENT.PAYOUTS-ITEM.FAILED`, `PAYMENT.PAYOUTS-ITEM.UNCLAIMED`, `PAYMENT.PAYOUTS-ITEM.RETURNED`, `PAYMENT.PAYOUTS-ITEM.CANCELED`.
+
+Payout state follows item events, never the batch event: a batch can be `SUCCESS` while an item is `UNCLAIMED`. Cancelling an `UNCLAIMED` item returned 500 in sandbox, so we do not rely on it; the money returns after 30 days. Refund and reversal events do not yet change wallet balances (a known gap before anything leaves sandbox).
 
 Rules: verify the signature, store the raw event (dedupe on event id), return 200 at once, process in a job queue. State only advances from webhooks or from a confirmed API response, never from the browser.
 
@@ -332,7 +334,7 @@ This gives the judges a second, clearly AI-native PayPal integration beyond the 
 
 - Authorization honor and validity periods in sandbox, and whether reauthorize is allowed in sandbox.
 - Payouts enabled on the sandbox business account; batch of 3 items end to end; the `UNCLAIMED` path.
-- Agent Toolkit tool coverage for orders, payouts and invoices.
+- Agent Toolkit tool coverage for orders, payouts and invoices. Result: orders and transactions work, no payouts or authorizations tools, and invoices returned 403 on the sandbox app even with Invoicing enabled, so the Treasurer does not use invoices.
 
 ## AI components
 

@@ -194,7 +194,8 @@ describe("CreateBountyForm", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("deadlineAt must be in the future");
     expect(push).not.toHaveBeenCalled();
 
-    await user.click(screen.getByRole("button", { name: "Save as draft" }));
+    // The alert can show while the transition is still settling ("Saving�"); wait for the button to come back.
+    await user.click(await screen.findByRole("button", { name: "Save as draft" }));
     await waitFor(() => expect(createBounty).toHaveBeenCalledTimes(2));
     const [first, second] = vi.mocked(createBounty).mock.calls;
     expect(second![1]).not.toBe(first![1]);

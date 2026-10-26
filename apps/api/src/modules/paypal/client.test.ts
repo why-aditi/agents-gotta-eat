@@ -117,12 +117,39 @@ describe("logging", () => {
 });
 
 describe("sandbox guard", () => {
-  it.each(["https://api-m.paypal.com", "http://api-m.sandbox.paypal.com", "https://evil.example.com"])(
-    "refuses %s",
-    (apiBase) => {
-      expect(() => createPayPalClient({ clientId: "a", clientSecret: "b", apiBase })).toThrow(/sandbox/);
-    },
-  );
+  it.each([
+    "https://api-m.paypal.com",
+    "http://api-m.sandbox.paypal.com",
+    "https://evil.example.com",
+    "http://evil.example",
+    "http://localhost.evil.example",
+    "http://localhost@evil.example:80",
+    "http://localhost",
+    "https://localhost:4000",
+    "http://localhost:4000/v1",
+    "https://api-m.sandbox.paypal.com/v1",
+  ])("refuses %s", (apiBase) => {
+    expect(() => createPayPalClient({ clientId: "a", clientSecret: "b", apiBase })).toThrow(/sandbox/);
+  });
+
+  it.each(["http://localhost:4010", "http://127.0.0.1:4010/"])("accepts the local fake %s", (apiBase) => {
+    expect(() => createPayPalClient({ clientId: "a", clientSecret: "b", apiBase })).not.toThrow();
+  });
+
+  it("sends calls to the configured local base", async () => {
+    const urls: string[] = [];
+    const client = createPayPalClient({
+      clientId: "a",
+      clientSecret: "b",
+      apiBase: "http://127.0.0.1:4010",
+      fetch: async (url) => {
+        urls.push(String(url));
+        return json(200, { access_token: "t", expires_in: 3600 });
+      },
+    });
+    await client.request({ method: "GET", path: "/x" });
+    expect(urls).toEqual(["http://127.0.0.1:4010/v1/oauth2/token", "http://127.0.0.1:4010/x"]);
+  });
 
   it("accepts the sandbox host", () => {
     expect(() =>
