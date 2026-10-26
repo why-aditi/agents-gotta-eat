@@ -9,7 +9,7 @@ interface RawOrder {
     amount?: { value: string };
     payments?: {
       authorizations?: { id: string; expiration_time?: string }[];
-      captures?: { id: string; amount?: { value: string } }[];
+      captures?: { id: string; status?: string; amount?: { value: string } }[];
     };
   }[];
 }
@@ -22,6 +22,8 @@ export interface PayPalOrder {
   authorizationId: string | null;
   authorizationExpiresAt: string | null;
   captureId: string | null;
+  // COMPLETED once the money has settled; PENDING (e-check, review) means it has not yet.
+  captureStatus: string | null;
   capturedCents: bigint | null;
 }
 
@@ -37,6 +39,7 @@ function toOrder(raw: RawOrder): PayPalOrder {
     authorizationId: auth?.id ?? null,
     authorizationExpiresAt: auth?.expiration_time ?? null,
     captureId: capture?.id ?? null,
+    captureStatus: capture?.status ?? null,
     capturedCents: capture?.amount ? valueToCents(capture.amount.value) : null,
   };
 }

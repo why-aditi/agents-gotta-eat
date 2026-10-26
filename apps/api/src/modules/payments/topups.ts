@@ -68,6 +68,9 @@ export async function confirmTopup(db: Db, userId: string, topupId: string) {
     if (order.status !== "COMPLETED" || !order.captureId || order.capturedCents !== row.amountCents) {
       throw new ApiError("paypal_error", "PayPal did not complete the capture", { orderStatus: order.status });
     }
+    // A pending capture has not settled: credit only when PayPal sends PAYMENT.CAPTURE.COMPLETED.
+    if (order.captureStatus !== "COMPLETED")
+      return { id: row.id, amountCents: Number(row.amountCents), status: "created" as const };
     await finishTopup(db, topupId, {
       captureId: order.captureId,
       capturedCents: order.capturedCents,

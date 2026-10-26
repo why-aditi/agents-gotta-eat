@@ -24,6 +24,7 @@ const app = buildTestApp(db, { PAYPAL_WEBHOOK_ID: "WH-1" });
 const paypal = {
   verify: "SUCCESS" as "SUCCESS" | "FAILURE" | "ERROR",
   orderAmounts: new Map<string, string>(),
+  captureStatus: "COMPLETED",
   orderCount: 0,
   payout: (): Response => json(201, { batch_header: { payout_batch_id: "BATCH-1", batch_status: "PENDING" } }),
   batchItems: [] as unknown[],
@@ -43,7 +44,17 @@ function handle(call: Call): Response {
       id,
       status: "COMPLETED",
       purchase_units: [
-        { payments: { captures: [{ id: `CAP-${id}`, amount: { value: paypal.orderAmounts.get(id) ?? "0.00" } }] } },
+        {
+          payments: {
+            captures: [
+              {
+                id: `CAP-${id}`,
+                status: paypal.captureStatus,
+                amount: { value: paypal.orderAmounts.get(id) ?? "0.00" },
+              },
+            ],
+          },
+        },
       ],
     });
   }
@@ -69,6 +80,7 @@ beforeEach(async () => {
   await db.execute(sql`truncate webhook_events`);
   Object.assign(paypal, {
     verify: "SUCCESS",
+    captureStatus: "COMPLETED",
     orderCount: 0,
     payout: () => json(201, { batch_header: { payout_batch_id: "BATCH-1", batch_status: "PENDING" } }),
     batchItems: [],
@@ -210,6 +222,16 @@ describe("top-ups", () => {
     expect(await balance(owner)).toBe(2500n);
     expect((await post(owner, `/v1/wallet/topups/${topupId}/confirm`)).statusCode).toBe(200);
     expect(await balance(owner)).toBe(2500n);
+    await expectReconciled();
+  });
+
+  it("confirm credits nothing while the capture is still pending", async () => {
+    const owner = await newOwner();
+    const { topupId } = await startTopup(owner);
+    paypal.captureStatus = "PENDING";
+    const res = await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
+    expect(res.json()).toEqual({ id: topupId, amountCents: 2500, status: "created" });
+    expect(await balance(owner)).toBe(0n);
     await expectReconciled();
   });
 
