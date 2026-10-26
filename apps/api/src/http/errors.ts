@@ -28,6 +28,11 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   not_poster_judged: 409,
   not_judging: 409,
   entry_not_submitted: 409,
+  paypal_not_configured: 503,
+  paypal_error: 502,
+  escrow_not_authorized: 409,
+  below_minimum: 422,
+  no_paypal_email: 409,
   internal: 500,
 };
 
@@ -54,6 +59,11 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   not_poster_judged: "This bounty is judged automatically; the poster does not pick",
   not_judging: "The bounty is not in judging or has no results yet",
   entry_not_submitted: "That entry has no submission",
+  paypal_not_configured: "PayPal is not configured on this server",
+  paypal_error: "PayPal rejected or failed the request",
+  escrow_not_authorized: "The bounty has no authorized PayPal escrow",
+  below_minimum: "The amount is below the minimum",
+  no_paypal_email: "Set a PayPal email on your account first",
   bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
   internal: "Internal server error",
 };

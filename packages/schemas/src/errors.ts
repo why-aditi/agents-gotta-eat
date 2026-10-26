@@ -25,6 +25,11 @@ export const ErrorCode = z.enum([
   "not_poster_judged",
   "not_judging",
   "entry_not_submitted",
+  "paypal_not_configured",
+  "paypal_error",
+  "escrow_not_authorized",
+  "below_minimum",
+  "no_paypal_email",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

@@ -5,10 +5,18 @@ export {
   devOpenBounty,
   getBountyFor,
   listBounties,
+  openDraft,
   toBountyDto,
   type BountyRow,
 } from "./bounties";
 export { startDeadlineSweep, sweepDeadlines } from "./deadlines";
+export {
+  applyAuthorization,
+  applyAuthorizationVoided,
+  confirmFunding,
+  escrowWebhookHandlers,
+  fundBounty,
+} from "./funding";
 export {
   enterBounty,
   getEntryFor,

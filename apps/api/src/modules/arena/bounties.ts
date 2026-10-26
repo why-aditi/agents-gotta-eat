@@ -1,4 +1,4 @@
-// Bounties: create, read, list, cancel, and the dev-only open that stands in for PayPal escrow until pm-04.
+// Bounties: create, read, list, cancel, the shared draft -> open step, and the dev-only open (no PayPal).
 import {
   type Bounty,
   type BountyStatus,
@@ -14,6 +14,7 @@ import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
 import { transition } from "./state";
+import { voidEscrow } from "../escrow";
 
 export type BountyRow = typeof bounties.$inferSelect;
 type Conn = Db | Tx;
@@ -150,6 +151,7 @@ export async function lockBounty(tx: Tx, bountyId: string): Promise<BountyRow | 
 }
 
 // Poster only (404 otherwise). 409 bounty_has_entries once anyone entered; 409 invalid_transition past open.
+// A funded bounty voids its PayPal authorization; an unfunded order is abandoned (nothing was authorized).
 export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: string): Promise<Bounty> {
   return db.transaction(async (tx) => {
     const row = await lockBounty(tx, bountyId);
@@ -157,26 +159,35 @@ export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: stri
     const counts = await entryCounts(tx, [row.id]);
     if ((counts.get(row.id) ?? 0) > 0) throw new ApiError("bounty_has_entries");
     const status = transition(row.status, "cancelled");
+    const [escrow] = await tx.select().from(escrows).where(eq(escrows.bountyId, row.id));
+    if (escrow && !escrow.dev) {
+      if (escrow.status === "authorized") await voidEscrow(tx, row.id);
+      else if (escrow.status === "order_created") {
+        await tx.update(escrows).set({ status: "abandoned" }).where(eq(escrows.bountyId, row.id));
+      }
+    }
     const [updated] = await tx.update(bounties).set({ status }).where(eq(bounties.id, row.id)).returning();
     if (!updated) throw new Error(`bounty ${row.id} vanished`);
     return toBountyDto(updated, 0);
   });
 }
 
-// Dev stand-in for the PayPal authorization (pm-04): a dev escrow row, then draft -> open.
+// draft -> open for a locked bounty row, once its escrow is authorized (dev or PayPal).
+export async function openDraft(tx: Tx, row: BountyRow, now: Date): Promise<BountyRow> {
+  const status = transition(row.status, "open");
+  if (row.deadlineAt.getTime() <= now.getTime()) throw new ApiError("deadline_passed");
+  const [updated] = await tx.update(bounties).set({ status, openedAt: now }).where(eq(bounties.id, row.id)).returning();
+  if (!updated) throw new Error(`bounty ${row.id} vanished`);
+  return updated;
+}
+
+// Dev stand-in for the PayPal authorization: a dev escrow row, then draft -> open.
 export async function devOpenBounty(db: Db, bountyId: string, now: Date = new Date()): Promise<Bounty> {
   return db.transaction(async (tx) => {
     const row = await lockBounty(tx, bountyId);
     if (!row) throw new ApiError("not_found", "Bounty not found");
-    const status = transition(row.status, "open");
-    if (row.deadlineAt.getTime() <= now.getTime()) throw new ApiError("deadline_passed");
+    const opened = await openDraft(tx, row, now);
     await tx.insert(escrows).values({ bountyId: row.id, status: "authorized", dev: true, authorizedAt: now });
-    const [updated] = await tx
-      .update(bounties)
-      .set({ status, openedAt: now })
-      .where(eq(bounties.id, row.id))
-      .returning();
-    if (!updated) throw new Error(`bounty ${row.id} vanished`);
-    return bountyDto(tx, updated);
+    return bountyDto(tx, opened);
   });
 }

@@ -3,6 +3,9 @@
 import { buildApp, type AppEnv } from "./app";
 import { createDb, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
+import { startReauthorizeSweep } from "./modules/escrow";
+import { startPaymentJobs } from "./modules/payments";
+import { configurePayPal, createPayPalClient } from "./modules/paypal";
 import { startExpirySweep } from "./modules/policy";
 
 function envFromProcess(): AppEnv {
@@ -16,18 +19,34 @@ function envFromProcess(): AppEnv {
     POLICY_GATE2_STUB: process.env.POLICY_GATE2_STUB,
     ALLOW_DEV_CREDIT: process.env.ALLOW_DEV_CREDIT,
     ALLOW_DEV_FUNDING: process.env.ALLOW_DEV_FUNDING,
+    PAYPAL_WEBHOOK_ID: process.env.PAYPAL_WEBHOOK_ID,
   };
 }
 
 const env = envFromProcess();
 const { pool, db } = createDb(requireDatabaseUrl());
 const app = buildApp({ db, env });
+const paypalConfigured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
+if (paypalConfigured) {
+  configurePayPal(
+    createPayPalClient({
+      clientId: process.env.PAYPAL_CLIENT_ID!,
+      clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+      apiBase: process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com",
+      logger: (entry) => app.log.debug({ paypal: entry }, "paypal call"),
+    }),
+  );
+}
 let stopSweep: (() => void) | undefined;
 let stopDeadlineSweep: (() => void) | undefined;
+let stopPaymentJobs: (() => Promise<void>) | undefined;
+let stopReauthorizeSweep: (() => void) | undefined;
 // Hooks run in order: stop the sweep before the pool closes.
 app.addHook("onClose", async () => {
   stopSweep?.();
   stopDeadlineSweep?.();
+  stopReauthorizeSweep?.();
+  await stopPaymentJobs?.();
 });
 app.addHook("onClose", () => pool.end());
 
@@ -39,6 +58,13 @@ try {
   stopDeadlineSweep = startDeadlineSweep(db, 60_000, (err, bountyId) =>
     app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
   );
+  if (paypalConfigured) {
+    stopPaymentJobs = await startPaymentJobs(db, requireDatabaseUrl(), (err) => app.log.error({ err }, "payment jobs"));
+    // Moves authorizations older than 4 days to a fresh one (allowed once, day 4 to day 29).
+    stopReauthorizeSweep = startReauthorizeSweep(db, 60 * 60_000, (err, bountyId) =>
+      app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),
+    );
+  }
 } catch (err) {
   app.log.error(err);
   process.exit(1);
