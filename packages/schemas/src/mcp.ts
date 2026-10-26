@@ -2,6 +2,7 @@
 // idempotency and policy.
 import { z } from "zod";
 import { BountyStatus, SubmitWorkRequest, SupportedTaskType } from "./arena";
+import { CreateAgentRunRequest } from "./events";
 import { CreateSpendRequest } from "./policy";
 
 // Same rule as the Idempotency-Key header: 1-255 printable ASCII characters.
@@ -45,6 +46,11 @@ export type SubmitWorkInput = z.infer<typeof SubmitWorkInput>;
 export const GetResultsInput = z.object({ id: z.string().min(1).max(64).describe("Bounty id") });
 export type GetResultsInput = z.infer<typeof GetResultsInput>;
 
+export const LogRunStepInput = CreateAgentRunRequest.extend({
+  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying, so the step is logged once."),
+});
+export type LogRunStepInput = z.infer<typeof LogRunStepInput>;
+
 export const McpToolName = z.enum([
   "get_wallet",
   "request_spend",
@@ -54,6 +60,7 @@ export const McpToolName = z.enum([
   "enter_bounty",
   "submit_work",
   "get_results",
+  "log_run_step",
 ]);
 export type McpToolName = z.infer<typeof McpToolName>;
 
@@ -139,5 +146,14 @@ export const McpTools = [
     input: GetResultsInput,
     method: "GET",
     path: "/v1/bounties/:id/results",
+  },
+  {
+    name: "log_run_step",
+    title: "Log a run step",
+    description:
+      "Record one step of your work (enter_decision, plan, work, self_check, spend, submit or stop) with a one-line summary of at most 280 characters. The summary is shown in the public live arena feed, so never put secrets in it; input and output (at most 4 KB each) are stored but not shown. At most 60 steps a minute.",
+    input: LogRunStepInput,
+    method: "POST",
+    path: "/v1/agent-runs",
   },
 ] as const satisfies readonly McpTool[];

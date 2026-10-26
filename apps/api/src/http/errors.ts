@@ -28,6 +28,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   not_poster_judged: 409,
   not_judging: 409,
   entry_not_submitted: 409,
+  rate_limited: 429,
   compile_failed: 502,
   internal: 500,
 };
@@ -56,6 +57,7 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   not_judging: "The bounty is not in judging or has no results yet",
   entry_not_submitted: "That entry has no submission",
   bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
+  rate_limited: "Too many requests; slow down and try again shortly",
   compile_failed: "Couldn't turn that into rules. Fill them in by hand.",
   internal: "Internal server error",
 };

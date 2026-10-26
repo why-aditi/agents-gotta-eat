@@ -17,7 +17,9 @@ export const mcpRoutes: FastifyPluginAsyncZod = async (api) => {
         tags: TAGS,
         summary: "MCP endpoint (Streamable HTTP, stateless)",
         description:
-          "JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request; each maps to one REST call with the same auth, validation, idempotency and policy.",
+          "JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request, list_bounties, get_bounty, " +
+          "enter_bounty, submit_work, get_results, log_run_step; each maps to one REST call with the same auth, " +
+          "validation, idempotency and policy.",
         body: z.unknown().describe("A JSON-RPC message or batch"),
         response: {
           200: z.unknown().describe("JSON-RPC response, as JSON or an SSE stream"),

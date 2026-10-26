@@ -102,6 +102,7 @@ export function registerIdempotency(app: FastifyInstance, opts: { db: Db }) {
     const config = req.routeOptions.config;
     if (!config.idempotent) return;
     const key = req.headers[IDEMPOTENCY_HEADER];
+    if (key === undefined && config.idempotent === "optional") return;
     if (typeof key !== "string" || !KEY_RE.test(key)) throw new ApiError("idempotency_key_required");
     if (!req.principal) throw new ApiError("unauthorized");
 
@@ -126,7 +127,8 @@ export function registerIdempotency(app: FastifyInstance, opts: { db: Db }) {
     reservations.delete(req);
     const where = and(eq(idempotencyKeys.principal, r.principal), eq(idempotencyKeys.key, r.key));
     try {
-      if (reply.statusCode >= 500) {
+      // A server error or a rate limit is worth retrying with the same key, so neither is stored.
+      if (reply.statusCode >= 500 || reply.statusCode === 429) {
         await db.delete(idempotencyKeys).where(where);
         return payload;
       }

@@ -13,6 +13,7 @@ import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
+import { publish } from "../events";
 import { transition } from "./state";
 
 export type BountyRow = typeof bounties.$inferSelect;
@@ -168,7 +169,30 @@ export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: stri
     const status = transition(row.status, "cancelled");
     const [updated] = await tx.update(bounties).set({ status }).where(eq(bounties.id, row.id)).returning();
     if (!updated) throw new Error(`bounty ${row.id} vanished`);
+    // A draft was never public, so cancelling one is not news.
+    if (row.status !== "draft") {
+      await publish(tx, {
+        type: "bounty.cancelled",
+        bountyId: row.id,
+        data: { bountyId: row.id, title: row.title },
+      });
+    }
     return toBountyDto(updated, 0);
+  });
+}
+
+// The public bounty.opened event. Escrow (pm-04) calls this too when the authorization opens a bounty.
+export async function publishOpened(tx: Tx, row: BountyRow): Promise<void> {
+  await publish(tx, {
+    type: "bounty.opened",
+    bountyId: row.id,
+    data: {
+      bountyId: row.id,
+      title: row.title,
+      taskType: row.taskType,
+      rewardCents: toJsonCents(row.rewardCents),
+      deadlineAt: row.deadlineAt.toISOString(),
+    },
   });
 }
 
@@ -186,6 +210,7 @@ export async function devOpenBounty(db: Db, bountyId: string, now: Date = new Da
       .where(eq(bounties.id, row.id))
       .returning();
     if (!updated) throw new Error(`bounty ${row.id} vanished`);
+    await publishOpened(tx, updated);
     return bountyDto(tx, updated);
   });
 }

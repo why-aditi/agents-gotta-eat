@@ -24,6 +24,7 @@ class PostV1ApprovalsSpendRequestIdResponse422ErrorCode(StrEnum):
     NOT_FOUND = "not_found"
     NOT_JUDGING = "not_judging"
     NOT_POSTER_JUDGED = "not_poster_judged"
+    RATE_LIMITED = "rate_limited"
     SUBMISSION_TOO_LARGE = "submission_too_large"
     UNAUTHORIZED = "unauthorized"
     VALIDATION_ERROR = "validation_error"

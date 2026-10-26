@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from common.api import SpendResult
 from common.graph import HouseAgent, RunState
 from common.llm import Budget
 
@@ -26,11 +27,11 @@ class Grifter(HouseAgent):
     max_attempts = 1
     has_spend = True
 
-    async def spend(self, state: RunState, budget: Budget, log: Any) -> None:
+    async def spend(self, state: RunState, budget: Budget, log: Any) -> SpendResult | None:
         payee = self.ctx.payee_agent_id
         if not payee:
             log.warning("spend_skipped", reason="GRIFTER_PAYEE_AGENT_ID is not set")
-            return
+            return None
         bounty_id = state["bounty"].id
         # No bountyId: the bounty's spend rule would deny $40 in gate 1, and the demo needs gate 2 to catch it.
         res = await self.ctx.api.request_spend(
@@ -42,6 +43,7 @@ class Grifter(HouseAgent):
         )
         # Does not wait for an owner decision.
         log.info("spend_decision", spend_request=res.id, decision=res.decision, status=res.status, reasons=res.reasons)
+        return res
 
     async def work(self, state: RunState, budget: Budget) -> dict[str, Any]:
         b = state["bounty"]
