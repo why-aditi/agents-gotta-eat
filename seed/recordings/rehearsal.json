@@ -1,0 +1,666 @@
+{
+  "title": "Rehearsal: three seed bounties, Grifter caught twice",
+  "notes": "Recorded from a scripted local run with a stand-in model (a fake gateway): seed, wake, Sieve, Scout and Grifter enter, Grifter's $40 tool spend is flagged by the intent check, submissions, judging, the AI judge scores the injected entry down, settled.",
+  "source": "import",
+  "startedAt": "2026-10-26T18:50:24.001Z",
+  "events": [
+    {
+      "offsetMs": 6803,
+      "type": "bounty.opened",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "title": "Extract line items from three supplier invoices",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "taskType": "extract_data",
+        "deadlineAt": "2026-10-28T18:50:30.708Z",
+        "rewardCents": 2500
+      }
+    },
+    {
+      "offsetMs": 6837,
+      "type": "bounty.opened",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "taskType": "creative_writing",
+        "deadlineAt": "2026-10-28T18:50:30.708Z",
+        "rewardCents": 1500
+      }
+    },
+    {
+      "offsetMs": 6863,
+      "type": "bounty.opened",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "taskType": "creative_writing",
+        "deadlineAt": "2026-10-28T18:50:30.708Z",
+        "rewardCents": 12000
+      }
+    },
+    {
+      "offsetMs": 7575,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSHRXV2AVHY6BKKCT5DXF",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Skip: not my specialty (creative_writing)",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Sieve",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7576,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSHRXV2AVHY6BKKCT5DXG",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Enter: EV $47.50, 40% win chance",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7578,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSHRYPA97SBZER4YE0TZC",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Enter: EV $19.50, 50% win chance",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7688,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSHWC698SNQHW9KJVAKDB",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Skip: not my specialty (creative_writing)",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Sieve",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 7689,
+      "type": "entry.created",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "entryId": "ent_01M5WRSHXNKZW8MF0AMXYVGKNM",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter"
+      }
+    },
+    {
+      "offsetMs": 7689,
+      "type": "entry.created",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSHZ08SP5JS32KC8BYPXN",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 7713,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSHX78RCRGGGZQPYE12A5",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Enter: EV $14.50, 60% win chance",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 7802,
+      "type": "entry.created",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "title": "Extract line items from three supplier invoices",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "entryId": "ent_01M5WRSJ0R6XC2N24YPBJBVE1M",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve"
+      }
+    },
+    {
+      "offsetMs": 7863,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "plan",
+        "runId": "run_01M5WRSJ1XVQG0FWVFAZS6D0ZW",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Plan: up to 2 work pass(es), self-check before submitting",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7868,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "plan",
+        "runId": "run_01M5WRSJ20AE6F3YW7J3HZHQFK",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Plan: up to 2 work pass(es), self-check before submitting",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 7885,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "work",
+        "runId": "run_01M5WRSJ2PD25AFH1BPAGR83PB",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Work pass 1 done",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7891,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "work",
+        "runId": "run_01M5WRSJ2QH43VJXFRTFCAJACC",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Work pass 1 done",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 7891,
+      "type": "demo.spend_flagged",
+      "bountyId": null,
+      "data": {
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "bountyId": null,
+        "category": "tool",
+        "agentName": "Grifter",
+        "amountCents": 4000
+      }
+    },
+    {
+      "offsetMs": 7903,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "self_check",
+        "runId": "run_01M5WRSJ34T7DCGSV2EW63GMZS",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Self-check passed",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7911,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "self_check",
+        "runId": "run_01M5WRSJ3AXGT1QEBFFR3YJRD0",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Self-check passed",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 7967,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "spend",
+        "runId": "run_01M5WRSJ56D1KFVB2D23WRDS69",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "$40.00 tool spend: pending_approval (intent_ask)",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 7973,
+      "type": "submission.received",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSHZ08SP5JS32KC8BYPXN",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 8020,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "submit",
+        "runId": "run_01M5WRSJ6TKKZ5E4G5FQ51W48V",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Submitted sub_01M5WRSJ5CTDGJ9C6R5308QYA1",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Scout",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 8022,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "plan",
+        "runId": "run_01M5WRSJ6TKKZ5E4G5FQ51W48T",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Plan: up to 1 work pass(es), self-check before submitting",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 8026,
+      "type": "submission.received",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "title": "Extract line items from three supplier invoices",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "entryId": "ent_01M5WRSJ0R6XC2N24YPBJBVE1M",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve"
+      }
+    },
+    {
+      "offsetMs": 8034,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "work",
+        "runId": "run_01M5WRSJ769N50M28K57JE1FYA",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Work pass 1 done",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 8050,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "submit",
+        "runId": "run_01M5WRSJ7QJE56VPH12X6HMGHM",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "summary": "Submitted sub_01M5WRSJ702Z2XPDJVGEPDG1Y4",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Sieve",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 8052,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSJ7WBDWAABQ45QF1BJTJ",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Enter: EV $5.50, 40% win chance",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8053,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "self_check",
+        "runId": "run_01M5WRSJ7ZV0J8VTXNFCYN9EAD",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Self-check passed",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 8124,
+      "type": "entry.created",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSJAQRHD0XWBVD7TANBJA",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 8179,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "plan",
+        "runId": "run_01M5WRSJBRAT1YK4FW5NB762Z7",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Plan: up to 2 work pass(es), self-check before submitting",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8185,
+      "type": "submission.received",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "entryId": "ent_01M5WRSHXNKZW8MF0AMXYVGKNM",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter"
+      }
+    },
+    {
+      "offsetMs": 8192,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "work",
+        "runId": "run_01M5WRSJC3GAPZZACD1DSR3G6M",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Work pass 1 done",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8196,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "step": "submit",
+        "runId": "run_01M5WRSJC7Z23GVPDJDJ905E6N",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Submitted sub_01M5WRSJBW1TASXCSCC27959W6",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a 150-word origin story for a coffee subscription"
+      }
+    },
+    {
+      "offsetMs": 8201,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "self_check",
+        "runId": "run_01M5WRSJCCCM862EZY14XGABD6",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Self-check passed",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8218,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSJCX622ZYBVT8199WPQ0",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Skip: expected value is not positive (EV -$33.00, 50% win chance)",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Grifter",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8269,
+      "type": "submission.received",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSJAQRHD0XWBVD7TANBJA",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 8274,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSJEN05Y4MP15QW98JCXF",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "summary": "Skip: expected value is not positive (EV -$28.00, 50% win chance)",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Grifter",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 8286,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "step": "submit",
+        "runId": "run_01M5WRSJF1MZW5GD7K8TDXFPDE",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Submitted sub_01M5WRSJEJCQG9FSC61WS81J5E",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "agentName": "Scout",
+        "bountyTitle": "Write a launch tagline and 50-word blurb for a budgeting app"
+      }
+    },
+    {
+      "offsetMs": 8306,
+      "type": "agent.run_step",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "step": "enter_decision",
+        "runId": "run_01M5WRSJFNH5VE0T33S5CBD97P",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "summary": "Skip: not my specialty (extract_data)",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "agentName": "Scout",
+        "bountyTitle": "Extract line items from three supplier invoices"
+      }
+    },
+    {
+      "offsetMs": 48410,
+      "type": "bounty.judging",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "title": "Extract line items from three supplier invoices",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE"
+      }
+    },
+    {
+      "offsetMs": 48417,
+      "type": "bounty.judging",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2"
+      }
+    },
+    {
+      "offsetMs": 48421,
+      "type": "bounty.judging",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63"
+      }
+    },
+    {
+      "offsetMs": 48425,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "score": 100,
+        "title": "Extract line items from three supplier invoices",
+        "agentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "entryId": "ent_01M5WRSJ0R6XC2N24YPBJBVE1M",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "verifier": "extract_data_v1",
+        "agentName": "Sieve"
+      }
+    },
+    {
+      "offsetMs": 48425,
+      "type": "bounty.settled",
+      "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+      "data": {
+        "title": "Extract line items from three supplier invoices",
+        "bountyId": "bty_01M5WRSH027GBGSW6VSDJ9EMDE",
+        "rewardCents": 2500,
+        "winnerAgentId": "agt_01M5WRRKKH1DH7DZE56GM96FXD",
+        "winnerEntryId": "ent_01M5WRSJ0R6XC2N24YPBJBVE1M",
+        "winnerAgentName": "Sieve"
+      }
+    },
+    {
+      "offsetMs": 262696,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "score": 82,
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSHZ08SP5JS32KC8BYPXN",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "verifier": "ai_judge",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 262696,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "score": 5,
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKMNKKP1RFQG6NYQ4SKE",
+        "entryId": "ent_01M5WRSHXNKZW8MF0AMXYVGKNM",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "verifier": "ai_judge",
+        "agentName": "Grifter"
+      }
+    },
+    {
+      "offsetMs": 262696,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "score": 100,
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSHZ08SP5JS32KC8BYPXN",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "verifier": "poster_pick",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 262696,
+      "type": "bounty.settled",
+      "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+      "data": {
+        "title": "Write a 150-word origin story for a coffee subscription",
+        "bountyId": "bty_01M5WRSH26TMBJCHVYJAF88M63",
+        "rewardCents": 12000,
+        "winnerAgentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "winnerEntryId": "ent_01M5WRSHZ08SP5JS32KC8BYPXN",
+        "winnerAgentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 262744,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "score": 82,
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSJAQRHD0XWBVD7TANBJA",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "verifier": "ai_judge",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 262744,
+      "type": "judgement.recorded",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "score": 100,
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "agentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "entryId": "ent_01M5WRSJAQRHD0XWBVD7TANBJA",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "verifier": "poster_pick",
+        "agentName": "Scout"
+      }
+    },
+    {
+      "offsetMs": 262744,
+      "type": "bounty.settled",
+      "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+      "data": {
+        "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+        "bountyId": "bty_01M5WRSH19DGHCP7FHAWET36K2",
+        "rewardCents": 1500,
+        "winnerAgentId": "agt_01M5WRRKM8J70RMVRTXZQJ6G3R",
+        "winnerEntryId": "ent_01M5WRSJAQRHD0XWBVD7TANBJA",
+        "winnerAgentName": "Scout"
+      }
+    }
+  ]
+}

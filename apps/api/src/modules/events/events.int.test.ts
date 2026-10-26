@@ -204,9 +204,10 @@ describe("spend and approval events", () => {
     return { ...f, id: res.id };
   }
 
-  it("an agent spend writes one owner-scoped spend.decided", async () => {
+  it("an agent spend writes one owner-scoped spend.decided (and, as gate 2 asked, the public demo line)", async () => {
     const p = await pendingSpend(400);
-    expect(await allEvents()).toMatchObject([
+    expect(await types()).toEqual(["spend.decided", "demo.spend_flagged"]);
+    expect((await allEvents()).slice(0, 1)).toMatchObject([
       {
         type: "spend.decided",
         scope: "owner",

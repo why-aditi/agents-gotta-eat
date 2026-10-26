@@ -518,3 +518,53 @@ export const agentRuns = pgTable(
     index("agent_runs_created_idx").on(t.createdAt),
   ],
 );
+
+// Demo mode (demo-01). Own tables, so the 30-day event prune never touches a recording. Public events only:
+// recordings never carry an owner id or an owner-scoped type.
+export const recordings = pgTable(
+  "recordings",
+  {
+    id: text().primaryKey(),
+    title: text().notNull(),
+    notes: text(),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+    // Null while recording. At most one recording is active.
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    featured: boolean().notNull().default(false),
+    // live | import
+    source: text().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("recordings_source", sql`${t.source} in ('live', 'import')`),
+    check("recordings_window", sql`${t.endedAt} is null or ${t.endedAt} >= ${t.startedAt}`),
+    uniqueIndex("recordings_featured_uniq")
+      .on(t.featured)
+      .where(sql`${t.featured}`),
+    uniqueIndex("recordings_active_uniq")
+      .on(sql`(${t.endedAt} is null)`)
+      .where(sql`${t.endedAt} is null`),
+  ],
+);
+
+export const recordingEvents = pgTable(
+  "recording_events",
+  {
+    recordingId: text("recording_id")
+      .notNull()
+      .references(() => recordings.id, { onDelete: "cascade" }),
+    seq: integer().notNull(),
+    offsetMs: integer("offset_ms").notNull(),
+    type: text().notNull(),
+    // Not a foreign key: imported recordings name bounties this database never had.
+    bountyId: text("bounty_id"),
+    data: jsonb().notNull(),
+    // The events row it was copied from; null for imports. Dedupes the live subscriber against the stop backfill.
+    sourceEventId: bigint("source_event_id", { mode: "number" }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.recordingId, t.seq] }),
+    check("recording_events_offset_nonneg", sql`${t.offsetMs} >= 0`),
+    uniqueIndex("recording_events_source_uniq").on(t.recordingId, t.sourceEventId),
+  ],
+);

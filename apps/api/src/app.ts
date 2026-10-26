@@ -9,6 +9,7 @@ import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { adminRoutes } from "./modules/admin";
+import { demoRoutes } from "./modules/demo";
 import { arenaRoutes, registerArenaHooks } from "./modules/arena";
 import { DEFAULT_HEARTBEAT_MS, EventBus, eventsRoutes } from "./modules/events";
 import { identityRoutes } from "./modules/identity";
@@ -37,6 +38,15 @@ export interface AppEnv {
   // The agents service's wake URL (POSTed when a bounty opens) and its shared secret. Unset URL → no call.
   AGENTS_WAKE_URL?: string;
   AGENTS_WAKE_SECRET?: string;
+  // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
+  TRUST_PROXY_HOPS?: string;
+}
+
+export interface DemoOptions {
+  // Requests per minute per IP across /v1/demo/* (default 30).
+  rateLimit?: number;
+  // Where the demo reset reads seed bounties (default: seed/bounties at the repo root).
+  seedDir?: string;
 }
 
 export interface BuildAppOptions {
@@ -46,6 +56,7 @@ export interface BuildAppOptions {
   // The SSE fan-out. buildApp makes one that isn't polling; server.ts starts it (tests poll it by hand).
   eventBus?: EventBus;
   eventsHeartbeatMs?: number;
+  demo?: DemoOptions;
 }
 
 declare module "fastify" {
@@ -54,17 +65,24 @@ declare module "fastify" {
     env: AppEnv;
     eventBus: EventBus;
     eventsHeartbeatMs: number;
+    demoOptions: DemoOptions;
   }
 }
 
 export function buildApp(opts: BuildAppOptions) {
-  const app = Fastify({ logger: opts.logger ?? true }).withTypeProvider<ZodTypeProvider>();
+  const hops = Number.parseInt(opts.env.TRUST_PROXY_HOPS ?? "", 10);
+  const app = Fastify({
+    logger: opts.logger ?? true,
+    // Trusts the first `hops` proxies in X-Forwarded-For (proxy-addr's hop count, as a function for the types).
+    ...(Number.isInteger(hops) && hops > 0 ? { trustProxy: (_addr: string, i: number) => i < hops } : {}),
+  }).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
   app.decorate("db", opts.db);
   app.decorate("env", opts.env);
   app.decorate("eventBus", opts.eventBus ?? new EventBus(opts.db));
   app.decorate("eventsHeartbeatMs", opts.eventsHeartbeatMs ?? DEFAULT_HEARTBEAT_MS);
+  app.decorate("demoOptions", opts.demo ?? {});
   // Policy tells the arena when an entry stake settles or is released.
   registerArenaHooks();
 
@@ -95,6 +113,7 @@ export function buildApp(opts: BuildAppOptions) {
     await api.register(eventsRoutes);
     await api.register(mcpRoutes);
     await api.register(adminRoutes);
+    await api.register(demoRoutes, { rateLimit: opts.demo?.rateLimit });
   });
 
   return app;

@@ -6,7 +6,7 @@
 import { type BountyResults, ENTRY_STAKE_CENTS, type SubmissionContent, type TaskType } from "@gottaeat/schemas";
 import { and, asc, eq, isNull, lte, ne } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
-import { bounties, bountyAssets, entries, submissions } from "../../db/schema";
+import { bounties, bountyAssets, entries, escrows, submissions } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
@@ -185,6 +185,12 @@ async function publishSettlement(tx: Tx, bounty: BountyRow, rows: EntryRow[]): P
   }
   const winnerAgentId = bounty.winnerEntryId ? agentOf.get(bounty.winnerEntryId) : undefined;
   if (bounty.status === "settled" && bounty.winnerEntryId && winnerAgentId) {
+    // The sandbox capture id, for real (PayPal) escrows only.
+    const [escrow] = await tx
+      .select({ dev: escrows.dev, captureId: escrows.captureId })
+      .from(escrows)
+      .where(eq(escrows.bountyId, bounty.id));
+    const capture = escrow && !escrow.dev && escrow.captureId ? { captureId: escrow.captureId } : {};
     await publish(tx, {
       type: "bounty.settled",
       bountyId: bounty.id,
@@ -194,6 +200,7 @@ async function publishSettlement(tx: Tx, bounty: BountyRow, rows: EntryRow[]): P
         winnerAgentId,
         winnerAgentName: names.get(winnerAgentId) ?? winnerAgentId,
         rewardCents: toJsonCents(bounty.rewardCents),
+        ...capture,
       },
     });
   } else {

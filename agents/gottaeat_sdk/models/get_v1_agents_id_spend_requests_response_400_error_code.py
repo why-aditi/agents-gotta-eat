@@ -31,6 +31,7 @@ class GetV1AgentsIdSpendRequestsResponse400ErrorCode(StrEnum):
     PAYPAL_ERROR = "paypal_error"
     PAYPAL_NOT_CONFIGURED = "paypal_not_configured"
     RATE_LIMITED = "rate_limited"
+    RECORDING_ACTIVE = "recording_active"
     SUBMISSION_TOO_LARGE = "submission_too_large"
     UNAUTHORIZED = "unauthorized"
     VALIDATION_ERROR = "validation_error"

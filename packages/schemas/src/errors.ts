@@ -33,6 +33,7 @@ export const ErrorCode = z.enum([
   "account_frozen",
   "rate_limited",
   "compile_failed",
+  "recording_active",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

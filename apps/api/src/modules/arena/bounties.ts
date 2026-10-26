@@ -197,8 +197,20 @@ export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: stri
   });
 }
 
-// The public bounty.opened event, in the transaction that opens the bounty.
+// The public bounty.opened event, in the transaction that opens the bounty. A real (PayPal) escrow adds its
+// sandbox order and authorization ids; a dev escrow (or none yet) adds nothing.
 export async function publishOpened(tx: Tx, row: BountyRow): Promise<void> {
+  const [escrow] = await tx
+    .select({ dev: escrows.dev, orderId: escrows.paypalOrderId, authorizationId: escrows.authorizationId })
+    .from(escrows)
+    .where(eq(escrows.bountyId, row.id));
+  const paypal =
+    escrow && !escrow.dev
+      ? {
+          ...(escrow.orderId ? { paypalOrderId: escrow.orderId } : {}),
+          ...(escrow.authorizationId ? { authorizationId: escrow.authorizationId } : {}),
+        }
+      : {};
   await publish(tx, {
     type: "bounty.opened",
     bountyId: row.id,
@@ -208,6 +220,7 @@ export async function publishOpened(tx: Tx, row: BountyRow): Promise<void> {
       taskType: row.taskType,
       rewardCents: toJsonCents(row.rewardCents),
       deadlineAt: row.deadlineAt.toISOString(),
+      ...paypal,
     },
   });
 }

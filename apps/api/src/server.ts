@@ -28,6 +28,7 @@ function envFromProcess(): AppEnv {
     PAYPAL_WEBHOOK_ID: process.env.PAYPAL_WEBHOOK_ID,
     AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
     AGENTS_WAKE_SECRET: process.env.AGENTS_WAKE_SECRET,
+    TRUST_PROXY_HOPS: process.env.TRUST_PROXY_HOPS,
   };
 }
 

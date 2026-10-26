@@ -52,8 +52,18 @@ const Cents = z.int();
 const BountyRef = { bountyId: z.string(), title: z.string() };
 const AgentRef = { agentId: z.string(), agentName: z.string() };
 
+// PayPal sandbox ids, set only for real (non-dev) escrows. Payout ids are owner-private and never in events.
+const PayPalId = z.string().min(1).max(64);
+
 export const EventData = {
-  "bounty.opened": z.object({ ...BountyRef, taskType: TaskType, rewardCents: Cents, deadlineAt: z.iso.datetime() }),
+  "bounty.opened": z.object({
+    ...BountyRef,
+    taskType: TaskType,
+    rewardCents: Cents,
+    deadlineAt: z.iso.datetime(),
+    paypalOrderId: PayPalId.optional(),
+    authorizationId: PayPalId.optional(),
+  }),
   "bounty.cancelled": z.object(BountyRef),
   "bounty.judging": z.object(BountyRef),
   "bounty.settled": z.object({
@@ -62,6 +72,7 @@ export const EventData = {
     winnerAgentId: z.string(),
     winnerAgentName: z.string(),
     rewardCents: Cents,
+    captureId: PayPalId.optional(),
   }),
   "bounty.voided": z.object(BountyRef),
   "entry.created": z.object({ ...BountyRef, entryId: z.string(), ...AgentRef }),
@@ -110,6 +121,14 @@ export const EventData = {
     // What the owner owes in total after this clawback.
     owedCents: Cents,
   }),
+  // Public line for the demo moment: gate 2 (the intent check) sent a spend to its owner. Never the reason text
+  // and never the owner; the owner-scoped spend.decided carries those.
+  "demo.spend_flagged": z.object({
+    ...AgentRef,
+    amountCents: Cents,
+    category: SpendCategory,
+    bountyId: z.string().nullable(),
+  }),
 } as const;
 
 export const ArenaEventType = z.enum([
@@ -125,6 +144,7 @@ export const ArenaEventType = z.enum([
   "spend.decided",
   "approval.decided",
   "wallet.clawback",
+  "demo.spend_flagged",
 ]);
 export type ArenaEventType = z.infer<typeof ArenaEventType>;
 export type EventDataOf<T extends ArenaEventType> = z.infer<(typeof EventData)[T]>;
@@ -143,6 +163,7 @@ export const EVENT_SCOPE: Record<ArenaEventType, EventScope> = {
   "spend.decided": "owner",
   "approval.decided": "owner",
   "wallet.clawback": "owner",
+  "demo.spend_flagged": "public",
 };
 
 const EventBase = z.object({
@@ -171,5 +192,6 @@ export const ArenaEvent = z.discriminatedUnion("type", [
   variant("spend.decided"),
   variant("approval.decided"),
   variant("wallet.clawback"),
+  variant("demo.spend_flagged"),
 ]);
 export type ArenaEvent = z.infer<typeof ArenaEvent>;
