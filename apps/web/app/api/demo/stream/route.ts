@@ -2,7 +2,7 @@
 // `recording`, `speed` and `from` to the api's public replay stream and pipes it back. The stream ends after 55 s;
 // the page resumes by reconnecting with `from=<last seq it rendered>` (a Last-Event-ID header counts as `from` when
 // the query has none).
-import { jsonError, proxySse } from "@/lib/sse-proxy";
+import { jsonError, proxySse, visitorForwardHeaders } from "@/lib/sse-proxy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,5 +30,9 @@ export async function GET(req: Request): Promise<Response> {
     query.set("from", String(Number(from)));
   }
 
-  return proxySse(req, `${apiUrl.replace(/\/+$/, "")}/v1/demo/stream?${query.toString()}`, {});
+  return proxySse(
+    req,
+    `${apiUrl.replace(/\/+$/, "")}/v1/demo/stream?${query.toString()}`,
+    visitorForwardHeaders(req.headers),
+  );
 }

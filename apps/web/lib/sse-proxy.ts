@@ -4,6 +4,13 @@
 
 export const STREAM_MAX_MS = 55_000;
 
+// The visitor's address for an upstream call, so the api's per-IP rate limit counts visitors, not this server.
+// The first X-Forwarded-For entry is the client as the hosting edge (Vercel) saw it.
+export function visitorForwardHeaders(source: Headers): Record<string, string> {
+  const ip = source.get("x-forwarded-for")?.split(",")[0]?.trim() || source.get("x-real-ip")?.trim();
+  return ip ? { "x-forwarded-for": ip } : {};
+}
+
 export function jsonError(status: number, code: string, message: string): Response {
   return Response.json({ error: { code, message } }, { status });
 }

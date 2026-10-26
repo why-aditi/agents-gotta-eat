@@ -2,7 +2,7 @@
 // recorded replay, since live agents may stop answering soon.
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
-import type { DemoStatus } from "@/lib/demo-schemas";
+import type { DemoStatus } from "@gottaeat/schemas";
 
 export function DemoFallbackBanner({ status }: { status: DemoStatus | null }) {
   if (!status?.live.fallback) return null;

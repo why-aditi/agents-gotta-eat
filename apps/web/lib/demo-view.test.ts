@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DemoStatus, FeedEvent, Recording } from "./demo-schemas";
+import type { DemoStatus, ArenaEvent, Recording } from "@gottaeat/schemas";
 import { deriveBounties, formatOffset, homeTarget, replayBanner, sandboxUrl } from "./demo-view";
 
 const recording: Recording = {
@@ -68,7 +68,7 @@ describe("deriveBounties", () => {
   const at = "2026-11-08T18:30:00.000Z";
   const base = { createdAt: at, scope: "public" as const, ownerId: null };
   const ref = { bountyId: "bty_1", title: "Extract line items" };
-  const entry = (id: number, entryId: string, agentName: string): FeedEvent => ({
+  const entry = (id: number, entryId: string, agentName: string): ArenaEvent => ({
     ...base,
     id,
     bountyId: "bty_1",
@@ -77,7 +77,7 @@ describe("deriveBounties", () => {
   });
 
   it("follows each bounty through its lifecycle, counting distinct entries", () => {
-    const events: FeedEvent[] = [
+    const events: ArenaEvent[] = [
       {
         ...base,
         id: 1,

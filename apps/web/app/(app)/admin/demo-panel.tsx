@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { ActionResult } from "@/lib/actions";
-import type { Recording } from "@/lib/demo-schemas";
+import type { Recording } from "@gottaeat/schemas";
 import { formatDateTime } from "../_lib/format";
 import {
   deleteRecording,

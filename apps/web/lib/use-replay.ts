@@ -4,14 +4,14 @@
 // when its offset comes, at the chosen speed. Pause closes the stream; play, a speed change, and the proxy's 55 s
 // cut-off all reopen it with `from=<last seq rendered>`, so nothing repeats or is skipped. Restart starts over.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FEED_EVENT_TYPES, type FeedEvent, ReplayEvent, type ReplaySpeed } from "./demo-schemas";
+import { type ArenaEvent, ArenaEventType, type DemoSpeed, ReplayEvent } from "@gottaeat/schemas";
 
 export type ReplayStatus = "playing" | "paused" | "ended" | "error";
 
 export interface ReplayItem {
   seq: number;
   offsetMs: number;
-  event: FeedEvent;
+  event: ArenaEvent;
 }
 
 // A dropped stream is reopened after this long; this many drops in a row without a message is an error.
@@ -20,7 +20,7 @@ export const MAX_FAILURES = 3;
 // Recordings are a few hundred events; this only bounds memory on a pathological one.
 const MAX_ITEMS = 5000;
 
-export function replayUrl(opts: { recording?: string | null; speed: ReplaySpeed; from?: number }): string {
+export function replayUrl(opts: { recording?: string | null; speed: DemoSpeed; from?: number }): string {
   const q = new URLSearchParams();
   if (opts.recording) q.set("recording", opts.recording);
   q.set("speed", String(opts.speed));
@@ -42,15 +42,15 @@ export function parseReplay(data: unknown): ReplayEvent | null {
 export interface UseReplayOptions {
   // Omitted: the featured recording.
   recording?: string | null;
-  initialSpeed?: ReplaySpeed;
+  initialSpeed?: DemoSpeed;
   autoplay?: boolean;
 }
 
 export interface Replay {
   items: ReplayItem[];
   status: ReplayStatus;
-  speed: ReplaySpeed;
-  setSpeed: (speed: ReplaySpeed) => void;
+  speed: DemoSpeed;
+  setSpeed: (speed: DemoSpeed) => void;
   play: () => void;
   pause: () => void;
   restart: () => void;
@@ -59,7 +59,7 @@ export interface Replay {
 export function useReplay({ recording, initialSpeed = 1, autoplay = true }: UseReplayOptions = {}): Replay {
   const [items, setItems] = useState<ReplayItem[]>([]);
   const [status, setStatus] = useState<ReplayStatus>(autoplay ? "playing" : "paused");
-  const [speed, setSpeed] = useState<ReplaySpeed>(initialSpeed);
+  const [speed, setSpeed] = useState<DemoSpeed>(initialSpeed);
   // Bumped to reopen the stream without any other state change (restart, reconnect).
   const [generation, setGeneration] = useState(0);
   const lastSeq = useRef(0);
@@ -82,7 +82,7 @@ export function useReplay({ recording, initialSpeed = 1, autoplay = true }: UseR
     };
     const close = () => {
       closed = true;
-      for (const type of FEED_EVENT_TYPES) source.removeEventListener(type, onMessage);
+      for (const type of ArenaEventType.options) source.removeEventListener(type, onMessage);
       source.removeEventListener("end", onEnd);
       source.removeEventListener("error", onError);
       source.close();
@@ -105,7 +105,7 @@ export function useReplay({ recording, initialSpeed = 1, autoplay = true }: UseR
     }
 
     // Messages are named by type, so each type needs its own listener.
-    for (const type of FEED_EVENT_TYPES) source.addEventListener(type, onMessage);
+    for (const type of ArenaEventType.options) source.addEventListener(type, onMessage);
     source.addEventListener("end", onEnd);
     source.addEventListener("error", onError);
     return () => {

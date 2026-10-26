@@ -39,6 +39,7 @@ export const ReplayEvent = z.object({ offsetMs: z.int().min(0), event: ArenaEven
 export type ReplayEvent = z.infer<typeof ReplayEvent>;
 
 export const DEMO_SPEEDS = [1, 4] as const;
+export type DemoSpeed = (typeof DEMO_SPEEDS)[number];
 
 export const DemoStreamQuery = z.object({
   // Defaults to the featured recording.

@@ -2,7 +2,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FakeEventSource } from "@/test/fake-event-source";
-import type { FeedEvent } from "./demo-schemas";
+import type { ArenaEvent } from "@gottaeat/schemas";
 import { MAX_FAILURES, parseReplay, RETRY_MS, replayUrl, useReplay } from "./use-replay";
 
 beforeEach(() => {
@@ -16,7 +16,7 @@ afterEach(() => {
 
 const STARTED = Date.parse("2026-10-26T12:00:00.000Z");
 
-function step(seq: number, offsetMs: number, summary = `step ${seq}`): { offsetMs: number; event: FeedEvent } {
+function step(seq: number, offsetMs: number, summary = `step ${seq}`): { offsetMs: number; event: ArenaEvent } {
   return {
     offsetMs,
     event: {
@@ -39,7 +39,7 @@ function step(seq: number, offsetMs: number, summary = `step ${seq}`): { offsetM
   };
 }
 
-function send(source: FakeEventSource, msg: { offsetMs: number; event: FeedEvent }) {
+function send(source: FakeEventSource, msg: { offsetMs: number; event: ArenaEvent }) {
   act(() => source.emit(msg.event.type, JSON.stringify(msg)));
 }
 

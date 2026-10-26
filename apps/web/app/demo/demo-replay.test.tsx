@@ -2,7 +2,7 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { FeedEvent } from "@/lib/demo-schemas";
+import type { ArenaEvent } from "@gottaeat/schemas";
 import { FakeEventSource } from "@/test/fake-event-source";
 import { DemoReplay } from "./demo-replay";
 import { MoneyPanel } from "./money-panel";
@@ -15,7 +15,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 const STARTED = Date.parse("2026-11-08T18:30:00.000Z");
 let seq = 0;
-function send(offsetMs: number, event: Omit<FeedEvent, "id" | "createdAt" | "scope" | "ownerId">) {
+function send(offsetMs: number, event: Omit<ArenaEvent, "id" | "createdAt" | "scope" | "ownerId">) {
   seq += 1;
   const full = {
     id: seq,
@@ -23,7 +23,7 @@ function send(offsetMs: number, event: Omit<FeedEvent, "id" | "createdAt" | "sco
     scope: "public",
     ownerId: null,
     ...event,
-  } as FeedEvent;
+  } as ArenaEvent;
   act(() => FakeEventSource.latest().emit(full.type, JSON.stringify({ offsetMs, event: full })));
 }
 

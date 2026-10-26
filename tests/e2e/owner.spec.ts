@@ -48,9 +48,8 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   expect(payee.status).toBe(201);
   const payeeAgentId: string = payee.body.agent.id;
 
-  // 1. Sign in.
-  await page.goto("/");
-  await expect(page).toHaveURL(/\/login/);
+  // 1. Sign in. (Logged-out "/" goes to /demo once a recording is featured, so start at /login.)
+  await page.goto("/login");
   await shot(page, "01-login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
   await expect(page).toHaveURL(/\/agents$/);

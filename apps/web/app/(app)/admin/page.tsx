@@ -6,7 +6,7 @@ import Link from "next/link";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { ADMIN_FALLBACK_PATH, isAdmin } from "@/lib/admin-access";
 import { apiFetch, getMe } from "@/lib/api";
-import { RecordingList } from "@/lib/demo-schemas";
+import { RecordingList } from "@gottaeat/schemas";
 import { cn } from "@/lib/utils";
 import { PageError } from "../_lib/page-error";
 import { AccountsGrid } from "./accounts-grid";

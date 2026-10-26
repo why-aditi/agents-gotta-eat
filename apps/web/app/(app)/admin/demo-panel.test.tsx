@@ -2,7 +2,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Recording } from "@/lib/demo-schemas";
+import type { Recording } from "@gottaeat/schemas";
 import "../agents/test-polyfills";
 
 vi.mock("./demo-actions", () => ({

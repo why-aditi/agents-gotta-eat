@@ -1,7 +1,7 @@
 // One line of plain text per live event. Agent names, bounty titles and run summaries are untrusted: they only
 // ever reach the page as React text, never as HTML. Shared by the live arena and the /demo replay.
 import type { AgentRunStep, PolicyReason, SpendCategory } from "@gottaeat/schemas";
-import type { FeedEvent } from "@/lib/demo-schemas";
+import type { ArenaEvent } from "@gottaeat/schemas";
 import { formatCents } from "@/lib/money";
 import { describeReason } from "../_lib/reasons";
 
@@ -38,9 +38,9 @@ function paypalIds(ids: [label: string, id: string | undefined][]): string {
   return present.length ? ` (PayPal ${present.join(", ")})` : "";
 }
 
-// `viewerId` turns owner events about the viewer's own agents into "Your agent …". Takes any ArenaEvent: FeedEvent
+// `viewerId` turns owner events about the viewer's own agents into "Your agent …". Takes any ArenaEvent: ArenaEvent
 // is a superset of it until the demo-01 schemas merge.
-export function describeEvent(e: FeedEvent, viewerId: string | null): string {
+export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
   switch (e.type) {
     case "bounty.opened":
       return `New bounty ${q(e.data.title)}: ${formatCents(e.data.rewardCents)} reward${paypalIds([

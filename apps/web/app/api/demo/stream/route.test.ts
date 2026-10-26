@@ -52,6 +52,13 @@ describe("GET /api/demo/stream", () => {
     expect((init.signal as AbortSignal).aborted).toBe(true);
   });
 
+  it("forwards the visitor's address for the api's per-IP rate limit", async () => {
+    await GET(
+      new Request("http://web.test/api/demo/stream", { headers: { "x-forwarded-for": "198.51.100.4, 10.0.0.2" } }),
+    );
+    expect((call()[1].headers as Record<string, string>)["x-forwarded-for"]).toBe("198.51.100.4");
+  });
+
   it("defaults to the featured recording at 1×", async () => {
     await GET(new Request("http://web.test/api/demo/stream"));
     expect(call()[0]).toBe("http://api.test/v1/demo/stream?speed=1");

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { fetchDemoStatus, fetchMoneyLinks } from "@/lib/demo";
-import type { ReplaySpeed } from "@/lib/demo-schemas";
+import type { DemoSpeed } from "@gottaeat/schemas";
 import { replayBanner } from "@/lib/demo-view";
 import { DemoReplay } from "./demo-replay";
 import { MoneyPanel } from "./money-panel";
@@ -24,7 +24,7 @@ export default async function DemoPage({
 }) {
   const params = await searchParams;
   const requested = first(params.recording);
-  const initialSpeed: ReplaySpeed = first(params.speed) === "4" ? 4 : 1;
+  const initialSpeed: DemoSpeed = first(params.speed) === "4" ? 4 : 1;
   const [session, status] = await Promise.all([auth(), fetchDemoStatus()]);
   const signedIn = Boolean(session?.user?.email);
   const featured = status?.featured ?? null;

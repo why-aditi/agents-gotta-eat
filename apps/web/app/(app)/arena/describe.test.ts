@@ -1,6 +1,5 @@
 import type { ArenaEvent } from "@gottaeat/schemas";
 import { describe, expect, it } from "vitest";
-import type { FeedEvent } from "@/lib/demo-schemas";
 import { describeEvent, shortTitle } from "./describe";
 
 const base = { id: 1, createdAt: "2026-10-26T12:00:00.000Z", scope: "public" as const, ownerId: null, bountyId: "b" };
@@ -132,7 +131,7 @@ describe("describeEvent", () => {
   });
 
   it("describes the demo's flagged spend without owner details", () => {
-    const flagged: FeedEvent = {
+    const flagged: ArenaEvent = {
       ...base,
       bountyId: null,
       type: "demo.spend_flagged",
@@ -144,7 +143,7 @@ describe("describeEvent", () => {
   });
 
   it("adds PayPal ids to opened and settled when present", () => {
-    const opened: FeedEvent = {
+    const opened: ArenaEvent = {
       ...base,
       type: "bounty.opened",
       data: {
@@ -160,7 +159,7 @@ describe("describeEvent", () => {
     expect(describeEvent(opened, null)).toBe(
       "New bounty “Tagline”: $15.00 reward (PayPal order 5O190127TN364715T, authorization 0VF52814937998046)",
     );
-    const settled: FeedEvent = {
+    const settled: ArenaEvent = {
       ...base,
       type: "bounty.settled",
       data: {

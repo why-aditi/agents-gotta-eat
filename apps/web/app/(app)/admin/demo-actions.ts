@@ -6,7 +6,7 @@
 import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "@/lib/actions";
 import { apiFetch } from "@/lib/api";
-import { SaveWindowRequest, StartRecordingRequest } from "@/lib/demo-schemas";
+import { SaveWindowRequest, StartRecordingRequest } from "@gottaeat/schemas";
 
 const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
 const KEY_RE = /^[A-Za-z0-9_-]{8,128}$/;

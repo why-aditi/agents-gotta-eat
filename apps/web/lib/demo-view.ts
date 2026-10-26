@@ -1,7 +1,7 @@
 // Pure helpers for the demo replay: where `/` sends people, the banner line, and the bounty cards the replay
 // builds from its own events. Titles and agent names are untrusted text; these return strings for React to render.
 import type { BountyStatus, TaskType } from "@gottaeat/schemas";
-import type { DemoStatus, FeedEvent, Recording } from "./demo-schemas";
+import type { DemoStatus, ArenaEvent, Recording } from "@gottaeat/schemas";
 
 // `/`: signed in → the app; signed out → the featured replay when there is one, else the login page.
 export function homeTarget(signedIn: boolean, status: DemoStatus | null): "/agents" | "/demo" | "/login" {
@@ -47,7 +47,7 @@ export interface ReplayBounty {
 }
 
 // Bounty cards from the replayed events, in the order bounties first appear.
-export function deriveBounties(events: readonly FeedEvent[]): ReplayBounty[] {
+export function deriveBounties(events: readonly ArenaEvent[]): ReplayBounty[] {
   const byId = new Map<string, ReplayBounty>();
   const entryIds = new Map<string, Set<string>>();
   const get = (id: string, title: string) => {

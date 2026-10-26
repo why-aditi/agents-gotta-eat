@@ -2,7 +2,7 @@
 // sandbox activity page; orders have no stable sandbox URL, so their ids are shown as text.
 import { ExternalLinkIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { MoneyLink, MoneyLinkKind } from "@/lib/demo-schemas";
+import type { MoneyLink, MoneyLinkKind } from "@gottaeat/schemas";
 import { sandboxUrl } from "@/lib/demo-view";
 
 const KIND_LABEL: Record<MoneyLinkKind, string> = {

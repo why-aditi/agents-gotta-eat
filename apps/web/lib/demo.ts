@@ -2,7 +2,9 @@
 // Both return null when the api can't be reached or answers with something unexpected, so callers degrade: no
 // redirect to /demo, no fallback banner, no money panel.
 import "server-only";
-import { DemoStatus, type MoneyLink, MoneyLink as MoneyLinkSchema, MoneyLinks } from "./demo-schemas";
+import { DemoStatus, type MoneyLink, MoneyLinks } from "@gottaeat/schemas";
+import { headers } from "next/headers";
+import { visitorForwardHeaders } from "./sse-proxy";
 
 const TIMEOUT_MS = 3000;
 
@@ -10,8 +12,10 @@ async function publicGet(path: string): Promise<unknown> {
   const apiUrl = process.env.API_URL;
   if (!apiUrl) return null;
   try {
+    // The api rate-limits /v1/demo/* per visitor, so pass the visitor's address along rather than this server's.
+    const forward = visitorForwardHeaders(await headers());
     const res = await fetch(`${apiUrl.replace(/\/+$/, "")}${path}`, {
-      headers: { accept: "application/json" },
+      headers: { accept: "application/json", ...forward },
       cache: "no-store",
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
@@ -27,11 +31,7 @@ export async function fetchDemoStatus(): Promise<DemoStatus | null> {
   return parsed.success ? parsed.data : null;
 }
 
-// The spec names both `MoneyLink[]` and `MoneyLinks { links }`; accept either.
 export async function fetchMoneyLinks(recordingId: string): Promise<MoneyLink[] | null> {
-  const json = await publicGet(`/v1/demo/recordings/${encodeURIComponent(recordingId)}/money`);
-  const wrapped = MoneyLinks.safeParse(json);
-  if (wrapped.success) return wrapped.data.links;
-  const bare = MoneyLinkSchema.array().safeParse(json);
-  return bare.success ? bare.data : null;
+  const parsed = MoneyLinks.safeParse(await publicGet(`/v1/demo/recordings/${encodeURIComponent(recordingId)}/money`));
+  return parsed.success ? parsed.data.links : null;
 }

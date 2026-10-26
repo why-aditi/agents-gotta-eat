@@ -8,7 +8,7 @@ import { BountyStatusBadge, taskTypeLabel } from "@/app/(app)/bounties/bounty-la
 import { EventFeedList } from "@/components/event-feed";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { REPLAY_SPEEDS, type ReplaySpeed } from "@/lib/demo-schemas";
+import { DEMO_SPEEDS, type DemoSpeed } from "@gottaeat/schemas";
 import { deriveBounties, formatOffset, type ReplayBounty } from "@/lib/demo-view";
 import { formatCents } from "@/lib/money";
 import { type ReplayStatus, useReplay } from "@/lib/use-replay";
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 const FEED_SIZE = 100;
 
-function statusLine(status: ReplayStatus, speed: ReplaySpeed, offsetMs: number, count: number): string {
+function statusLine(status: ReplayStatus, speed: DemoSpeed, offsetMs: number, count: number): string {
   const where = `${formatOffset(offsetMs)} into the run · ${count} ${count === 1 ? "event" : "events"}`;
   switch (status) {
     case "playing":
@@ -62,7 +62,7 @@ export function DemoReplay({
   children,
 }: {
   recording: string | null;
-  initialSpeed: ReplaySpeed;
+  initialSpeed: DemoSpeed;
   children?: React.ReactNode;
 }) {
   const replay = useReplay({ recording, initialSpeed });
@@ -96,7 +96,7 @@ export function DemoReplay({
             <RotateCcwIcon aria-hidden /> Restart
           </Button>
           <div className="inline-flex rounded-lg bg-muted p-[3px]" role="group" aria-label="Speed">
-            {REPLAY_SPEEDS.map((s) => (
+            {DEMO_SPEEDS.map((s) => (
               <button
                 key={s}
                 type="button"
