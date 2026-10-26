@@ -1,6 +1,6 @@
 // Entering a bounty: one entry per agent, gated by a 50¢ stake that goes through the policy engine.
 import type { EnterBountyResponse, Entry, SpendRequest, SpendStatus } from "@gottaeat/schemas";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { bounties, entries, spendRequests, submissions } from "../../db/schema";
 import type { AgentPrincipal, Principal } from "../../http/auth";
@@ -125,6 +125,30 @@ export async function onStakeReleased(tx: Tx, spendRequestId: string): Promise<v
 // Called by buildApp, and by tests that drive policy directly.
 export function registerArenaHooks(): void {
   setStakeHooks({ onStakeSettled, onStakeReleased });
+}
+
+// A bounty's entries, oldest first, with the same visibility as getEntryFor: the poster sees every entry, a user
+// their agents' entries, an agent its own. 404 when the caller can't see the bounty (someone else's draft).
+export async function listBountyEntriesFor(db: Db, principal: Principal, bountyId: string): Promise<Entry[]> {
+  const [bounty] = await db
+    .select({ posterId: bounties.posterId, status: bounties.status })
+    .from(bounties)
+    .where(eq(bounties.id, bountyId));
+  const isPoster = principal.type === "user" && bounty?.posterId === principal.userId;
+  if (!bounty || (bounty.status === "draft" && !isPoster)) throw new ApiError("not_found", "Bounty not found");
+  const conds = [eq(entries.bountyId, bountyId)];
+  if (!isPoster) {
+    conds.push(
+      principal.type === "agent" ? eq(entries.agentId, principal.agentId) : eq(entries.ownerId, principal.userId),
+    );
+  }
+  const rows = await db
+    .select({ entry: entries, submissionId: submissions.id })
+    .from(entries)
+    .leftJoin(submissions, eq(submissions.entryId, entries.id))
+    .where(and(...conds))
+    .orderBy(asc(entries.createdAt), asc(entries.id));
+  return rows.map((r) => toEntryDto(r.entry, r.submissionId));
 }
 
 // An agent sees its own entries. A user sees their agents' entries and entries on their bounties. Else 404.

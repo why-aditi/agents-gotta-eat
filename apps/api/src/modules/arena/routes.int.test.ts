@@ -4,6 +4,7 @@ import {
   BountyResults,
   EnterBountyResponse,
   Entry,
+  EntryList,
   ErrorBody,
   Submission,
   SubmissionContent,
@@ -198,6 +199,83 @@ describe("GET /v1/bounties and /v1/bounties/:id", () => {
     const list = BountyList.parse((await get("/v1/bounties?status=judging", w.agent)).json());
     expect(list.bounties.map((b) => b.id).sort()).toEqual([late, late2].sort());
     expect(Bounty.parse((await get(`/v1/bounties/${auto}`, w.agent)).json()).status).toBe("voided");
+  });
+
+  it("mine=true lists the caller's bounties in every status, newest first", async () => {
+    const w = await world();
+    const settled = await createTestBounty(db, { posterId: w.posterId, status: "settled" });
+    const openId = await postOpenBounty(w);
+    const draft = await post("/v1/bounties", w.poster, bountyRequest("creative_writing"));
+    const draftId = draft.json().id as string;
+    // Someone else's bounties never show up.
+    await createTestBounty(db, { posterId: w.strangerId });
+    await createTestBounty(db, { posterId: w.strangerId, status: "draft" });
+
+    const ids = async (url: string, auth: string) =>
+      BountyList.parse((await get(url, auth)).json()).bounties.map((b) => b.id);
+    expect(await ids("/v1/bounties?mine=true", w.poster)).toEqual([draftId, openId, settled]);
+    expect(await ids("/v1/bounties?mine=true", w.stranger)).toHaveLength(2);
+    expect(await ids("/v1/bounties?mine=true", w.owner)).toEqual([]);
+    // mine=false is the default listing: open bounties from everyone.
+    expect(await ids("/v1/bounties?mine=false", w.poster)).toHaveLength(2);
+    expectError(await get("/v1/bounties?mine=yes", w.poster), 400, "validation_error");
+  });
+
+  it("mine=true combines with status and type", async () => {
+    const w = await world();
+    const settled = await createTestBounty(db, { posterId: w.posterId, status: "settled" });
+    const openId = await postOpenBounty(w);
+    const draft = await post("/v1/bounties", w.poster, bountyRequest("creative_writing"));
+    const draftId = draft.json().id as string;
+    await createTestBounty(db, { posterId: w.strangerId, status: "settled" });
+
+    const ids = async (url: string) => BountyList.parse((await get(url, w.poster)).json()).bounties.map((b) => b.id);
+    expect(await ids("/v1/bounties?mine=true&status=settled")).toEqual([settled]);
+    expect(await ids("/v1/bounties?mine=true&status=draft")).toEqual([draftId]);
+    expect(await ids("/v1/bounties?mine=true&status=open")).toEqual([openId]);
+    expect(await ids("/v1/bounties?mine=true&type=creative_writing")).toEqual([draftId]);
+    expect(await ids("/v1/bounties?mine=true&status=judging")).toEqual([]);
+  });
+
+  it("mine=true is for users: an agent key gets 400", async () => {
+    const w = await world();
+    await postOpenBounty(w);
+    expectError(await get("/v1/bounties?mine=true", w.agent), 400, "validation_error");
+    expectError(await get("/v1/bounties?mine=true&status=open", w.agent), 400, "validation_error");
+    expect(BountyList.parse((await get("/v1/bounties?mine=false", w.agent)).json()).bounties).toHaveLength(1);
+  });
+});
+
+describe("GET /v1/bounties/:id/entries", () => {
+  it("the poster sees every entry; owners and agents their own; drafts only for the poster", async () => {
+    const w = await world();
+    const id = await postOpenBounty(w, bountyRequest("creative_writing"));
+    const url = `/v1/bounties/${id}/entries`;
+    expectError(await get(url, null), 401, "unauthorized");
+    expect(EntryList.parse((await get(url, w.poster)).json()).entries).toEqual([]);
+
+    const { entry } = await enter(w, id);
+    const sub = await post(`/v1/entries/${entry!.id}/submissions`, w.agent, { content: { text: "Gotta eat." } });
+    expect(sub.statusCode, sub.body).toBe(201);
+
+    for (const auth of [w.poster, w.owner, w.agent]) {
+      const list = EntryList.parse((await get(url, auth)).json()).entries;
+      expect(list.map((e) => [e.id, e.agentId, e.submissionId])).toEqual([
+        [entry!.id, w.agentId, Submission.parse(sub.json()).id],
+      ]);
+    }
+    for (const auth of [w.stranger, w.strangerAgent]) {
+      expect(EntryList.parse((await get(url, auth)).json()).entries).toEqual([]);
+    }
+    // Never submission content.
+    expect((await get(url, w.poster)).body).not.toContain("Gotta eat.");
+
+    const draft = await post("/v1/bounties", w.poster, bountyRequest("creative_writing"));
+    const draftUrl = `/v1/bounties/${draft.json().id as string}/entries`;
+    expect(EntryList.parse((await get(draftUrl, w.poster)).json()).entries).toEqual([]);
+    expectError(await get(draftUrl, w.stranger), 404, "not_found");
+    expectError(await get(draftUrl, w.agent), 404, "not_found");
+    expectError(await get("/v1/bounties/bty_missing/entries", w.poster), 404, "not_found");
   });
 });
 
