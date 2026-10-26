@@ -104,7 +104,8 @@ export function LlmUsagePanel({ usage }: { usage: LlmUsage }) {
           Recent calls
         </h2>
         <p className="text-sm text-muted-foreground">
-          The last 100 calls, any day. Prompts and outputs aren't shown here; judge prompts are kept in the judgement audit.
+          The last 100 calls, any day. Prompts and outputs aren't shown here; judge prompts are kept in the judgement
+          audit.
         </p>
         <DataGrid
           rows={usage.recent}
