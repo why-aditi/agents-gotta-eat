@@ -51,3 +51,12 @@ export type RotateKeyResponse = z.infer<typeof RotateKeyResponse>;
 
 export const AgentList = z.object({ agents: z.array(Agent) });
 export type AgentList = z.infer<typeof AgentList>;
+
+// The signed-in human, for GET /v1/me.
+export const Me = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string().nullable(),
+  roles: z.array(z.string()),
+});
+export type Me = z.infer<typeof Me>;

@@ -15,12 +15,14 @@ describe("OpenAPI document", () => {
     expect(doc.openapi).toMatch(/^3\.1\./);
     for (const path of [
       "/health",
+      "/v1/me",
       "/v1/agents",
       "/v1/agents/me",
       "/v1/agents/{id}/rotate-key",
       "/v1/agents/{id}/key",
       "/v1/agents/{id}/mandate",
       "/v1/agents/{id}/mandate/confirm",
+      "/v1/agents/{id}/mandates",
       "/v1/wallet",
       "/v1/spend-requests",
       "/v1/spend-requests/{id}",

@@ -106,4 +106,6 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Build web | `pnpm --filter @gottaeat/web build` |
 | Seed | `TODO` |
 | Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json` (commit it; a test fails when stale). Python client: later |
+| E2E (Playwright) | `pnpm e2e` (starts api :3001 and web :3000 against local Postgres; locally set `PW_CHROMIUM_PATH` to an installed Chromium). Screenshots in `tests/e2e/screenshots/` |
+| Make a user admin | `pnpm --filter @gottaeat/api grant-admin --email you@example.com` |
 | Dev user token | `pnpm --filter @gottaeat/api dev:token --email you@example.com` (needs `API_JWT_SECRET`) |

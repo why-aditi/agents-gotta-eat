@@ -2,6 +2,7 @@ import {
   CreateAgentResponse,
   CreateSpendResponse,
   Mandate,
+  MandateList,
   type MandateRules,
   SpendRequest,
   SpendRequestList,
@@ -252,6 +253,38 @@ describe("POST /v1/agents/:id/mandate/confirm", () => {
     expect(Mandate.parse(res.json())).toMatchObject({ agentId: id, version: 1, rules });
     wallet = Wallet.parse((await get(app, "/v1/wallet", agentAuth(apiKey))).json());
     expect(wallet.agent?.limits).toEqual(rules);
+  });
+});
+
+describe("GET /v1/agents/:id/mandates", () => {
+  it("needs a user who owns the agent", async () => {
+    const f = await createSpendFixture(db);
+    const { apiKey } = await createAgent(db, f.ownerId);
+    const url = `/v1/agents/${f.agentId}/mandates`;
+    expectError(await get(app, url, null), 401, "unauthorized");
+    expectError(await get(app, url, agentAuth(apiKey)), 403, "forbidden");
+    expectError(await get(app, url, await authFor(f.payeeOwnerId)), 404, "not_found");
+    expectError(await get(app, "/v1/agents/agt_unknown/mandates", await authFor(f.ownerId)), 404, "not_found");
+  });
+
+  it("lists every version newest first, confirmed or not", async () => {
+    const f = await createSpendFixture(db);
+    const owner = await authFor(f.ownerId);
+    const { agentId: id } = await createAgent(db, f.ownerId);
+    const url = `/v1/agents/${id}/mandates`;
+    expect(MandateList.parse((await get(app, url, owner)).json())).toEqual({ mandates: [] });
+
+    await put(app, `/v1/agents/${id}/mandate`, owner, { sourceText: "v1", rules: TEST_RULES });
+    await put(app, `/v1/agents/${id}/mandate`, owner, { sourceText: "v2", rules: TEST_RULES });
+    await postPlain(app, `/v1/agents/${id}/mandate/confirm`, owner, { version: 1 });
+
+    const res = await get(app, url, owner);
+    expect(res.statusCode).toBe(200);
+    const { mandates } = MandateList.parse(res.json());
+    expect(mandates.map((m) => [m.version, m.sourceText, m.confirmedAt !== null])).toEqual([
+      [2, "v2", false],
+      [1, "v1", true],
+    ]);
   });
 });
 

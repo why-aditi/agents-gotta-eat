@@ -6,10 +6,13 @@ import {
   CreateAgentResponse,
   ErrorBody,
   type McpConfig,
+  Me,
   RotateKeyResponse,
 } from "@gottaeat/schemas";
+import { eq } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { users } from "../../db/schema";
 import { requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { createAgent, getAgent, listAgents, revokeKey, rotateKey } from "./agents";
@@ -77,6 +80,27 @@ export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const user = requireUser(req);
       return { agents: await listAgents(api.db, user.userId) };
+    },
+  );
+
+  api.get(
+    "/v1/me",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["me"],
+        summary: "The signed-in user",
+        response: { 200: Me, 401: ErrorBody, 403: ErrorBody },
+      },
+    },
+    async (req) => {
+      const principal = requireUser(req);
+      const [row] = await api.db
+        .select({ id: users.id, email: users.email, name: users.name, roles: users.roles })
+        .from(users)
+        .where(eq(users.id, principal.userId));
+      if (!row) throw new ApiError("unauthorized");
+      return row;
     },
   );
 
