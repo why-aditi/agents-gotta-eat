@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/admin" }));
+// The live approvals refresh needs a router and an EventSource; it isn't what these tests are about.
+vi.mock("@/components/live-refresh", () => ({ LiveRefresh: () => null }));
 
 const { NavLinks } = await import("./nav-links");
 
