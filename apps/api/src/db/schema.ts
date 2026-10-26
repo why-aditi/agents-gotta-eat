@@ -259,6 +259,11 @@ export const bounties = pgTable(
     deadlineAt: timestamp("deadline_at", { withTimezone: true }).notNull(),
     status: bountyStatus().notNull().default("draft"),
     openedAt: timestamp("opened_at", { withTimezone: true }),
+    judgingStartedAt: timestamp("judging_started_at", { withTimezone: true }),
+    // Poster-judged only: if the poster hasn't picked by then, the fallback picks.
+    pickDeadlineAt: timestamp("pick_deadline_at", { withTimezone: true }),
+    winnerEntryId: text("winner_entry_id"),
+    settledAt: timestamp("settled_at", { withTimezone: true }),
     createdAt: createdAt(),
   },
   (t) => [
@@ -299,6 +304,8 @@ export const escrows = pgTable("escrows", {
   createdAt: createdAt(),
 });
 
+export const stakeOutcome = pgEnum("stake_outcome", ["refunded", "forfeited"]);
+
 export const entries = pgTable(
   "entries",
   {
@@ -314,6 +321,8 @@ export const entries = pgTable(
       .references(() => users.id),
     stakeSpendRequestId: text("stake_spend_request_id").references(() => spendRequests.id),
     status: entryStatus().notNull(),
+    // Set when the bounty settles or voids: the stake went back to the owner or to platform fees.
+    stakeOutcome: stakeOutcome("stake_outcome"),
     createdAt: createdAt(),
   },
   (t) => [
@@ -335,4 +344,29 @@ export const submissions = pgTable(
     submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("submissions_entry_idx").on(t.entryId)],
+);
+
+export const judgeVerifier = pgEnum("judge_verifier", ["extract_data_v1", "poster_pick", "fallback_earliest"]);
+
+// One row per submission and verifier: the full audit of how a score was reached.
+export const judgements = pgTable(
+  "judgements",
+  {
+    id: text().primaryKey(),
+    submissionId: text("submission_id")
+      .notNull()
+      .references(() => submissions.id),
+    verifier: judgeVerifier().notNull(),
+    score: integer().notNull(),
+    rationale: text().notNull(),
+    model: text(),
+    promptHash: text("prompt_hash"),
+    rawOutput: jsonb("raw_output").notNull(),
+    flagged: boolean().notNull().default(false),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("judgements_score_range", sql`${t.score} between 0 and 100`),
+    uniqueIndex("judgements_submission_verifier_idx").on(t.submissionId, t.verifier),
+  ],
 );
