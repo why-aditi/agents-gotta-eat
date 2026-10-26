@@ -8,7 +8,7 @@ export {
   toBountyDto,
   type BountyRow,
 } from "./bounties";
-export { startDeadlineSweep, sweepDeadlines } from "./deadlines";
+export { startDeadlineSweep, sweepDeadlines, type SweepDeps } from "./deadlines";
 export {
   enterBounty,
   getEntryFor,
@@ -20,6 +20,9 @@ export {
   type EnterResult,
 } from "./entries";
 export {
+  AI_RANK_MAX_ATTEMPTS,
+  aiRankBounty,
+  type AiRankOutcome,
   autoWinner,
   entryPassed,
   getResultsFor,

@@ -38,3 +38,24 @@ Fake gateway: a tiny Fastify/http server in `apps/api/test/fake-gateway.ts` with
 ## Done when
 
 All repo checks pass; `pnpm openapi:export` leaves no diff; `.env.example` and `render.yaml` updated if new vars.
+
+## Changes made during the build
+
+| Area | Change |
+| --- | --- |
+| Module | `apps/api/src/modules/llm/` also has `config.ts` (`llmConfigFromEnv`: null without `GATEWAY_URL`, which makes compile 502, gate 2 ask and skips AI ranking) and `index.ts` |
+| `llm_calls` | One row per gateway request: the repair retry is its own row, and a reply that fails the schema is marked `invalid_output`. The budget counts today's rows except `over_budget` ones (they never reached the gateway); the repair retry is budget-checked too. No extra columns beyond the spec |
+| Retries | Timeouts and gateway errors (non-2xx, unreachable) are not retried: the gateway already falls back across providers. Only invalid output gets the repair retry |
+| Untrusted text | Neutralising replaces any run of `<<<` in the text with spaced brackets (`< < <`). The owner's mandate words are wrapped too, and so is the payee agent's name in gate 2 |
+| Gate 2 input | `IntentCheckInput` gains `payeeName` and `bounty {title, brief}` (extract_data `instructions` or creative_writing `brief`, clipped to 4,000 chars). `IntentResult` gains `detail`, merged into the decision detail: `model`, `servedModel`, `llmCallId`, `modelVerdict`, `lowConfidence`, or `failure` on a fail-closed ask |
+| Gate 2 confidence | confidence < 70 turns any model verdict (deny included) into `ask`, as written; gate 1's verdict still holds through combine |
+| Gate 2 ordering | `createSpendRequest` runs gate 1 on an unlocked read (wallet row balance, no transaction), then gate 2 only if that did not deny, then the transaction re-runs gate 1 under the lock. If the unlocked check denied but the locked one doesn't (state changed in between), gate 2 is recorded as `ask` "Intent check unavailable" with `skipped: true`. Stakes still call the intent check inside the arena's transaction, which is safe because the LLM check returns at once for stakes |
+| Selection | `selectIntentCheck(POLICY_GATE2_STUB, llm)`: a non-empty stub wins; else the LLM check if a gateway is configured; else stub `ask` (unchanged default for tests and local dev) |
+| Compile | 404 for someone else's agent (as the other mandate routes), 403 for an agent key. New error code `compile_failed` (502). `CompileMandateRequest`/`CompileMandateResponse` in `packages/schemas`; `notes` at most 20 strings of 500 chars |
+| AI judge | The second opinion for a flagged entry scores that entry alone (`{score, rationale}`), so it is independent of the other entries. If it fails, the whole ranking fails (no ranking). The stored rationale is the one that gave the lower score. Submissions are clipped to 12,000 chars in the prompt (brief and rubric to 4,000). `promptHash` is sha256 of the first call's messages; `model` is the served model |
+| Retry tracking | Added `bounties.ai_rank_attempts` (int, default 0) beside `ai_ranked_at`/`ai_rank_failed_at`: at most 2 attempts (`AI_RANK_MAX_ATTEMPTS`). A bounty with no submissions is marked ranked without a call |
+| When the judge runs | Only the background sweep (`server.ts`, every 60 s) passes the ranker to `sweepDeadlines`. Bounty reads also sweep, but without the ranker, so a GET never waits on a model call. If the poster picks while the judge call is in flight, the late ranking is not recorded |
+| Fallback | `fallback_ai_top` judgement is score 100 (like `poster_pick` and `fallback_earliest`), with `aiScore` in its raw output |
+| Results | The poster can now read `GET /v1/bounties/:id/results` while the bounty is judging (to see the AI ranking before picking); everyone else still gets 409 until settled or voided. Results' `score` is the best judgement score, which now includes the AI score |
+| Env | No new variables (`GATEWAY_URL`, `LITELLM_MASTER_KEY`, `LLM_DAILY_REQUEST_BUDGET` already existed). `render.yaml` keeps `POLICY_GATE2_STUB=allow` with a comment: remove it once the gateway has working keys, or the stub keeps winning |
+| Tests | `test/fake-gateway.ts` is a plain `node:http` server (no Fastify). `resetDb` also truncates `llm_calls` and `judgements` |

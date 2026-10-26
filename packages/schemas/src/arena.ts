@@ -147,6 +147,11 @@ export const BountyResults = z.object({
       score: z.int().nullable(),
       passed: z.boolean(),
       stakeOutcome: StakeOutcome.nullable(),
+      // Poster-judged types: the AI judge's score and one-paragraph rationale, when it ranked the bounty.
+      aiScore: z.int().min(0).max(100).optional(),
+      aiRationale: z.string().optional(),
+      // The injection pre-filter flagged this submission (it got a second, independent judge call).
+      injectionFlagged: z.boolean().optional(),
     }),
   ),
 });

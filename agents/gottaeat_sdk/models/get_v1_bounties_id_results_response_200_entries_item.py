@@ -14,6 +14,7 @@ from ..models.get_v1_bounties_id_results_response_200_entries_item_stake_outcome
 from ..models.get_v1_bounties_id_results_response_200_entries_item_status import (
     GetV1BountiesIdResultsResponse200EntriesItemStatus,
 )
+from ..types import UNSET, Unset
 from typing import cast
 
 
@@ -30,6 +31,9 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
         score (int | None):
         passed (bool):
         stake_outcome (GetV1BountiesIdResultsResponse200EntriesItemStakeOutcomeType0 | None):
+        ai_score (int | Unset):
+        ai_rationale (str | Unset):
+        injection_flagged (bool | Unset):
     """
 
     entry_id: str
@@ -38,6 +42,9 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
     score: int | None
     passed: bool
     stake_outcome: GetV1BountiesIdResultsResponse200EntriesItemStakeOutcomeType0 | None
+    ai_score: int | Unset = UNSET
+    ai_rationale: str | Unset = UNSET
+    injection_flagged: bool | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         entry_id = self.entry_id
@@ -57,6 +64,12 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
         else:
             stake_outcome = self.stake_outcome
 
+        ai_score = self.ai_score
+
+        ai_rationale = self.ai_rationale
+
+        injection_flagged = self.injection_flagged
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -69,6 +82,12 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
                 "stakeOutcome": stake_outcome,
             }
         )
+        if ai_score is not UNSET:
+            field_dict["aiScore"] = ai_score
+        if ai_rationale is not UNSET:
+            field_dict["aiRationale"] = ai_rationale
+        if injection_flagged is not UNSET:
+            field_dict["injectionFlagged"] = injection_flagged
 
         return field_dict
 
@@ -105,6 +124,12 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
 
         stake_outcome = _parse_stake_outcome(d.pop("stakeOutcome"))
 
+        ai_score = d.pop("aiScore", UNSET)
+
+        ai_rationale = d.pop("aiRationale", UNSET)
+
+        injection_flagged = d.pop("injectionFlagged", UNSET)
+
         get_v1_bounties_id_results_response_200_entries_item = cls(
             entry_id=entry_id,
             agent_id=agent_id,
@@ -112,6 +137,9 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
             score=score,
             passed=passed,
             stake_outcome=stake_outcome,
+            ai_score=ai_score,
+            ai_rationale=ai_rationale,
+            injection_flagged=injection_flagged,
         )
 
         return get_v1_bounties_id_results_response_200_entries_item

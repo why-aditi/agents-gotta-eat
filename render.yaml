@@ -19,6 +19,8 @@ services:
         sync: false
       - key: WEB_ORIGINS
         sync: false
+      # Wins over the LLM intent check while set. Remove it once the gateway has working keys, so gate 2 uses
+      # GATEWAY_URL (pm-06).
       - key: POLICY_GATE2_STUB
         value: allow
       - key: ALLOW_DEV_CREDIT

@@ -7,6 +7,7 @@ class GetV1BountiesIdResponse404ErrorCode(StrEnum):
     APPROVAL_EXPIRED = "approval_expired"
     BOUNTY_CLOSED = "bounty_closed"
     BOUNTY_HAS_ENTRIES = "bounty_has_entries"
+    COMPILE_FAILED = "compile_failed"
     DEADLINE_PASSED = "deadline_passed"
     ENTRY_NOT_ACTIVE = "entry_not_active"
     ENTRY_NOT_SUBMITTED = "entry_not_submitted"

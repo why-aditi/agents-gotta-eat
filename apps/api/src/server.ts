@@ -3,6 +3,8 @@
 import { buildApp, type AppEnv } from "./app";
 import { createDb, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
+import { aiRanker } from "./modules/judge";
+import { llmConfigFromEnv } from "./modules/llm";
 import { startExpirySweep } from "./modules/policy";
 
 function envFromProcess(): AppEnv {
@@ -14,6 +16,9 @@ function envFromProcess(): AppEnv {
     API_URL: process.env.API_URL,
     PUBLIC_API_URL: process.env.PUBLIC_API_URL,
     POLICY_GATE2_STUB: process.env.POLICY_GATE2_STUB,
+    GATEWAY_URL: process.env.GATEWAY_URL,
+    LITELLM_MASTER_KEY: process.env.LITELLM_MASTER_KEY,
+    LLM_DAILY_REQUEST_BUDGET: process.env.LLM_DAILY_REQUEST_BUDGET,
     ALLOW_DEV_CREDIT: process.env.ALLOW_DEV_CREDIT,
     ALLOW_DEV_FUNDING: process.env.ALLOW_DEV_FUNDING,
     AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
@@ -37,9 +42,14 @@ try {
   await app.listen({ port: Number(process.env.PORT ?? 3001), host: "0.0.0.0" });
   // Releases approvals left pending past their 15 minutes.
   stopSweep = startExpirySweep(db, 60_000, (err) => app.log.error({ err }, "approval expiry sweep failed"));
-  // Moves open bounties past their deadline to judging, judges them and runs the pick fallback.
-  stopDeadlineSweep = startDeadlineSweep(db, 60_000, (err, bountyId) =>
-    app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
+  // Moves open bounties past their deadline to judging, judges them (the AI judge ranks creative_writing when a
+  // gateway is configured) and runs the pick fallback.
+  const llm = llmConfigFromEnv(db, env);
+  stopDeadlineSweep = startDeadlineSweep(
+    db,
+    60_000,
+    (err, bountyId) => app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
+    llm ? { rankCreativeWriting: aiRanker(llm) } : undefined,
   );
 } catch (err) {
   app.log.error(err);

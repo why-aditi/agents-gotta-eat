@@ -409,6 +409,45 @@ from .post_v1_admin_wallets_user_id_credit_response_422_error_detail import (
 )
 from .post_v1_agents_body import PostV1AgentsBody
 from .post_v1_agents_body_kind import PostV1AgentsBodyKind
+from .post_v1_agents_id_mandate_compile_body import PostV1AgentsIdMandateCompileBody
+from .post_v1_agents_id_mandate_compile_response_200 import PostV1AgentsIdMandateCompileResponse200
+from .post_v1_agents_id_mandate_compile_response_200_rules import PostV1AgentsIdMandateCompileResponse200Rules
+from .post_v1_agents_id_mandate_compile_response_200_rules_allowed_categories_item import (
+    PostV1AgentsIdMandateCompileResponse200RulesAllowedCategoriesItem,
+)
+from .post_v1_agents_id_mandate_compile_response_200_rules_scope import (
+    PostV1AgentsIdMandateCompileResponse200RulesScope,
+)
+from .post_v1_agents_id_mandate_compile_response_400 import PostV1AgentsIdMandateCompileResponse400
+from .post_v1_agents_id_mandate_compile_response_400_error import PostV1AgentsIdMandateCompileResponse400Error
+from .post_v1_agents_id_mandate_compile_response_400_error_code import PostV1AgentsIdMandateCompileResponse400ErrorCode
+from .post_v1_agents_id_mandate_compile_response_400_error_detail import (
+    PostV1AgentsIdMandateCompileResponse400ErrorDetail,
+)
+from .post_v1_agents_id_mandate_compile_response_401 import PostV1AgentsIdMandateCompileResponse401
+from .post_v1_agents_id_mandate_compile_response_401_error import PostV1AgentsIdMandateCompileResponse401Error
+from .post_v1_agents_id_mandate_compile_response_401_error_code import PostV1AgentsIdMandateCompileResponse401ErrorCode
+from .post_v1_agents_id_mandate_compile_response_401_error_detail import (
+    PostV1AgentsIdMandateCompileResponse401ErrorDetail,
+)
+from .post_v1_agents_id_mandate_compile_response_403 import PostV1AgentsIdMandateCompileResponse403
+from .post_v1_agents_id_mandate_compile_response_403_error import PostV1AgentsIdMandateCompileResponse403Error
+from .post_v1_agents_id_mandate_compile_response_403_error_code import PostV1AgentsIdMandateCompileResponse403ErrorCode
+from .post_v1_agents_id_mandate_compile_response_403_error_detail import (
+    PostV1AgentsIdMandateCompileResponse403ErrorDetail,
+)
+from .post_v1_agents_id_mandate_compile_response_404 import PostV1AgentsIdMandateCompileResponse404
+from .post_v1_agents_id_mandate_compile_response_404_error import PostV1AgentsIdMandateCompileResponse404Error
+from .post_v1_agents_id_mandate_compile_response_404_error_code import PostV1AgentsIdMandateCompileResponse404ErrorCode
+from .post_v1_agents_id_mandate_compile_response_404_error_detail import (
+    PostV1AgentsIdMandateCompileResponse404ErrorDetail,
+)
+from .post_v1_agents_id_mandate_compile_response_502 import PostV1AgentsIdMandateCompileResponse502
+from .post_v1_agents_id_mandate_compile_response_502_error import PostV1AgentsIdMandateCompileResponse502Error
+from .post_v1_agents_id_mandate_compile_response_502_error_code import PostV1AgentsIdMandateCompileResponse502ErrorCode
+from .post_v1_agents_id_mandate_compile_response_502_error_detail import (
+    PostV1AgentsIdMandateCompileResponse502ErrorDetail,
+)
 from .post_v1_agents_id_mandate_confirm_body import PostV1AgentsIdMandateConfirmBody
 from .post_v1_agents_id_mandate_confirm_response_200 import PostV1AgentsIdMandateConfirmResponse200
 from .post_v1_agents_id_mandate_confirm_response_200_rules import PostV1AgentsIdMandateConfirmResponse200Rules
@@ -1120,6 +1159,31 @@ __all__ = (
     "PostV1AdminWalletsUserIdCreditResponse422ErrorDetail",
     "PostV1AgentsBody",
     "PostV1AgentsBodyKind",
+    "PostV1AgentsIdMandateCompileBody",
+    "PostV1AgentsIdMandateCompileResponse200",
+    "PostV1AgentsIdMandateCompileResponse200Rules",
+    "PostV1AgentsIdMandateCompileResponse200RulesAllowedCategoriesItem",
+    "PostV1AgentsIdMandateCompileResponse200RulesScope",
+    "PostV1AgentsIdMandateCompileResponse400",
+    "PostV1AgentsIdMandateCompileResponse400Error",
+    "PostV1AgentsIdMandateCompileResponse400ErrorCode",
+    "PostV1AgentsIdMandateCompileResponse400ErrorDetail",
+    "PostV1AgentsIdMandateCompileResponse401",
+    "PostV1AgentsIdMandateCompileResponse401Error",
+    "PostV1AgentsIdMandateCompileResponse401ErrorCode",
+    "PostV1AgentsIdMandateCompileResponse401ErrorDetail",
+    "PostV1AgentsIdMandateCompileResponse403",
+    "PostV1AgentsIdMandateCompileResponse403Error",
+    "PostV1AgentsIdMandateCompileResponse403ErrorCode",
+    "PostV1AgentsIdMandateCompileResponse403ErrorDetail",
+    "PostV1AgentsIdMandateCompileResponse404",
+    "PostV1AgentsIdMandateCompileResponse404Error",
+    "PostV1AgentsIdMandateCompileResponse404ErrorCode",
+    "PostV1AgentsIdMandateCompileResponse404ErrorDetail",
+    "PostV1AgentsIdMandateCompileResponse502",
+    "PostV1AgentsIdMandateCompileResponse502Error",
+    "PostV1AgentsIdMandateCompileResponse502ErrorCode",
+    "PostV1AgentsIdMandateCompileResponse502ErrorDetail",
     "PostV1AgentsIdMandateConfirmBody",
     "PostV1AgentsIdMandateConfirmResponse200",
     "PostV1AgentsIdMandateConfirmResponse200Rules",

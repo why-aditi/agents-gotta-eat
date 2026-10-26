@@ -2,7 +2,13 @@
 
 // Mandate actions for the agent detail page. Server actions are public endpoints, so inputs are checked here
 // before they reach the api (which validates again).
-import { ConfirmMandateRequest, Mandate, PutMandateRequest } from "@gottaeat/schemas";
+import {
+  CompileMandateRequest,
+  CompileMandateResponse,
+  ConfirmMandateRequest,
+  Mandate,
+  PutMandateRequest,
+} from "@gottaeat/schemas";
 import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "@/lib/actions";
 import { apiFetch } from "@/lib/api";
@@ -20,6 +26,19 @@ export async function saveMandate(agentId: string, input: PutMandateRequest): Pr
   );
   if (result.ok) revalidatePath(`/agents/${agentId}`);
   return result;
+}
+
+// Asks the api's mandate compiler to turn the owner's words into rules. Saves nothing.
+export async function compileMandate(
+  agentId: string,
+  sourceText: string,
+): Promise<ActionResult<CompileMandateResponse>> {
+  if (!ID_RE.test(agentId)) return invalid("Unknown agent.");
+  const parsed = CompileMandateRequest.safeParse({ sourceText });
+  if (!parsed.success) return invalid("Describe what this agent may spend on first (up to 4,000 characters).");
+  return runAction(() =>
+    apiFetch(CompileMandateResponse, `${agentPath(agentId)}/mandate/compile`, { method: "POST", body: parsed.data }),
+  );
 }
 
 export async function confirmMandate(agentId: string, version: number): Promise<ActionResult<Mandate>> {
