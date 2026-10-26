@@ -101,10 +101,20 @@ class FakeLlm:
         return LlmClient(GATEWAY, "test-key", transport=httpx.MockTransport(self.handler))
 
 
+RUN_STEP_ROUTE = "agent_runs"
+
+
 @pytest.fixture
 def api_mock() -> Iterator[respx.MockRouter]:
     with respx.mock(base_url=API, assert_all_called=False) as router:
+        # Run steps are accepted by default; tests read them through run_steps(router).
+        router.post("/v1/agent-runs", name=RUN_STEP_ROUTE).respond(201, json={"id": "run_1"})
         yield router
+
+
+def run_steps(router: respx.MockRouter) -> list[dict[str, Any]]:
+    """The bodies POSTed to /v1/agent-runs, in order."""
+    return [json.loads(call.request.content) for call in router.routes[RUN_STEP_ROUTE].calls]
 
 
 MakeCtx = Callable[..., AgentContext]

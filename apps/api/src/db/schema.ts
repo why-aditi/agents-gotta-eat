@@ -2,6 +2,7 @@
 import { sql } from "drizzle-orm";
 import {
   bigint,
+  bigserial,
   boolean,
   check,
   index,
@@ -401,4 +402,64 @@ export const llmCalls = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index("llm_calls_created_idx").on(t.createdAt)],
+);
+
+// Append-only event log behind GET /v1/events: written in the same transaction as the state change it reports,
+// read by the events poller, replayed by Last-Event-ID, pruned after 30 days. No foreign keys: it is a log.
+export const events = pgTable(
+  "events",
+  {
+    id: bigserial({ mode: "number" }).primaryKey(),
+    type: text().notNull(),
+    scope: text().notNull(),
+    ownerId: text("owner_id"),
+    bountyId: text("bounty_id"),
+    data: jsonb().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check(
+      "events_scope",
+      sql`(${t.scope} = 'public' and ${t.ownerId} is null) or (${t.scope} = 'owner' and ${t.ownerId} is not null)`,
+    ),
+    index("events_bounty_id_idx").on(t.bountyId, t.id),
+    index("events_owner_id_idx").on(t.ownerId, t.id),
+    index("events_created_idx").on(t.createdAt),
+  ],
+);
+
+export const agentRunStep = pgEnum("agent_run_step", [
+  "enter_decision",
+  "plan",
+  "work",
+  "self_check",
+  "spend",
+  "submit",
+  "stop",
+]);
+
+// One row per step an agent reports. Agent-supplied text (summary, input, output) is untrusted: stored as text,
+// rendered as plain text, never put in a prompt.
+export const agentRuns = pgTable(
+  "agent_runs",
+  {
+    id: text().primaryKey(),
+    agentId: text("agent_id")
+      .notNull()
+      .references(() => agents.id),
+    bountyId: text("bounty_id").references(() => bounties.id),
+    step: agentRunStep().notNull(),
+    tool: text(),
+    summary: text().notNull(),
+    input: text(),
+    output: text(),
+    tokens: integer(),
+    latencyMs: integer("latency_ms"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("agent_runs_counts_nonneg", sql`coalesce(${t.tokens}, 0) >= 0 and coalesce(${t.latencyMs}, 0) >= 0`),
+    index("agent_runs_agent_created_idx").on(t.agentId, t.createdAt),
+    index("agent_runs_created_idx").on(t.createdAt),
+  ],
 );

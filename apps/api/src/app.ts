@@ -8,7 +8,9 @@ import { registerCors } from "./http/cors";
 import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { adminRoutes } from "./modules/admin";
 import { arenaRoutes, registerArenaHooks } from "./modules/arena";
+import { DEFAULT_HEARTBEAT_MS, EventBus, eventsRoutes } from "./modules/events";
 import { identityRoutes } from "./modules/identity";
 import { mcpRoutes } from "./modules/mcp";
 import { policyRoutes } from "./modules/policy";
@@ -38,12 +40,17 @@ export interface BuildAppOptions {
   db: Db;
   env: AppEnv;
   logger?: FastifyServerOptions["logger"];
+  // The SSE fan-out. buildApp makes one that isn't polling; server.ts starts it (tests poll it by hand).
+  eventBus?: EventBus;
+  eventsHeartbeatMs?: number;
 }
 
 declare module "fastify" {
   interface FastifyInstance {
     db: Db;
     env: AppEnv;
+    eventBus: EventBus;
+    eventsHeartbeatMs: number;
   }
 }
 
@@ -53,6 +60,8 @@ export function buildApp(opts: BuildAppOptions) {
   app.setSerializerCompiler(serializerCompiler);
   app.decorate("db", opts.db);
   app.decorate("env", opts.env);
+  app.decorate("eventBus", opts.eventBus ?? new EventBus(opts.db));
+  app.decorate("eventsHeartbeatMs", opts.eventsHeartbeatMs ?? DEFAULT_HEARTBEAT_MS);
   // Policy tells the arena when an entry stake settles or is released.
   registerArenaHooks();
 
@@ -79,7 +88,9 @@ export function buildApp(opts: BuildAppOptions) {
     await api.register(identityRoutes);
     await api.register(policyRoutes);
     await api.register(arenaRoutes);
+    await api.register(eventsRoutes);
     await api.register(mcpRoutes);
+    await api.register(adminRoutes);
   });
 
   return app;

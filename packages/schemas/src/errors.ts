@@ -25,6 +25,7 @@ export const ErrorCode = z.enum([
   "not_poster_judged",
   "not_judging",
   "entry_not_submitted",
+  "rate_limited",
   "compile_failed",
   "internal",
 ]);

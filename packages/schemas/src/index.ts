@@ -13,3 +13,5 @@ export * from "./errors";
 export * from "./mcp";
 export * from "./policy";
 export * from "./arena";
+export * from "./admin";
+export * from "./events";

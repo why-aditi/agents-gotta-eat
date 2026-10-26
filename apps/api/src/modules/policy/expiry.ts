@@ -3,6 +3,8 @@
 import { and, asc, eq, lte } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { spendRequests } from "../../db/schema";
+import { toJsonCents } from "../../lib/cents";
+import { agentName, publish } from "../events";
 import { release } from "../ledger";
 import { insertDecision, ledgerKey, type SpendRow } from "./requests";
 import { stakeHooks } from "./stake-hooks";
@@ -28,6 +30,19 @@ export async function expireLocked(tx: Tx, row: SpendRow, now: Date): Promise<Sp
     verdict: "deny",
     detail: { expired: true },
     now,
+  });
+  await publish(tx, {
+    type: "approval.decided",
+    bountyId: row.bountyId,
+    ownerId: row.ownerId,
+    data: {
+      spendRequestId: row.id,
+      agentId: row.agentId,
+      agentName: await agentName(tx, row.agentId),
+      amountCents: toJsonCents(row.amountCents + row.feeCents),
+      category: row.category,
+      decision: "expired",
+    },
   });
   if (row.category === "stake") await stakeHooks().onStakeReleased(tx, row.id);
   return updated;

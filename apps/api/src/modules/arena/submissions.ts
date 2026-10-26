@@ -16,6 +16,7 @@ import type { AgentPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { canonicalJson } from "../../http/idempotency";
 import { newId } from "../../lib/ids";
+import { agentName, publish } from "../events";
 import { lockBounty } from "./bounties";
 
 // Strict, so a body shaped for the other task type is a 400 rather than silently stripped.
@@ -90,6 +91,18 @@ export async function submitWork(
       .returning();
     if (!row) throw new Error("submission was not inserted");
     await tx.update(entries).set({ status: "submitted" }).where(eq(entries.id, entry.id));
+    // Never the content: only that the entry submitted.
+    await publish(tx, {
+      type: "submission.received",
+      bountyId: bounty.id,
+      data: {
+        bountyId: bounty.id,
+        title: bounty.title,
+        entryId: entry.id,
+        agentId: entry.agentId,
+        agentName: await agentName(tx, entry.agentId),
+      },
+    });
     return toSubmissionDto(row);
   });
 }

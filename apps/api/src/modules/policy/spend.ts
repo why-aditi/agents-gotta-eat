@@ -20,7 +20,9 @@ import type { Db, Tx } from "../../db";
 import { agents, bounties, entries, spendRequests, wallets } from "../../db/schema";
 import type { AgentPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
+import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
+import { agentName, publish } from "../events";
 import { hold, lockWallet, settle, stakeFromHold, subcontractFee } from "../ledger";
 import { combine } from "./combine";
 import { type BountyFacts, evaluateHardRules, type PayeeFacts } from "./gate1";
@@ -282,6 +284,23 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
       idempotencyKey: ledgerKey.settle(id),
     });
   }
+
+  // The owner's live view: every decision, including the ones waiting for them.
+  await publish(tx, {
+    type: "spend.decided",
+    bountyId,
+    ownerId: principal.ownerId,
+    data: {
+      spendRequestId: id,
+      agentId: principal.agentId,
+      agentName: await agentName(tx, principal.agentId),
+      bountyId,
+      amountCents: toJsonCents(totalCents),
+      category,
+      decision: OUTCOME[status],
+      reasons,
+    },
+  });
 
   return { id, status, decision: OUTCOME[status], reasons } satisfies CreateSpendResponse;
 }

@@ -3,6 +3,7 @@
 import { buildApp, type AppEnv } from "./app";
 import { createDb, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
+import { startPruneSweep } from "./modules/events";
 import { aiRanker } from "./modules/judge";
 import { llmConfigFromEnv } from "./modules/llm";
 import { startExpirySweep } from "./modules/policy";
@@ -31,10 +32,14 @@ const { pool, db } = createDb(requireDatabaseUrl());
 const app = buildApp({ db, env });
 let stopSweep: (() => void) | undefined;
 let stopDeadlineSweep: (() => void) | undefined;
-// Hooks run in order: stop the sweep before the pool closes.
+let stopEvents: (() => void) | undefined;
+let stopPrune: (() => void) | undefined;
+// Hooks run in order: stop the sweeps before the pool closes.
 app.addHook("onClose", async () => {
   stopSweep?.();
   stopDeadlineSweep?.();
+  stopEvents?.();
+  stopPrune?.();
 });
 app.addHook("onClose", () => pool.end());
 
@@ -51,6 +56,10 @@ try {
     (err, bountyId) => app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
     llm ? { rankCreativeWriting: aiRanker(llm) } : undefined,
   );
+  // Fans new events out to the open SSE streams, polling once a second.
+  stopEvents = app.eventBus.start(1000, (err) => app.log.error({ err }, "event poll failed"));
+  // Deletes events and agent runs older than 30 days, at startup and then daily.
+  stopPrune = startPruneSweep(db, (err) => app.log.error({ err }, "event prune failed"));
 } catch (err) {
   app.log.error(err);
   process.exit(1);
