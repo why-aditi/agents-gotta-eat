@@ -8,6 +8,7 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
+from ...models.get_v1_bounties_mine import GetV1BountiesMine
 from ...models.get_v1_bounties_response_200 import GetV1BountiesResponse200
 from ...models.get_v1_bounties_response_400 import GetV1BountiesResponse400
 from ...models.get_v1_bounties_response_401 import GetV1BountiesResponse401
@@ -19,8 +20,9 @@ from typing import cast
 
 def _get_kwargs(
     *,
-    status: GetV1BountiesStatus | Unset = GetV1BountiesStatus.OPEN,
+    status: GetV1BountiesStatus | Unset = UNSET,
     type_: GetV1BountiesType | Unset = UNSET,
+    mine: GetV1BountiesMine | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
@@ -36,6 +38,12 @@ def _get_kwargs(
         json_type_ = type_.value
 
     params["type"] = json_type_
+
+    json_mine: str | Unset = UNSET
+    if not isinstance(mine, Unset):
+        json_mine = mine.value
+
+    params["mine"] = json_mine
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -86,16 +94,19 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-    status: GetV1BountiesStatus | Unset = GetV1BountiesStatus.OPEN,
+    status: GetV1BountiesStatus | Unset = UNSET,
     type_: GetV1BountiesType | Unset = UNSET,
+    mine: GetV1BountiesMine | Unset = UNSET,
 ) -> Response[GetV1BountiesResponse200 | GetV1BountiesResponse400 | GetV1BountiesResponse401]:
     """Bounties by status (default open), newest first (at most 100)
 
-     `status=draft` lists only the caller's own drafts.
+     `status=draft` lists only the caller's own drafts. `mine=true` (users only; 400 for an agent key)
+    lists the caller's own bounties in every status, or in `status` when given.
 
     Args:
-        status (GetV1BountiesStatus | Unset):  Default: GetV1BountiesStatus.OPEN.
+        status (GetV1BountiesStatus | Unset):
         type_ (GetV1BountiesType | Unset):
+        mine (GetV1BountiesMine | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -108,6 +119,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         status=status,
         type_=type_,
+        mine=mine,
     )
 
     response = client.get_httpx_client().request(
@@ -120,16 +132,19 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-    status: GetV1BountiesStatus | Unset = GetV1BountiesStatus.OPEN,
+    status: GetV1BountiesStatus | Unset = UNSET,
     type_: GetV1BountiesType | Unset = UNSET,
+    mine: GetV1BountiesMine | Unset = UNSET,
 ) -> GetV1BountiesResponse200 | GetV1BountiesResponse400 | GetV1BountiesResponse401 | None:
     """Bounties by status (default open), newest first (at most 100)
 
-     `status=draft` lists only the caller's own drafts.
+     `status=draft` lists only the caller's own drafts. `mine=true` (users only; 400 for an agent key)
+    lists the caller's own bounties in every status, or in `status` when given.
 
     Args:
-        status (GetV1BountiesStatus | Unset):  Default: GetV1BountiesStatus.OPEN.
+        status (GetV1BountiesStatus | Unset):
         type_ (GetV1BountiesType | Unset):
+        mine (GetV1BountiesMine | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -143,22 +158,26 @@ def sync(
         client=client,
         status=status,
         type_=type_,
+        mine=mine,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-    status: GetV1BountiesStatus | Unset = GetV1BountiesStatus.OPEN,
+    status: GetV1BountiesStatus | Unset = UNSET,
     type_: GetV1BountiesType | Unset = UNSET,
+    mine: GetV1BountiesMine | Unset = UNSET,
 ) -> Response[GetV1BountiesResponse200 | GetV1BountiesResponse400 | GetV1BountiesResponse401]:
     """Bounties by status (default open), newest first (at most 100)
 
-     `status=draft` lists only the caller's own drafts.
+     `status=draft` lists only the caller's own drafts. `mine=true` (users only; 400 for an agent key)
+    lists the caller's own bounties in every status, or in `status` when given.
 
     Args:
-        status (GetV1BountiesStatus | Unset):  Default: GetV1BountiesStatus.OPEN.
+        status (GetV1BountiesStatus | Unset):
         type_ (GetV1BountiesType | Unset):
+        mine (GetV1BountiesMine | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,6 +190,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         status=status,
         type_=type_,
+        mine=mine,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -181,16 +201,19 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-    status: GetV1BountiesStatus | Unset = GetV1BountiesStatus.OPEN,
+    status: GetV1BountiesStatus | Unset = UNSET,
     type_: GetV1BountiesType | Unset = UNSET,
+    mine: GetV1BountiesMine | Unset = UNSET,
 ) -> GetV1BountiesResponse200 | GetV1BountiesResponse400 | GetV1BountiesResponse401 | None:
     """Bounties by status (default open), newest first (at most 100)
 
-     `status=draft` lists only the caller's own drafts.
+     `status=draft` lists only the caller's own drafts. `mine=true` (users only; 400 for an agent key)
+    lists the caller's own bounties in every status, or in `status` when given.
 
     Args:
-        status (GetV1BountiesStatus | Unset):  Default: GetV1BountiesStatus.OPEN.
+        status (GetV1BountiesStatus | Unset):
         type_ (GetV1BountiesType | Unset):
+        mine (GetV1BountiesMine | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -205,5 +228,6 @@ async def asyncio(
             client=client,
             status=status,
             type_=type_,
+            mine=mine,
         )
     ).parsed
