@@ -30,6 +30,7 @@ export const ErrorCode = z.enum([
   "escrow_not_authorized",
   "below_minimum",
   "no_paypal_email",
+  "account_frozen",
   "rate_limited",
   "compile_failed",
   "internal",

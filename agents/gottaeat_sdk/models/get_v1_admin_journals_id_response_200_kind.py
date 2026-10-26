@@ -2,6 +2,7 @@ from enum import StrEnum
 
 
 class GetV1AdminJournalsIdResponse200Kind(StrEnum):
+    CLAWBACK = "clawback"
     FEE = "fee"
     HIRE = "hire"
     PAYOUT = "payout"

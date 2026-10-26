@@ -4,15 +4,20 @@ import type { LightMyRequestResponse } from "fastify";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import {
   buildTestApp,
+  bountyRequest,
   createAgent,
+  createMandate,
+  createTestBounty,
   createTestDb,
   createUserWithWallet,
   resetDb,
   signUserToken,
   topUp,
 } from "../../../test/db";
-import { payouts, topups, users, webhookEvents } from "../../db/schema";
-import { getBalances, reconcile } from "../ledger";
+import { escrows, events, payouts, topups, users, webhookEvents } from "../../db/schema";
+import { accountBalance } from "../ledger/wallets";
+import { getBalances, owedCents, PLATFORM_FEES, reconcile } from "../ledger";
+import { createSpendRequest, stubIntentCheck } from "../policy";
 import { configurePayPal } from "../paypal";
 import { apiCalls, type Call, json, makeClient } from "../paypal/test-utils";
 import { pollPayouts, processWebhookEvent, registerWebhookHandler, sendPayout, setPaymentQueue } from "./index";
@@ -149,7 +154,8 @@ describe("top-ups", () => {
     expect(res.statusCode, res.body).toBe(201);
     return res.json() as { topupId: string; orderId: string };
   }
-  const capturedEvent = (topupId: string, orderId: string, value = "25.00", eventOrderId = orderId) =>
+  // $25.00 credit + $1.42 fee.
+  const capturedEvent = (topupId: string, orderId: string, value = "26.42", eventOrderId = orderId) =>
     webhook("PAYMENT.CAPTURE.COMPLETED", {
       id: `CAP-${orderId}`,
       custom_id: `topup:${topupId}`,
@@ -157,25 +163,34 @@ describe("top-ups", () => {
       supplementary_data: { related_ids: { order_id: eventOrderId } },
     });
 
-  it("creates a capture order and returns only ids", async () => {
+  it("creates a capture order for credit + fee and returns ids and amounts", async () => {
     const owner = await newOwner();
     const body = await startTopup(owner);
-    expect(Object.keys(body).sort()).toEqual(["orderId", "topupId"]);
+    expect(Object.keys(body).sort()).toEqual(["feeCents", "orderId", "topupId", "totalCents"]);
+    expect(body).toMatchObject({ feeCents: 142, totalCents: 2642 });
     const [order] = sent();
     expect(order!.headers["PayPal-Request-Id"]).toBe(`topup-order:${body.topupId}`);
     const orderBody = JSON.parse(order!.body!);
     expect(orderBody.intent).toBe("CAPTURE");
     expect(orderBody.purchase_units[0]).toMatchObject({
       custom_id: `topup:${body.topupId}`,
-      amount: { value: "25.00" },
+      amount: { value: "26.42" },
     });
     const [row] = await db.select().from(topups).where(eq(topups.id, body.topupId));
-    expect(row).toMatchObject({ userId: owner, amountCents: 2500n, status: "created", paypalOrderId: body.orderId });
+    expect(row).toMatchObject({
+      userId: owner,
+      amountCents: 2500n,
+      feeCents: 142n,
+      refundedCents: 0n,
+      status: "created",
+      paypalOrderId: body.orderId,
+    });
   });
 
   it("rejects amounts under $1.00, a missing key, an agent and no credentials", async () => {
     const owner = await newOwner();
     expectError(await post(owner, "/v1/wallet/topups", { amountCents: 99 }), 422, "below_minimum");
+    expectError(await post(owner, "/v1/wallet/topups", { amountCents: 1_000_001 }), 400, "validation_error");
     expectError(await post(owner, "/v1/wallet/topups", { amountCents: 100 }, null), 400, "idempotency_key_required");
     const { apiKey } = await createAgent(db, owner);
     const asAgent = await app.inject({
@@ -194,7 +209,7 @@ describe("top-ups", () => {
     const { topupId } = await startTopup(owner);
     const first = await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
     const again = await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
-    expect(first.json()).toEqual({ id: topupId, amountCents: 2500, status: "captured" });
+    expect(first.json()).toEqual({ id: topupId, amountCents: 2500, feeCents: 142, status: "captured" });
     expect(again.statusCode).toBe(200);
     expect(await balance(owner)).toBe(2500n);
     expect(sent().filter((c) => c.path.endsWith("/capture"))).toHaveLength(1);
@@ -230,7 +245,7 @@ describe("top-ups", () => {
     const { topupId } = await startTopup(owner);
     paypal.captureStatus = "PENDING";
     const res = await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
-    expect(res.json()).toEqual({ id: topupId, amountCents: 2500, status: "created" });
+    expect(res.json()).toEqual({ id: topupId, amountCents: 2500, feeCents: 142, status: "created" });
     expect(await balance(owner)).toBe(0n);
     await expectReconciled();
   });
@@ -238,8 +253,8 @@ describe("top-ups", () => {
   it("a capture for a different amount or order credits nothing", async () => {
     const owner = await newOwner();
     const { topupId, orderId } = await startTopup(owner);
-    await capturedEvent(topupId, orderId, "250.00");
-    await capturedEvent(topupId, orderId, "25.00", "SOME-OTHER-ORDER");
+    await capturedEvent(topupId, orderId, "25.00"); // the credit without the fee
+    await capturedEvent(topupId, orderId, "26.42", "SOME-OTHER-ORDER");
     const events = await db.select().from(webhookEvents);
     expect(events.every((e) => e.processedAt === null && e.error?.includes("does not match"))).toBe(true);
     expect(await balance(owner)).toBe(0n);
@@ -641,5 +656,230 @@ describe("POST /webhooks/paypal", () => {
     const [row] = await rows();
     expect(queued).toEqual([row!.id]);
     expect(row!.processedAt).toBeNull();
+  });
+});
+
+describe("refunds, reversals and denials (pm-04c)", () => {
+  // $25.00 credit + $1.42 fee = $26.42 charged.
+  async function capturedTopup(owner: string, amountCents = 2500) {
+    const res = await post(owner, "/v1/wallet/topups", { amountCents });
+    expect(res.statusCode, res.body).toBe(201);
+    const { topupId } = res.json() as { topupId: string };
+    expect((await post(owner, `/v1/wallet/topups/${topupId}/confirm`)).statusCode).toBe(200);
+    const [row] = await db.select().from(topups).where(eq(topups.id, topupId));
+    return { topupId, captureId: row!.captureId! };
+  }
+  const topupRow = async (id: string) => (await db.select().from(topups).where(eq(topups.id, id)))[0]!;
+  const refund = (captureId: string, refundId: string, value: string) => ({
+    id: refundId,
+    status: "COMPLETED",
+    amount: { currency_code: "USD", value },
+    links: [
+      { href: `https://api.sandbox.paypal.com/v2/payments/refunds/${refundId}`, rel: "self", method: "GET" },
+      { href: `https://api.sandbox.paypal.com/v2/payments/captures/${captureId}`, rel: "up", method: "GET" },
+    ],
+  });
+  const refunded = (captureId: string, refundId: string, value: string, id?: string) =>
+    webhook("PAYMENT.CAPTURE.REFUNDED", refund(captureId, refundId, value), id);
+  const wallet = async (owner: string) =>
+    (await app.inject({ method: "GET", url: "/v1/wallet", headers: { authorization: await authFor(owner) } })).json();
+  const clawbackEvents = () => db.select().from(events).where(eq(events.type, "wallet.clawback"));
+  const fees = () => accountBalance(db, PLATFORM_FEES);
+  const lastEvent = async () => {
+    const rows = await db.select().from(webhookEvents);
+    return rows.sort((a, b) => a.receivedAt.getTime() - b.receivedAt.getTime() || a.id.localeCompare(b.id)).at(-1)!;
+  };
+
+  it("a full refund takes the credit from the wallet and the fee from platform:fees", async () => {
+    const owner = await newOwner();
+    const { topupId, captureId } = await capturedTopup(owner);
+    expect(await balance(owner)).toBe(2500n);
+    expect(await fees()).toBe(142n);
+    expect((await refunded(captureId, "REF-1", "26.42")).statusCode).toBe(200);
+    expect(await balance(owner)).toBe(0n);
+    expect(await fees()).toBe(0n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "refunded", refundedCents: 2642n });
+    expect((await wallet(owner)).owedCents).toBe(0);
+    const [evt] = await clawbackEvents();
+    expect(evt).toMatchObject({ scope: "owner", ownerId: owner, bountyId: null });
+    expect(evt!.data).toEqual({ source: "topup", refId: topupId, title: null, amountCents: 2642, owedCents: 0 });
+    await expectReconciled();
+  });
+
+  it("partial refunds add up to the charge and no further", async () => {
+    const owner = await newOwner();
+    const { topupId, captureId } = await capturedTopup(owner);
+    await refunded(captureId, "REF-A", "10.00");
+    expect(await balance(owner)).toBe(1500n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "captured", refundedCents: 1000n });
+    await refunded(captureId, "REF-B", "16.00"); // 1500 credit part + 100 fee part
+    expect(await balance(owner)).toBe(0n);
+    expect(await fees()).toBe(42n);
+    await refunded(captureId, "REF-C", "5.00"); // only 0.42 left to take
+    expect(await fees()).toBe(0n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "refunded", refundedCents: 2642n });
+    await refunded(captureId, "REF-D", "1.00"); // nothing left
+    expect(await topupRow(topupId)).toMatchObject({ refundedCents: 2642n });
+    expect((await lastEvent()).error).toBeNull();
+    expect(await clawbackEvents()).toHaveLength(3);
+    await expectReconciled();
+  });
+
+  it("replayed events and repeated refund ids move nothing twice", async () => {
+    const owner = await newOwner();
+    const { topupId, captureId } = await capturedTopup(owner);
+    await refunded(captureId, "REF-1", "10.00", "EVT-1");
+    await refunded(captureId, "REF-1", "10.00", "EVT-1");
+    await refunded(captureId, "REF-1", "10.00", "EVT-2");
+    expect(await balance(owner)).toBe(1500n);
+    expect(await topupRow(topupId)).toMatchObject({ refundedCents: 1000n });
+    expect(await clawbackEvents()).toHaveLength(1);
+    await expectReconciled();
+  });
+
+  it("a reversal beyond the balance freezes the owner until a top-up repays it", async () => {
+    const owner = await newOwner();
+    const { topupId, captureId } = await capturedTopup(owner);
+    // The owner moves most of it out: a $20.00 withdrawal is held.
+    expect((await post(owner, "/v1/wallet/withdrawals", { amountCents: 2000 })).statusCode).toBe(202);
+    const { agentId } = await createAgent(db, owner);
+    await createMandate(db, { agentId, createdBy: owner });
+    const payeeOwner = await newOwner();
+    const { agentId: payeeAgentId } = await createAgent(db, payeeOwner);
+    const draft = await createTestBounty(db, { posterId: owner, status: "draft", escrow: false });
+
+    // Defensive parsing: a negative value, and capture_id instead of links.
+    const res = await webhook("PAYMENT.CAPTURE.REVERSED", {
+      id: "REV-1",
+      status: "COMPLETED",
+      amount: { currency_code: "USD", value: "-26.42" },
+      capture_id: captureId,
+    });
+    expect(res.statusCode).toBe(200);
+    expect((await lastEvent()).error).toBeNull();
+    expect(await getBalances(db, owner)).toEqual({ balanceCents: 0n, heldCents: 0n });
+    expect(await owedCents(db, owner)).toBe(2000n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "refunded", refundedCents: 2642n });
+    expect(await wallet(owner)).toMatchObject({ balanceCents: 0, owedCents: 2000 });
+    expect((await clawbackEvents())[0]!.data).toMatchObject({ amountCents: 2642, owedCents: 2000 });
+    await expectReconciled();
+
+    // Frozen: no spends, withdrawals, new bounties or funding. Top-ups still work.
+    const spend = await createSpendRequest(
+      db,
+      { type: "agent", agentId, ownerId: owner },
+      { amountCents: 100, category: "tool", reason: "API credits", payeeAgentId },
+      { intentCheck: stubIntentCheck("allow") },
+    );
+    expect(spend).toMatchObject({ decision: "deny" });
+    expect(spend.reasons).toContain("account_frozen");
+    expectError(await post(owner, "/v1/wallet/withdrawals", { amountCents: 500 }), 409, "account_frozen");
+    expectError(await post(owner, "/v1/bounties", bountyRequest("creative_writing")), 409, "account_frozen");
+    expectError(await post(owner, `/v1/bounties/${draft}/fund`), 409, "account_frozen");
+
+    // $15.00 repays $15.00 of the $20.00: still frozen, nothing credited.
+    await capturedTopup(owner, 1500);
+    expect(await owedCents(db, owner)).toBe(500n);
+    expect(await balance(owner)).toBe(0n);
+    expectError(await post(owner, "/v1/bounties", bountyRequest("creative_writing")), 409, "account_frozen");
+    // $10.00 repays the rest and credits $5.00: unfrozen.
+    await capturedTopup(owner, 1000);
+    expect(await owedCents(db, owner)).toBe(0n);
+    expect(await wallet(owner)).toMatchObject({ balanceCents: 500, owedCents: 0 });
+    expect((await post(owner, "/v1/bounties", bountyRequest("creative_writing"))).statusCode).toBe(201);
+    expect((await post(owner, `/v1/bounties/${draft}/fund`)).statusCode).toBe(200);
+    await expectReconciled();
+  });
+
+  it("DENIED marks a pending top-up denied, and a late COMPLETED credits nothing", async () => {
+    const owner = await newOwner();
+    const res = await post(owner, "/v1/wallet/topups", { amountCents: 2500 });
+    const { topupId, orderId } = res.json() as { topupId: string; orderId: string };
+    paypal.captureStatus = "PENDING";
+    await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
+    await webhook("PAYMENT.CAPTURE.DENIED", {
+      id: `CAP-${orderId}`,
+      status: "DENIED",
+      custom_id: `topup:${topupId}`,
+      amount: { currency_code: "USD", value: "26.42" },
+    });
+    expect(await topupRow(topupId)).toMatchObject({ status: "denied", refundedCents: 0n });
+    await webhook("PAYMENT.CAPTURE.COMPLETED", {
+      id: `CAP-${orderId}`,
+      custom_id: `topup:${topupId}`,
+      amount: { currency_code: "USD", value: "26.42" },
+    });
+    expect(await balance(owner)).toBe(0n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "denied" });
+    // Confirm reports it as it is and captures nothing.
+    paypal.captureStatus = "COMPLETED";
+    const again = await post(owner, `/v1/wallet/topups/${topupId}/confirm`);
+    expect(again.json()).toMatchObject({ status: "denied" });
+    expect(await balance(owner)).toBe(0n);
+    await expectReconciled();
+  });
+
+  it("DENIED after a credit claws the whole charge back, once", async () => {
+    const owner = await newOwner();
+    const { topupId, captureId } = await capturedTopup(owner);
+    const denied = { id: captureId, status: "DENIED", custom_id: `topup:${topupId}` };
+    await webhook("PAYMENT.CAPTURE.DENIED", denied);
+    await webhook("PAYMENT.CAPTURE.DENIED", denied);
+    expect(await balance(owner)).toBe(0n);
+    expect(await fees()).toBe(0n);
+    expect(await topupRow(topupId)).toMatchObject({ status: "denied", refundedCents: 2642n });
+    expect(await clawbackEvents()).toHaveLength(1);
+    await expectReconciled();
+  });
+
+  it("a reversed bounty escrow capture puts the loss on the poster, who is frozen", async () => {
+    const poster = await newOwner();
+    const winner = await newOwner({ cents: 5000n }); // stands in for the reward the winner keeps
+    const bountyId = await createTestBounty(db, { posterId: poster, status: "settled" });
+    await db
+      .update(escrows)
+      .set({ status: "captured", captureId: "CAP-BTY", dev: false })
+      .where(eq(escrows.bountyId, bountyId));
+    await webhook("PAYMENT.CAPTURE.REVERSED", refund("CAP-BTY", "REV-B", "55.00"));
+    await webhook("PAYMENT.CAPTURE.REVERSED", refund("CAP-BTY", "REV-B", "55.00"));
+    expect((await lastEvent()).error).toBeNull();
+    const [escrow] = await db.select().from(escrows).where(eq(escrows.bountyId, bountyId));
+    expect(escrow!.status).toBe("reversed");
+    expect(await owedCents(db, poster)).toBe(5500n);
+    expect(await balance(winner)).toBe(5000n);
+    const all = await clawbackEvents();
+    expect(all).toHaveLength(1);
+    expect(all[0]).toMatchObject({ ownerId: poster });
+    expect(all[0]!.data).toMatchObject({ source: "bounty", refId: bountyId, amountCents: 5500, owedCents: 5500 });
+    expectError(await post(poster, "/v1/bounties", bountyRequest("creative_writing")), 409, "account_frozen");
+    const check = (await reconcile(db)).checks.find((c) => c.name === "receivables");
+    expect(check).toMatchObject({ ok: true, detail: `1 owing: ${poster} owes 5500` });
+    await expectReconciled();
+  });
+
+  it("ignores unknown captures and records an error for payloads it can't read", async () => {
+    const owner = await newOwner();
+    const { captureId } = await capturedTopup(owner);
+    await refunded("CAP-UNKNOWN", "REF-X", "5.00", "UNK-1");
+    const byId = async (id: string) =>
+      (await db.select().from(webhookEvents).where(eq(webhookEvents.paypalEventId, id)))[0]!;
+    let row = await byId("UNK-1");
+    expect(row.processedAt).not.toBeNull();
+    expect(row.error).toBeNull();
+
+    await webhook(
+      "PAYMENT.CAPTURE.REFUNDED",
+      { id: "REF-Y", amount: { currency_code: "USD", value: "5.00" } },
+      "BAD-1",
+    );
+    row = await byId("BAD-1");
+    expect(row.processedAt).toBeNull();
+    expect(row.error).toMatch(/names no refund or capture/);
+
+    await webhook("PAYMENT.CAPTURE.REFUNDED", { ...refund(captureId, "REF-Z", "5.00"), amount: undefined }, "BAD-2");
+    row = await byId("BAD-2");
+    expect(row.processedAt).toBeNull();
+    expect(row.error).toMatch(/no USD amount/);
+    expect(await balance(owner)).toBe(2500n);
   });
 });

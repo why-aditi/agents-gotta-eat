@@ -2,6 +2,7 @@ export {
   PAYPAL_CLEARING,
   PLATFORM_FEES,
   holdAccount,
+  receivableAccount,
   stakeAccount,
   walletAccount,
   withdrawalAccount,
@@ -11,7 +12,8 @@ export { LedgerError, type LedgerErrorCode } from "./errors";
 export { subcontractFee } from "./fees";
 export { postJournal, type JournalKind, type JournalLine, type PostJournalInput, type PostedJournal } from "./journal";
 export { devCredit, hold, lockWallet, openWallet, release, settle, stakeFromHold } from "./wallets";
-export { creditTopup, holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawals";
+export { holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawals";
+export { clawbackEscrow, clawbackTopup, creditTopup, owedCents, type ClawbackResult } from "./receivables";
 export { forfeitStake, payBountyReward, refundStake } from "./bounty";
 export {
   decodeJournalCursor,

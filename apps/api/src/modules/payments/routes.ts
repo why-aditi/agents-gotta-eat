@@ -37,7 +37,9 @@ export const paymentsRoutes: FastifyPluginAsyncZod = async (api) => {
         tags: ["wallet"],
         summary: "Start a PayPal top-up",
         description:
-          "Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. " +
+          "`amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee " +
+          "(3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes. " +
+          "Returns the PayPal order id for the browser to approve, then call confirm. " +
           "503 `paypal_not_configured` without PayPal credentials.",
         body: TopupRequest,
         response: { 201: TopupResponse, 502: ErrorBody, 503: ErrorBody, ...errors },
@@ -74,7 +76,8 @@ export const paymentsRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Withdraw to the owner's PayPal email",
         description:
           "Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; " +
-          "a failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.",
+          "a failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or `account_frozen` " +
+          "(the owner owes the platform after a PayPal reversal).",
         body: WithdrawalRequest,
         response: { 202: Payout, 502: ErrorBody, 503: ErrorBody, ...errors },
       },

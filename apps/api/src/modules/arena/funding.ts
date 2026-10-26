@@ -9,7 +9,7 @@ import type { UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { HONOR_MS, paypalCall } from "../escrow";
 import { authorizeOrder, createOrder, type PayPalWebhookEvent, requirePayPal } from "../paypal";
-import { type BountyRow, bountyDto, lockBounty, openDraft } from "./bounties";
+import { type BountyRow, bountyDto, lockBounty, openDraft, requireNotFrozen } from "./bounties";
 
 async function ownBounty(db: Db | Tx, poster: UserPrincipal, bountyId: string): Promise<BountyRow> {
   const [row] = await db.select().from(bounties).where(eq(bounties.id, bountyId));
@@ -30,6 +30,7 @@ export async function fundBounty(db: Db, poster: UserPrincipal, bountyId: string
   if (row.status !== "draft" || existing) {
     throw new ApiError("invalid_transition", `A ${row.status} bounty cannot be funded`);
   }
+  await requireNotFrozen(db, poster.userId);
   const client = requirePayPal();
   const order = await paypalCall(() =>
     createOrder(client, {
@@ -125,8 +126,9 @@ type Handler = (db: Db, event: PayPalWebhookEvent) => Promise<void>;
 const str = (v: unknown): string | undefined => (typeof v === "string" && v.length > 0 ? v : undefined);
 
 // Verified events from the webhook worker. Each is state-guarded, so replays and out-of-order delivery change
-// nothing. Capture and refund events need no state change here: our own capture call already recorded it, and
-// top-up captures belong to the payments module.
+// nothing. Capture events need no state change here: our own capture call already recorded it, and top-up
+// captures belong to the payments module, as do refunds and reversals (which reach escrows through
+// escrow.reverseEscrowCapture).
 export const escrowWebhookHandlers: Record<string, Handler> = {
   "PAYMENT.AUTHORIZATION.CREATED": async (db, event) => {
     const authorizationId = str(event.resource.id);
@@ -143,5 +145,4 @@ export const escrowWebhookHandlers: Record<string, Handler> = {
     if (authorizationId) await applyAuthorizationVoided(db, authorizationId);
   },
   "PAYMENT.CAPTURE.COMPLETED": async () => {},
-  "PAYMENT.CAPTURE.REFUNDED": async () => {},
 };

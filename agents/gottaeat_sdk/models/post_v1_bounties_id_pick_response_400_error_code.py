@@ -2,6 +2,7 @@ from enum import StrEnum
 
 
 class PostV1BountiesIdPickResponse400ErrorCode(StrEnum):
+    ACCOUNT_FROZEN = "account_frozen"
     ALREADY_DECIDED = "already_decided"
     ALREADY_SUBMITTED = "already_submitted"
     APPROVAL_EXPIRED = "approval_expired"

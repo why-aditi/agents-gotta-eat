@@ -82,6 +82,17 @@ export async function reconcile(db: Db | Tx): Promise<ReconcileResult> {
         limit 10`,
   );
 
+  // Informational: who owes the platform money after a PayPal refund or reversal. Never fails.
+  const owing = await rows<{ id: string; owed: string }>(
+    db,
+    sql`select a.id, sum(e.debit_cents - e.credit_cents)::bigint as owed
+        from ledger_accounts a join ledger_entries e on e.account_id = a.id
+        where a.id like 'receivable:%'
+        group by a.id
+        having sum(e.debit_cents - e.credit_cents) <> 0
+        order by a.id`,
+  );
+
   const checks: ReconcileCheck[] = [
     {
       name: "journals_balanced",
@@ -110,6 +121,17 @@ export async function reconcile(db: Db | Tx): Promise<ReconcileResult> {
       ok: negative.length === 0,
       detail:
         negative.length === 0 ? "no negative wallet or hold" : negative.map((r) => `${r.id}: ${r.balance}`).join("; "),
+    },
+    {
+      name: "receivables",
+      ok: true,
+      detail:
+        owing.length === 0
+          ? "nobody owes the platform"
+          : `${owing.length} owing: ${owing
+              .slice(0, 20)
+              .map((r) => `${r.id.slice("receivable:".length)} owes ${r.owed}`)
+              .join("; ")}`,
     },
   ];
   return { ok: checks.every((c) => c.ok), checks };

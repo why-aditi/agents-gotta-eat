@@ -1,10 +1,12 @@
-// Processing of stored webhook events, and this module's handlers (top-up captures and payout items).
+// Processing of stored webhook events, and this module's handlers (top-up captures, refunds, reversals and
+// denials, and payout items).
 import { eq } from "drizzle-orm";
 import type { Db } from "../../db";
 import { payouts, webhookEvents } from "../../db/schema";
 import { escrowWebhookHandlers } from "../arena";
 import { valueToCents, type PayPalWebhookEvent } from "../paypal";
 import { handlersFor, registerWebhookHandler } from "./registry";
+import { onCaptureDenied, onCaptureRefunded } from "./clawbacks";
 import { finishTopup } from "./topups";
 import { applyPayoutOutcome, type PayoutOutcome } from "./withdrawals";
 
@@ -69,6 +71,10 @@ async function onPayoutItem(db: Db, event: PayPalWebhookEvent) {
 }
 
 registerWebhookHandler("PAYMENT.CAPTURE.COMPLETED", onCaptureCompleted);
+// Refunds and reversals of top-ups and of bounty escrow captures; denials of pending top-up captures.
+registerWebhookHandler("PAYMENT.CAPTURE.REFUNDED", onCaptureRefunded);
+registerWebhookHandler("PAYMENT.CAPTURE.REVERSED", onCaptureRefunded);
+registerWebhookHandler("PAYMENT.CAPTURE.DENIED", onCaptureDenied);
 for (const type of Object.keys(ITEM_EVENTS)) registerWebhookHandler(type, onPayoutItem);
 // Batch status can read SUCCESS while an item is UNCLAIMED, so it never moves money; only item events do.
 registerWebhookHandler("PAYMENT.PAYOUTSBATCH.SUCCESS", async () => {});

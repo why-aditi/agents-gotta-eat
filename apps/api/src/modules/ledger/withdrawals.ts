@@ -1,4 +1,4 @@
-// Top-ups and withdrawals. A top-up credits the wallet from paypal:clearing. A withdrawal moves the
+// Withdrawals (top-ups are in receivables.ts). A withdrawal moves the
 // cents out of the wallet into withdrawal:{payoutId} (no owner, so the wallet balance drops at once),
 // then either leaves for PayPal (settle) or comes back (return).
 import { eq } from "drizzle-orm";
@@ -36,23 +36,6 @@ async function drawFromHold(tx: Tx, payoutId: string, cents: bigint, idempotency
     throw new LedgerError("INSUFFICIENT_FUNDS", `withdrawal ${payoutId} holds ${held}, needs ${cents}`);
   }
   return undefined;
-}
-
-export async function creditTopup(
-  tx: Tx,
-  input: { topupId: string; ownerId: string; cents: bigint; idempotencyKey: string },
-): Promise<PostedJournal> {
-  requirePositive("cents", input.cents);
-  return postJournal(tx, {
-    kind: "topup",
-    refType: "topup",
-    refId: input.topupId,
-    idempotencyKey: input.idempotencyKey,
-    lines: [
-      { accountId: PAYPAL_CLEARING, debitCents: input.cents },
-      { accountId: walletAccount(input.ownerId), creditCents: input.cents },
-    ],
-  });
 }
 
 export async function holdWithdrawal(

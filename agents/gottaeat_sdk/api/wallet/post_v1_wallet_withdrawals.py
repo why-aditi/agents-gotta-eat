@@ -144,7 +144,8 @@ def sync_detailed(
     """Withdraw to the owner's PayPal email
 
      Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a
-    failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.
+    failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or
+    `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
         body (PostV1WalletWithdrawalsBody):
@@ -187,7 +188,8 @@ def sync(
     """Withdraw to the owner's PayPal email
 
      Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a
-    failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.
+    failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or
+    `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
         body (PostV1WalletWithdrawalsBody):
@@ -224,7 +226,8 @@ async def asyncio_detailed(
     """Withdraw to the owner's PayPal email
 
      Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a
-    failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.
+    failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or
+    `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
         body (PostV1WalletWithdrawalsBody):
@@ -265,7 +268,8 @@ async def asyncio(
     """Withdraw to the owner's PayPal email
 
      Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a
-    failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.
+    failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or
+    `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
         body (PostV1WalletWithdrawalsBody):

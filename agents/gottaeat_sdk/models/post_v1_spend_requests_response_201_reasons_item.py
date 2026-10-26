@@ -3,6 +3,7 @@ from enum import StrEnum
 
 class PostV1SpendRequestsResponse201ReasonsItem(StrEnum):
     ABOVE_ASK_THRESHOLD = "above_ask_threshold"
+    ACCOUNT_FROZEN = "account_frozen"
     BOUNTY_NOT_OPEN = "bounty_not_open"
     CATEGORY_NOT_ALLOWED = "category_not_allowed"
     INSUFFICIENT_FUNDS = "insufficient_funds"

@@ -13,6 +13,7 @@ export const JournalKind = z.enum([
   "release",
   "withdrawal",
   "withdrawal_return",
+  "clawback",
 ]);
 export type JournalKind = z.infer<typeof JournalKind>;
 

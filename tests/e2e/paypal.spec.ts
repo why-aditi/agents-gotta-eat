@@ -136,7 +136,15 @@ test("owner tops up the wallet with PayPal", async ({ page }) => {
   await expect(pay).toBeDisabled();
   await shot(page, "pm04-topup-minimum");
 
+  // The fee is added on top, live as the amount is typed: $5.00 → $0.69 fee.
+  await card.getByLabel("Amount (USD)").fill("5");
+  await expect(card.getByTestId("topup-breakdown")).toHaveText(
+    "Wallet credit $5.00 · PayPal fee $0.69 · You pay $5.69",
+  );
   await card.getByLabel("Amount (USD)").fill("25.00");
+  await expect(card.getByTestId("topup-breakdown")).toHaveText(
+    "Wallet credit $25.00 · PayPal fee $1.42 · You pay $26.42",
+  );
   await expect(pay).toBeEnabled();
   await shot(page, "pm04-topup");
   await pay.click();
@@ -147,7 +155,8 @@ test("owner tops up the wallet with PayPal", async ({ page }) => {
   const orders = (await fakeCalls("/v2/checkout/orders")).filter((c) => c.method === "POST");
   const create = orders.find((c) => c.path === "/v2/checkout/orders")!;
   expect(create.body.intent).toBe("CAPTURE");
-  expect(create.body.purchase_units[0].amount).toEqual({ currency_code: "USD", value: "25.00" });
+  // PayPal is asked for credit + fee; the wallet gets the credit.
+  expect(create.body.purchase_units[0].amount).toEqual({ currency_code: "USD", value: "26.42" });
   expect(create.body.purchase_units[0].custom_id).toMatch(/^topup:tup_/);
   expect(orders.filter((c) => c.path.endsWith("/capture"))).toHaveLength(1);
   expect(await walletCents()).toBe(before + 2500);

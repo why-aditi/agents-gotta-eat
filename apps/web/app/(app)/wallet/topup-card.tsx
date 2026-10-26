@@ -1,7 +1,9 @@
 "use client";
 
-// Add money to the wallet with PayPal. The amount is integer cents; the api checks the minimum and decides what
-// PayPal is asked to charge. The wallet only changes when the api says the capture cleared.
+// Add money to the wallet with PayPal. The owner types the wallet credit; the card shows PayPal's fee and the total
+// (integer cents, the same topupFeeCents the api uses). The api checks the limits and decides what PayPal is asked
+// to charge. The wallet only changes when the api says the capture cleared.
+import { MAX_TOPUP_CENTS, MIN_TOPUP_CENTS, topupFeeCents } from "@gottaeat/schemas";
 import { useId, useRef, useState } from "react";
 import { PayPalButton } from "@/components/paypal-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +14,6 @@ import { describePaymentError } from "../_lib/reasons";
 import { confirmTopup, createTopup } from "./actions";
 import { useAmountKey } from "./use-amount-key";
 
-export const MIN_TOPUP_CENTS = 100;
 const SETTLING = "PayPal is still settling this payment; your balance updates when it clears.";
 
 export function TopupCard() {
@@ -29,15 +30,21 @@ export function TopupCard() {
       ? parsed.error
       : parsed.cents < MIN_TOPUP_CENTS
         ? `The minimum top-up is ${formatCents(MIN_TOPUP_CENTS)}.`
-        : null;
-  const cents = parsed.ok && parsed.cents >= MIN_TOPUP_CENTS ? parsed.cents : null;
+        : parsed.cents > MAX_TOPUP_CENTS
+          ? `The maximum top-up is ${formatCents(MAX_TOPUP_CENTS)}.`
+          : null;
+  const cents = parsed.ok && !error ? parsed.cents : null;
+  const feeCents = cents === null ? null : topupFeeCents(cents);
 
   return (
     <section aria-labelledby={`${uid}-title`} data-testid="topup-card">
       <Card>
         <CardHeader>
           <CardTitle id={`${uid}-title`}>Top up</CardTitle>
-          <CardDescription>Add money from PayPal. Minimum {formatCents(MIN_TOPUP_CENTS)}.</CardDescription>
+          <CardDescription>
+            Add money from PayPal. Minimum {formatCents(MIN_TOPUP_CENTS)}. PayPal&apos;s fee (3.49% + 49¢) is added on
+            top, so your wallet gets the full amount.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -62,10 +69,18 @@ export function TopupCard() {
               </p>
             ) : null}
           </div>
+          {cents !== null && feeCents !== null ? (
+            <p className="text-sm tabular-nums text-muted-foreground" data-testid="topup-breakdown">
+              Wallet credit {formatCents(cents)} · PayPal fee {formatCents(feeCents)} ·{" "}
+              <span className="font-medium text-foreground" data-testid="topup-total">
+                You pay {formatCents(cents + feeCents)}
+              </span>
+            </p>
+          ) : null}
           <PayPalButton
             disabled={cents === null}
             createOrder={async () => {
-              if (cents === null) return { error: `The minimum top-up is ${formatCents(MIN_TOPUP_CENTS)}.` };
+              if (cents === null) return { error: error ?? `The minimum top-up is ${formatCents(MIN_TOPUP_CENTS)}.` };
               const result = await createTopup(cents, createKey.keyFor(cents));
               if (!result.ok) return { error: describePaymentError(result.code, result.message) };
               topupId.current = result.data.topupId;

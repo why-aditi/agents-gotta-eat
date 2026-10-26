@@ -27,10 +27,10 @@ describe("TopupCard", () => {
     installFakePaypal();
     vi.mocked(createTopup)
       .mockReset()
-      .mockResolvedValue({ ok: true, data: { topupId: "top_1", orderId: "ORDER-1" } });
+      .mockResolvedValue({ ok: true, data: { topupId: "top_1", orderId: "ORDER-1", feeCents: 141, totalCents: 2691 } });
     vi.mocked(confirmTopup)
       .mockReset()
-      .mockResolvedValue({ ok: true, data: { id: "top_1", amountCents: 2550, status: "captured" } });
+      .mockResolvedValue({ ok: true, data: { id: "top_1", amountCents: 2550, feeCents: 141, status: "captured" } });
     vi.mocked(toast.success).mockReset();
     vi.mocked(toast.error).mockReset();
     refresh.mockReset();
@@ -49,6 +49,29 @@ describe("TopupCard", () => {
     expect(createTopup).not.toHaveBeenCalled();
   });
 
+  it("shows the credit, PayPal's fee and the total as the amount is typed", async () => {
+    const user = userEvent.setup();
+    render(<TopupCard />);
+    expect(screen.queryByTestId("topup-breakdown")).not.toBeInTheDocument();
+    const input = screen.getByLabelText("Amount (USD)");
+    await user.type(input, "5");
+    expect(screen.getByTestId("topup-breakdown")).toHaveTextContent(
+      "Wallet credit $5.00 · PayPal fee $0.69 · You pay $5.69",
+    );
+    await user.clear(input);
+    await user.type(input, "100.00");
+    expect(screen.getByTestId("topup-breakdown")).toHaveTextContent(
+      "Wallet credit $100.00 · PayPal fee $4.13 · You pay $104.13",
+    );
+    await user.clear(input);
+    await user.type(input, "1.005");
+    expect(screen.queryByTestId("topup-breakdown")).not.toBeInTheDocument();
+    await user.clear(input);
+    await user.type(input, "10000.01");
+    expect(input).toHaveAccessibleDescription("The maximum top-up is $10,000.00.");
+    expect(screen.queryByTestId("topup-breakdown")).not.toBeInTheDocument();
+  });
+
   it("creates the top-up in integer cents, then confirms it", async () => {
     const user = userEvent.setup();
     render(<TopupCard />);
@@ -62,7 +85,7 @@ describe("TopupCard", () => {
   it("says PayPal is still settling when the top-up is not captured yet", async () => {
     vi.mocked(confirmTopup).mockResolvedValue({
       ok: true,
-      data: { id: "top_1", amountCents: 1000, status: "created" },
+      data: { id: "top_1", amountCents: 1000, feeCents: 86, status: "created" },
     });
     const user = userEvent.setup();
     render(<TopupCard />);

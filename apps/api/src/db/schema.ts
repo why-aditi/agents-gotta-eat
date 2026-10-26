@@ -97,6 +97,7 @@ export const journalKind = pgEnum("journal_kind", [
   "release",
   "withdrawal",
   "withdrawal_return",
+  "clawback",
 ]);
 
 export const journals = pgTable("journals", {
@@ -305,6 +306,7 @@ export const escrows = pgTable("escrows", {
   authorizationId: text("authorization_id"),
   authorizedAt: timestamp("authorized_at", { withTimezone: true }),
   honorUntil: timestamp("honor_until", { withTimezone: true }),
+  // order_created | authorized | captured | voided | abandoned | reversed (PayPal refunded or reversed the capture)
   status: text().notNull(),
   captureId: text("capture_id"),
   // Authorization ids replaced by a reauthorize (allowed once, day 4 to day 29).
@@ -323,10 +325,18 @@ export const topups = pgTable("topups", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id),
+  // The wallet credit. The PayPal order is for amount + fee.
   amountCents: bigint("amount_cents", { mode: "bigint" }).notNull(),
+  feeCents: bigint("fee_cents", { mode: "bigint" })
+    .notNull()
+    .default(sql`0`),
+  // Clawed back so far by PayPal refunds and reversals (credit and fee parts together), at most amount + fee.
+  refundedCents: bigint("refunded_cents", { mode: "bigint" })
+    .notNull()
+    .default(sql`0`),
   paypalOrderId: text("paypal_order_id").notNull(),
   captureId: text("capture_id"),
-  status: text().notNull(), // created | captured | failed
+  status: text().notNull(), // created | captured | failed | refunded | denied
   createdAt: createdAt(),
 });
 

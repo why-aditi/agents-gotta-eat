@@ -6,7 +6,7 @@ import type { Payout } from "@gottaeat/schemas";
 import type { Db } from "../../db";
 import { payouts, users } from "../../db/schema";
 import { ApiError } from "../../http/errors";
-import { holdWithdrawal, openWallet, returnWithdrawal, settleWithdrawal } from "../ledger";
+import { holdWithdrawal, lockWallet, openWallet, owedCents, returnWithdrawal, settleWithdrawal } from "../ledger";
 import { createPayoutBatch, PayPalError, requirePayPal } from "../paypal";
 
 export const MIN_WITHDRAWAL_CENTS = 500n;
@@ -62,6 +62,9 @@ export async function createWithdrawal(db: Db, userId: string, amountCents: bigi
   const id = `pay_${ulid()}`;
   return db.transaction(async (tx) => {
     await openWallet(tx, userId);
+    // Under the wallet lock, which clawbacks take too: an owner who owes the platform cannot withdraw.
+    await lockWallet(tx, userId);
+    if ((await owedCents(tx, userId)) > 0n) throw new ApiError("account_frozen");
     // Before the payout row: an insufficient balance leaves nothing behind.
     await holdWithdrawal(tx, {
       payoutId: id,

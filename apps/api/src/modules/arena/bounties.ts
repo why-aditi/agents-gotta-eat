@@ -16,6 +16,12 @@ import { newId } from "../../lib/ids";
 import { publish } from "../events";
 import { transition } from "./state";
 import { voidEscrow } from "../escrow";
+import { owedCents } from "../ledger";
+
+// A poster who owes the platform (after a PayPal reversal) cannot post or fund bounties until a top-up repays it.
+export async function requireNotFrozen(db: Db | Tx, userId: string): Promise<void> {
+  if ((await owedCents(db, userId)) > 0n) throw new ApiError("account_frozen");
+}
 
 export type BountyRow = typeof bounties.$inferSelect;
 type Conn = Db | Tx;
@@ -79,6 +85,7 @@ export async function createBounty(db: Db, posterId: string, input: unknown, now
       ],
     });
   }
+  await requireNotFrozen(db, posterId);
   const rewardCents = BigInt(body.rewardCents);
   const id = newId("bty");
 

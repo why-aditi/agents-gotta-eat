@@ -1,5 +1,6 @@
 ALTER TYPE "public"."journal_kind" ADD VALUE 'withdrawal';--> statement-breakpoint
 ALTER TYPE "public"."journal_kind" ADD VALUE 'withdrawal_return';--> statement-breakpoint
+ALTER TYPE "public"."journal_kind" ADD VALUE 'clawback';--> statement-breakpoint
 CREATE TABLE "payouts" (
 	"id" text PRIMARY KEY NOT NULL,
 	"paypal_batch_id" text,
@@ -17,6 +18,8 @@ CREATE TABLE "topups" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"amount_cents" bigint NOT NULL,
+	"fee_cents" bigint DEFAULT 0 NOT NULL,
+	"refunded_cents" bigint DEFAULT 0 NOT NULL,
 	"paypal_order_id" text NOT NULL,
 	"capture_id" text,
 	"status" text NOT NULL,

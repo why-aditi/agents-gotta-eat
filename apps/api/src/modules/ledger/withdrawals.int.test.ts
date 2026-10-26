@@ -3,7 +3,6 @@ import { createTestDb, createUserWithWallet, resetDb, topUp } from "../../../tes
 import { accountBalance } from "./wallets";
 import {
   PAYPAL_CLEARING,
-  creditTopup,
   getBalances,
   holdWithdrawal,
   LedgerError,
@@ -19,27 +18,6 @@ beforeEach(() => resetDb(db));
 
 const hold = (ownerId: string, cents: bigint, key = "w-hold") =>
   db.transaction((tx) => holdWithdrawal(tx, { payoutId: "pay_1", ownerId, cents, idempotencyKey: key }));
-
-describe("creditTopup", () => {
-  it("credits the wallet once per key", async () => {
-    const owner = await createUserWithWallet(db);
-    const input = { topupId: "tup_1", ownerId: owner, cents: 700n, idempotencyKey: "t-1" };
-    const first = await db.transaction((tx) => creditTopup(tx, input));
-    const again = await db.transaction((tx) => creditTopup(tx, input));
-    expect(first).toMatchObject({ kind: "topup", replayed: false });
-    expect(again).toMatchObject({ id: first.id, replayed: true });
-    expect(await getBalances(db, owner)).toEqual({ balanceCents: 700n, heldCents: 0n });
-    expect(await reconcile(db)).toMatchObject({ ok: true });
-  });
-
-  it("rejects non-positive amounts", async () => {
-    const owner = await createUserWithWallet(db);
-    const err = await db
-      .transaction((tx) => creditTopup(tx, { topupId: "tup_1", ownerId: owner, cents: 0n, idempotencyKey: "t-0" }))
-      .catch((e: unknown) => e);
-    expect((err as LedgerError).code).toBe("INVALID_AMOUNT");
-  });
-});
 
 describe("withdrawals", () => {
   it("hold lowers the balance and is idempotent", async () => {

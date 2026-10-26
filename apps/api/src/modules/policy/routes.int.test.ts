@@ -123,7 +123,7 @@ describe("happy path over HTTP", () => {
 
     const credit = await postIdem(devApp, `/v1/admin/wallets/${ownerId}/credit`, owner, { amountCents: 5000 });
     expect(credit.statusCode, credit.body).toBe(200);
-    expect(Wallet.parse(credit.json())).toEqual({ ownerId, balanceCents: 5000, heldCents: 0 });
+    expect(Wallet.parse(credit.json())).toEqual({ ownerId, balanceCents: 5000, heldCents: 0, owedCents: 0 });
 
     const rules: MandateRules = { ...TEST_RULES, askAboveCents: 500 };
     const putRes = await put(devApp, `/v1/agents/${spender.agent.id}/mandate`, owner, {
@@ -175,6 +175,7 @@ describe("happy path over HTTP", () => {
       ownerId,
       balanceCents: 3900,
       heldCents: 0,
+      owedCents: 0,
       agent: { agentId: spender.agent.id, todaySpentCents: 1100, limits: rules },
     });
     expect((await reconcile(db)).ok).toBe(true);
@@ -297,7 +298,7 @@ describe("GET /v1/wallet", () => {
     const res = await get(app, "/v1/wallet", `Bearer ${await signUserToken({ email: "fresh@test.local" })}`);
     expect(res.statusCode).toBe(200);
     const [user] = await db.select().from(users).where(eq(users.email, "fresh@test.local"));
-    expect(res.json()).toEqual({ ownerId: user?.id, balanceCents: 0, heldCents: 0 });
+    expect(res.json()).toEqual({ ownerId: user?.id, balanceCents: 0, heldCents: 0, owedCents: 0 });
   });
 
   it("shows an owner their wallet and an agent its owner's wallet plus its agent block", async () => {
@@ -312,13 +313,14 @@ describe("GET /v1/wallet", () => {
     await spend(devApp, apiKey, spendBody(f.payeeAgentId, 250));
 
     const user = await get(app, "/v1/wallet", await authFor(f.ownerId));
-    expect(user.json()).toEqual({ ownerId: f.ownerId, balanceCents: 2750, heldCents: 0 });
+    expect(user.json()).toEqual({ ownerId: f.ownerId, balanceCents: 2750, heldCents: 0, owedCents: 0 });
 
     const agent = await get(app, "/v1/wallet", agentAuth(apiKey));
     expect(agent.json()).toEqual({
       ownerId: f.ownerId,
       balanceCents: 2750,
       heldCents: 0,
+      owedCents: 0,
       agent: { agentId, todaySpentCents: 250, limits: TEST_RULES },
     });
 
@@ -600,14 +602,14 @@ describe("POST /v1/admin/wallets/:userId/credit", () => {
     const key = newIdemKey();
     const first = await postIdem(devApp, url, admin, { amountCents: 2500 }, key);
     expect(first.statusCode, first.body).toBe(200);
-    expect(first.json()).toEqual({ ownerId: userId, balanceCents: 2500, heldCents: 0 });
+    expect(first.json()).toEqual({ ownerId: userId, balanceCents: 2500, heldCents: 0, owedCents: 0 });
     const replay = await postIdem(devApp, url, admin, { amountCents: 2500 }, key);
     expect(replay.headers["idempotent-replayed"]).toBe("true");
     expect(replay.json()).toEqual(first.json());
     expect(await balances(userId)).toEqual({ balance: 2500n, held: 0n });
 
     const second = await postIdem(devApp, url, admin, { amountCents: 500 });
-    expect(second.json()).toEqual({ ownerId: userId, balanceCents: 3000, heldCents: 0 });
+    expect(second.json()).toEqual({ ownerId: userId, balanceCents: 3000, heldCents: 0, owedCents: 0 });
     expect((await reconcile(db)).ok).toBe(true);
   });
 });

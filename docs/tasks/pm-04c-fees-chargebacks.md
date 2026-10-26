@@ -42,3 +42,29 @@ Spec sections: "Money model" (Agent wallets, Ledger accounts, Fees), "PayPal int
 ## Done when
 
 All repo checks pass (lint, format, typecheck, all Vitest, web build, all e2e specs on an empty database, agents pytest); `pnpm openapi:export` and `pnpm openapi:python` leave no diff.
+
+## Changes made during the build
+
+| Area | Change | Why |
+| --- | --- | --- |
+| Maximum top-up | `MAX_TOPUP_CENTS = 1,000,000` ($10,000): `TopupRequest.amountCents` has `.max()`, and `topupFeeCents` throws outside 100..1,000,000 cents | The tests table asks for a "max" edge; a cap also keeps `(credit + 49) * 10000` far inside safe integers. Above it the api answers 400 `validation_error` and the card says "The maximum top-up is $10,000.00." |
+| Fee formula values | $25.00 → fee $1.42 (charge $26.42); $10,000 → fee $362.13 | Computed by the formula; the e2e and api tests use $25.00 |
+| Ledger files | `creditTopup` moved from `ledger/withdrawals.ts` to the new `ledger/receivables.ts` with `clawbackTopup`, `clawbackEscrow` and `owedCents`. `creditTopup` and the clawbacks take the owner's wallet row lock, so a top-up's "repay first" read and a clawback's "wallet balance" read can't race | Keeps every write to ledger tables inside `ledger` |
+| Owned receivable | `receivable:{user}` is an `asset` account with `owner_id` set (so the admin accounts tab shows the owner). `postJournal` now only feeds the wallets cache from `wallet:` and `hold:` accounts | Without that, a receivable line would have moved the cached wallet balance |
+| Escrow clawback | Opens the poster's wallet (a poster may never have had one) so the reconcile `wallet_cache` check and later top-ups work | |
+| Split of a clawback | First `credit - alreadyClawed` cents of the clawed total are the credit part (wallet, then receivable), the rest the fee part (`platform:fees`); clawed is capped at `charge - refunded_cents` | The spec's "any part of R above the original credit is the fee part", generalised to several partial refunds |
+| Escrow handler location | The payments webhook handler finds the capture: a top-up (`topups.capture_id`) or else `escrow.reverseEscrowCapture`, which owns the `escrows` update and posts through `ledger.clawbackEscrow`. The no-op `PAYMENT.CAPTURE.REFUNDED` entry in `escrowWebhookHandlers` is gone | One handler per event type; each module writes only its own tables |
+| Escrow status `reversed` | Set on the first (possibly partial) refund or reversal of the capture; the receivable carries the amount | Spec says "Escrow status → reversed" with no partial variant |
+| DENIED | Found by `custom_id` `topup:{id}` (a pending capture has no stored capture id), falling back to `topups.capture_id`. A credited top-up is clawed back in full (key `clawback:denied:{captureId}`) and marked `denied`. `finishTopup` and `confirmTopup` never credit a `denied` (or `refunded`) top-up | A late `COMPLETED` after `DENIED` must not credit |
+| Confirm response | `Topup` gains `feeCents`; status can now also be `refunded` or `denied`, and confirm returns the stored status without calling PayPal for those | There is no top-up list endpoint yet, so "list responses add feeCents" has nothing to change |
+| Event | `wallet.clawback` data: `{ source: "topup" \| "bounty", refId, title, amountCents, owedCents }`. Feed line: "PayPal reversed $5.00 of your top-up; you owe $1.20" (or "…; your wallet covered it"; for bounties "…of your payment for “title”…"). Published only when something was clawed (not on replays) | |
+| Wallet | `Wallet.owedCents` is required (0 when nothing is owed), so `GET /v1/wallet`, the admin dev-credit response and MCP `get_wallet` all carry it | |
+| Frozen checks | Gate 1 reads `owedCents` for every spend (stakes included). Withdrawals check it under the wallet lock. `POST /v1/bounties` and `/fund` check it before anything else is written. `/fund/confirm`, approvals of spends already pending, and the admin dev-open route are not blocked | The spec lists create and fund; a pending spend's money is already held |
+| Web | The top-up card keeps the "Amount (USD)" label; the breakdown line has `data-testid="topup-breakdown"`. New `FrozenBanner` on the wallet page. `account_frozen` has wording in `REASON_TEXT` and the payment errors | |
+| Docs | `docs/spec.md`: top-up fee row, receivables, frozen accounts, the two new webhook events and the journal kinds | |
+
+### Webhook payload assumptions (PayPal's docs were not reachable from the build sandbox)
+
+- `PAYMENT.CAPTURE.REFUNDED` / `REVERSED`: `resource` is a refund: `id` = refund id, `amount: { currency_code, value }`, `links[]` with `rel: "up"` → `.../v2/payments/captures/{captureId}`. Fallback `resource.capture_id`. A leading `-` on `value` is ignored (taken as the size of the reversal). Non-USD or missing amount → throw. No capture id → throw. Unknown capture id → ignored (event marked processed).
+- `PAYMENT.CAPTURE.DENIED`: `resource` is the capture: `id` = capture id, `custom_id` = what we set on the order.
+- These match what pm-04's spike notes and PayPal's v2 Payments resource shapes; verify against a sandbox refund before relying on chargebacks in production.

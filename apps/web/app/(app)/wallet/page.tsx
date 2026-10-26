@@ -6,6 +6,7 @@ import { apiFetch, getMe } from "@/lib/api";
 import { formatCents } from "@/lib/money";
 import { PageError } from "../_lib/page-error";
 import { DevCreditForm } from "./dev-credit-form";
+import { FrozenBanner } from "./frozen-banner";
 import { TopupCard } from "./topup-card";
 import { WithdrawCard } from "./withdraw-card";
 
@@ -47,6 +48,7 @@ export default async function WalletPage() {
         <PageError title="Couldn't load your wallet" error={loaded.error} />
       ) : (
         <>
+          <FrozenBanner owedCents={loaded.wallet.owedCents} />
           <div className="grid gap-4 sm:grid-cols-2">
             <Card>
               <CardHeader>

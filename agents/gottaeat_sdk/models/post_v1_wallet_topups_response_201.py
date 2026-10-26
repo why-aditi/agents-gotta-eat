@@ -18,15 +18,23 @@ class PostV1WalletTopupsResponse201:
     Attributes:
         topup_id (str):
         order_id (str):
+        fee_cents (int):
+        total_cents (int):
     """
 
     topup_id: str
     order_id: str
+    fee_cents: int
+    total_cents: int
 
     def to_dict(self) -> dict[str, Any]:
         topup_id = self.topup_id
 
         order_id = self.order_id
+
+        fee_cents = self.fee_cents
+
+        total_cents = self.total_cents
 
         field_dict: dict[str, Any] = {}
 
@@ -34,6 +42,8 @@ class PostV1WalletTopupsResponse201:
             {
                 "topupId": topup_id,
                 "orderId": order_id,
+                "feeCents": fee_cents,
+                "totalCents": total_cents,
             }
         )
 
@@ -46,9 +56,15 @@ class PostV1WalletTopupsResponse201:
 
         order_id = d.pop("orderId")
 
+        fee_cents = d.pop("feeCents")
+
+        total_cents = d.pop("totalCents")
+
         post_v1_wallet_topups_response_201 = cls(
             topup_id=topup_id,
             order_id=order_id,
+            fee_cents=fee_cents,
+            total_cents=total_cents,
         )
 
         return post_v1_wallet_topups_response_201

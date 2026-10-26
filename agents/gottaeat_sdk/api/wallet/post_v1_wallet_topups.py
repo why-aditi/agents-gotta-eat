@@ -143,7 +143,9 @@ def sync_detailed(
 ]:
     """Start a PayPal top-up
 
-     Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. 503
+     `amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee
+    (3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes.
+    Returns the PayPal order id for the browser to approve, then call confirm. 503
     `paypal_not_configured` without PayPal credentials.
 
     Args:
@@ -186,7 +188,9 @@ def sync(
 ):
     """Start a PayPal top-up
 
-     Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. 503
+     `amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee
+    (3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes.
+    Returns the PayPal order id for the browser to approve, then call confirm. 503
     `paypal_not_configured` without PayPal credentials.
 
     Args:
@@ -223,7 +227,9 @@ async def asyncio_detailed(
 ]:
     """Start a PayPal top-up
 
-     Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. 503
+     `amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee
+    (3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes.
+    Returns the PayPal order id for the browser to approve, then call confirm. 503
     `paypal_not_configured` without PayPal credentials.
 
     Args:
@@ -264,7 +270,9 @@ async def asyncio(
 ):
     """Start a PayPal top-up
 
-     Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. 503
+     `amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee
+    (3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes.
+    Returns the PayPal order id for the browser to approve, then call confirm. 503
     `paypal_not_configured` without PayPal credentials.
 
     Args:

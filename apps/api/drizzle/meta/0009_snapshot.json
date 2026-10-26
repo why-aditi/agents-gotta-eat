@@ -1,5 +1,5 @@
 {
-  "id": "c5cbd1c7-63d4-4381-b353-465481eeb45a",
+  "id": "f48b8cd5-2bc7-4d1c-b2bf-678d029572fd",
   "prevId": "5474c34d-7bbd-42bc-bbf9-55bd722af42d",
   "version": "7",
   "dialect": "postgresql",
@@ -2041,6 +2041,20 @@
           "primaryKey": false,
           "notNull": true
         },
+        "fee_cents": {
+          "name": "fee_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
+        "refunded_cents": {
+          "name": "refunded_cents",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "0"
+        },
         "paypal_order_id": {
           "name": "paypal_order_id",
           "type": "text",
@@ -2350,7 +2364,8 @@
         "refund",
         "release",
         "withdrawal",
-        "withdrawal_return"
+        "withdrawal_return",
+        "clawback"
       ]
     },
     "public.judge_verifier": {

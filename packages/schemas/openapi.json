@@ -295,6 +295,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -367,6 +368,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -439,6 +441,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -511,6 +514,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -583,6 +587,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -738,6 +743,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -810,6 +816,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -934,6 +941,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1006,6 +1014,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1151,6 +1160,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1223,6 +1233,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1295,6 +1306,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1469,6 +1481,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1541,6 +1554,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1613,6 +1627,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1685,6 +1700,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1757,6 +1773,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1829,6 +1846,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -1931,6 +1949,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2003,6 +2022,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2075,6 +2095,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2147,6 +2168,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2370,6 +2392,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2442,6 +2465,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2514,6 +2538,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2586,6 +2611,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2658,6 +2684,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -2987,6 +3014,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3059,6 +3087,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3131,6 +3160,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3203,6 +3233,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3454,6 +3485,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3526,6 +3558,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3598,6 +3631,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3670,6 +3704,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3913,6 +3948,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -3985,6 +4021,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4057,6 +4094,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4129,6 +4167,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4195,6 +4234,11 @@
                       "maximum": 9007199254740991
                     },
                     "heldCents": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "owedCents": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
@@ -4307,7 +4351,8 @@
                   "required": [
                     "ownerId",
                     "balanceCents",
-                    "heldCents"
+                    "heldCents",
+                    "owedCents"
                   ],
                   "additionalProperties": false
                 }
@@ -4355,6 +4400,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4497,6 +4543,7 @@
                           "own_bounty",
                           "scope_requires_entry",
                           "over_bounty_spend_rule",
+                          "account_frozen",
                           "above_ask_threshold",
                           "intent_ask",
                           "intent_deny"
@@ -4556,6 +4603,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4628,6 +4676,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4700,6 +4749,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4772,6 +4822,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -4844,6 +4895,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5109,6 +5161,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5181,6 +5234,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5253,6 +5307,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5528,6 +5583,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5600,6 +5656,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5672,6 +5729,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -5956,6 +6014,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6028,6 +6087,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6100,6 +6160,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6172,6 +6233,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6244,6 +6306,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6316,6 +6379,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6589,6 +6653,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6661,6 +6726,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6733,6 +6799,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6805,6 +6872,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -6900,6 +6968,11 @@
                       "maximum": 9007199254740991
                     },
                     "heldCents": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "owedCents": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
@@ -7012,7 +7085,8 @@
                   "required": [
                     "ownerId",
                     "balanceCents",
-                    "heldCents"
+                    "heldCents",
+                    "owedCents"
                   ],
                   "additionalProperties": false
                 }
@@ -7060,6 +7134,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7132,6 +7207,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7204,6 +7280,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7276,6 +7353,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7348,6 +7426,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7420,6 +7499,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7797,6 +7877,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7869,6 +7950,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -7941,6 +8023,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8013,6 +8096,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8085,6 +8169,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8344,6 +8429,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8416,6 +8502,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8588,6 +8675,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8660,6 +8748,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -8732,6 +8821,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9034,6 +9124,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9106,6 +9197,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9178,6 +9270,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9250,6 +9343,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9322,6 +9416,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9394,6 +9489,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9610,6 +9706,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9682,6 +9779,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9754,6 +9852,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -9967,6 +10066,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10039,6 +10139,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10111,6 +10212,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10183,6 +10285,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10255,6 +10358,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10327,6 +10431,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10447,6 +10552,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10519,6 +10625,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10591,6 +10698,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10663,6 +10771,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10735,6 +10844,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10807,6 +10917,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10879,6 +10990,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -10951,6 +11063,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11164,6 +11277,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11236,6 +11350,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11308,6 +11423,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11380,6 +11496,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11452,6 +11569,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11524,6 +11642,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11596,6 +11715,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11668,6 +11788,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11912,6 +12033,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -11984,6 +12106,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12056,6 +12179,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12128,6 +12252,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12200,6 +12325,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12272,6 +12398,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12499,6 +12626,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12571,6 +12699,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12643,6 +12772,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12715,6 +12845,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12875,6 +13006,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -12947,6 +13079,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13019,6 +13152,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13193,6 +13327,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13265,6 +13400,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13337,6 +13473,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13409,6 +13546,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13481,6 +13619,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13553,6 +13692,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13693,6 +13833,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13765,6 +13906,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13837,6 +13979,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -13909,6 +14052,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14134,6 +14278,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14206,6 +14351,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14278,6 +14424,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14350,6 +14497,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14422,6 +14570,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14494,6 +14643,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14534,7 +14684,7 @@
         "tags": [
           "wallet"
         ],
-        "description": "Minimum $1.00. Returns the PayPal order id for the browser to approve, then call confirm. 503 `paypal_not_configured` without PayPal credentials.",
+        "description": "`amountCents` is the wallet credit, minimum $1.00, maximum $10,000. PayPal is asked for credit + fee (3.49% + 49¢ grossed up; `feeCents`, `totalCents`). A credit first repays anything the owner owes. Returns the PayPal order id for the browser to approve, then call confirm. 503 `paypal_not_configured` without PayPal credentials.",
         "requestBody": {
           "required": true,
           "content": {
@@ -14545,7 +14695,7 @@
                   "amountCents": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "maximum": 9007199254740991
+                    "maximum": 1000000
                   }
                 },
                 "required": [
@@ -14573,11 +14723,23 @@
                     },
                     "orderId": {
                       "type": "string"
+                    },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "totalCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
                     }
                   },
                   "required": [
                     "topupId",
-                    "orderId"
+                    "orderId",
+                    "feeCents",
+                    "totalCents"
                   ],
                   "additionalProperties": false
                 }
@@ -14625,6 +14787,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14697,6 +14860,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14769,6 +14933,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14841,6 +15006,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14913,6 +15079,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -14985,6 +15152,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15057,6 +15225,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15129,6 +15298,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15203,18 +15373,26 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
                     "status": {
                       "type": "string",
                       "enum": [
                         "created",
                         "captured",
-                        "failed"
+                        "failed",
+                        "refunded",
+                        "denied"
                       ]
                     }
                   },
                   "required": [
                     "id",
                     "amountCents",
+                    "feeCents",
                     "status"
                   ],
                   "additionalProperties": false
@@ -15263,6 +15441,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15335,6 +15514,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15407,6 +15587,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15479,6 +15660,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15551,6 +15733,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15623,6 +15806,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15695,6 +15879,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15767,6 +15952,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15807,7 +15993,7 @@
         "tags": [
           "wallet"
         ],
-        "description": "Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a failed or returned payout puts it back. 409 `no_paypal_email` or `insufficient_funds`.",
+        "description": "Minimum $5.00. The amount leaves the wallet at once and is held until PayPal reports the payout; a failed or returned payout puts it back. 409 `no_paypal_email`, `insufficient_funds` or `account_frozen` (the owner owes the platform after a PayPal reversal).",
         "requestBody": {
           "required": true,
           "content": {
@@ -15924,6 +16110,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -15996,6 +16183,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16068,6 +16256,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16140,6 +16329,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16212,6 +16402,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16284,6 +16475,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16356,6 +16548,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16428,6 +16621,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16574,6 +16768,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16646,6 +16841,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16755,6 +16951,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16827,6 +17024,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -16956,6 +17154,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17028,6 +17227,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17100,6 +17300,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17172,6 +17373,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17295,6 +17497,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17367,6 +17570,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17540,6 +17744,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17612,6 +17817,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17684,6 +17890,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17756,6 +17963,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17828,6 +18036,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17900,6 +18109,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -17972,6 +18182,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18081,6 +18292,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18153,6 +18365,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18238,6 +18451,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18310,6 +18524,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18382,6 +18597,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18467,6 +18683,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18539,6 +18756,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18611,6 +18829,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18686,7 +18905,8 @@
                 "refund",
                 "release",
                 "withdrawal",
-                "withdrawal_return"
+                "withdrawal_return",
+                "clawback"
               ]
             },
             "in": "query",
@@ -18727,7 +18947,8 @@
                               "refund",
                               "release",
                               "withdrawal",
-                              "withdrawal_return"
+                              "withdrawal_return",
+                              "clawback"
                             ]
                           },
                           "refType": {
@@ -18831,6 +19052,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18903,6 +19125,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -18975,6 +19198,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19056,7 +19280,8 @@
                         "refund",
                         "release",
                         "withdrawal",
-                        "withdrawal_return"
+                        "withdrawal_return",
+                        "clawback"
                       ]
                     },
                     "refType": {
@@ -19188,6 +19413,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19260,6 +19486,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19332,6 +19559,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19404,6 +19632,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19568,6 +19797,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19640,6 +19870,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19777,6 +20008,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -19849,6 +20081,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -20091,6 +20324,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"
@@ -20163,6 +20397,7 @@
                             "escrow_not_authorized",
                             "below_minimum",
                             "no_paypal_email",
+                            "account_frozen",
                             "rate_limited",
                             "compile_failed",
                             "internal"

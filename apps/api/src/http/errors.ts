@@ -33,6 +33,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   escrow_not_authorized: 409,
   below_minimum: 422,
   no_paypal_email: 409,
+  account_frozen: 409,
   rate_limited: 429,
   compile_failed: 502,
   internal: 500,
@@ -66,6 +67,8 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   escrow_not_authorized: "The bounty has no authorized PayPal escrow",
   below_minimum: "The amount is below the minimum",
   no_paypal_email: "Set a PayPal email on your account first",
+  account_frozen:
+    "PayPal took back money you paid in. Top up to repay what you owe before spending, withdrawing or posting",
   bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
   rate_limited: "Too many requests; slow down and try again shortly",
   compile_failed: "Couldn't turn that into rules. Fill them in by hand.",

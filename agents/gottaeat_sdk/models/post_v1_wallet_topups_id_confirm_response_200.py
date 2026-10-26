@@ -20,17 +20,21 @@ class PostV1WalletTopupsIdConfirmResponse200:
     Attributes:
         id (str):
         amount_cents (int):
+        fee_cents (int):
         status (PostV1WalletTopupsIdConfirmResponse200Status):
     """
 
     id: str
     amount_cents: int
+    fee_cents: int
     status: PostV1WalletTopupsIdConfirmResponse200Status
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
 
         amount_cents = self.amount_cents
+
+        fee_cents = self.fee_cents
 
         status = self.status.value
 
@@ -40,6 +44,7 @@ class PostV1WalletTopupsIdConfirmResponse200:
             {
                 "id": id,
                 "amountCents": amount_cents,
+                "feeCents": fee_cents,
                 "status": status,
             }
         )
@@ -53,11 +58,14 @@ class PostV1WalletTopupsIdConfirmResponse200:
 
         amount_cents = d.pop("amountCents")
 
+        fee_cents = d.pop("feeCents")
+
         status = PostV1WalletTopupsIdConfirmResponse200Status(d.pop("status"))
 
         post_v1_wallet_topups_id_confirm_response_200 = cls(
             id=id,
             amount_cents=amount_cents,
+            fee_cents=fee_cents,
             status=status,
         )
 
