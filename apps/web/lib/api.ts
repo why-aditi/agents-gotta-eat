@@ -2,11 +2,11 @@
 // token for the signed-in user and calls API_URL from the Next server (server components and actions).
 import "server-only";
 import { ErrorBody, ErrorCode, Me } from "@gottaeat/schemas";
-import { SignJWT } from "jose";
 import type { z } from "zod";
 import { auth } from "@/auth";
+import { signApiToken } from "./api-token";
 
-export const TOKEN_LIFETIME_S = 600;
+export { signApiToken, TOKEN_LIFETIME_S } from "./api-token";
 
 export class ApiError extends Error {
   constructor(
@@ -30,20 +30,6 @@ function requireEnv(name: "API_URL" | "API_JWT_SECRET"): string {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not set; the web server needs it to call the api`);
   return value;
-}
-
-// Pure so tests can check claims. `now` is a Date; claims are whole seconds.
-export async function signApiToken(email: string, name: string | null | undefined, secret: string, now: Date) {
-  const iat = Math.floor(now.getTime() / 1000);
-  const claims: { name?: string } = {};
-  const trimmed = name?.trim();
-  if (trimmed) claims.name = trimmed.slice(0, 200);
-  return new SignJWT(claims)
-    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-    .setSubject(email.trim().toLowerCase())
-    .setIssuedAt(iat)
-    .setExpirationTime(iat + TOKEN_LIFETIME_S)
-    .sign(new TextEncoder().encode(secret));
 }
 
 async function toApiError(res: Response): Promise<ApiError> {

@@ -12,11 +12,14 @@ const LINKS = [
   { href: "/wallet", label: "Wallet" },
 ] as const;
 
-export function NavLinks({ pendingCount }: { pendingCount: number | null }) {
+const ADMIN_LINK = { href: "/admin", label: "Admin" } as const;
+
+export function NavLinks({ pendingCount, isAdmin = false }: { pendingCount: number | null; isAdmin?: boolean }) {
   const pathname = usePathname();
+  const links = isAdmin ? [...LINKS, ADMIN_LINK] : LINKS;
   return (
     <nav aria-label="Main" className="flex min-w-0 items-center gap-1 overflow-x-auto">
-      {LINKS.map(({ href, label }) => {
+      {links.map(({ href, label }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         return (
           <Link

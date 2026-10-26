@@ -8,6 +8,7 @@ import { registerCors } from "./http/cors";
 import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { adminRoutes } from "./modules/admin";
 import { arenaRoutes, registerArenaHooks } from "./modules/arena";
 import { identityRoutes } from "./modules/identity";
 import { mcpRoutes } from "./modules/mcp";
@@ -80,6 +81,7 @@ export function buildApp(opts: BuildAppOptions) {
     await api.register(policyRoutes);
     await api.register(arenaRoutes);
     await api.register(mcpRoutes);
+    await api.register(adminRoutes);
   });
 
   return app;

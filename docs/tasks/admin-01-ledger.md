@@ -29,3 +29,15 @@ Spec sections: "Users and core flows" (Admin: view the full ledger), "Money mode
 ## Done when
 
 `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test`, web build; `pnpm openapi:export` leaves no diff.
+
+## Changes made during the build
+
+- Api routes live in a new routing-only module `modules/admin` (no tables). One encapsulated `onRequest` hook does the admin check, so it runs after auth (401 first) and before validation (a non-admin gets 403, never a 400 or 404).
+- Ledger reads are in `modules/ledger/reads.ts`. The journal cursor carries `created_at` as text with microseconds (`to_char(... 'US')`), since a JS `Date` would round to milliseconds and skip or repeat rows. An invalid cursor is 400 `validation_error`.
+- `listAccounts` balances are natural per type: debits - credits for `asset`, credits - debits for `liability` and `revenue`. `cachedBalanceCents` is set for `wallet:` accounts only (holds are cached as one per-owner total, so there is no per-account cache to compare).
+- `llmUsage(db, now, budget)` takes the budget as a third argument; `dailyBudgetFromEnv(env)` (new, in `llm/config.ts`) is shared with `llmConfigFromEnv`, so the budget shows even with no gateway configured. `used` excludes `over_budget` rows, as the budget does; `byRole` covers every call today, ordered by enum order; `recent` is the last 100 calls of any day.
+- `GET /v1/admin/reconcile` adds `checkedAt` to the existing `reconcile` result.
+- Web: `signApiToken` moved to `lib/api-token.ts` (no `server-only`) so middleware can sign the `/v1/me` call that reads roles; `lib/api.ts` re-exports it. `lib/admin-access.ts` holds the pure redirect logic (unknown roles → redirect, fail closed). The admin page checks the role again and redirects. The nav reads roles with `getMe()` and hides Admin on any error.
+- Tabs are links (`/admin?tab=…`), and only the active tab's data is loaded on the server. The journal lines open in a dialog loaded through a server action; "Load more" is a server action too.
+- `components/data-grid.tsx` wraps AG Grid: Quartz params read the shadcn CSS tokens, with `light`/`dark` modes set from `next-themes` through `data-ag-theme-mode`. Grids with 10 rows or fewer size to fit. Enter on a cell opens a row, like a click. The accounts mismatch highlight is a single row class styled unlayered in `globals.css`, because Tailwind's layered utilities lose to AG Grid's own styles.
+- No kind filter in the journals UI (the api supports `?kind=`).

@@ -13051,6 +13051,1474 @@
           }
         }
       }
+    },
+    "/v1/admin/journals": {
+      "get": {
+        "summary": "List journals, newest first",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Cursor-paginated by (created_at, id); pass `nextCursor` back as `cursor`. `limit` defaults to 100, max 200. `totalCents` is the sum of the journal's debits.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400
+            },
+            "in": "query",
+            "name": "cursor",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "topup",
+                "stake",
+                "hire",
+                "settle",
+                "payout",
+                "fee",
+                "refund",
+                "release"
+              ]
+            },
+            "in": "query",
+            "name": "kind",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "topup",
+                              "stake",
+                              "hire",
+                              "settle",
+                              "payout",
+                              "fee",
+                              "refund",
+                              "release"
+                            ]
+                          },
+                          "refType": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "refId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "idempotencyKey": {
+                            "type": "string"
+                          },
+                          "totalCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "lineCount": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "refType",
+                          "refId",
+                          "idempotencyKey",
+                          "totalCents",
+                          "lineCount",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/journals/{id}": {
+      "get": {
+        "summary": "A journal with its lines",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Debit lines first.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "topup",
+                        "stake",
+                        "hire",
+                        "settle",
+                        "payout",
+                        "fee",
+                        "refund",
+                        "release"
+                      ]
+                    },
+                    "refType": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "refId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "idempotencyKey": {
+                      "type": "string"
+                    },
+                    "totalCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "accountId": {
+                            "type": "string"
+                          },
+                          "accountType": {
+                            "type": "string",
+                            "enum": [
+                              "asset",
+                              "liability",
+                              "revenue"
+                            ]
+                          },
+                          "ownerId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "debitCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "creditCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "accountId",
+                          "accountType",
+                          "ownerId",
+                          "debitCents",
+                          "creditCents"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "refType",
+                    "refId",
+                    "idempotencyKey",
+                    "totalCents",
+                    "createdAt",
+                    "lines"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/accounts": {
+      "get": {
+        "summary": "Every ledger account with its balance",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Balances are computed from the entries. Wallet accounts also carry the cached balance.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "asset",
+                              "liability",
+                              "revenue"
+                            ]
+                          },
+                          "ownerId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "memo": {
+                            "type": "boolean"
+                          },
+                          "balanceCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "cachedBalanceCents": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "ownerId",
+                          "memo",
+                          "balanceCents",
+                          "cachedBalanceCents",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "accounts"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/reconcile": {
+      "get": {
+        "summary": "Run the internal ledger reconciliation",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "ok": {
+                            "type": "boolean"
+                          },
+                          "detail": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "ok",
+                          "detail"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "checkedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "checks",
+                    "checkedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/llm-usage": {
+      "get": {
+        "summary": "Today's LLM gateway usage and the most recent calls",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Counts cover the current UTC day. Never includes prompts or model output.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                      "type": "string"
+                    },
+                    "budget": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "used": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "byRole": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "role": {
+                            "type": "string",
+                            "enum": [
+                              "mandate_compile",
+                              "intent_check",
+                              "judge"
+                            ]
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "enum": [
+                              "ok",
+                              "invalid_output",
+                              "error",
+                              "timeout",
+                              "over_budget"
+                            ]
+                          },
+                          "count": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "role",
+                          "outcome",
+                          "count"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "recent": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": [
+                              "mandate_compile",
+                              "intent_check",
+                              "judge"
+                            ]
+                          },
+                          "model": {
+                            "type": "string"
+                          },
+                          "servedModel": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "enum": [
+                              "ok",
+                              "invalid_output",
+                              "error",
+                              "timeout",
+                              "over_budget"
+                            ]
+                          },
+                          "latencyMs": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "promptTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "completionTokens": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "role",
+                          "model",
+                          "servedModel",
+                          "outcome",
+                          "latencyMs",
+                          "promptTokens",
+                          "completionTokens",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "day",
+                    "budget",
+                    "used",
+                    "byRole",
+                    "recent"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "compile_failed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
