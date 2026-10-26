@@ -23,6 +23,8 @@ services:
         value: allow
       - key: ALLOW_DEV_CREDIT
         value: "true"
+      - key: ALLOW_DEV_FUNDING
+        value: "true"
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_CLIENT_SECRET

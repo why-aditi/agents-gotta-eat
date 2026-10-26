@@ -3,7 +3,8 @@ import type { SpendCategory, Verdict } from "@gottaeat/schemas";
 
 export interface IntentCheckInput {
   agentId: string;
-  payeeAgentId: string;
+  // Null for stakes, which pay the bounty's stake account rather than an agent.
+  payeeAgentId: string | null;
   amountCents: bigint;
   feeCents: bigint;
   category: SpendCategory;

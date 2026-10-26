@@ -1,10 +1,10 @@
 import { randomBytes } from "node:crypto";
-import type { MandateRules } from "@gottaeat/schemas";
+import type { BountyStatus, CreateBountyRequest, MandateRules } from "@gottaeat/schemas";
 import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
 import { type AppEnv, buildApp } from "../src/app";
 import { createDb, type Db } from "../src/db";
-import { agents, mandates, users } from "../src/db/schema";
+import { agents, bounties, bountyAssets, mandates, users } from "../src/db/schema";
 import { AGENT_KEY_PREFIX, hashApiKey } from "../src/http/auth";
 import { newId } from "../src/lib/ids";
 import { openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../src/modules/ledger";
@@ -18,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,
@@ -144,4 +144,74 @@ export async function createSpendFixture(
   if (opts?.balanceCents !== undefined && opts.balanceCents > 0n) await topUp(db, ownerId, opts.balanceCents);
   await createMandate(db, { agentId, createdBy: ownerId, rules: opts?.rules });
   return { ownerId, payeeOwnerId, agentId, payeeAgentId, principal: { type: "agent" as const, agentId, ownerId } };
+}
+
+// A valid POST /v1/bounties body, deadline 24 h out. extract_data carries a hidden answer key.
+export function bountyRequest(
+  taskType: "extract_data" | "creative_writing" = "extract_data",
+  over: Record<string, unknown> = {},
+): CreateBountyRequest {
+  const base = {
+    title: `Test ${taskType} bounty`,
+    rewardCents: 5000,
+    deadlineAt: new Date(Date.now() + 24 * 3_600_000).toISOString(),
+    spendRulePct: 20,
+    passThreshold: 60,
+  };
+  const body =
+    taskType === "extract_data"
+      ? {
+          ...base,
+          taskType,
+          spec: {
+            instructions: "Extract the invoice total",
+            schema: { type: "object", properties: { total: { type: "integer" } } },
+            sources: [{ name: "invoice.txt", content: "Total: 1200" }],
+          },
+          hidden: { answerKey: { total: 1200 } },
+        }
+      : { ...base, taskType, spec: { brief: "A tagline for a lunch app", rubric: "Short and funny" } };
+  return { ...body, ...over } as CreateBountyRequest;
+}
+
+// Inserts a bounty straight into the table (default: open extract_data, deadline 24 h out) and its hidden asset.
+export async function createTestBounty(
+  db: Db,
+  opts: {
+    posterId: string;
+    status?: BountyStatus;
+    taskType?: "extract_data" | "creative_writing";
+    rewardCents?: bigint;
+    spendRulePct?: number;
+    deadlineAt?: Date;
+    hidden?: unknown;
+  },
+): Promise<string> {
+  const id = newId("bty");
+  const taskType = opts.taskType ?? "extract_data";
+  const req = bountyRequest(taskType);
+  const status = opts.status ?? "open";
+  await db.insert(bounties).values({
+    id,
+    posterId: opts.posterId,
+    taskType,
+    title: req.title,
+    spec: req.spec,
+    rewardCents: opts.rewardCents ?? 5000n,
+    feeCents: 500n,
+    spendRulePct: opts.spendRulePct ?? 20,
+    passThreshold: 60,
+    deadlineAt: opts.deadlineAt ?? new Date(Date.now() + 24 * 3_600_000),
+    status,
+    openedAt: status === "draft" ? null : new Date(),
+  });
+  if (taskType === "extract_data") {
+    await db.insert(bountyAssets).values({
+      id: newId("bas"),
+      bountyId: id,
+      kind: "hidden",
+      content: { answerKey: opts.hidden ?? { total: 1200 } },
+    });
+  }
+  return id;
 }

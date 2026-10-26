@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
-import { holdAccount, PLATFORM_FEES, walletAccount } from "./accounts";
+import { holdAccount, PLATFORM_FEES, stakeAccount, walletAccount } from "./accounts";
 import { LedgerError } from "./errors";
 import { findJournal, postJournal, type JournalLine, type PostedJournal } from "./journal";
 
@@ -137,6 +137,27 @@ export async function release(
     lines: [
       { accountId: h.holdId, debitCents: h.balance },
       { accountId: walletAccount(h.ownerId), creditCents: h.balance },
+    ],
+  });
+}
+
+// Moves a whole open hold into the bounty's stake account, where it waits for judging (refund or forfeit).
+export async function stakeFromHold(
+  tx: Tx,
+  input: { spendRequestId: string; bountyId: string; idempotencyKey: string },
+): Promise<PostedJournal> {
+  const h = await openHold(tx, input.spendRequestId, input.idempotencyKey);
+  if ("replay" in h) return h.replay;
+  const stakeId = stakeAccount(input.bountyId);
+  await tx.insert(ledgerAccounts).values({ id: stakeId, type: "liability" }).onConflictDoNothing();
+  return postJournal(tx, {
+    kind: "stake",
+    refType: "spend_request",
+    refId: input.spendRequestId,
+    idempotencyKey: input.idempotencyKey,
+    lines: [
+      { accountId: h.holdId, debitCents: h.balance },
+      { accountId: stakeId, creditCents: h.balance },
     ],
   });
 }

@@ -7,6 +7,7 @@ import {
   buildTestApp,
   createAgent,
   createMandate,
+  createTestBounty,
   createTestDb,
   createUserWithWallet,
   resetDb,
@@ -14,6 +15,7 @@ import {
   topUp,
 } from "../../../test/db";
 import { spendRequests } from "../../db/schema";
+import { getBalances, reconcile } from "../ledger";
 
 const { db, pool } = createTestDb();
 // Gate 2 stub "allow", so a spend inside the mandate settles.
@@ -82,12 +84,59 @@ const spendArgs = (payeeAgentId: string, amountCents: number) => ({
   reason: "API credits",
 });
 
+describe("Arena over MCP", () => {
+  it("list_bounties → get_bounty → enter_bounty (stake through the mandate) → submit_work", async () => {
+    const f = await fixture(5000n, { allowedCategories: ["stake", "tool"] });
+    const posterId = await createUserWithWallet(db);
+    const bountyId = await createTestBounty(db, { posterId, taskType: "creative_writing" });
+    const client = await connect(f.apiKey);
+
+    const listed = bodyOf(await call(client, "list_bounties", { type: "creative_writing" }));
+    expect((listed.bounties as { id: string }[]).map((b) => b.id)).toEqual([bountyId]);
+    const one = bodyOf(await call(client, "get_bounty", { id: bountyId }));
+    expect(one).toMatchObject({ id: bountyId, status: "open" });
+
+    const entered = await call(client, "enter_bounty", { id: bountyId, idempotencyKey: "enter-1" });
+    expect(entered.isError).toBeFalsy();
+    const body = bodyOf(entered) as { entry: { id: string; status: string }; stake: { decision: string } };
+    expect(body.stake.decision).toBe("allow");
+    expect(body.entry.status).toBe("active");
+    const again = bodyOf(await call(client, "enter_bounty", { id: bountyId, idempotencyKey: "enter-1" }));
+    expect((again.entry as { id: string }).id).toBe(body.entry.id);
+    expect(await getBalances(db, f.ownerId)).toEqual({ balanceCents: 5000n - 50n, heldCents: 0n });
+
+    const submitted = await call(client, "submit_work", {
+      id: body.entry.id,
+      content: { text: "Lunch, sorted." },
+      idempotencyKey: "submit-1",
+    });
+    expect(submitted.isError).toBeFalsy();
+    expect(bodyOf(submitted)).toMatchObject({
+      entryId: body.entry.id,
+      contentHash: expect.stringMatching(/^[0-9a-f]{64}$/),
+    });
+
+    const twice = await call(client, "submit_work", { id: body.entry.id, content: { text: "Second go" } });
+    expect(twice.isError).toBe(true);
+    expect(bodyOf(twice)).toMatchObject({ error: { code: "already_submitted" } });
+    expect(await reconcile(db)).toMatchObject({ ok: true });
+  });
+});
+
 describe("MCP over Streamable HTTP", () => {
-  it("lists the three tools with their input schemas", async () => {
+  it("lists the tools with their input schemas", async () => {
     const f = await fixture(0n);
     const client = await connect(f.apiKey);
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual(["get_spend_request", "get_wallet", "request_spend"]);
+    expect(tools.map((t) => t.name).sort()).toEqual([
+      "enter_bounty",
+      "get_bounty",
+      "get_spend_request",
+      "get_wallet",
+      "list_bounties",
+      "request_spend",
+      "submit_work",
+    ]);
 
     const spend = tools.find((t) => t.name === "request_spend");
     expect(spend?.description).toMatch(/idempotencyKey/);
