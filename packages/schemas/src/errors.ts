@@ -15,6 +15,13 @@ export const ErrorCode = z.enum([
   "invalid_amount",
   "approval_expired",
   "already_decided",
+  "bounty_has_entries",
+  "already_submitted",
+  "deadline_passed",
+  "entry_not_active",
+  "submission_too_large",
+  "invalid_transition",
+  "bounty_closed",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

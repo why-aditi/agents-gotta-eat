@@ -18,6 +18,13 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   invalid_amount: 400,
   approval_expired: 409,
   already_decided: 409,
+  bounty_has_entries: 409,
+  already_submitted: 409,
+  deadline_passed: 409,
+  entry_not_active: 409,
+  submission_too_large: 400,
+  invalid_transition: 409,
+  bounty_closed: 409,
   internal: 500,
 };
 
@@ -35,6 +42,13 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   invalid_amount: "Invalid amount",
   approval_expired: "This approval request has expired and its hold was released",
   already_decided: "This spend request has already been decided",
+  bounty_has_entries: "This bounty already has entries",
+  already_submitted: "This entry already has a submission",
+  deadline_passed: "The bounty's deadline has passed",
+  entry_not_active: "This entry is not active",
+  submission_too_large: "The submission is larger than 1 MB",
+  invalid_transition: "This bounty cannot make that status change",
+  bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
   internal: "Internal server error",
 };
 

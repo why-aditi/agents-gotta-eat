@@ -17,6 +17,13 @@ function apiScript(script: string, args: string[]): string {
   }).trim();
 }
 
+async function openTitles(token: string): Promise<Set<string>> {
+  const res = await fetch(`${API_URL}/v1/bounties?status=open`, { headers: { authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`GET /v1/bounties → ${res.status}`);
+  const { bounties } = (await res.json()) as { bounties: { title: string; posterId: string }[] };
+  return new Set(bounties.map((b) => b.title));
+}
+
 async function call(path: string, token: string, body: unknown, key: string) {
   const res = await fetch(`${API_URL}${path}`, {
     method: "POST",
@@ -31,13 +38,18 @@ async function call(path: string, token: string, body: unknown, key: string) {
 apiScript("grant-admin", ["--email", POSTER]);
 const token = apiScript("dev:token", ["--email", POSTER, "--name", "Demo poster"]);
 const deadlineAt = new Date(Date.now() + HOURS * 3_600_000).toISOString();
+// Re-runnable: a demo bounty that is already open is left alone.
+const alreadyOpen = await openTitles(token);
 
 for (const file of readdirSync(dir)
   .filter((f) => f.endsWith(".json"))
   .sort()) {
   const bounty = JSON.parse(readFileSync(join(dir, file), "utf8")) as Record<string, unknown>;
-  const day = new Date().toISOString().slice(0, 10);
-  const created = await call("/v1/bounties", token, { ...bounty, deadlineAt }, `seed-${file}-${day}`);
+  if (alreadyOpen.has(bounty.title as string)) {
+    console.log(`seed: ${file} is already open, skipped`);
+    continue;
+  }
+  const created = await call("/v1/bounties", token, { ...bounty, deadlineAt }, `seed-${file}-${deadlineAt}`);
   const id = created.id as string;
   await call(`/v1/admin/bounties/${id}/open`, token, {}, `seed-open-${id}`);
   console.log(`seed: opened ${id} (${file})`);

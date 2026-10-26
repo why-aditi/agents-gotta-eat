@@ -10,6 +10,10 @@ describe("McpTools", () => {
       ["get_wallet", "GET", "/v1/wallet"],
       ["request_spend", "POST", "/v1/spend-requests"],
       ["get_spend_request", "GET", "/v1/spend-requests/:id"],
+      ["list_bounties", "GET", "/v1/bounties"],
+      ["get_bounty", "GET", "/v1/bounties/:id"],
+      ["enter_bounty", "POST", "/v1/bounties/:id/entries"],
+      ["submit_work", "POST", "/v1/entries/:id/submissions"],
     ]);
     for (const t of McpTools) {
       expect(t.title.length).toBeGreaterThan(0);

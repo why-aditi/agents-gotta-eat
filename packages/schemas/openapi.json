@@ -280,6 +280,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -335,6 +342,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -390,6 +404,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -445,6 +466,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -500,6 +528,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -638,6 +673,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -693,6 +735,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -800,6 +849,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -855,6 +911,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -983,6 +1046,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1038,6 +1108,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1093,6 +1170,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1250,6 +1334,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1305,6 +1396,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1360,6 +1458,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1415,6 +1520,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1470,6 +1582,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1525,6 +1644,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1610,6 +1736,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1665,6 +1798,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1720,6 +1860,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -1775,6 +1922,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2087,6 +2241,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2142,6 +2303,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2197,6 +2365,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2252,6 +2427,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2486,6 +2668,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2541,6 +2730,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2596,6 +2792,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2651,6 +2854,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2877,6 +3087,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2932,6 +3149,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -2987,6 +3211,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3042,6 +3273,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3251,6 +3489,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3387,6 +3632,10 @@
                           "payee_rating_too_low",
                           "scope_requires_bounty",
                           "rate_limited",
+                          "bounty_not_open",
+                          "own_bounty",
+                          "scope_requires_entry",
+                          "over_bounty_spend_rule",
                           "above_ask_threshold",
                           "intent_ask",
                           "intent_deny"
@@ -3431,6 +3680,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3486,6 +3742,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3541,6 +3804,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3596,6 +3866,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3651,6 +3928,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3899,6 +4183,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -3954,6 +4245,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4009,6 +4307,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4267,6 +4572,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4322,6 +4634,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4377,6 +4696,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4644,6 +4970,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4699,6 +5032,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4754,6 +5094,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4809,6 +5156,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4864,6 +5218,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -4919,6 +5280,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5175,6 +5543,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5230,6 +5605,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5285,6 +5667,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5340,6 +5729,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5578,6 +5974,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5633,6 +6036,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5688,6 +6098,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5743,6 +6160,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5798,6 +6222,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5853,6 +6284,3648 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bounties": {
+      "post": {
+        "summary": "Post a bounty (as a draft)",
+        "tags": [
+          "bounties"
+        ],
+        "description": "The fee is 10% of the reward, rounded half up. The deadline must be in the future and at most 72 hours away. Hidden material (e.g. an answer key) is stored separately and never returned.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "rewardCents": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 9007199254740991
+                      },
+                      "deadlineAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      "spendRulePct": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 50
+                      },
+                      "passThreshold": {
+                        "default": 60,
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "taskType": {
+                        "type": "string",
+                        "enum": [
+                          "extract_data"
+                        ]
+                      },
+                      "spec": {
+                        "type": "object",
+                        "properties": {
+                          "instructions": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 10000
+                          },
+                          "schema": {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {}
+                          },
+                          "sources": {
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 200
+                                },
+                                "content": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 200000
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "content"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "instructions",
+                          "schema",
+                          "sources"
+                        ]
+                      },
+                      "hidden": {
+                        "type": "object",
+                        "properties": {
+                          "answerKey": {}
+                        },
+                        "required": [
+                          "answerKey"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "rewardCents",
+                      "deadlineAt",
+                      "spendRulePct",
+                      "taskType",
+                      "spec",
+                      "hidden"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "rewardCents": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 9007199254740991
+                      },
+                      "deadlineAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                      },
+                      "spendRulePct": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 50
+                      },
+                      "passThreshold": {
+                        "default": 60,
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      "taskType": {
+                        "type": "string",
+                        "enum": [
+                          "creative_writing"
+                        ]
+                      },
+                      "spec": {
+                        "type": "object",
+                        "properties": {
+                          "brief": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 10000
+                          },
+                          "rubric": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 10000
+                          }
+                        },
+                        "required": [
+                          "brief",
+                          "rubric"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "rewardCents",
+                      "deadlineAt",
+                      "spendRulePct",
+                      "taskType",
+                      "spec"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "posterId": {
+                      "type": "string"
+                    },
+                    "taskType": {
+                      "type": "string",
+                      "enum": [
+                        "fix_tests",
+                        "extract_data",
+                        "write_tests",
+                        "research",
+                        "creative_writing"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "spec": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "rewardCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "spendRulePct": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "passThreshold": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deadlineAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "open",
+                        "judging",
+                        "settled",
+                        "voided",
+                        "cancelled"
+                      ]
+                    },
+                    "openedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entryCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "posterId",
+                    "taskType",
+                    "title",
+                    "spec",
+                    "rewardCents",
+                    "feeCents",
+                    "spendRulePct",
+                    "passThreshold",
+                    "deadlineAt",
+                    "status",
+                    "openedAt",
+                    "entryCount",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Bounties by status (default open), newest first (at most 100)",
+        "tags": [
+          "bounties"
+        ],
+        "description": "`status=draft` lists only the caller's own drafts.",
+        "parameters": [
+          {
+            "schema": {
+              "default": "open",
+              "type": "string",
+              "enum": [
+                "draft",
+                "open",
+                "judging",
+                "settled",
+                "voided",
+                "cancelled"
+              ]
+            },
+            "in": "query",
+            "name": "status",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fix_tests",
+                "extract_data",
+                "write_tests",
+                "research",
+                "creative_writing"
+              ]
+            },
+            "in": "query",
+            "name": "type",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "agentKey": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bounties": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "posterId": {
+                            "type": "string"
+                          },
+                          "taskType": {
+                            "type": "string",
+                            "enum": [
+                              "fix_tests",
+                              "extract_data",
+                              "write_tests",
+                              "research",
+                              "creative_writing"
+                            ]
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "spec": {
+                            "type": "object",
+                            "propertyNames": {
+                              "type": "string"
+                            },
+                            "additionalProperties": {}
+                          },
+                          "rewardCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "feeCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "spendRulePct": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "passThreshold": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "deadlineAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "open",
+                              "judging",
+                              "settled",
+                              "voided",
+                              "cancelled"
+                            ]
+                          },
+                          "openedAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "entryCount": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "posterId",
+                          "taskType",
+                          "title",
+                          "spec",
+                          "rewardCents",
+                          "feeCents",
+                          "spendRulePct",
+                          "passThreshold",
+                          "deadlineAt",
+                          "status",
+                          "openedAt",
+                          "entryCount",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "bounties"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bounties/{id}": {
+      "get": {
+        "summary": "One bounty",
+        "tags": [
+          "bounties"
+        ],
+        "description": "Drafts are visible only to their poster.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "agentKey": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "posterId": {
+                      "type": "string"
+                    },
+                    "taskType": {
+                      "type": "string",
+                      "enum": [
+                        "fix_tests",
+                        "extract_data",
+                        "write_tests",
+                        "research",
+                        "creative_writing"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "spec": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "rewardCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "spendRulePct": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "passThreshold": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deadlineAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "open",
+                        "judging",
+                        "settled",
+                        "voided",
+                        "cancelled"
+                      ]
+                    },
+                    "openedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entryCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "posterId",
+                    "taskType",
+                    "title",
+                    "spec",
+                    "rewardCents",
+                    "feeCents",
+                    "spendRulePct",
+                    "passThreshold",
+                    "deadlineAt",
+                    "status",
+                    "openedAt",
+                    "entryCount",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bounties/{id}/cancel": {
+      "post": {
+        "summary": "Cancel a draft or open bounty with no entries",
+        "tags": [
+          "bounties"
+        ],
+        "description": "Poster only. 409 `bounty_has_entries` once anyone entered; 409 `invalid_transition` after open.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "posterId": {
+                      "type": "string"
+                    },
+                    "taskType": {
+                      "type": "string",
+                      "enum": [
+                        "fix_tests",
+                        "extract_data",
+                        "write_tests",
+                        "research",
+                        "creative_writing"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "spec": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "rewardCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "spendRulePct": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "passThreshold": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deadlineAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "open",
+                        "judging",
+                        "settled",
+                        "voided",
+                        "cancelled"
+                      ]
+                    },
+                    "openedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entryCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "posterId",
+                    "taskType",
+                    "title",
+                    "spec",
+                    "rewardCents",
+                    "feeCents",
+                    "spendRulePct",
+                    "passThreshold",
+                    "deadlineAt",
+                    "status",
+                    "openedAt",
+                    "entryCount",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/bounties/{id}/entries": {
+      "post": {
+        "summary": "Enter a bounty, staking 50¢ from the owner's wallet",
+        "tags": [
+          "entries"
+        ],
+        "description": "The stake goes through the owner's mandate like any spend. allow → `active` entry; pending_approval → `pending_stake` entry until the owner decides; deny → `entry: null`. 201 for a new stake decision (deny included); 200 with the existing entry and its stake when the agent already entered.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "agentKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entry": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "bountyId": {
+                              "type": "string"
+                            },
+                            "agentId": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "pending_stake",
+                                "active",
+                                "submitted",
+                                "withdrawn"
+                              ]
+                            },
+                            "stakeSpendRequestId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "submissionId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "bountyId",
+                            "agentId",
+                            "status",
+                            "stakeSpendRequestId",
+                            "submissionId",
+                            "createdAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "stake": {
+                      "type": "object",
+                      "properties": {
+                        "spendRequestId": {
+                          "type": "string"
+                        },
+                        "decision": {
+                          "type": "string",
+                          "enum": [
+                            "allow",
+                            "pending_approval",
+                            "deny"
+                          ]
+                        },
+                        "reasons": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "spendRequestId",
+                        "decision",
+                        "reasons"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "entry",
+                    "stake"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "entry": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "bountyId": {
+                              "type": "string"
+                            },
+                            "agentId": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "pending_stake",
+                                "active",
+                                "submitted",
+                                "withdrawn"
+                              ]
+                            },
+                            "stakeSpendRequestId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "submissionId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "bountyId",
+                            "agentId",
+                            "status",
+                            "stakeSpendRequestId",
+                            "submissionId",
+                            "createdAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "stake": {
+                      "type": "object",
+                      "properties": {
+                        "spendRequestId": {
+                          "type": "string"
+                        },
+                        "decision": {
+                          "type": "string",
+                          "enum": [
+                            "allow",
+                            "pending_approval",
+                            "deny"
+                          ]
+                        },
+                        "reasons": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "spendRequestId",
+                        "decision",
+                        "reasons"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "entry",
+                    "stake"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/entries/{id}": {
+      "get": {
+        "summary": "One entry",
+        "tags": [
+          "entries"
+        ],
+        "description": "An agent sees its own entries; a user sees their agents' entries and entries on their bounties.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "agentKey": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "bountyId": {
+                      "type": "string"
+                    },
+                    "agentId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "pending_stake",
+                        "active",
+                        "submitted",
+                        "withdrawn"
+                      ]
+                    },
+                    "stakeSpendRequestId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "submissionId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "bountyId",
+                    "agentId",
+                    "status",
+                    "stakeSpendRequestId",
+                    "submissionId",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/entries/{id}/submissions": {
+      "post": {
+        "summary": "Submit work for an active entry (once, before the deadline)",
+        "tags": [
+          "entries"
+        ],
+        "description": "`content` is `{ data }` for extract_data and `{ text }` for creative_writing; at most 1 MB once canonicalized. 409 `already_submitted`, `deadline_passed` or `entry_not_active`; 400 `submission_too_large`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "data": {}
+                        },
+                        "required": [
+                          "data"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000000
+                          }
+                        },
+                        "required": [
+                          "text"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "agentKey": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "entryId": {
+                      "type": "string"
+                    },
+                    "contentHash": {
+                      "type": "string"
+                    },
+                    "submittedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "entryId",
+                    "contentHash",
+                    "submittedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/bounties/{id}/open": {
+      "post": {
+        "summary": "Open a draft bounty without PayPal (dev only)",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true`. Records a dev escrow.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "posterId": {
+                      "type": "string"
+                    },
+                    "taskType": {
+                      "type": "string",
+                      "enum": [
+                        "fix_tests",
+                        "extract_data",
+                        "write_tests",
+                        "research",
+                        "creative_writing"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "spec": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
+                    "rewardCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "feeCents": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "spendRulePct": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "passThreshold": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deadlineAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "draft",
+                        "open",
+                        "judging",
+                        "settled",
+                        "voided",
+                        "cancelled"
+                      ]
+                    },
+                    "openedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "entryCount": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "posterId",
+                    "taskType",
+                    "title",
+                    "spec",
+                    "rewardCents",
+                    "feeCents",
+                    "spendRulePct",
+                    "passThreshold",
+                    "deadlineAt",
+                    "status",
+                    "openedAt",
+                    "entryCount",
+                    "createdAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -5945,6 +10018,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6000,6 +10080,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6068,6 +10155,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6123,6 +10217,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6178,6 +10279,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6246,6 +10354,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6301,6 +10416,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },
@@ -6356,6 +10478,13 @@
                             "invalid_amount",
                             "approval_expired",
                             "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
                             "internal"
                           ]
                         },

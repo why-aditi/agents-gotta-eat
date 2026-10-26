@@ -200,6 +200,29 @@ describe("createStakeSpendRequest", () => {
     expect(await reconcile(db)).toMatchObject({ ok: true });
   });
 
+  it("approving a stake after its bounty closed releases it instead (409 bounty_closed)", async () => {
+    const f = await stakeFixture({ askAboveCents: 0 });
+    const res = await stake(f);
+    expect(res.status).toBe("pending_approval");
+    await db.update(bounties).set({ status: "judging" }).where(eq(bounties.id, f.bountyId));
+
+    await expect(decideApproval(db, user(f.ownerId), res.id, "approve")).rejects.toMatchObject({
+      code: "bounty_closed",
+    });
+    expect((await row(res.id)).status).toBe("released");
+    expect(await getBalances(db, f.ownerId)).toEqual({ balanceCents: 5000n, heldCents: 0n });
+    expect(await accountBalance(db, stakeAccount(f.bountyId))).toBe(0n);
+    expect(releasedHook).toHaveBeenCalledTimes(1);
+    expect(settledHook).not.toHaveBeenCalled();
+    const sr = await getSpendRequestFor(db, user(f.ownerId), res.id);
+    expect(sr.decisions.at(-1)).toMatchObject({ gate: "owner", verdict: "deny", detail: { bountyClosed: true } });
+    // A second approve sees the decision already made.
+    await expect(decideApproval(db, user(f.ownerId), res.id, "approve")).rejects.toMatchObject({
+      code: "already_decided",
+    });
+    expect(await reconcile(db)).toMatchObject({ ok: true });
+  });
+
   it("expiry → released, money back, onStakeReleased", async () => {
     const f = await stakeFixture({ askAboveCents: 0 });
     const created = new Date(Date.now() - 60_000);

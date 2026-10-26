@@ -1,8 +1,8 @@
 // Gate 3: the owner approves or denies a pending_approval spend request.
 import type { ApprovalRequest, SpendRequest, SpendStatus } from "@gottaeat/schemas";
 import { and, asc, eq, gt } from "drizzle-orm";
-import type { Db } from "../../db";
-import { spendRequests } from "../../db/schema";
+import type { Db, Tx } from "../../db";
+import { bounties, spendRequests } from "../../db/schema";
 import type { UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { release, settle, stakeFromHold } from "../ledger";
@@ -19,6 +19,16 @@ function expiredEarlier(row: SpendRow): boolean {
     row.decidedAt !== null &&
     row.decidedAt.getTime() >= row.expiresAt.getTime()
   );
+}
+
+// A stake can only be approved while its bounty is still open: once it closes the agent can't submit,
+// so the stake would only be forfeited.
+async function bountyStillOpen(tx: Tx, bountyId: string, now: Date): Promise<boolean> {
+  const [bounty] = await tx
+    .select({ status: bounties.status, deadlineAt: bounties.deadlineAt })
+    .from(bounties)
+    .where(eq(bounties.id, bountyId));
+  return !!bounty && bounty.status === "open" && now.getTime() < bounty.deadlineAt.getTime();
 }
 
 // 404 unless the request belongs to one of the owner's agents. 409 approval_expired when it timed out
@@ -44,8 +54,14 @@ export async function decideApproval(
       throw new ApiError("already_decided", undefined, { status: row.status });
     }
 
+    // Approving a stake on a closed bounty releases it instead; returned, not thrown, so it commits.
+    const bountyClosed =
+      decision === "approve" &&
+      row.category === "stake" &&
+      !(row.bountyId && (await bountyStillOpen(tx, row.bountyId, now)));
+
     let status: SpendStatus;
-    if (decision === "deny") {
+    if (decision === "deny" || bountyClosed) {
       status = transition(row.status, "released");
       await release(tx, { spendRequestId: row.id, idempotencyKey: ledgerKey.release(row.id) });
     } else if (row.category === "stake") {
@@ -75,8 +91,8 @@ export async function decideApproval(
     await insertDecision(tx, {
       spendRequestId: row.id,
       gate: "owner",
-      verdict: decision === "approve" ? "allow" : "deny",
-      detail: { decidedBy: owner.userId },
+      verdict: decision === "approve" && !bountyClosed ? "allow" : "deny",
+      detail: bountyClosed ? { decidedBy: owner.userId, bountyClosed: true } : { decidedBy: owner.userId },
       now,
     });
     // The arena moves the entry on, in this same transaction.
@@ -84,11 +100,13 @@ export async function decideApproval(
       if (status === "settled") await stakeHooks().onStakeSettled(tx, row.id);
       else await stakeHooks().onStakeReleased(tx, row.id);
     }
+    if (bountyClosed) return "bounty_closed" as const;
     const dto = await loadSpendRequest(tx, row.id);
     if (!dto) throw new Error(`spend request ${row.id} vanished`);
     return dto;
   });
   if (outcome === "expired") throw new ApiError("approval_expired");
+  if (outcome === "bounty_closed") throw new ApiError("bounty_closed");
   return outcome;
 }
 

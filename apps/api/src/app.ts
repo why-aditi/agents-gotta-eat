@@ -8,6 +8,7 @@ import { registerCors } from "./http/cors";
 import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { arenaRoutes, registerArenaHooks } from "./modules/arena";
 import { identityRoutes } from "./modules/identity";
 import { mcpRoutes } from "./modules/mcp";
 import { policyRoutes } from "./modules/policy";
@@ -21,6 +22,8 @@ export interface AppEnv {
   POLICY_GATE2_STUB?: string;
   // "true" enables POST /v1/admin/wallets/:userId/credit (dev money until pm-04).
   ALLOW_DEV_CREDIT?: string;
+  // "true" enables POST /v1/admin/bounties/:id/open (dev escrow until pm-04).
+  ALLOW_DEV_FUNDING?: string;
 }
 
 export interface BuildAppOptions {
@@ -42,6 +45,8 @@ export function buildApp(opts: BuildAppOptions) {
   app.setSerializerCompiler(serializerCompiler);
   app.decorate("db", opts.db);
   app.decorate("env", opts.env);
+  // Policy tells the arena when an entry stake settles or is released.
+  registerArenaHooks();
 
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
@@ -65,6 +70,7 @@ export function buildApp(opts: BuildAppOptions) {
     // Route modules go here, one register per module. Each declares config.auth on every route.
     await api.register(identityRoutes);
     await api.register(policyRoutes);
+    await api.register(arenaRoutes);
     await api.register(mcpRoutes);
   });
 

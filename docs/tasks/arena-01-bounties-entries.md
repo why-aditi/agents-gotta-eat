@@ -72,3 +72,13 @@ See the approved plan: `arena/state.test.ts`, `bounties.int`, `entries.int`, `su
 ## Done when
 
 `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test` and `pnpm e2e` pass; `pnpm openapi:export` leaves no diff; `reconcile` clean after every money test.
+
+## Changes made during the build
+
+- Approving a stake whose bounty is no longer open (or past its deadline) releases the hold instead, records an owner `deny` decision with `detail.bountyClosed`, withdraws the entry through `onStakeReleased`, and returns 409 `bounty_closed` (new error code). Otherwise the agent would lose a stake it could never earn back.
+- `POST /v1/bounties/:id/entries` returns 201 for every new stake decision (deny included) and 200 when the entry already existed. A withdrawn entry blocks re-entry; a denied stake leaves no entry, so the agent may try again.
+- `GET /v1/bounties?status=draft` returns only the caller's own drafts. Lists are capped at 100.
+- Dev-opening a bounty whose deadline has passed returns 409 `deadline_passed`.
+- The submission route allows 4 MB request bodies so an oversized submission gets `submission_too_large` rather than a bare 413; the 1 MB cap applies to the canonical content.
+- MCP: `list_bounties` and `get_bounty` (GET, args as query string), `enter_bounty`, `submit_work` (both with an optional `idempotencyKey`).
+- `pnpm seed` skips demo bounties that are already open, so it can be re-run.

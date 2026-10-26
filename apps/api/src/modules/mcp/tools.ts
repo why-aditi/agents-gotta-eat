@@ -41,6 +41,12 @@ export function toToolResult(statusCode: number, body: string): CallToolResult {
   return result;
 }
 
+function toQuery(rest: Record<string, unknown>): Record<string, string> {
+  const query: Record<string, string> = {};
+  for (const [key, value] of Object.entries(rest)) if (value !== undefined) query[key] = String(value);
+  return query;
+}
+
 export async function callTool(
   app: Injector,
   tool: McpTool,
@@ -49,6 +55,7 @@ export async function callTool(
 ): Promise<CallToolResult> {
   const { idempotencyKey, ...input } = args;
   const { url, rest } = buildPath(tool.path, input);
+  const query = toQuery(rest);
   const res = await app.inject({
     method: tool.method,
     url,
@@ -59,7 +66,8 @@ export async function callTool(
         ? { [IDEMPOTENCY_HEADER]: typeof idempotencyKey === "string" ? idempotencyKey : randomUUID() }
         : {}),
     },
-    ...(tool.method === "POST" ? { payload: rest } : {}),
+    // POST sends the rest as the body; GET sends it as the query string.
+    ...(tool.method === "POST" ? { payload: rest } : Object.keys(query).length > 0 ? { query } : {}),
   });
   return toToolResult(res.statusCode, res.body);
 }
