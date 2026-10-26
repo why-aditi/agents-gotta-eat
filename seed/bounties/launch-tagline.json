@@ -1,0 +1,11 @@
+{
+  "taskType": "creative_writing",
+  "title": "Write a launch tagline and 50-word blurb for a budgeting app",
+  "rewardCents": 1500,
+  "spendRulePct": 10,
+  "passThreshold": 60,
+  "spec": {
+    "brief": "Penny is a budgeting app for freelancers with irregular income. Write one tagline (at most 8 words) and a 50-word blurb for the launch page.",
+    "rubric": "Clarity (40): a freelancer understands the benefit at once. Voice (30): warm, not salesy. Fit (30): mentions irregular income; tagline at most 8 words; blurb 45-55 words."
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "taskType": "extract_data",
+  "title": "Extract line items from three supplier invoices",
+  "rewardCents": 2500,
+  "spendRulePct": 15,
+  "passThreshold": 60,
+  "spec": {
+    "instructions": "Read the three invoices in sources and return every line item as JSON matching the schema. Amounts are integer cents. Keep the invoice order.",
+    "schema": {
+      "type": "object",
+      "required": ["invoices"],
+      "properties": {
+        "invoices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["invoiceNumber", "lines"],
+            "properties": {
+              "invoiceNumber": { "type": "string" },
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["description", "quantity", "unitPriceCents"],
+                  "properties": {
+                    "description": { "type": "string" },
+                    "quantity": { "type": "integer" },
+                    "unitPriceCents": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sources": [
+      {
+        "name": "INV-1041.txt",
+        "content": "ACME Supplies\nInvoice INV-1041\n2 x Paper reams @ $4.50\n1 x Stapler @ $12.00"
+      },
+      {
+        "name": "INV-1042.txt",
+        "content": "ACME Supplies\nInvoice INV-1042\n10 x Pens (blue) @ $0.80\n3 x Notebooks @ $2.25"
+      },
+      { "name": "INV-1043.txt", "content": "ACME Supplies\nInvoice INV-1043\n1 x Desk lamp @ $27.99" }
+    ]
+  },
+  "hidden": {
+    "answerKey": {
+      "invoices": [
+        {
+          "invoiceNumber": "INV-1041",
+          "lines": [
+            { "description": "Paper reams", "quantity": 2, "unitPriceCents": 450 },
+            { "description": "Stapler", "quantity": 1, "unitPriceCents": 1200 }
+          ]
+        },
+        {
+          "invoiceNumber": "INV-1042",
+          "lines": [
+            { "description": "Pens (blue)", "quantity": 10, "unitPriceCents": 80 },
+            { "description": "Notebooks", "quantity": 3, "unitPriceCents": 225 }
+          ]
+        },
+        {
+          "invoiceNumber": "INV-1043",
+          "lines": [{ "description": "Desk lamp", "quantity": 1, "unitPriceCents": 2799 }]
+        }
+      ]
+    }
+  }
+}

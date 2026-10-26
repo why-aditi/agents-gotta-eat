@@ -104,7 +104,7 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Typecheck | `pnpm typecheck`; `cd agents && uv run mypy .` |
 | Migrate | `pnpm --filter @gottaeat/api db:migrate` (generate: `db:generate`) |
 | Build web | `pnpm --filter @gottaeat/web build` |
-| Seed | `TODO` |
+| Seed | `pnpm seed` (needs a running api with `ALLOW_DEV_FUNDING=true`; creates and opens the bounties in `seed/bounties/`) |
 | Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json` (commit it; a test fails when stale). Python client: later |
 | E2E (Playwright) | `pnpm e2e` (starts api :3001 and web :3000 against local Postgres; locally set `PW_CHROMIUM_PATH` to an installed Chromium). Screenshots in `tests/e2e/screenshots/` |
 | Make a user admin | `pnpm --filter @gottaeat/api grant-admin --email you@example.com` |
