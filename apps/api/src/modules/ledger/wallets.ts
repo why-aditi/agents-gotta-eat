@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
-import { holdAccount, PLATFORM_FEES, stakeAccount, walletAccount } from "./accounts";
+import { holdAccount, PAYPAL_CLEARING, PLATFORM_FEES, stakeAccount, walletAccount } from "./accounts";
 import { LedgerError } from "./errors";
 import { findJournal, postJournal, type JournalLine, type PostedJournal } from "./journal";
 
@@ -11,6 +11,26 @@ export async function openWallet(tx: Tx, ownerId: string): Promise<void> {
     .insert(ledgerAccounts)
     .values({ id: walletAccount(ownerId), type: "liability", ownerId })
     .onConflictDoNothing();
+}
+
+// Dev and demo money until PayPal top-ups (pm-04): paypal:clearing → the owner's wallet. Opens the wallet if
+// needed. Once per idempotency key: a replay returns the first journal.
+export async function devCredit(
+  tx: Tx,
+  input: { ownerId: string; amountCents: bigint; idempotencyKey: string },
+): Promise<PostedJournal> {
+  requirePositive("amountCents", input.amountCents);
+  await openWallet(tx, input.ownerId);
+  return postJournal(tx, {
+    kind: "topup",
+    refType: "dev_credit",
+    refId: input.ownerId,
+    idempotencyKey: input.idempotencyKey,
+    lines: [
+      { accountId: PAYPAL_CLEARING, debitCents: input.amountCents },
+      { accountId: walletAccount(input.ownerId), creditCents: input.amountCents },
+    ],
+  });
 }
 
 // Row lock that serialises every balance check and hold change for one owner. Callers outside the

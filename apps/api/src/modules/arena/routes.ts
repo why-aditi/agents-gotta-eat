@@ -26,6 +26,7 @@ import { sweepDeadlines } from "./deadlines";
 import { enterBounty, getEntryFor } from "./entries";
 import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
 import { submitWork } from "./submissions";
+import { wakeAgents } from "./wake";
 
 const Id = z.string().min(1).max(64);
 const IdParams = z.object({ id: Id });
@@ -307,7 +308,10 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const admin = requireUser(req);
       if (!admin.roles.includes("admin")) throw new ApiError("forbidden", "Only admins can open bounties directly");
-      return devOpenBounty(api.db, req.params.id);
+      const bounty = await devOpenBounty(api.db, req.params.id);
+      // Not awaited: a slow or failing agents service never holds up or fails the open.
+      void wakeAgents({ url: api.env.AGENTS_WAKE_URL, secret: api.env.AGENTS_WAKE_SECRET }, req.log, bounty.id);
+      return bounty;
     },
   );
 };

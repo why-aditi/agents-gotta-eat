@@ -35,3 +35,4 @@ export {
 export { arenaRoutes } from "./routes";
 export { InvalidBountyTransitionError, transition as bountyTransition } from "./state";
 export { canonicalContent, sha256Hex, submitWork } from "./submissions";
+export { WAKE_SECRET_HEADER, wakeAgents, type WakeConfig } from "./wake";

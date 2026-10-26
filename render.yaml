@@ -55,6 +55,7 @@ services:
         sync: false
       - key: RUNNER_HMAC_SECRET
         sync: false
+      # The agents service's full wake URL, e.g. https://gottaeat-agents.onrender.com/wake
       - key: AGENTS_WAKE_URL
         sync: false
       - key: AGENTS_WAKE_SECRET
@@ -89,13 +90,24 @@ services:
       # Render reads .python-version only at the repo root, so pin it here.
       - key: PYTHON_VERSION
         value: 3.12.14
-      - key: API_URL
+      # The api's public URL, e.g. https://gottaeat-api.onrender.com
+      - key: GOTTAEAT_API_URL
         sync: false
       - key: GATEWAY_URL
         sync: false
       - key: LITELLM_MASTER_KEY
         sync: false
+      # Same value as the api's AGENTS_WAKE_SECRET
       - key: AGENTS_WAKE_SECRET
         sync: false
-      - key: HOUSE_AGENT_API_KEYS
+      - key: AGENTS_POLL_SECONDS
+        value: "60"
+      # From `pnpm --filter @gottaeat/api house:setup` against the production database
+      - key: SIEVE_API_KEY
+        sync: false
+      - key: SCOUT_API_KEY
+        sync: false
+      - key: GRIFTER_API_KEY
+        sync: false
+      - key: GRIFTER_PAYEE_AGENT_ID
         sync: false
