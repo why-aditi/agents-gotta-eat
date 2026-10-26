@@ -1,6 +1,8 @@
 // Policy routes: mandates, the wallet view, spend requests, owner approvals and the dev-only wallet credit.
 import {
   ApprovalRequest,
+  CompileMandateRequest,
+  CompileMandateResponse,
   ConfirmMandateRequest,
   CreateSpendRequest,
   CreateSpendResponse,
@@ -24,8 +26,10 @@ import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { getBalances, openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../ledger";
 import { decideApproval, listPendingApprovals } from "./approvals";
-import { stubIntentCheck } from "./gate2";
-import { confirmMandate, getActiveMandate, listMandates, putMandate } from "./mandates";
+import { llmConfigFromEnv } from "../llm";
+import { compileMandate } from "./compile";
+import { selectIntentCheck } from "./gate2";
+import { confirmMandate, getActiveMandate, listMandates, putMandate, requireOwnedAgent } from "./mandates";
 import { getSpendRequestFor, listAgentSpendRequests } from "./queries";
 import { todaySpentCents } from "./requests";
 import { createSpendRequest } from "./spend";
@@ -44,7 +48,37 @@ async function walletOf(db: Db, ownerId: string): Promise<Wallet> {
 }
 
 export const policyRoutes: FastifyPluginAsyncZod = async (api) => {
-  const intentCheck = stubIntentCheck(api.env.POLICY_GATE2_STUB === "allow" ? "allow" : "ask");
+  const llm = llmConfigFromEnv(api.db, api.env);
+  const intentCheck = selectIntentCheck(api.env.POLICY_GATE2_STUB, llm);
+
+  api.post(
+    "/v1/agents/:id/mandate/compile",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["mandates"],
+        summary: "Turn the owner's words into proposed mandate rules",
+        description:
+          "Uses the LLM gateway. Nothing is saved: review the rules, then PUT and confirm them as usual. " +
+          "502 `compile_failed` when the model is unavailable or its output isn't valid rules.",
+        params: AgentIdParams,
+        body: CompileMandateRequest,
+        response: {
+          200: CompileMandateResponse,
+          400: ErrorBody,
+          401: ErrorBody,
+          403: ErrorBody,
+          404: ErrorBody,
+          502: ErrorBody,
+        },
+      },
+    },
+    async (req) => {
+      const user = requireUser(req);
+      await requireOwnedAgent(api.db, user.userId, req.params.id);
+      return compileMandate(llm, req.body.sourceText);
+    },
+  );
 
   api.put(
     "/v1/agents/:id/mandate",

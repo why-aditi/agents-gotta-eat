@@ -70,6 +70,18 @@ export const PutMandateRequest = z.object({
 });
 export type PutMandateRequest = z.infer<typeof PutMandateRequest>;
 
+// POST /v1/agents/:id/mandate/compile: the owner's words in, proposed rules out. Nothing is saved; the owner
+// still reviews, PUTs and confirms.
+export const CompileMandateRequest = z.object({ sourceText: PutMandateRequest.shape.sourceText });
+export type CompileMandateRequest = z.infer<typeof CompileMandateRequest>;
+
+export const CompileMandateResponse = z.object({
+  rules: MandateRules,
+  // Plain-English notes from the compiler: assumptions, and anything in the text it could not express.
+  notes: z.array(z.string().max(500)).max(20),
+});
+export type CompileMandateResponse = z.infer<typeof CompileMandateResponse>;
+
 export const Mandate = z.object({
   id: z.string(),
   agentId: z.string(),

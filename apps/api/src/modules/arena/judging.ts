@@ -1,5 +1,6 @@
 // Judging and settlement. extract_data is judged automatically (judge.verifyExtractData) and settles at once;
-// creative_writing waits up to 24 h for the poster's pick, then the sweep picks the earliest submission.
+// creative_writing is ranked by the AI judge (outside any transaction, results recorded in a new one), and waits up
+// to 24 h for the poster's pick; then the sweep picks the AI's top entry, or the earliest submission unranked.
 // Settlement runs in one transaction under the bounty row lock: escrow, reward, stakes, bounty status.
 // Every step is idempotent (judgement uniqueness, ledger keys, status checks under the lock).
 import { type BountyResults, ENTRY_STAKE_CENTS, type SubmissionContent, type TaskType } from "@gottaeat/schemas";
@@ -9,7 +10,7 @@ import { bounties, bountyAssets, entries, submissions } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { captureEscrow, voidEscrow } from "../escrow";
-import { getJudgementsForBounty, recordJudgement, verifyExtractData } from "../judge";
+import { getJudgementsForBounty, type RankCreativeWriting, recordJudgement, verifyExtractData } from "../judge";
 import { forfeitStake, payBountyReward, refundStake } from "../ledger";
 import { type BountyRow, lockBounty } from "./bounties";
 import { transition } from "./state";
@@ -167,6 +168,86 @@ async function answerKeyOf(tx: Tx, bountyId: string): Promise<unknown> {
 
 export type JudgeOutcome = "settled" | "voided" | "awaiting_pick" | "skipped";
 
+// A failed AI ranking is retried once by a later sweep; after that the poster picks without one.
+export const AI_RANK_MAX_ATTEMPTS = 2;
+
+export type AiRankOutcome = "ranked" | "failed" | "skipped";
+
+function awaitsAiRank(b: BountyRow | undefined): b is BountyRow {
+  return (
+    b !== undefined &&
+    b.taskType === "creative_writing" &&
+    b.status === "judging" &&
+    !b.settledAt &&
+    !b.aiRankedAt &&
+    b.aiRankAttempts < AI_RANK_MAX_ATTEMPTS
+  );
+}
+
+// Ranks a creative_writing bounty with the AI judge. The model call runs with no transaction or lock held; the
+// result is recorded in a new transaction under the bounty lock, re-checked first (the poster may have picked in
+// the meantime). Judgements are idempotent per (submission, verifier).
+export async function aiRankBounty(
+  db: Db,
+  bountyId: string,
+  rank: RankCreativeWriting,
+  now: Date = new Date(),
+): Promise<AiRankOutcome> {
+  const [before] = await db.select().from(bounties).where(eq(bounties.id, bountyId));
+  if (!awaitsAiRank(before)) return "skipped";
+  const subs = await bountySubmissions(db, bountyId);
+  const spec = (before.spec ?? {}) as { brief?: unknown; rubric?: unknown };
+  const result = await rank({
+    brief: typeof spec.brief === "string" ? spec.brief : "",
+    rubric: typeof spec.rubric === "string" ? spec.rubric : "",
+    submissions: subs.map((s) => ({ entryId: s.entryId, text: s.content })),
+  });
+
+  return db.transaction(async (tx) => {
+    const bounty = await lockBounty(tx, bountyId);
+    if (!awaitsAiRank(bounty)) return "skipped";
+    if (!result.ok) {
+      await tx
+        .update(bounties)
+        .set({ aiRankAttempts: bounty.aiRankAttempts + 1, aiRankFailedAt: now })
+        .where(eq(bounties.id, bountyId));
+      return "failed";
+    }
+    const subByEntry = new Map(subs.map((s) => [s.entryId, s]));
+    for (const j of result.judgements) {
+      const sub = subByEntry.get(j.entryId);
+      if (!sub) throw new Error(`AI judgement for unknown entry ${j.entryId} on bounty ${bountyId}`);
+      await recordJudgement(tx, {
+        submissionId: sub.id,
+        verifier: "ai_judge",
+        score: j.score,
+        rationale: j.rationale,
+        rawOutput: j.detail,
+        flagged: j.injectionFlags.length > 0,
+        model: j.model,
+        promptHash: j.promptHash,
+      });
+    }
+    await tx
+      .update(bounties)
+      .set({ aiRankAttempts: bounty.aiRankAttempts + 1, aiRankedAt: now })
+      .where(eq(bounties.id, bountyId));
+    return "ranked";
+  });
+}
+
+// The AI judge's top entry: highest ai_judge score, ties to the earliest submission (subs are ordered).
+async function aiTopPick(tx: Tx, bountyId: string, subs: SubmissionRef[]) {
+  const ai = new Map<string, number>();
+  for (const j of await getJudgementsForBounty(tx, bountyId)) if (j.verifier === "ai_judge") ai.set(j.entryId, j.score);
+  let top: { sub: SubmissionRef; score: number } | null = null;
+  for (const s of subs) {
+    const score = ai.get(s.entryId);
+    if (score !== undefined && (!top || score > top.score)) top = { sub: s, score };
+  }
+  return top;
+}
+
 // Judges a bounty in judging that hasn't settled. Safe to run twice: the second run is "skipped".
 export async function judgeBounty(db: Db, bountyId: string, now: Date = new Date()): Promise<JudgeOutcome> {
   return db.transaction(async (tx) => {
@@ -250,8 +331,8 @@ export async function pickWinner(
 
 export type SweepErrorHandler = (err: unknown, bountyId?: string) => void;
 
-// Poster-judged bounties past their pick deadline: the earliest submission wins (stands in for the AI judge
-// until pm-06); no submissions voids. One transaction per bounty; a failure is reported and the rest go on.
+// Poster-judged bounties past their pick deadline: the AI judge's top entry wins; without a ranking the earliest
+// submission wins; no submissions voids. One transaction per bounty; a failure is reported and the rest go on.
 // Returns how many bounties it settled or voided.
 export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?: SweepErrorHandler): Promise<number> {
   const due = await db
@@ -273,8 +354,18 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
         const bounty = await lockBounty(tx, id);
         if (!bounty || bounty.status !== "judging" || bounty.settledAt || isAutoJudged(bounty.taskType)) return false;
         if (!bounty.pickDeadlineAt || bounty.pickDeadlineAt.getTime() > now.getTime()) return false;
-        const [earliest] = await bountySubmissions(tx, id);
-        if (earliest) {
+        const subs = await bountySubmissions(tx, id);
+        const top = await aiTopPick(tx, id, subs);
+        const [earliest] = subs;
+        if (top) {
+          await recordJudgement(tx, {
+            submissionId: top.sub.id,
+            verifier: "fallback_ai_top",
+            score: 100,
+            rationale: "The poster did not pick by the deadline; the AI judge's top entry wins.",
+            rawOutput: { pickDeadlineAt: bounty.pickDeadlineAt.toISOString(), aiScore: top.score },
+          });
+        } else if (earliest) {
           await recordJudgement(tx, {
             submissionId: earliest.id,
             verifier: "fallback_earliest",
@@ -283,7 +374,8 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
             rawOutput: { pickDeadlineAt: bounty.pickDeadlineAt.toISOString() },
           });
         }
-        await settleBounty(tx, bounty, earliest?.entryId ?? null, now);
+        const winner = top?.sub ?? earliest;
+        await settleBounty(tx, bounty, winner?.entryId ?? null, now);
         return true;
       });
       if (moved) done += 1;
@@ -295,6 +387,10 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
   return done;
 }
 
+function aiOf(j: { score: number; rationale: string; flagged: boolean } | undefined) {
+  return j ? { aiScore: j.score, aiRationale: j.rationale, injectionFlagged: j.flagged } : {};
+}
+
 async function resultsOf(conn: Conn, bountyId: string): Promise<BountyResults> {
   const [bounty] = await conn.select().from(bounties).where(eq(bounties.id, bountyId));
   if (!bounty) throw new ApiError("not_found", "Bounty not found");
@@ -304,6 +400,11 @@ async function resultsOf(conn: Conn, bountyId: string): Promise<BountyResults> {
     .where(eq(entries.bountyId, bountyId))
     .orderBy(asc(entries.createdAt), asc(entries.id));
   const best = await bestScores(conn, bountyId);
+  // The AI judge's view, never its prompts.
+  const ai = new Map<string, { score: number; rationale: string; flagged: boolean }>();
+  for (const j of await getJudgementsForBounty(conn, bountyId)) {
+    if (j.verifier === "ai_judge") ai.set(j.entryId, { score: j.score, rationale: j.rationale, flagged: j.flagged });
+  }
   return {
     bountyId: bounty.id,
     status: bounty.status,
@@ -318,12 +419,14 @@ async function resultsOf(conn: Conn, bountyId: string): Promise<BountyResults> {
         score,
         passed: entryPassed(bounty, e, score),
         stakeOutcome: e.stakeOutcome,
+        ...aiOf(ai.get(e.id)),
       };
     }),
   };
 }
 
-// Anyone authenticated, once the bounty is settled or voided. Drafts stay invisible to everyone but the poster.
+// Anyone authenticated, once the bounty is settled or voided; the poster also while judging, to see the AI
+// ranking before picking. Drafts stay invisible to everyone but the poster.
 export async function getResultsFor(db: Db, principal: Principal, bountyId: string): Promise<BountyResults> {
   const [bounty] = await db
     .select({ status: bounties.status, posterId: bounties.posterId })
@@ -331,7 +434,9 @@ export async function getResultsFor(db: Db, principal: Principal, bountyId: stri
     .where(eq(bounties.id, bountyId));
   const isPoster = principal.type === "user" && principal.userId === bounty?.posterId;
   if (!bounty || (bounty.status === "draft" && !isPoster)) throw new ApiError("not_found", "Bounty not found");
-  if (bounty.status !== "settled" && bounty.status !== "voided") {
+  const visible =
+    bounty.status === "settled" || bounty.status === "voided" || (isPoster && bounty.status === "judging");
+  if (!visible) {
     throw new ApiError("not_judging", "Results are available once the bounty is settled or voided", {
       status: bounty.status,
     });

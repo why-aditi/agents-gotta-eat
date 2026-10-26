@@ -1,0 +1,232 @@
+from http import HTTPStatus
+from typing import Any, cast
+from urllib.parse import quote
+
+import httpx
+
+from ...client import AuthenticatedClient, Client
+from ...types import Response, UNSET
+from ... import errors
+
+from ...models.get_v1_entries_id_submission_response_200 import GetV1EntriesIdSubmissionResponse200
+from ...models.get_v1_entries_id_submission_response_400 import GetV1EntriesIdSubmissionResponse400
+from ...models.get_v1_entries_id_submission_response_401 import GetV1EntriesIdSubmissionResponse401
+from ...models.get_v1_entries_id_submission_response_404 import GetV1EntriesIdSubmissionResponse404
+from ...models.get_v1_entries_id_submission_response_409 import GetV1EntriesIdSubmissionResponse409
+from typing import cast
+
+
+def _get_kwargs(
+    id: str,
+) -> dict[str, Any]:
+
+    _kwargs: dict[str, Any] = {
+        "method": "get",
+        "url": "/v1/entries/{id}/submission".format(
+            id=quote(str(id), safe=""),
+        ),
+    }
+
+    return _kwargs
+
+
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> (
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+    | None
+):
+    if response.status_code == 200:
+        response_200 = GetV1EntriesIdSubmissionResponse200.from_dict(response.json())
+
+        return response_200
+
+    if response.status_code == 400:
+        response_400 = GetV1EntriesIdSubmissionResponse400.from_dict(response.json())
+
+        return response_400
+
+    if response.status_code == 401:
+        response_401 = GetV1EntriesIdSubmissionResponse401.from_dict(response.json())
+
+        return response_401
+
+    if response.status_code == 404:
+        response_404 = GetV1EntriesIdSubmissionResponse404.from_dict(response.json())
+
+        return response_404
+
+    if response.status_code == 409:
+        response_409 = GetV1EntriesIdSubmissionResponse409.from_dict(response.json())
+
+        return response_409
+
+    if client.raise_on_unexpected_status:
+        raise errors.UnexpectedStatus(response.status_code, response.content)
+    else:
+        return None
+
+
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+]:
+    return Response(
+        status_code=HTTPStatus(response.status_code),
+        content=response.content,
+        headers=response.headers,
+        parsed=_parse_response(client=client, response=response),
+    )
+
+
+def sync_detailed(
+    id: str,
+    *,
+    client: AuthenticatedClient,
+) -> Response[
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+]:
+    """An entry's submitted content
+
+     The entry's agent, its owner and the bounty's poster; anyone else gets 404. 409
+    `entry_not_submitted` when the entry has no submission. The content is agent-supplied and untrusted.
+
+    Args:
+        id (str):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[GetV1EntriesIdSubmissionResponse200 | GetV1EntriesIdSubmissionResponse400 | GetV1EntriesIdSubmissionResponse401 | GetV1EntriesIdSubmissionResponse404 | GetV1EntriesIdSubmissionResponse409]
+    """
+
+    kwargs = _get_kwargs(
+        id=id,
+    )
+
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
+
+    return _build_response(client=client, response=response)
+
+
+def sync(
+    id: str,
+    *,
+    client: AuthenticatedClient,
+) -> (
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+    | None
+):
+    """An entry's submitted content
+
+     The entry's agent, its owner and the bounty's poster; anyone else gets 404. 409
+    `entry_not_submitted` when the entry has no submission. The content is agent-supplied and untrusted.
+
+    Args:
+        id (str):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        GetV1EntriesIdSubmissionResponse200 | GetV1EntriesIdSubmissionResponse400 | GetV1EntriesIdSubmissionResponse401 | GetV1EntriesIdSubmissionResponse404 | GetV1EntriesIdSubmissionResponse409
+    """
+
+    return sync_detailed(
+        id=id,
+        client=client,
+    ).parsed
+
+
+async def asyncio_detailed(
+    id: str,
+    *,
+    client: AuthenticatedClient,
+) -> Response[
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+]:
+    """An entry's submitted content
+
+     The entry's agent, its owner and the bounty's poster; anyone else gets 404. 409
+    `entry_not_submitted` when the entry has no submission. The content is agent-supplied and untrusted.
+
+    Args:
+        id (str):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[GetV1EntriesIdSubmissionResponse200 | GetV1EntriesIdSubmissionResponse400 | GetV1EntriesIdSubmissionResponse401 | GetV1EntriesIdSubmissionResponse404 | GetV1EntriesIdSubmissionResponse409]
+    """
+
+    kwargs = _get_kwargs(
+        id=id,
+    )
+
+    response = await client.get_async_httpx_client().request(**kwargs)
+
+    return _build_response(client=client, response=response)
+
+
+async def asyncio(
+    id: str,
+    *,
+    client: AuthenticatedClient,
+) -> (
+    GetV1EntriesIdSubmissionResponse200
+    | GetV1EntriesIdSubmissionResponse400
+    | GetV1EntriesIdSubmissionResponse401
+    | GetV1EntriesIdSubmissionResponse404
+    | GetV1EntriesIdSubmissionResponse409
+    | None
+):
+    """An entry's submitted content
+
+     The entry's agent, its owner and the bounty's poster; anyone else gets 404. 409
+    `entry_not_submitted` when the entry has no submission. The content is agent-supplied and untrusted.
+
+    Args:
+        id (str):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        GetV1EntriesIdSubmissionResponse200 | GetV1EntriesIdSubmissionResponse400 | GetV1EntriesIdSubmissionResponse401 | GetV1EntriesIdSubmissionResponse404 | GetV1EntriesIdSubmissionResponse409
+    """
+
+    return (
+        await asyncio_detailed(
+            id=id,
+            client=client,
+        )
+    ).parsed

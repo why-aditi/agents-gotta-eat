@@ -2,7 +2,14 @@ export { decideApproval, listPendingApprovals } from "./approvals";
 export { combine } from "./combine";
 export { releaseExpired, releaseIfExpired, startExpirySweep } from "./expiry";
 export { evaluateHardRules, type BountyFacts, type GateResult, type HardRulesInput, type PayeeFacts } from "./gate1";
+export { compileMandate } from "./compile";
 export {
+  formatDollars,
+  INTENT_MIN_CONFIDENCE,
+  INTENT_UNAVAILABLE,
+  intentPrompt,
+  llmIntentCheck,
+  selectIntentCheck,
   stubIntentCheck,
   type IntentCheck,
   type IntentCheckInput,

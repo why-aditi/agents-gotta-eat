@@ -4,10 +4,10 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("./actions", () => ({ saveMandate: vi.fn(), confirmMandate: vi.fn() }));
+vi.mock("./actions", () => ({ saveMandate: vi.fn(), confirmMandate: vi.fn(), compileMandate: vi.fn() }));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
-const { confirmMandate, saveMandate } = await import("./actions");
+const { compileMandate, confirmMandate, saveMandate } = await import("./actions");
 const { toast } = await import("sonner");
 const { MandateForm } = await import("./mandate-form");
 
@@ -49,6 +49,7 @@ describe("MandateForm", () => {
       .mockReset()
       .mockResolvedValue({ ok: true, data: { ...saved, confirmedAt: saved.createdAt } });
     vi.mocked(toast.error).mockReset();
+    vi.mocked(compileMandate).mockReset();
   });
 
   it("submits dollars as integer cents, rating as tenths and blank payees as null", async () => {
@@ -163,5 +164,64 @@ describe("MandateForm", () => {
     await user.click(screen.getByRole("button", { name: "Save as new version" }));
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith("Agent not found"));
     expect(screen.queryByText("Your words")).not.toBeInTheDocument();
+  });
+
+  it("compiles the owner's words into the rule fields and shows the notes, saving nothing", async () => {
+    vi.mocked(compileMandate).mockResolvedValue({
+      ok: true,
+      data: {
+        rules: {
+          perTxMaxCents: 1000,
+          dailyMaxCents: 2000,
+          askAboveCents: 500,
+          allowedCategories: ["subcontract", "tool"],
+          payeeAllowlist: null,
+          minPayeeRatingTenths: 40,
+          scope: "current_bounty_only",
+          expiresAt: null,
+        },
+        notes: ["No per-spend cap given; used $10."],
+      },
+    });
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    const words = "Up to $20 a day. Only hire agents rated above 4. Ask me over $5.";
+    await user.type(screen.getByLabelText("What should this agent be allowed to do?"), words);
+    await user.click(screen.getByRole("button", { name: "Compile from my words" }));
+
+    await waitFor(() => expect(compileMandate).toHaveBeenCalledWith("agt_1", words));
+    await waitFor(() => expect(screen.getByLabelText("Per-spend cap ($)")).toHaveValue("10.00"));
+    expect(screen.getByLabelText("Daily cap ($)")).toHaveValue("20.00");
+    expect(screen.getByLabelText("Ask me above ($)")).toHaveValue("5.00");
+    expect(screen.getByLabelText("Minimum payee rating")).toHaveValue("4.0");
+    expect(screen.getByRole("checkbox", { name: "subcontract" })).toBeChecked();
+    expect(screen.getByLabelText("What should this agent be allowed to do?")).toHaveValue(words);
+    expect(screen.getByRole("note", { name: "Compiler notes" })).toHaveTextContent("No per-spend cap given; used $10.");
+    expect(saveMandate).not.toHaveBeenCalled();
+  });
+
+  it("toasts the api message when compiling fails and leaves the fields alone", async () => {
+    vi.mocked(compileMandate).mockResolvedValue({
+      ok: false,
+      code: "compile_failed",
+      message: "Couldn't turn that into rules. Fill them in by hand.",
+    });
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await user.type(screen.getByLabelText("What should this agent be allowed to do?"), "whatever");
+    await user.type(screen.getByLabelText("Per-spend cap ($)"), "3");
+    await user.click(screen.getByRole("button", { name: "Compile from my words" }));
+    await waitFor(() =>
+      expect(toast.error).toHaveBeenCalledWith("Couldn't turn that into rules. Fill them in by hand."),
+    );
+    expect(screen.getByLabelText("Per-spend cap ($)")).toHaveValue("3");
+  });
+
+  it("asks for words before compiling", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await user.click(screen.getByRole("button", { name: "Compile from my words" }));
+    expect(screen.getByText(/in your own words/)).toBeInTheDocument();
+    expect(compileMandate).not.toHaveBeenCalled();
   });
 });
