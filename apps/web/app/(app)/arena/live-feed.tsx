@@ -5,21 +5,13 @@
 import type { ArenaEvent } from "@gottaeat/schemas";
 import { RadioIcon } from "lucide-react";
 import { useCallback, useState } from "react";
+import { EventFeedList } from "@/components/event-feed";
 import { useDebouncedRefresh } from "@/components/live-refresh";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEvents } from "@/lib/use-events";
-import { cn } from "@/lib/utils";
 import { describeEvent } from "./describe";
 
 export const FEED_SIZE = 100;
-
-const TIME = new Intl.DateTimeFormat("en-US", {
-  timeZone: "UTC",
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  hourCycle: "h23",
-});
 
 const changesCards = (e: ArenaEvent) => e.type.startsWith("bounty.") || e.type === "entry.created";
 
@@ -53,22 +45,15 @@ export function LiveFeed({ viewerId }: { viewerId: string | null }) {
             Waiting for activity…
           </p>
         ) : (
-          <ol aria-label="Live events" className="max-h-[70vh] space-y-2 overflow-y-auto pr-1" data-testid="live-feed">
-            {events.map((e) => (
-              <li
-                key={e.id}
-                className={cn(
-                  "rounded-md border px-3 py-2 text-sm break-words",
-                  e.scope === "owner" && "border-amber-300 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/40",
-                )}
-              >
-                <time dateTime={e.createdAt} className="mr-2 font-mono text-xs text-muted-foreground tabular-nums">
-                  {TIME.format(new Date(e.createdAt))}
-                </time>
-                {describeEvent(e, viewerId)}
-              </li>
-            ))}
-          </ol>
+          <EventFeedList
+            label="Live events"
+            lines={events.map((e) => ({
+              id: e.id,
+              createdAt: e.createdAt,
+              text: describeEvent(e, viewerId),
+              highlight: e.scope === "owner",
+            }))}
+          />
         )}
       </CardContent>
     </Card>

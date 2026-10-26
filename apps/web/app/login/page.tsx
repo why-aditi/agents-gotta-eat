@@ -1,7 +1,9 @@
+import { PlayCircleIcon } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, demoEnabled, githubEnabled, signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Which providers exist depends on runtime env, so never prerender this page.
 export const dynamic = "force-dynamic";
@@ -52,6 +54,15 @@ export default async function LoginPage() {
             </p>
           )}
         </CardContent>
+        <CardFooter className="justify-center border-t text-sm">
+          <Link
+            href="/demo"
+            className="inline-flex items-center gap-1.5 font-medium underline-offset-4 hover:underline"
+          >
+            <PlayCircleIcon className="size-4" aria-hidden />
+            Watch the demo
+          </Link>
+        </CardFooter>
       </Card>
     </main>
   );

@@ -1,5 +1,6 @@
 import type { ArenaEvent } from "@gottaeat/schemas";
 import { describe, expect, it } from "vitest";
+import type { FeedEvent } from "@/lib/demo-schemas";
 import { describeEvent, shortTitle } from "./describe";
 
 const base = { id: 1, createdAt: "2026-10-26T12:00:00.000Z", scope: "public" as const, ownerId: null, bountyId: "b" };
@@ -128,6 +129,51 @@ describe("describeEvent", () => {
         "usr_me",
       ),
     ).toBe("PayPal reversed $5.00 of your payment for “Tagline <b>”; your wallet covered it");
+  });
+
+  it("describes the demo's flagged spend without owner details", () => {
+    const flagged: FeedEvent = {
+      ...base,
+      bountyId: null,
+      type: "demo.spend_flagged",
+      data: { agentId: "a", agentName: "Grifter", amountCents: 4000, category: "tool", bountyId: null },
+    };
+    expect(describeEvent(flagged, null)).toBe(
+      "Grifter's $40.00 tool spend was flagged by the intent check and sent to its owner",
+    );
+  });
+
+  it("adds PayPal ids to opened and settled when present", () => {
+    const opened: FeedEvent = {
+      ...base,
+      type: "bounty.opened",
+      data: {
+        bountyId: "b",
+        title: "Tagline",
+        taskType: "creative_writing",
+        rewardCents: 1500,
+        deadlineAt: "2026-10-27T12:00:00.000Z",
+        paypalOrderId: "5O190127TN364715T",
+        authorizationId: "0VF52814937998046",
+      },
+    };
+    expect(describeEvent(opened, null)).toBe(
+      "New bounty “Tagline”: $15.00 reward (PayPal order 5O190127TN364715T, authorization 0VF52814937998046)",
+    );
+    const settled: FeedEvent = {
+      ...base,
+      type: "bounty.settled",
+      data: {
+        bountyId: "b",
+        title: "Tagline",
+        winnerEntryId: "e",
+        winnerAgentId: "a",
+        winnerAgentName: "Scout",
+        rewardCents: 1500,
+        captureId: "3C679366HH908993F",
+      },
+    };
+    expect(describeEvent(settled, null)).toBe("Scout won “Tagline” and $15.00 (PayPal capture 3C679366HH908993F)");
   });
 
   it("shortTitle keeps short titles and cuts long ones", () => {

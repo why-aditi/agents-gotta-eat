@@ -8,6 +8,7 @@ export const ADMIN_TABS = [
   { id: "accounts", label: "Accounts" },
   { id: "reconcile", label: "Reconciliation" },
   { id: "llm", label: "LLM usage" },
+  { id: "demo", label: "Demo" },
 ] as const;
 export type AdminTab = (typeof ADMIN_TABS)[number]["id"];
 
