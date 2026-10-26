@@ -79,13 +79,23 @@ Findings go in the "Findings" table at the end of this file.
 
 ## Findings
 
+Run Oct 26, 2026 on app `gottaeat-us` (US sandbox business account). An earlier run on a non-US business account failed Payouts with `PAYOUT_NOT_AVAILABLE` ("You live in a country that is not allowed to send this payout"), so **the platform business account must be US**. Evidence files are in `spikes/paypal/out/` (gitignored).
+
 | # | Question | Expected (docs) | Actual | Evidence (`out/` file) |
 | --- | --- | --- | --- | --- |
-| 1 | Reauthorize on day 0 | Rejected (only after honor period) | | |
-| 2 | Reauthorize on day 4, capture on new id | Works; new authorization id | | |
-| 3 | Capture after honor period, no reauthorize | Works within 29 days (not guaranteed) | | |
-| 4 | Payouts batch of 3 | SUCCESS for registered payees | | |
-| 5 | UNCLAIMED item, cancel | UNCLAIMED; cancel returns funds | | |
-| 6 | Toolkit tools | Orders and invoices work; no payouts | | |
+| 1 | Reauthorize on day 0 | Rejected (only after honor period) | Rejected: `REAUTHORIZATION_TOO_SOON`, "only allowed once from Day 4 to Day 29 since the date of the original authorization". Authorize response has no honor-period field; `expiration_time` is +29 days | `2026-10-26T11-38-39-721Z-reauthorize-A.json` |
+| 2 | Reauthorize on day 4, capture on new id | Works; new authorization id | Pending, run Oct 30 (label A, auth `4XG73589EW427930X`) | |
+| 3 | Capture after honor period, no reauthorize | Works within 29 days (not guaranteed) | Pending, run Oct 30 (label C, auth `9NV86338G23618744`) | |
+| 4 | Payouts batch of 3 | SUCCESS for registered payees | Batch `KV4SD67CU8LE6`: PENDING, then PROCESSING, then SUCCESS in under a minute. Both registered items SUCCESS | `2026-10-26T11-35-09-408Z-payout-batch.json`, `2026-10-26T11-36-12-376Z-payout-status.json` |
+| 5 | UNCLAIMED item, cancel | UNCLAIMED; cancel returns funds | Item is `UNCLAIMED` with `RECEIVER_UNREGISTERED` (funds return after 30 days if unclaimed); the batch status is still SUCCESS. Cancel returned `500 INTERNAL_SERVICE_ERROR` twice | `2026-10-26T11-35-41-539Z-payout-status.json`, `2026-10-26T11-36-24-526Z-cancel-item.json` |
+| 6 | Toolkit tools | Orders and invoices work; no payouts | `get_order` and `list_transactions` work. `create_invoice` returns 403 NOT_AUTHORIZED: the app token has no invoicing scopes even with Invoicing ticked, and a direct Invoicing API call also returns 403, so the toolkit is not at fault. `send_invoice` not run. No payouts or authorizations tools | `2026-10-26T11-45-01-077Z-toolkit-list_transactions.json`, `2026-10-26T11-44-59-890Z-toolkit-create_invoice.json` |
 
-**Decision:** _authorization escrow / capture-then-hold_ — _reason_
+Also: capture on a day-0 authorization works (label B, capture `6RS947591C801971F`, COMPLETED).
+
+**Decision:** _authorization escrow_ (provisional) — authorize, capture and void all work, and the 72-hour cap stays inside the day 4 reauthorize window, so no reauthorize is needed in the happy path. Confirm after the day 4 results (2 and 3). Fall back to capture-then-hold only if capture after day 3 fails.
+
+**Implications for pm-04:**
+- Reauthorize is allowed once, from day 4 to day 29. The reauthorize job only matters for bounties that outlive 72 hours.
+- Handle payouts by item events (`PAYMENT.PAYOUTS-ITEM.*`), not the batch event: the batch can be SUCCESS while an item is UNCLAIMED.
+- Cancel of an UNCLAIMED item is unreliable in sandbox; rely on the 30-day return and keep the withdrawal pending until `PAYMENT.PAYOUTS-ITEM.RETURNED` or `...CANCELED`.
+- Treasurer: drop `create_invoice` and `send_invoice` from scope unless invoicing scopes become available.
