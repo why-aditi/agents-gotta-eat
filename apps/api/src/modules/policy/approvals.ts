@@ -5,9 +5,10 @@ import type { Db } from "../../db";
 import { spendRequests } from "../../db/schema";
 import type { UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
-import { release, settle } from "../ledger";
+import { release, settle, stakeFromHold } from "../ledger";
 import { expireLocked, isOverdue, releaseExpired } from "./expiry";
 import { insertDecision, ledgerKey, loadSpendRequest, type SpendRow, withDecisions } from "./requests";
+import { stakeHooks } from "./stake-hooks";
 import { transition } from "./state";
 
 // Released at or after its expiry: the timeout (sweep or read) released it, not the owner.
@@ -47,6 +48,14 @@ export async function decideApproval(
     if (decision === "deny") {
       status = transition(row.status, "released");
       await release(tx, { spendRequestId: row.id, idempotencyKey: ledgerKey.release(row.id) });
+    } else if (row.category === "stake") {
+      status = transition(row.status, "settled");
+      if (!row.bountyId) throw new Error(`pending stake ${row.id} has no bounty`);
+      await stakeFromHold(tx, {
+        spendRequestId: row.id,
+        bountyId: row.bountyId,
+        idempotencyKey: ledgerKey.stake(row.id),
+      });
     } else if (row.category === "tool") {
       status = transition(row.status, "settled");
       if (!row.payeeOwnerId) throw new Error(`pending spend ${row.id} has no payee owner`);
@@ -70,6 +79,11 @@ export async function decideApproval(
       detail: { decidedBy: owner.userId },
       now,
     });
+    // The arena moves the entry on, in this same transaction.
+    if (row.category === "stake") {
+      if (status === "settled") await stakeHooks().onStakeSettled(tx, row.id);
+      else await stakeHooks().onStakeReleased(tx, row.id);
+    }
     const dto = await loadSpendRequest(tx, row.id);
     if (!dto) throw new Error(`spend request ${row.id} vanished`);
     return dto;

@@ -5,6 +5,7 @@ import type { Db, Tx } from "../../db";
 import { spendRequests } from "../../db/schema";
 import { release } from "../ledger";
 import { insertDecision, ledgerKey, type SpendRow } from "./requests";
+import { stakeHooks } from "./stake-hooks";
 import { transition } from "./state";
 
 export function isOverdue(row: SpendRow, now: Date): boolean {
@@ -28,6 +29,7 @@ export async function expireLocked(tx: Tx, row: SpendRow, now: Date): Promise<Sp
     detail: { expired: true },
     now,
   });
+  if (row.category === "stake") await stakeHooks().onStakeReleased(tx, row.id);
   return updated;
 }
 

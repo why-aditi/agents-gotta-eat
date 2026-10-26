@@ -20,6 +20,7 @@ export const ledgerKey = {
   hold: (id: string) => `spend-hold:${id}`,
   settle: (id: string) => `spend-settle:${id}`,
   release: (id: string) => `spend-release:${id}`,
+  stake: (id: string) => `spend-stake:${id}`,
 };
 
 export function utcMidnight(now: Date): Date {

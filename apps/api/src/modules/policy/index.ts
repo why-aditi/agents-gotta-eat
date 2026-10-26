@@ -1,7 +1,7 @@
 export { decideApproval, listPendingApprovals } from "./approvals";
 export { combine } from "./combine";
 export { releaseExpired, releaseIfExpired, startExpirySweep } from "./expiry";
-export { evaluateHardRules, type GateResult, type HardRulesInput, type PayeeFacts } from "./gate1";
+export { evaluateHardRules, type BountyFacts, type GateResult, type HardRulesInput, type PayeeFacts } from "./gate1";
 export {
   stubIntentCheck,
   type IntentCheck,
@@ -20,5 +20,6 @@ export {
 export { getSpendRequestFor, listAgentSpendRequests } from "./queries";
 export { APPROVAL_TTL_MS, toSpendRequestDto, todaySpentCents, withDecisions } from "./requests";
 export { policyRoutes } from "./routes";
-export { createSpendRequest, type SpendDeps } from "./spend";
+export { createSpendRequest, createStakeSpendRequest, type SpendDeps } from "./spend";
+export { setStakeHooks, stakeHooks, type StakeHooks } from "./stake-hooks";
 export { InvalidTransitionError, transition, type SpendFrom } from "./state";
