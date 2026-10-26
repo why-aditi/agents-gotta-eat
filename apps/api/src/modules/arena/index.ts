@@ -12,6 +12,7 @@ export { startDeadlineSweep, sweepDeadlines } from "./deadlines";
 export {
   enterBounty,
   getEntryFor,
+  listBountyEntriesFor,
   onStakeReleased,
   onStakeSettled,
   registerArenaHooks,

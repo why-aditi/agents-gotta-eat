@@ -3,18 +3,18 @@ import {
   Bounty,
   BountyList,
   BountyResults,
-  BountyStatus,
   CreateBountyRequest,
   DevFundRequest,
   EnterBountyResponse,
   Entry,
+  EntryList,
   ErrorBody,
+  ListBountiesQuery,
   MAX_SUBMISSION_BYTES,
   PickWinnerRequest,
   Submission,
   SubmissionContent,
   SubmitWorkRequest,
-  TaskType,
 } from "@gottaeat/schemas";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
@@ -23,13 +23,12 @@ import { ApiError } from "../../http/errors";
 import { stubIntentCheck } from "../policy";
 import { cancelBounty, createBounty, devOpenBounty, getBountyFor, listBounties } from "./bounties";
 import { sweepDeadlines } from "./deadlines";
-import { enterBounty, getEntryFor } from "./entries";
+import { enterBounty, getEntryFor, listBountyEntriesFor } from "./entries";
 import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
 import { submitWork } from "./submissions";
 
 const Id = z.string().min(1).max(64);
 const IdParams = z.object({ id: Id });
-const ListQuery = z.object({ status: BountyStatus.default("open"), type: TaskType.optional() });
 
 // Room for JSON escaping around a 1 MB submission, so an oversized one gets submission_too_large, not a 413.
 const SUBMISSION_BODY_LIMIT = 4 * MAX_SUBMISSION_BYTES;
@@ -68,15 +67,42 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
       schema: {
         tags: ["bounties"],
         summary: "Bounties by status (default open), newest first (at most 100)",
-        description: "`status=draft` lists only the caller's own drafts.",
-        querystring: ListQuery,
+        description:
+          "`status=draft` lists only the caller's own drafts. `mine=true` (users only; 400 for an agent key) lists " +
+          "the caller's own bounties in every status, or in `status` when given.",
+        querystring: ListBountiesQuery,
         response: { 200: BountyList, 400: ErrorBody, 401: ErrorBody },
       },
     },
     async (req) => {
       if (!req.principal) throw new ApiError("unauthorized");
+      const { status, type, mine } = req.query;
+      if (mine === "true" && req.principal.type !== "user") {
+        throw new ApiError("validation_error", "mine=true is for users, not agents");
+      }
       await sweep();
-      return { bounties: await listBounties(api.db, req.principal, req.query) };
+      return { bounties: await listBounties(api.db, req.principal, { status, type, mine: mine === "true" }) };
+    },
+  );
+
+  api.get(
+    "/v1/bounties/:id/entries",
+    {
+      config: { auth: "any" },
+      schema: {
+        tags: ["entries"],
+        summary: "A bounty's entries, oldest first",
+        description:
+          "The poster sees every entry; a user sees their agents' entries and an agent its own. " +
+          "404 for a draft that isn't the caller's. Never submission content.",
+        params: IdParams,
+        response: { 200: EntryList, 400: ErrorBody, 401: ErrorBody, 404: ErrorBody },
+      },
+    },
+    async (req) => {
+      if (!req.principal) throw new ApiError("unauthorized");
+      await sweep();
+      return { entries: await listBountyEntriesFor(api.db, req.principal, req.params.id) };
     },
   );
 

@@ -76,6 +76,15 @@ export type Bounty = z.infer<typeof Bounty>;
 export const BountyList = z.object({ bounties: z.array(Bounty) });
 export type BountyList = z.infer<typeof BountyList>;
 
+// Query for GET /v1/bounties. Without `mine`, status defaults to open. `mine=true` (users only) lists the caller's
+// own bounties in every status unless `status` narrows it. A string because it comes from the query string.
+export const ListBountiesQuery = z.object({
+  status: BountyStatus.optional(),
+  type: TaskType.optional(),
+  mine: z.enum(["true", "false"]).optional(),
+});
+export type ListBountiesQuery = z.infer<typeof ListBountiesQuery>;
+
 export const Entry = z.object({
   id: z.string(),
   bountyId: z.string(),
@@ -86,6 +95,9 @@ export const Entry = z.object({
   createdAt: z.iso.datetime(),
 });
 export type Entry = z.infer<typeof Entry>;
+
+export const EntryList = z.object({ entries: z.array(Entry) });
+export type EntryList = z.infer<typeof EntryList>;
 
 // The stake's policy outcome comes back with the entry (null when the stake was denied).
 export const EnterBountyResponse = z.object({

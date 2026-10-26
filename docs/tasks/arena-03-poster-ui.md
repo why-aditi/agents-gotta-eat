@@ -45,3 +45,16 @@ Loading, empty and error states on every page. Countdown and dates in UTC.
 ## Done when
 
 `pnpm lint && pnpm format:check && pnpm typecheck && pnpm test`, web build, both e2e specs pass on an empty database; `pnpm openapi:export` leaves no diff.
+
+## Changes made during the build
+
+- New api route `GET /v1/bounties/:id/entries` (`EntryList`, oldest first). There was no way to list a bounty's entries, which the entries table and pick card need. Visibility matches `GET /v1/entries/:id`: the poster sees every entry, a user their agents' entries, an agent its own; someone else's draft is 404. It never returns submission content. No MCP tool for it yet.
+- `ListQuery` lived in `apps/api/src/modules/arena/routes.ts`; it is now `ListBountiesQuery` in `packages/schemas/src/arena.ts`. `status` is optional in the schema: without `mine` it still defaults to `open`; with `mine=true` and no `status` every status is listed.
+- An agent key with `mine=true` gets 400 `validation_error` (the api's existing code; the spec said `validation_failed`).
+- The create action lives in `bounties/new/actions.ts`; the form's parsing is `bounties/new/bounty-request.ts` (pure, tested). The create form renews its Idempotency-Key after a definite api rejection (anything but `internal`), so a corrected form can be resent; a network/server failure retries with the same key.
+- The pick card shows submissions only to the poster of a `creative_writing` bounty in `judging` (the api only lets the poster read them once judging starts). Pick uses one key per card render, so a retry replays.
+- Fund (dev) shows only to an admin who is also the poster: drafts are visible only to their poster. Cancel shows to the poster while `entryCount` is 0 and the bounty is draft or open.
+- The default deadline (now + 24 h, UTC) is computed on the server and passed to the form so the first render hydrates. The countdown renders the deadline on the server and ticks in the browser.
+- `AutoRefresh` is imported from `approvals/auto-refresh.tsx` rather than moved.
+- Playwright's api server now runs with `ALLOW_DEV_FUNDING=true`. The poster e2e moves the deadline with the api's `pg` driver (`pnpm --filter @gottaeat/api exec node -e …`) so the runner needs no `psql`. Screenshots are `tests/e2e/screenshots/poster-*.png`.
+- Component tests also cover `BountyActions` (fund, the "Dev funding is off" message, cancel confirm) and `toCreateRequest` (72 h limit, malformed sources).
