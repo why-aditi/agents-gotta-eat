@@ -37,3 +37,16 @@ Spec sections: Flow 3, "Task types and judging" (verifiers, Judging modes, Judge
 ## Done when
 
 All checks pass (`pnpm lint && pnpm format:check && pnpm typecheck && pnpm test`, `pnpm e2e`), `pnpm openapi:export` leaves no diff, and `reconcile` is clean after every settlement test.
+
+## Changes made during the build
+
+- The poster can read submission content only once the bounty leaves `open` (judging, settled, voided), so they can't pass one entrant's work to another. The entry's agent and owner can always read their own.
+- A submission whose stored content isn't valid JSON scores 0. Judgement `rawOutput` is the verifier detail only (paths and counts, never answer-key values).
+- `pickWinner` with an entry from another bounty, or a missing one, is 404; 409 `entry_not_submitted` only for an entry of this bounty without a submission. A pick after the pick deadline is still accepted if the fallback hasn't run.
+- A poster-judged bounty with no submissions waits out the 24 h pick window and then voids.
+- The sweep retries bounties whose judging failed and keeps going when one bounty throws (errors logged with the bounty id).
+- Test helper `createTestBounty` inserts a dev escrow unless the bounty is a draft.
+
+## Follow-ups
+
+- A poster-written JSON Schema with a catastrophic `pattern` regex could stall validation. Posters are signed-in users; consider ajv's `code.regExp` with a linear-time engine later.

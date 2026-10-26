@@ -35,8 +35,10 @@ try {
   await app.listen({ port: Number(process.env.PORT ?? 3001), host: "0.0.0.0" });
   // Releases approvals left pending past their 15 minutes.
   stopSweep = startExpirySweep(db, 60_000, (err) => app.log.error({ err }, "approval expiry sweep failed"));
-  // Moves open bounties past their deadline to judging.
-  stopDeadlineSweep = startDeadlineSweep(db, 60_000, (err) => app.log.error({ err }, "bounty deadline sweep failed"));
+  // Moves open bounties past their deadline to judging, judges them and runs the pick fallback.
+  stopDeadlineSweep = startDeadlineSweep(db, 60_000, (err, bountyId) =>
+    app.log.error({ err, bountyId }, "bounty deadline sweep failed"),
+  );
 } catch (err) {
   app.log.error(err);
   process.exit(1);

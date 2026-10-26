@@ -14,6 +14,7 @@ describe("McpTools", () => {
       ["get_bounty", "GET", "/v1/bounties/:id"],
       ["enter_bounty", "POST", "/v1/bounties/:id/entries"],
       ["submit_work", "POST", "/v1/entries/:id/submissions"],
+      ["get_results", "GET", "/v1/bounties/:id/results"],
     ]);
     for (const t of McpTools) {
       expect(t.title.length).toBeGreaterThan(0);

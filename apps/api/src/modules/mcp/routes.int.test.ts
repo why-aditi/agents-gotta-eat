@@ -131,6 +131,7 @@ describe("MCP over Streamable HTTP", () => {
     expect(tools.map((t) => t.name).sort()).toEqual([
       "enter_bounty",
       "get_bounty",
+      "get_results",
       "get_spend_request",
       "get_wallet",
       "list_bounties",
