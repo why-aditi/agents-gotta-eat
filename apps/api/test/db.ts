@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import type { BountyStatus, CreateBountyRequest, MandateRules } from "@gottaeat/schemas";
 import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
-import { type AppEnv, buildApp } from "../src/app";
+import { type AppEnv, buildApp, type BuildAppOptions } from "../src/app";
 import { createDb, type Db } from "../src/db";
 import { agents, bounties, bountyAssets, escrows, mandates, users } from "../src/db/schema";
 import { AGENT_KEY_PREFIX, hashApiKey } from "../src/http/auth";
@@ -18,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate events, agent_runs, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,
@@ -52,11 +52,16 @@ export async function createUserWithWallet(db: Db): Promise<string> {
 
 export const TEST_JWT_SECRET = "test-secret-at-least-32-bytes-long-0123456789";
 
-export function buildTestApp(db: Db, env?: Partial<AppEnv>) {
+export function buildTestApp(
+  db: Db,
+  env?: Partial<AppEnv>,
+  opts?: Pick<BuildAppOptions, "eventBus" | "eventsHeartbeatMs">,
+) {
   return buildApp({
     db,
     logger: false,
     env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001", ...env },
+    ...opts,
   });
 }
 

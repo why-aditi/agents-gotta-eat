@@ -135,6 +135,7 @@ describe("MCP over Streamable HTTP", () => {
       "get_spend_request",
       "get_wallet",
       "list_bounties",
+      "log_run_step",
       "request_spend",
       "submit_work",
     ]);

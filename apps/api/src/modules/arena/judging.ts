@@ -9,8 +9,10 @@ import type { Db, Tx } from "../../db";
 import { bounties, bountyAssets, entries, submissions } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
+import { toJsonCents } from "../../lib/cents";
 import { captureEscrow, voidEscrow } from "../escrow";
 import { getJudgementsForBounty, type RankCreativeWriting, recordJudgement, verifyExtractData } from "../judge";
+import { agentNames, publish } from "../events";
 import { forfeitStake, payBountyReward, refundStake } from "../ledger";
 import { type BountyRow, lockBounty } from "./bounties";
 import { transition } from "./state";
@@ -153,7 +155,50 @@ export async function settleBounty(
     .where(eq(bounties.id, bounty.id))
     .returning();
   if (!updated) throw new Error(`bounty ${bounty.id} vanished`);
+  await publishSettlement(tx, updated, rows);
   return updated;
+}
+
+// The public outcome: every judgement (scores only become public now), then settled or voided.
+async function publishSettlement(tx: Tx, bounty: BountyRow, rows: EntryRow[]): Promise<void> {
+  const judgements = await getJudgementsForBounty(tx, bounty.id);
+  const agentOf = new Map(rows.map((e) => [e.id, e.agentId]));
+  const names = await agentNames(
+    tx,
+    rows.map((e) => e.agentId),
+  );
+  const ref = { bountyId: bounty.id, title: bounty.title };
+  for (const j of judgements) {
+    const agentId = agentOf.get(j.entryId) ?? "";
+    await publish(tx, {
+      type: "judgement.recorded",
+      bountyId: bounty.id,
+      data: {
+        ...ref,
+        entryId: j.entryId,
+        agentId,
+        agentName: names.get(agentId) ?? agentId,
+        verifier: j.verifier,
+        score: j.score,
+      },
+    });
+  }
+  const winnerAgentId = bounty.winnerEntryId ? agentOf.get(bounty.winnerEntryId) : undefined;
+  if (bounty.status === "settled" && bounty.winnerEntryId && winnerAgentId) {
+    await publish(tx, {
+      type: "bounty.settled",
+      bountyId: bounty.id,
+      data: {
+        ...ref,
+        winnerEntryId: bounty.winnerEntryId,
+        winnerAgentId,
+        winnerAgentName: names.get(winnerAgentId) ?? winnerAgentId,
+        rewardCents: toJsonCents(bounty.rewardCents),
+      },
+    });
+  } else {
+    await publish(tx, { type: "bounty.voided", bountyId: bounty.id, data: ref });
+  }
 }
 
 async function answerKeyOf(tx: Tx, bountyId: string): Promise<unknown> {

@@ -1,21 +1,28 @@
 "use client";
 
+import type { ArenaEvent } from "@gottaeat/schemas";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LiveRefresh } from "@/components/live-refresh";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
+  { href: "/arena", label: "Arena" },
   { href: "/agents", label: "Agents" },
   { href: "/bounties", label: "Bounties" },
   { href: "/approvals", label: "Approvals" },
   { href: "/wallet", label: "Wallet" },
 ] as const;
 
+// The approvals badge changes when a spend waits for the owner or an approval is decided.
+const approvalsChanged = (e: ArenaEvent) => e.type === "spend.decided" || e.type === "approval.decided";
+
 export function NavLinks({ pendingCount }: { pendingCount: number | null }) {
   const pathname = usePathname();
   return (
     <nav aria-label="Main" className="flex min-w-0 items-center gap-1 overflow-x-auto">
+      <LiveRefresh when={approvalsChanged} fallbackMs={0} />
       {LINKS.map(({ href, label }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         return (

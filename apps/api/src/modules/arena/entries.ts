@@ -6,6 +6,7 @@ import { bounties, entries, spendRequests, submissions } from "../../db/schema";
 import type { AgentPrincipal, Principal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { newId } from "../../lib/ids";
+import { agentName, publish } from "../events";
 import { createStakeSpendRequest, setStakeHooks, type SpendDeps, withDecisions } from "../policy";
 import { lockBounty } from "./bounties";
 
@@ -103,6 +104,17 @@ export async function enterBounty(
       })
       .returning();
     if (!row) throw new Error("entry was not inserted");
+    await publish(tx, {
+      type: "entry.created",
+      bountyId,
+      data: {
+        bountyId,
+        title: bounty.title,
+        entryId: row.id,
+        agentId: principal.agentId,
+        agentName: await agentName(tx, principal.agentId),
+      },
+    });
     return { existing: false, response: { entry: toEntryDto(row, null), stake } };
   });
 }
