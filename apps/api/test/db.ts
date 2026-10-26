@@ -4,7 +4,7 @@ import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
 import { type AppEnv, buildApp } from "../src/app";
 import { createDb, type Db } from "../src/db";
-import { agents, bounties, bountyAssets, mandates, users } from "../src/db/schema";
+import { agents, bounties, bountyAssets, escrows, mandates, users } from "../src/db/schema";
 import { AGENT_KEY_PREFIX, hashApiKey } from "../src/http/auth";
 import { newId } from "../src/lib/ids";
 import { openWallet, PAYPAL_CLEARING, postJournal, walletAccount } from "../src/modules/ledger";
@@ -174,7 +174,8 @@ export function bountyRequest(
   return { ...body, ...over } as CreateBountyRequest;
 }
 
-// Inserts a bounty straight into the table (default: open extract_data, deadline 24 h out) and its hidden asset.
+// Inserts a bounty straight into the table (default: open extract_data, deadline 24 h out), its hidden asset,
+// and a dev escrow unless it is a draft or `escrow: false`.
 export async function createTestBounty(
   db: Db,
   opts: {
@@ -185,6 +186,7 @@ export async function createTestBounty(
     spendRulePct?: number;
     deadlineAt?: Date;
     hidden?: unknown;
+    escrow?: boolean;
   },
 ): Promise<string> {
   const id = newId("bty");
@@ -212,6 +214,9 @@ export async function createTestBounty(
       kind: "hidden",
       content: { answerKey: opts.hidden ?? { total: 1200 } },
     });
+  }
+  if (opts.escrow ?? status !== "draft") {
+    await db.insert(escrows).values({ bountyId: id, status: "authorized", dev: true, authorizedAt: new Date() });
   }
   return id;
 }

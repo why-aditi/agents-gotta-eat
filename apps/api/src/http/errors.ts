@@ -25,6 +25,9 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   submission_too_large: 400,
   invalid_transition: 409,
   bounty_closed: 409,
+  not_poster_judged: 409,
+  not_judging: 409,
+  entry_not_submitted: 409,
   internal: 500,
 };
 
@@ -48,6 +51,9 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   entry_not_active: "This entry is not active",
   submission_too_large: "The submission is larger than 1 MB",
   invalid_transition: "This bounty cannot make that status change",
+  not_poster_judged: "This bounty is judged automatically; the poster does not pick",
+  not_judging: "The bounty is not in judging or has no results yet",
+  entry_not_submitted: "That entry has no submission",
   bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
   internal: "Internal server error",
 };

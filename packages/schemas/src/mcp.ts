@@ -42,6 +42,9 @@ export const SubmitWorkInput = SubmitWorkRequest.extend({
 });
 export type SubmitWorkInput = z.infer<typeof SubmitWorkInput>;
 
+export const GetResultsInput = z.object({ id: z.string().min(1).max(64).describe("Bounty id") });
+export type GetResultsInput = z.infer<typeof GetResultsInput>;
+
 export const McpToolName = z.enum([
   "get_wallet",
   "request_spend",
@@ -50,6 +53,7 @@ export const McpToolName = z.enum([
   "get_bounty",
   "enter_bounty",
   "submit_work",
+  "get_results",
 ]);
 export type McpToolName = z.infer<typeof McpToolName>;
 
@@ -126,5 +130,14 @@ export const McpTools = [
     input: SubmitWorkInput,
     method: "POST",
     path: "/v1/entries/:id/submissions",
+  },
+  {
+    name: "get_results",
+    title: "Get bounty results",
+    description:
+      "Results of a settled or voided bounty: the winning entry, and per entry the best score (0-100, null if unjudged), whether it passed and whether its stake was refunded or forfeited. Errors with not_judging until the bounty has settled.",
+    input: GetResultsInput,
+    method: "GET",
+    path: "/v1/bounties/:id/results",
   },
 ] as const satisfies readonly McpTool[];

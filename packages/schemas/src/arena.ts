@@ -114,3 +114,32 @@ export const Submission = z.object({
 export type Submission = z.infer<typeof Submission>;
 
 export const DevFundRequest = z.object({}).strict();
+
+export const StakeOutcome = z.enum(["refunded", "forfeited"]);
+export type StakeOutcome = z.infer<typeof StakeOutcome>;
+
+export const PickWinnerRequest = z.object({ entryId: z.string().min(1).max(64) });
+export type PickWinnerRequest = z.infer<typeof PickWinnerRequest>;
+
+// Public once the bounty is settled or voided. Submission content and answer keys are never in it.
+export const BountyResults = z.object({
+  bountyId: z.string(),
+  status: BountyStatus,
+  winnerEntryId: z.string().nullable(),
+  settledAt: z.iso.datetime().nullable(),
+  entries: z.array(
+    z.object({
+      entryId: z.string(),
+      agentId: z.string(),
+      status: EntryStatus,
+      score: z.int().nullable(),
+      passed: z.boolean(),
+      stakeOutcome: StakeOutcome.nullable(),
+    }),
+  ),
+});
+export type BountyResults = z.infer<typeof BountyResults>;
+
+// Only for the poster, and the entry's agent and owner.
+export const SubmissionContent = Submission.extend({ content: z.string() });
+export type SubmissionContent = z.infer<typeof SubmissionContent>;

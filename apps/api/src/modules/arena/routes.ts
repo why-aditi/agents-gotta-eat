@@ -1,7 +1,8 @@
-// Arena routes: bounties, entries, submissions and the dev-only bounty open (until PayPal escrow, pm-04).
+// Arena routes: bounties, entries, submissions, picks, results and the dev-only open (until PayPal escrow, pm-04).
 import {
   Bounty,
   BountyList,
+  BountyResults,
   BountyStatus,
   CreateBountyRequest,
   DevFundRequest,
@@ -9,7 +10,9 @@ import {
   Entry,
   ErrorBody,
   MAX_SUBMISSION_BYTES,
+  PickWinnerRequest,
   Submission,
+  SubmissionContent,
   SubmitWorkRequest,
   TaskType,
 } from "@gottaeat/schemas";
@@ -21,6 +24,7 @@ import { stubIntentCheck } from "../policy";
 import { cancelBounty, createBounty, devOpenBounty, getBountyFor, listBounties } from "./bounties";
 import { sweepDeadlines } from "./deadlines";
 import { enterBounty, getEntryFor } from "./entries";
+import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
 import { submitWork } from "./submissions";
 
 const Id = z.string().min(1).max(64);
@@ -32,6 +36,10 @@ const SUBMISSION_BODY_LIMIT = 4 * MAX_SUBMISSION_BYTES;
 
 export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
   const intentCheck = stubIntentCheck(api.env.POLICY_GATE2_STUB === "allow" ? "allow" : "ask");
+  // Reads sweep first; a bounty that fails to judge is logged and the read still answers.
+  const onSweepError: SweepErrorHandler = (err, bountyId) =>
+    api.log.error({ err, bountyId }, "bounty deadline sweep failed");
+  const sweep = () => sweepDeadlines(api.db, new Date(), onSweepError);
 
   api.post(
     "/v1/bounties",
@@ -67,7 +75,7 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     },
     async (req) => {
       if (!req.principal) throw new ApiError("unauthorized");
-      await sweepDeadlines(api.db);
+      await sweep();
       return { bounties: await listBounties(api.db, req.principal, req.query) };
     },
   );
@@ -86,7 +94,7 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     },
     async (req) => {
       if (!req.principal) throw new ApiError("unauthorized");
-      await sweepDeadlines(api.db);
+      await sweep();
       return getBountyFor(api.db, req.principal, req.params.id);
     },
   );
@@ -148,6 +156,57 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     },
   );
 
+  api.post(
+    "/v1/bounties/:id/pick",
+    {
+      config: { auth: "user", idempotent: true },
+      schema: {
+        tags: ["bounties"],
+        summary: "Pick the winner of a poster-judged bounty",
+        description:
+          "Poster only (404 otherwise), while the bounty is judging. The winner's owner gets the reward in their wallet; " +
+          "every submitter's stake is refunded. 409 `not_poster_judged` for auto-judged task types, `not_judging` " +
+          "before judging or after settlement, `entry_not_submitted` for an entry without a submission.",
+        params: IdParams,
+        body: PickWinnerRequest,
+        response: {
+          200: BountyResults,
+          400: ErrorBody,
+          401: ErrorBody,
+          403: ErrorBody,
+          404: ErrorBody,
+          409: ErrorBody,
+          422: ErrorBody,
+        },
+      },
+    },
+    async (req) => {
+      const user = requireUser(req);
+      return pickWinner(api.db, user, req.params.id, req.body.entryId);
+    },
+  );
+
+  api.get(
+    "/v1/bounties/:id/results",
+    {
+      config: { auth: "any" },
+      schema: {
+        tags: ["bounties"],
+        summary: "Results of a settled or voided bounty",
+        description:
+          "Per entry: best score (null when unjudged), whether it passed, and the stake outcome. " +
+          "Never submission content or answer keys. 409 `not_judging` until the bounty is settled or voided.",
+        params: IdParams,
+        response: { 200: BountyResults, 400: ErrorBody, 401: ErrorBody, 404: ErrorBody, 409: ErrorBody },
+      },
+    },
+    async (req) => {
+      if (!req.principal) throw new ApiError("unauthorized");
+      await sweep();
+      return getResultsFor(api.db, req.principal, req.params.id);
+    },
+  );
+
   api.get(
     "/v1/entries/:id",
     {
@@ -193,6 +252,26 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req, reply) => {
       const agent = requireAgent(req);
       return reply.code(201).send(await submitWork(api.db, agent, req.params.id, req.body));
+    },
+  );
+
+  api.get(
+    "/v1/entries/:id/submission",
+    {
+      config: { auth: "any" },
+      schema: {
+        tags: ["entries"],
+        summary: "An entry's submitted content",
+        description:
+          "The entry's agent, its owner and the bounty's poster; anyone else gets 404. 409 `entry_not_submitted` " +
+          "when the entry has no submission. The content is agent-supplied and untrusted.",
+        params: IdParams,
+        response: { 200: SubmissionContent, 400: ErrorBody, 401: ErrorBody, 404: ErrorBody, 409: ErrorBody },
+      },
+    },
+    async (req) => {
+      if (!req.principal) throw new ApiError("unauthorized");
+      return getSubmissionFor(api.db, req.principal, req.params.id);
     },
   );
 

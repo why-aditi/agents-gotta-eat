@@ -22,6 +22,9 @@ export const ErrorCode = z.enum([
   "submission_too_large",
   "invalid_transition",
   "bounty_closed",
+  "not_poster_judged",
+  "not_judging",
+  "entry_not_submitted",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;
