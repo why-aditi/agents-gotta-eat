@@ -18,8 +18,13 @@ export interface AppEnv {
   WEB_ORIGINS?: string;
   API_URL?: string;
   PUBLIC_API_URL?: string;
-  // Gate 2 stub until pm-06: "allow", or anything else for "ask".
+  // Gate 2 stub: "allow", or anything else for "ask". When set it wins over the LLM intent check.
   POLICY_GATE2_STUB?: string;
+  // LLM gateway (LiteLLM proxy). Unset: no compile (502), gate 2 asks, no AI ranking.
+  GATEWAY_URL?: string;
+  LITELLM_MASTER_KEY?: string;
+  // Global daily cap on gateway requests (default 1000).
+  LLM_DAILY_REQUEST_BUDGET?: string;
   // "true" enables POST /v1/admin/wallets/:userId/credit (dev money until pm-04).
   ALLOW_DEV_CREDIT?: string;
   // "true" enables POST /v1/admin/bounties/:id/open (dev escrow until pm-04).

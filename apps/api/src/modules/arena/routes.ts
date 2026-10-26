@@ -20,7 +20,8 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
-import { stubIntentCheck } from "../policy";
+import { llmConfigFromEnv } from "../llm";
+import { selectIntentCheck } from "../policy";
 import { cancelBounty, createBounty, devOpenBounty, getBountyFor, listBounties } from "./bounties";
 import { sweepDeadlines } from "./deadlines";
 import { enterBounty, getEntryFor } from "./entries";
@@ -35,7 +36,8 @@ const ListQuery = z.object({ status: BountyStatus.default("open"), type: TaskTyp
 const SUBMISSION_BODY_LIMIT = 4 * MAX_SUBMISSION_BYTES;
 
 export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
-  const intentCheck = stubIntentCheck(api.env.POLICY_GATE2_STUB === "allow" ? "allow" : "ask");
+  // Stakes skip the model, so the LLM check never makes a call inside the enter transaction.
+  const intentCheck = selectIntentCheck(api.env.POLICY_GATE2_STUB, llmConfigFromEnv(api.db, api.env));
   // Reads sweep first; a bounty that fails to judge is logged and the read still answers.
   const onSweepError: SweepErrorHandler = (err, bountyId) =>
     api.log.error({ err, bountyId }, "bounty deadline sweep failed");
@@ -195,7 +197,9 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Results of a settled or voided bounty",
         description:
           "Per entry: best score (null when unjudged), whether it passed, and the stake outcome. " +
-          "Never submission content or answer keys. 409 `not_judging` until the bounty is settled or voided.",
+          "Poster-judged bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. " +
+          "Never submission content, answer keys or judge prompts. The poster can read results while judging (to see " +
+          "the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.",
         params: IdParams,
         response: { 200: BountyResults, 400: ErrorBody, 401: ErrorBody, 404: ErrorBody, 409: ErrorBody },
       },
