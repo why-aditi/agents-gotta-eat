@@ -25,6 +25,10 @@ export interface PickableSubmission {
   agentId: string;
   submittedAt: string;
   content: string;
+  // The AI judge's view, when it ranked the bounty. The rationale is model output about untrusted text: plain text.
+  aiScore: number | null;
+  aiRationale: string | null;
+  injectionFlagged: boolean;
 }
 
 export function PickCard({
@@ -91,6 +95,20 @@ export function PickCard({
               <p className="max-h-80 overflow-auto rounded-md bg-muted p-3 text-sm break-words whitespace-pre-wrap">
                 {s.content}
               </p>
+              {s.injectionFlagged ? (
+                <p role="note" className="text-sm text-destructive">
+                  Possible prompt injection: this submission contains text aimed at the judge. It got a second,
+                  independent AI review.
+                </p>
+              ) : null}
+              {s.aiScore !== null ? (
+                <div className="space-y-1 text-sm">
+                  <p className="font-medium">AI judge: {s.aiScore}/100</p>
+                  {s.aiRationale ? (
+                    <p className="break-words whitespace-pre-wrap text-muted-foreground">{s.aiRationale}</p>
+                  ) : null}
+                </div>
+              ) : null}
               <Button size="sm" disabled={disabled} onClick={() => setConfirming(s)}>
                 Pick submission {i + 1}
               </Button>

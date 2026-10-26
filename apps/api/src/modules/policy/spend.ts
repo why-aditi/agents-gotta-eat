@@ -17,14 +17,11 @@ import {
 } from "@gottaeat/schemas";
 import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
-
-type Conn = Db | Tx;
-import { agents, bounties, entries, spendRequests } from "../../db/schema";
+import { agents, bounties, entries, spendRequests, wallets } from "../../db/schema";
 import type { AgentPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { newId } from "../../lib/ids";
 import { hold, lockWallet, settle, stakeFromHold, subcontractFee } from "../ledger";
-import { wallets } from "../../db/schema";
 import { combine } from "./combine";
 import { type BountyFacts, evaluateHardRules, type PayeeFacts } from "./gate1";
 import { type IntentCheck, type IntentCheckInput, INTENT_UNAVAILABLE, type IntentResult } from "./gate2";
@@ -39,6 +36,8 @@ import {
 } from "./requests";
 import { stakeHooks } from "./stake-hooks";
 import { transition } from "./state";
+
+type Conn = Db | Tx;
 
 export interface SpendDeps {
   intentCheck: IntentCheck;

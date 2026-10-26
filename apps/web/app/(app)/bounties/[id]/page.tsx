@@ -172,17 +172,25 @@ function ResultsCard({ bounty, results }: { bounty: Bounty; results: BountyResul
   );
 }
 
-async function loadSubmissions(entries: Entry[]): Promise<PickableSubmission[]> {
+// The poster's submissions to pick from, with the AI judge's score and rationale when it ranked the bounty.
+async function loadSubmissions(entries: Entry[], ranking: BountyResults | null): Promise<PickableSubmission[]> {
   const submitted = entries.filter((e) => e.submissionId);
   const subs = await Promise.all(
     submitted.map((e) => apiFetch(SubmissionContent, `/v1/entries/${encodeURIComponent(e.id)}/submission`)),
   );
-  return subs.map((s, i) => ({
-    entryId: s.entryId,
-    agentId: submitted[i]!.agentId,
-    submittedAt: s.submittedAt,
-    content: s.content,
-  }));
+  const ai = new Map(ranking?.entries.map((e) => [e.entryId, e]) ?? []);
+  return subs.map((s, i) => {
+    const r = ai.get(s.entryId);
+    return {
+      entryId: s.entryId,
+      agentId: submitted[i]!.agentId,
+      submittedAt: s.submittedAt,
+      content: s.content,
+      aiScore: r?.aiScore ?? null,
+      aiRationale: r?.aiRationale ?? null,
+      injectionFlagged: r?.injectionFlagged ?? false,
+    };
+  });
 }
 
 export default async function BountyPage({ params }: { params: Promise<{ id: string }> }) {
@@ -199,10 +207,9 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
     const isPoster = bounty.posterId === me.id;
     const settled = bounty.status === "settled" || bounty.status === "voided";
     const canPick = isPoster && bounty.status === "judging" && bounty.taskType === "creative_writing";
-    const [results, submissions] = await Promise.all([
-      settled ? apiFetch(BountyResultsSchema, `${base}/results`) : null,
-      canPick ? loadSubmissions(entries) : null,
-    ]);
+    // While judging, only the poster may read results: they carry the AI ranking to pick from.
+    const results = settled || canPick ? await apiFetch(BountyResultsSchema, `${base}/results`) : null;
+    const submissions = canPick ? await loadSubmissions(entries, results) : null;
     loaded = { bounty, me, entries, isPoster, results, submissions };
   } catch (err) {
     // Next's own control-flow errors (dynamic rendering, redirects) must propagate.
@@ -218,7 +225,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
   }
   const { bounty, me, entries, isPoster, results, submissions } = loaded;
   const live = bounty.status === "open" || bounty.status === "judging";
-  const resultsByEntry = results ? new Map(results.entries.map((e) => [e.entryId, e])) : null;
+  const resultsByEntry = results && !submissions ? new Map(results.entries.map((e) => [e.entryId, e])) : null;
   const canFund = bounty.status === "draft" && isPoster && me.roles.includes("admin");
   const canCancel = isPoster && bounty.entryCount === 0 && (bounty.status === "draft" || bounty.status === "open");
 
@@ -245,7 +252,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
           <p className="text-sm">
             {bounty.taskType === "creative_writing"
               ? isPoster
-                ? "Judging: pick the winner below within 24 hours of the deadline, or the earliest submission wins."
+                ? "Judging: pick the winner below within 24 hours of the deadline, or the AI judge's top entry wins."
                 : "Judging: waiting for the poster to pick a winner."
               : "Judging: submissions are being scored."}
           </p>
@@ -259,7 +266,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
       {submissions ? (
         <PickCard bountyId={bounty.id} rewardCents={bounty.rewardCents} submissions={submissions} />
       ) : null}
-      {results ? <ResultsCard bounty={bounty} results={results} /> : null}
+      {results && !submissions ? <ResultsCard bounty={bounty} results={results} /> : null}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]">
         <Card>

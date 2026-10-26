@@ -58,3 +58,4 @@ Loading, empty and error states on every page. Countdown and dates in UTC.
 - `AutoRefresh` is imported from `approvals/auto-refresh.tsx` rather than moved.
 - Playwright's api server now runs with `ALLOW_DEV_FUNDING=true`. The poster e2e moves the deadline with the api's `pg` driver (`pnpm --filter @gottaeat/api exec node -e …`) so the runner needs no `psql`. Screenshots are `tests/e2e/screenshots/poster-*.png`.
 - Component tests also cover `BountyActions` (fund, the "Dev funding is off" message, cancel confirm) and `toCreateRequest` (72 h limit, malformed sources).
+- After merging with pm-06: while judging, the poster's page also loads `/results`, and the pick card shows the AI judge's score and rationale (plain text) and a warning on entries the injection pre-filter flagged. The judging line now says the AI judge's top entry wins when the poster doesn't pick.
