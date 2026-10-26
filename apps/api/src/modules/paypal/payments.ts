@@ -34,6 +34,7 @@ export async function reauthorize(
   const raw = await client.request<{ id: string; status?: string; expiration_time?: string }>({
     method: "POST",
     path: `/v2/payments/authorizations/${authId}/reauthorize`,
+    body: {},
     requestId,
   });
   return { id: raw.id, status: raw.status ?? null, expiresAt: raw.expiration_time ?? null };

@@ -104,7 +104,8 @@ export function createPayPalClient(config: PayPalClientConfig): PayPalClient {
         Authorization: `Bearer ${accessToken}`,
         "PayPal-Request-Id": id,
       };
-      if (body !== undefined) headers["Content-Type"] = "application/json";
+      // PayPal answers 415 UNSUPPORTED_MEDIA_TYPE to a POST without this header, even when it has no body.
+      if (body !== undefined || method === "POST") headers["Content-Type"] = "application/json";
       return (await send(method, path, headers, body === undefined ? undefined : JSON.stringify(body), id)) as T;
     },
   };

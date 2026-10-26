@@ -20,6 +20,16 @@ describe("orders", () => {
     expect(order).toMatchObject({ id: "O1", status: "CREATED", authorizationId: null });
   });
 
+  it("authorize and capture send a JSON body of {} (PayPal rejects a POST with no JSON content)", async () => {
+    const { client, calls } = makeClient(() => json(201, { id: "O1", status: "COMPLETED" }));
+    await authorizeOrder(client, "O1", "auth:b1");
+    await captureOrder(client, "O1", "topup:t1");
+    for (const call of apiCalls(calls)) {
+      expect(call.headers["Content-Type"]).toBe("application/json");
+      expect(call.body).toBe("{}");
+    }
+  });
+
   it("authorizeOrder returns the authorization id, expiry and cents", async () => {
     const { client, calls } = makeClient(() =>
       json(201, {

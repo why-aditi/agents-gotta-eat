@@ -19,6 +19,16 @@ describe("headers", () => {
     expect(a!.headers["PayPal-Request-Id"]).not.toBe(b!.headers["PayPal-Request-Id"]);
   });
 
+  it("marks a body-less POST as JSON (PayPal answers 415 without it) but not a GET", async () => {
+    const { client, calls } = makeClient(() => json(200, {}));
+    await client.request({ method: "POST", path: "/void" });
+    await client.request({ method: "GET", path: "/get" });
+    const [post, get] = apiCalls(calls);
+    expect(post!.headers["Content-Type"]).toBe("application/json");
+    expect(post!.body).toBeUndefined();
+    expect(get!.headers["Content-Type"]).toBeUndefined();
+  });
+
   it("uses the caller-supplied request id", async () => {
     const { client, calls } = makeClient(() => json(200, {}));
     await client.request({ method: "POST", path: "/x", requestId: "capture:b1" });

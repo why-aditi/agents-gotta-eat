@@ -70,13 +70,23 @@ export async function createOrder(
 
 export async function authorizeOrder(client: PayPalClient, orderId: string, requestId: string): Promise<PayPalOrder> {
   return toOrder(
-    await client.request<RawOrder>({ method: "POST", path: `/v2/checkout/orders/${orderId}/authorize`, requestId }),
+    await client.request<RawOrder>({
+      method: "POST",
+      path: `/v2/checkout/orders/${orderId}/authorize`,
+      body: {},
+      requestId,
+    }),
   );
 }
 
 export async function captureOrder(client: PayPalClient, orderId: string, requestId: string): Promise<PayPalOrder> {
   return toOrder(
-    await client.request<RawOrder>({ method: "POST", path: `/v2/checkout/orders/${orderId}/capture`, requestId }),
+    await client.request<RawOrder>({
+      method: "POST",
+      path: `/v2/checkout/orders/${orderId}/capture`,
+      body: {},
+      requestId,
+    }),
   );
 }
 

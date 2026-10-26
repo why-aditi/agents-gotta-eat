@@ -149,6 +149,19 @@ createServer((req, res) => {
       return send(200, filter ? calls.filter((c) => c.path.includes(filter)) : calls);
     }
 
+    // The real API answers 415 to a POST without a JSON content type, even when the body is empty.
+    if (
+      req.method === "POST" &&
+      pathname !== "/v1/oauth2/token" &&
+      !String(req.headers["content-type"] ?? "").includes("json")
+    ) {
+      return send(415, {
+        name: "UNSUPPORTED_MEDIA_TYPE",
+        message: "The request payload is not supported",
+        details: [{ issue: "UNSUPPORTED_MEDIA_TYPE" }],
+      });
+    }
+
     const raw = Buffer.concat(chunks).toString("utf8");
     let body;
     if (raw) {
