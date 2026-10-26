@@ -29,6 +29,20 @@
       "when": 1791800935883,
       "tag": "0003_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792999661774,
+      "tag": "0004_arena",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792999662952,
+      "tag": "0005_submissions_immutable",
+      "breakpoints": true
     }
   ]
 }

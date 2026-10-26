@@ -230,3 +230,109 @@ export const spendDecisions = pgTable(
     index("spend_decisions_request_idx").on(t.spendRequestId),
   ],
 );
+
+export const taskType = pgEnum("task_type", [
+  "fix_tests",
+  "extract_data",
+  "write_tests",
+  "research",
+  "creative_writing",
+]);
+export const bountyStatus = pgEnum("bounty_status", ["draft", "open", "judging", "settled", "voided", "cancelled"]);
+export const entryStatus = pgEnum("entry_status", ["pending_stake", "active", "submitted", "withdrawn"]);
+export const assetKind = pgEnum("asset_kind", ["public", "hidden"]);
+
+export const bounties = pgTable(
+  "bounties",
+  {
+    id: text().primaryKey(),
+    posterId: text("poster_id")
+      .notNull()
+      .references(() => users.id),
+    taskType: taskType("task_type").notNull(),
+    title: text().notNull(),
+    spec: jsonb().notNull(),
+    rewardCents: bigint("reward_cents", { mode: "bigint" }).notNull(),
+    feeCents: bigint("fee_cents", { mode: "bigint" }).notNull(),
+    spendRulePct: integer("spend_rule_pct").notNull(),
+    passThreshold: integer("pass_threshold").notNull().default(60),
+    deadlineAt: timestamp("deadline_at", { withTimezone: true }).notNull(),
+    status: bountyStatus().notNull().default("draft"),
+    openedAt: timestamp("opened_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("bounties_reward_pos", sql`${t.rewardCents} > 0 and ${t.feeCents} >= 0`),
+    check("bounties_spend_rule_range", sql`${t.spendRulePct} between 0 and 50`),
+    check("bounties_pass_threshold_range", sql`${t.passThreshold} between 0 and 100`),
+    index("bounties_status_deadline_idx").on(t.status, t.deadlineAt),
+  ],
+);
+
+// Hidden assets (answer keys, hidden tests) are never returned by the api.
+export const bountyAssets = pgTable(
+  "bounty_assets",
+  {
+    id: text().primaryKey(),
+    bountyId: text("bounty_id")
+      .notNull()
+      .references(() => bounties.id),
+    kind: assetKind().notNull(),
+    content: jsonb().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("bounty_assets_bounty_idx").on(t.bountyId)],
+);
+
+export const escrows = pgTable("escrows", {
+  bountyId: text("bounty_id")
+    .primaryKey()
+    .references(() => bounties.id),
+  paypalOrderId: text("paypal_order_id"),
+  authorizationId: text("authorization_id"),
+  authorizedAt: timestamp("authorized_at", { withTimezone: true }),
+  honorUntil: timestamp("honor_until", { withTimezone: true }),
+  status: text().notNull(),
+  captureId: text("capture_id"),
+  // True for the dev stand-in (ALLOW_DEV_FUNDING), which moves no PayPal money.
+  dev: boolean().notNull().default(false),
+  createdAt: createdAt(),
+});
+
+export const entries = pgTable(
+  "entries",
+  {
+    id: text().primaryKey(),
+    bountyId: text("bounty_id")
+      .notNull()
+      .references(() => bounties.id),
+    agentId: text("agent_id")
+      .notNull()
+      .references(() => agents.id),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id),
+    stakeSpendRequestId: text("stake_spend_request_id").references(() => spendRequests.id),
+    status: entryStatus().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("entries_bounty_agent_idx").on(t.bountyId, t.agentId),
+    uniqueIndex("entries_stake_spend_request_idx").on(t.stakeSpendRequestId),
+  ],
+);
+
+// Immutable once written (update/delete triggers in the migration).
+export const submissions = pgTable(
+  "submissions",
+  {
+    id: text().primaryKey(),
+    entryId: text("entry_id")
+      .notNull()
+      .references(() => entries.id),
+    content: text().notNull(),
+    contentHash: text("content_hash").notNull(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("submissions_entry_idx").on(t.entryId)],
+);

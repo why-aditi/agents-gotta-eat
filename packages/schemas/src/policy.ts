@@ -36,6 +36,12 @@ export const DenyReason = z.enum([
   "payee_rating_too_low",
   "scope_requires_bounty",
   "rate_limited",
+  // Arena: a bounty must be open, an owner can't stake on their own bounty, a spend naming a bounty
+  // needs an entry under current_bounty_only and must stay within the bounty's spend rule.
+  "bounty_not_open",
+  "own_bounty",
+  "scope_requires_entry",
+  "over_bounty_spend_rule",
 ]);
 export type DenyReason = z.infer<typeof DenyReason>;
 
