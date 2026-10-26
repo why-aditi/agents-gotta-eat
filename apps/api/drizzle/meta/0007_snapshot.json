@@ -1,5 +1,5 @@
 {
-  "id": "4af88460-da7c-48ec-8c12-bc3bd3c11ae2",
+  "id": "cb7408b8-34bd-45a7-a6eb-4c49ba143a1c",
   "prevId": "5f1f5ed5-a66e-4835-9f42-e17517fbc831",
   "version": "7",
   "dialect": "postgresql",
@@ -219,6 +219,25 @@
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "ai_ranked_at": {
+          "name": "ai_ranked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ai_rank_failed_at": {
+          "name": "ai_rank_failed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ai_rank_attempts": {
+          "name": "ai_rank_attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -1029,6 +1048,92 @@
       },
       "isRLSEnabled": false
     },
+    "public.llm_calls": {
+      "name": "llm_calls",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "llm_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "served_model": {
+          "name": "served_model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latency_ms": {
+          "name": "latency_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "prompt_tokens": {
+          "name": "prompt_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completion_tokens": {
+          "name": "completion_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "llm_outcome",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "llm_calls_created_idx": {
+          "name": "llm_calls_created_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.mandates": {
       "name": "mandates",
       "schema": "",
@@ -1725,9 +1830,7 @@
         "payout",
         "fee",
         "refund",
-        "release",
-        "withdrawal",
-        "withdrawal_return"
+        "release"
       ]
     },
     "public.judge_verifier": {
@@ -1736,7 +1839,9 @@
       "values": [
         "extract_data_v1",
         "poster_pick",
-        "fallback_earliest"
+        "fallback_earliest",
+        "ai_judge",
+        "fallback_ai_top"
       ]
     },
     "public.ledger_account_type": {
@@ -1746,6 +1851,26 @@
         "asset",
         "liability",
         "revenue"
+      ]
+    },
+    "public.llm_outcome": {
+      "name": "llm_outcome",
+      "schema": "public",
+      "values": [
+        "ok",
+        "invalid_output",
+        "error",
+        "timeout",
+        "over_budget"
+      ]
+    },
+    "public.llm_role": {
+      "name": "llm_role",
+      "schema": "public",
+      "values": [
+        "mandate_compile",
+        "intent_check",
+        "judge"
       ]
     },
     "public.spend_category": {

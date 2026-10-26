@@ -1,0 +1,5 @@
+# openapi-python-client config for agents/gottaeat_sdk. Run through `pnpm openapi:python`, never by hand.
+project_name_override: gottaeat_sdk
+package_name_override: gottaeat_sdk
+# Formatting runs as a separate step (scripts/gen_client.py) so the output is the same everywhere.
+post_hooks: []

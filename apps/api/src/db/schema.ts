@@ -266,6 +266,11 @@ export const bounties = pgTable(
     pickDeadlineAt: timestamp("pick_deadline_at", { withTimezone: true }),
     winnerEntryId: text("winner_entry_id"),
     settledAt: timestamp("settled_at", { withTimezone: true }),
+    // creative_writing: the AI judge's ranking was recorded, or its last attempt failed. At most
+    // AI_RANK_MAX_ATTEMPTS attempts per bounty; after that the poster picks without a ranking.
+    aiRankedAt: timestamp("ai_ranked_at", { withTimezone: true }),
+    aiRankFailedAt: timestamp("ai_rank_failed_at", { withTimezone: true }),
+    aiRankAttempts: integer("ai_rank_attempts").notNull().default(0),
     createdAt: createdAt(),
   },
   (t) => [
@@ -391,7 +396,13 @@ export const submissions = pgTable(
   (t) => [uniqueIndex("submissions_entry_idx").on(t.entryId)],
 );
 
-export const judgeVerifier = pgEnum("judge_verifier", ["extract_data_v1", "poster_pick", "fallback_earliest"]);
+export const judgeVerifier = pgEnum("judge_verifier", [
+  "extract_data_v1",
+  "poster_pick",
+  "fallback_earliest",
+  "ai_judge",
+  "fallback_ai_top",
+]);
 
 // One row per submission and verifier: the full audit of how a score was reached.
 export const judgements = pgTable(
@@ -414,4 +425,25 @@ export const judgements = pgTable(
     check("judgements_score_range", sql`${t.score} between 0 and 100`),
     uniqueIndex("judgements_submission_verifier_idx").on(t.submissionId, t.verifier),
   ],
+);
+
+export const llmRole = pgEnum("llm_role", ["mandate_compile", "intent_check", "judge"]);
+export const llmOutcome = pgEnum("llm_outcome", ["ok", "invalid_output", "error", "timeout", "over_budget"]);
+
+// One row per gateway request (and per request refused by the daily budget). Today's rows are the budget count.
+export const llmCalls = pgTable(
+  "llm_calls",
+  {
+    id: text().primaryKey(),
+    role: llmRole().notNull(),
+    // The gateway model name we asked for, and the model that actually served it (after fallbacks).
+    model: text().notNull(),
+    servedModel: text("served_model"),
+    latencyMs: integer("latency_ms").notNull(),
+    promptTokens: integer("prompt_tokens"),
+    completionTokens: integer("completion_tokens"),
+    outcome: llmOutcome().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("llm_calls_created_idx").on(t.createdAt)],
 );

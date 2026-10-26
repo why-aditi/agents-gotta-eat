@@ -1,9 +1,10 @@
 "use client";
 
-// Mandate editor. Every save adds a new, unconfirmed version; the review card then shows the owner's words next to
+// Mandate editor. "Compile from my words" asks the api's LLM compiler to fill the rule fields from the text (nothing
+// is saved). Every save adds a new, unconfirmed version; the review card then shows the owner's words next to
 // the rules they compile to, and "Confirm mandate" activates it. Amounts are parsed from strings into integer
 // cents (lib/money); no float maths.
-import type { Mandate, PutMandateRequest, SpendCategory } from "@gottaeat/schemas";
+import type { Mandate, MandateRules, PutMandateRequest, SpendCategory } from "@gottaeat/schemas";
 import { useId, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { centsToInput, formatTenths, parseDollarsToCents, parseRatingToTenths } from "@/lib/money";
-import { saveMandate } from "./actions";
+import { compileMandate, saveMandate } from "./actions";
 import { MandateReview } from "./mandate-review";
 
 const CATEGORIES: SpendCategory[] = ["tool", "subcontract", "stake"];
@@ -51,9 +52,12 @@ export function valuesFrom(mandate: Mandate | null): MandateValues {
       expires: "",
     };
   }
-  const { rules } = mandate;
+  return valuesFromRules(mandate.sourceText, mandate.rules);
+}
+
+export function valuesFromRules(sourceText: string, rules: MandateRules): MandateValues {
   return {
-    sourceText: mandate.sourceText,
+    sourceText,
     perTx: centsToInput(rules.perTxMaxCents),
     daily: centsToInput(rules.dailyMaxCents),
     askAbove: rules.askAboveCents === undefined ? "" : centsToInput(rules.askAboveCents),
@@ -135,7 +139,9 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
   const [values, setValues] = useState<MandateValues>(() => valuesFrom(initial));
   const [errors, setErrors] = useState<FieldErrors>({});
   const [review, setReview] = useState<Mandate | null>(null);
+  const [notes, setNotes] = useState<string[] | null>(null);
   const [pending, startTransition] = useTransition();
+  const [compiling, startCompile] = useTransition();
 
   const id = (field: Field) => `${uid}-${field}`;
   const errId = (field: Field) => `${uid}-${field}-error`;
@@ -148,6 +154,26 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
 
   function toggleCategory(category: SpendCategory, checked: boolean) {
     set("categories", checked ? [...values.categories, category] : values.categories.filter((c) => c !== category));
+  }
+
+  function onCompile() {
+    const sourceText = values.sourceText.trim();
+    if (!sourceText) {
+      setErrors((prev) => ({ ...prev, sourceText: "Describe what this agent may spend on, in your own words." }));
+      return;
+    }
+    startCompile(async () => {
+      const result = await compileMandate(agentId, sourceText);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      // Fill the rule fields; the owner still reviews, saves and confirms.
+      setValues(valuesFromRules(values.sourceText, result.data.rules));
+      setErrors({});
+      setNotes(result.data.notes);
+      toast.success("Rules filled in from your words. Check them before saving.");
+    });
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -187,6 +213,22 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
             {...invalidProps("sourceText")}
           />
           <FieldError id={errId("sourceText")} message={errors.sourceText} />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" variant="secondary" size="sm" onClick={onCompile} disabled={compiling || pending}>
+              {compiling ? "Compiling…" : "Compile from my words"}
+            </Button>
+            <p className="text-xs text-muted-foreground">Fills in the fields below. Nothing is saved until you save.</p>
+          </div>
+          {notes && notes.length > 0 ? (
+            <div role="note" aria-label="Compiler notes" className="rounded-md border bg-muted/40 p-3 text-sm">
+              <p className="font-medium">Notes from the compiler</p>
+              <ul className="mt-1 list-disc space-y-1 pl-5">
+                {notes.map((n, i) => (
+                  <li key={i}>{n}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">

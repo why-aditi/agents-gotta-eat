@@ -30,6 +30,7 @@ export default defineConfig({
         PORT: "3001",
         API_URL,
         ALLOW_DEV_CREDIT: "true",
+        ALLOW_DEV_FUNDING: "true",
         POLICY_GATE2_STUB: "allow",
       },
     },

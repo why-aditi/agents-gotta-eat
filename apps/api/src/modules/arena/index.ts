@@ -9,7 +9,7 @@ export {
   toBountyDto,
   type BountyRow,
 } from "./bounties";
-export { startDeadlineSweep, sweepDeadlines } from "./deadlines";
+export { startDeadlineSweep, sweepDeadlines, type SweepDeps } from "./deadlines";
 export {
   applyAuthorization,
   applyAuthorizationVoided,
@@ -20,6 +20,7 @@ export {
 export {
   enterBounty,
   getEntryFor,
+  listBountyEntriesFor,
   onStakeReleased,
   onStakeSettled,
   registerArenaHooks,
@@ -27,6 +28,9 @@ export {
   type EnterResult,
 } from "./entries";
 export {
+  AI_RANK_MAX_ATTEMPTS,
+  aiRankBounty,
+  type AiRankOutcome,
   autoWinner,
   entryPassed,
   getResultsFor,
@@ -43,3 +47,4 @@ export {
 export { arenaRoutes } from "./routes";
 export { InvalidBountyTransitionError, transition as bountyTransition } from "./state";
 export { canonicalContent, sha256Hex, submitWork } from "./submissions";
+export { WAKE_SECRET_HEADER, wakeAgents, type WakeConfig } from "./wake";

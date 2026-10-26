@@ -6,7 +6,7 @@ import {
   MAX_BOUNTY_HOURS,
   type TaskType,
 } from "@gottaeat/schemas";
-import { and, count, desc, eq, inArray } from "drizzle-orm";
+import { and, count, desc, eq, inArray, type SQL } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { bounties, bountyAssets, entries, escrows } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
@@ -119,18 +119,27 @@ export async function getBountyFor(db: Db, principal: Principal, bountyId: strin
   return bountyDto(db, row);
 }
 
-// Newest first, at most 100. Drafts are only ever the caller's own.
+// Newest first, at most 100. Drafts are only ever the caller's own. `mine` lists the calling user's bounties in
+// every status unless `status` narrows it; without it, status defaults to open.
 export async function listBounties(
   db: Db,
   principal: Principal,
-  filter: { status: BountyStatus; type?: TaskType },
+  filter: { status?: BountyStatus; type?: TaskType; mine?: boolean },
 ): Promise<Bounty[]> {
-  const conds = [eq(bounties.status, filter.status)];
-  if (filter.type) conds.push(eq(bounties.taskType, filter.type));
-  if (filter.status === "draft") {
-    if (principal.type !== "user") return [];
+  const conds: SQL[] = [];
+  if (filter.mine) {
+    if (principal.type !== "user") throw new ApiError("validation_error", "mine=true is for users, not agents");
     conds.push(eq(bounties.posterId, principal.userId));
+    if (filter.status) conds.push(eq(bounties.status, filter.status));
+  } else {
+    const status = filter.status ?? "open";
+    conds.push(eq(bounties.status, status));
+    if (status === "draft") {
+      if (principal.type !== "user") return [];
+      conds.push(eq(bounties.posterId, principal.userId));
+    }
   }
+  if (filter.type) conds.push(eq(bounties.taskType, filter.type));
   const rows = await db
     .select()
     .from(bounties)
