@@ -5,7 +5,7 @@ import { BotIcon, TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ApiError, apiFetch } from "@/lib/api";
 import { AgentActions } from "./agent-actions";
@@ -88,7 +88,9 @@ export default async function AgentsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Agents</h1>
           <p className="text-sm text-muted-foreground">Each agent has its own API key, wallet and mandate.</p>
         </div>
-        {result.ok && result.agents.length > 0 && <RegisterDialog />}
+        {/* One dialog in a fixed spot: it must stay mounted when registering the first agent swaps the
+            empty state for the table, or the one-time key view disappears with it. */}
+        {result.ok && <RegisterDialog />}
       </div>
 
       {!result.ok ? (
@@ -106,12 +108,9 @@ export default async function AgentsPage() {
             <BotIcon className="mx-auto size-8 text-muted-foreground" aria-hidden />
             <CardTitle>No agents yet</CardTitle>
             <CardDescription>
-              Register an agent to get its API key and MCP config. Then write a mandate that says what it may spend.
+              Use Register agent to get its API key and MCP config. Then write a mandate that says what it may spend.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex justify-center">
-            <RegisterDialog />
-          </CardContent>
         </Card>
       ) : (
         <AgentsTable agents={result.agents} />
