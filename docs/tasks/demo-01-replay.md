@@ -1,0 +1,41 @@
+# Task: demo-01 replay
+
+Status: approved Oct 26, 2026. Builds on events-01 (events table, bus, SSE, arena feed), admin-01 (admin routes and tabs), pm-04 (escrow ids), pm-06 (gate 2), agents-01 (house agents, Grifter).
+
+Spec sections: "AI components" (LLM gateway: daily counter switches to demo mode), "Testing" (Pre-submission checklist: hosted URL works logged out in demo mode), "Pocket Money" (Demo moment), "PayPal integration" (sandbox transaction links). Architecture: "Observability and demo mode" (Record, Replay, Switch, Auto-fallback, Reset).
+
+## Decisions
+
+| Area | Decision |
+| --- | --- |
+| Storage | Own tables, so the 30-day event prune never touches recordings. `recordings` (`id` text `rec_…`, `title`, `notes` nullable, `started_at`, `ended_at` nullable, `featured` bool default false with a partial unique index `where featured`, `source` text `live` or `import`, `created_at`). `recording_events` (`recording_id` → recordings on delete cascade, `seq` int, `offset_ms` int ≥ 0, `type`, `bounty_id` nullable, `data` jsonb; PK (`recording_id`, `seq`)). Migration `0010_demo` |
+| What is recorded | Public-scope events only, copied with their data. Never `owner_id`, never owner-scoped types. A test proves `/v1/demo/*` responses never contain an owner id, a spend reason, or an owner-only type |
+| Recording | One active recording at a time (`ended_at is null`). While active, a bus subscriber appends each delivered public event (offset = event `created_at` − `started_at`). On stop, a backfill copies public events in `[started_at, ended_at]` the subscriber missed, deduplicated by a `source_event_id bigint` column (unique per recording; null for imports). `saveWindow(from, to)` creates a finished recording from existing public events in the window |
+| Demo-moment line | New public event type `demo.spend_flagged` `{ agentId, agentName, amountCents, category, bountyId (nullable) }`, published in the same transaction as the owner-scoped `spend.decided` when gate 2's verdict is `ask` (not when gate 1 asks). No reason text, no owner id. It is a real event, so it appears in the live arena feed and in recordings |
+| PayPal ids | `bounty.opened` gains optional `paypalOrderId`, `authorizationId`; `bounty.settled` gains optional `captureId`. Set only for real (non-dev) escrows. Payout ids are owner-private and are not shown |
+| Replay stream | `GET /v1/demo/stream?recording=<id>&speed=1\|4` (no auth; `recording` optional → featured; 404 `not_found` when none). SSE: each recorded event as `id: <seq>`, `event: <type>`, `data: {"offsetMs":…, "event": <ArenaEvent>}` sent when its time comes: wait = (offset − previous offset) / speed, capped at 3000 ms real time. Then `event: end`. Heartbeat comment every 15 s. Recorded events are rebuilt as `ArenaEvent` with `id` = seq and `createdAt` = started_at + offset |
+| Public routes | `GET /v1/demo/status` → `{ featured: Recording \| null, live: { budgetUsed, budget, fallback } }` with `fallback = budgetUsed >= 80% of budget`; `GET /v1/demo/recordings/:id/money` → `MoneyLink[]` built from the recording's bounty events: `{ bountyId, bountyTitle, kind: "order"\|"authorization"\|"capture", paypalId, url }` with `url` = `https://www.sandbox.paypal.com/activity/payment/<id>` for captures and authorizations, and the order id shown without a link (no stable sandbox URL for orders). Rate limit: 30 requests/min per IP across `/v1/demo/*` → 429 `rate_limited` |
+| Admin routes | Under the existing `/v1/admin/*` admin check: `GET /v1/admin/recordings`; `POST /v1/admin/recordings/start { title }` (409 `recording_active` if one is active); `POST /v1/admin/recordings/stop`; `POST /v1/admin/recordings/window { title, from, to }`; `POST /v1/admin/recordings/:id/feature`; `DELETE /v1/admin/recordings/:id`; `POST /v1/admin/demo/reset` (404 unless `ALLOW_DEV_FUNDING=true` and `ALLOW_DEV_CREDIT=true`; creates and opens the seed bounties not already open, and tops the house owner's wallet back up to $60 with one dev credit of the difference; idempotent per call via `Idempotency-Key`) |
+| Import | `seed/recordings/rehearsal.json` (`{ title, notes, source: "import", events: [{ offsetMs, type, bountyId, data }] }`), recorded from a scripted local run with the fake gateway: seed → wake → Sieve/Scout/Grifter enter → Grifter's $40 spend flagged (`demo.spend_flagged`) → submissions → judging → AI judge flags the injected entry → settled. `pnpm demo:import [file]` (`apps/api/scripts/demo-import.ts`): idempotent by title; features it when nothing is featured |
+| Schemas | `packages/schemas/src/demo.ts`: `Recording { id, title, notes, startedAt, endedAt, eventCount, featured, source }`, `RecordingList { recordings }`, `StartRecordingRequest { title }`, `SaveWindowRequest { title, from, to }`, `ReplayEvent { offsetMs, event: ArenaEvent }`, `DemoStatus`, `MoneyLink`, `MoneyLinks { links }`. Event changes in `events.ts`. Regenerate OpenAPI and the Python client |
+| Web: `/demo` | Public (middleware allows `/demo` and `/api/demo/*`). Server proxy `app/api/demo/stream/route.ts` → api stream (no session needed, closes at 55 s like `/api/events`; the client resumes by restarting from the last seq it rendered: pass `from=<seq>` → api skips events with seq ≤ from and starts timing from the next). Layout like `/arena`: banner "Replay of a recorded run · recorded {date}" (+ " · rehearsal with a stand-in model" when `source = import`), speed toggle 1×/4×, Play/Pause/Restart, bounty cards derived from the replayed events, the live feed (reuse `describe.ts`; add lines for `demo.spend_flagged` "Grifter's $40.00 tool spend was flagged by the intent check and sent to its owner" and PayPal ids on open/settle), Money panel, "Sign in to run it live" |
+| Web: entry and fallback | `/` logged out → `/demo` when `status.featured` exists, else `/login`. Login page links "Watch the demo". Signed-in layout shows a banner linking `/demo` when `status.live.fallback` |
+| Web: admin | New "Demo" tab: active recording state with Start (title) / Stop, Save window (from/to UTC), recordings table (title, source, events, recorded, featured) with Feature and Delete (confirm), Reset demo (confirm; shows the 404 "dev flags off" message) |
+| Untrusted text | Agent names and summaries in replays are plain text, as in the live feed |
+
+## Tests
+
+| Area | Cases |
+| --- | --- |
+| api record | start → public events captured with offsets, owner events not; stop backfills missed events without duplicates; second start while active → 409; window save; featured unique (featuring one unfeatures the other); delete cascades |
+| api replay | events arrive in seq order with timing ≈ offset/speed (fake timers or a small offset set); gap cap 3 s; `from` resumes; `end` sent; unknown recording → 404; no featured → 404 |
+| api privacy | seeded owner-scoped events and reasons never appear in `/v1/demo/stream`, `/status`, `/money` |
+| api events | `demo.spend_flagged` on intent `ask` only (not gate 1 ask, not allow/deny); PayPal ids on opened/settled for real escrows, absent for dev |
+| api admin | non-admin 403 on every admin demo route; reset 404 without flags, idempotent with them; import idempotent by title |
+| api rate limit | 31st public demo request in a minute from one IP → 429 |
+| web | replay hook: speed, pause/resume, restart, end, resume with `from` (mocked EventSource); banner text for import; feed lines plain text; middleware allows `/demo`; `/` redirect logic; fallback banner; admin demo tab actions |
+| e2e `tests/e2e/demo.spec.ts` (coordinator) | logged out `/` → `/demo` plays the imported rehearsal at 4× to the end, feed shows the flagged spend and the flagged entry; admin records a run (open a bounty, enter over REST), stops, features it, `/demo` plays it |
+
+## Done when
+
+`pnpm lint && pnpm format:check && pnpm typecheck && pnpm test`, web build, all e2e specs on an empty database, agents pytest; `pnpm openapi:export` and `pnpm openapi:python` leave no diff; CLAUDE.md commands table has `pnpm demo:import`.
