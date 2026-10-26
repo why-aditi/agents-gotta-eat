@@ -38,6 +38,14 @@ const IdParams = z.object({ id: Id });
 const SUBMISSION_BODY_LIMIT = 4 * MAX_SUBMISSION_BYTES;
 
 export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
+  // Every way a bounty opens (dev funding, the poster's PayPal confirm, the authorization webhook job) publishes
+  // bounty.opened in its transaction; waking the house agents here means they hear about each one once committed.
+  // Not awaited: a slow or failing agents service never holds anything up.
+  const wake = { url: api.env.AGENTS_WAKE_URL, secret: api.env.AGENTS_WAKE_SECRET };
+  const stopWake = api.eventBus.subscribe((row) => {
+    if (row.type === "bounty.opened" && row.bountyId) void wakeAgents(wake, api.log, row.bountyId);
+  });
+  api.addHook("onClose", async () => stopWake());
   // Stakes skip the model, so the LLM check never makes a call inside the enter transaction.
   const intentCheck = selectIntentCheck(api.env.POLICY_GATE2_STUB, llmConfigFromEnv(api.db, api.env));
   // Reads sweep first; a bounty that fails to judge is logged and the read still answers.
@@ -377,10 +385,7 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const admin = requireUser(req);
       if (!admin.roles.includes("admin")) throw new ApiError("forbidden", "Only admins can open bounties directly");
-      const bounty = await devOpenBounty(api.db, req.params.id);
-      // Not awaited: a slow or failing agents service never holds up or fails the open.
-      void wakeAgents({ url: api.env.AGENTS_WAKE_URL, secret: api.env.AGENTS_WAKE_SECRET }, req.log, bounty.id);
-      return bounty;
+      return devOpenBounty(api.db, req.params.id);
     },
   );
 };

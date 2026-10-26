@@ -19,8 +19,8 @@ export type Principal = AgentPrincipal | UserPrincipal;
 export interface RouteConfig {
   // Required on every /v1 route. "none" only for /health and /v1/openapi.json.
   auth?: AuthMode;
-  // Requires an Idempotency-Key header and replays the first response.
-  idempotent?: boolean;
+  // Requires an Idempotency-Key header and replays the first response. "optional": replays when a key is sent.
+  idempotent?: boolean | "optional";
   // Applied to the stored copy of a 2xx response before it is saved for replays (e.g. drop a plaintext key).
   redactForReplay?: (body: unknown) => unknown;
 }

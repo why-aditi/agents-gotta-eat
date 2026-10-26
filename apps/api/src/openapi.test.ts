@@ -37,6 +37,11 @@ describe("OpenAPI document", () => {
       "/v1/entries/{id}",
       "/v1/entries/{id}/submissions",
       "/v1/admin/bounties/{id}/open",
+      "/v1/admin/journals",
+      "/v1/admin/journals/{id}",
+      "/v1/admin/accounts",
+      "/v1/admin/reconcile",
+      "/v1/admin/llm-usage",
       "/mcp",
     ]) {
       expect(doc.paths).toHaveProperty([path]);

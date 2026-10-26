@@ -11,12 +11,15 @@ from typing import Any
 import httpx
 
 from gottaeat_sdk import AuthenticatedClient
+from gottaeat_sdk.api.agent_runs import post_v1_agent_runs
 from gottaeat_sdk.api.bounties import get_v1_bounties
 from gottaeat_sdk.api.entries import get_v1_entries_id, post_v1_bounties_id_entries, post_v1_entries_id_submissions
 from gottaeat_sdk.api.spend import post_v1_spend_requests
 from gottaeat_sdk.models.get_v1_bounties_response_200 import GetV1BountiesResponse200
 from gottaeat_sdk.models.get_v1_bounties_status import GetV1BountiesStatus
 from gottaeat_sdk.models.get_v1_entries_id_response_200 import GetV1EntriesIdResponse200
+from gottaeat_sdk.models.post_v1_agent_runs_body import PostV1AgentRunsBody
+from gottaeat_sdk.models.post_v1_agent_runs_response_201 import PostV1AgentRunsResponse201
 from gottaeat_sdk.models.post_v1_bounties_id_entries_response_200 import PostV1BountiesIdEntriesResponse200
 from gottaeat_sdk.models.post_v1_bounties_id_entries_response_201 import PostV1BountiesIdEntriesResponse201
 from gottaeat_sdk.models.post_v1_entries_id_submissions_body import PostV1EntriesIdSubmissionsBody
@@ -27,6 +30,8 @@ from gottaeat_sdk.types import Response
 
 REPLAYED_HEADER = "idempotent-replayed"
 TIMEOUT = httpx.Timeout(30.0)
+# Run logging is best-effort and must not hold up a run.
+RUN_LOG_TIMEOUT = httpx.Timeout(5.0)
 
 
 class ApiError(Exception):
@@ -61,6 +66,8 @@ class SpendResult:
     decision: str
     status: str
     reasons: list[str]
+    amount_cents: int
+    category: str
 
 
 class GottaeatApi:
@@ -69,13 +76,14 @@ class GottaeatApi:
         self._api_key = api_key
         self._httpx_args: dict[str, Any] = {"transport": transport} if transport else {}
         self._client = self._new_client({})
+        self._run_log_client = self._new_client({}, RUN_LOG_TIMEOUT)
 
-    def _new_client(self, headers: dict[str, str]) -> AuthenticatedClient:
+    def _new_client(self, headers: dict[str, str], timeout: httpx.Timeout = TIMEOUT) -> AuthenticatedClient:
         return AuthenticatedClient(
             base_url=self._base_url,
             token=self._api_key,
             headers=headers,
-            timeout=TIMEOUT,
+            timeout=timeout,
             httpx_args=self._httpx_args,
         )
 
@@ -85,6 +93,14 @@ class GottaeatApi:
 
     async def aclose(self) -> None:
         await self._client.get_async_httpx_client().aclose()
+        await self._run_log_client.get_async_httpx_client().aclose()
+
+    async def log_run_step(self, body: dict[str, Any]) -> str:
+        """POST /v1/agent-runs (no Idempotency-Key: it moves no money). Returns the run step id."""
+        res = await post_v1_agent_runs.asyncio_detailed(
+            client=self._run_log_client, body=PostV1AgentRunsBody.from_dict(body)
+        )
+        return _expect(res, PostV1AgentRunsResponse201, "POST /v1/agent-runs").id
 
     async def list_open_bounties(self) -> list[BountyView]:
         res = await get_v1_bounties.asyncio_detailed(client=self._client, status=GetV1BountiesStatus.OPEN)
@@ -139,6 +155,8 @@ class GottaeatApi:
             decision=parsed.decision.value,
             status=parsed.status.value,
             reasons=[r.value for r in parsed.reasons],
+            amount_cents=amount_cents,
+            category=category,
         )
 
 

@@ -61,8 +61,15 @@
     {
       "idx": 8,
       "version": "7",
-      "when": 1793020642710,
-      "tag": "0008_fine_goliath",
+      "when": 1793021338634,
+      "tag": "0008_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793034841047,
+      "tag": "0009_paypal",
       "breakpoints": true
     }
   ]

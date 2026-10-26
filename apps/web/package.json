@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@gottaeat/schemas": "workspace:*",
+    "ag-grid-community": "36.2.0",
+    "ag-grid-react": "36.2.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "jose": "6.2.12",

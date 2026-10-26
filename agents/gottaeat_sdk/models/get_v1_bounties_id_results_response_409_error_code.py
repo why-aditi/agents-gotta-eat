@@ -29,6 +29,7 @@ class GetV1BountiesIdResultsResponse409ErrorCode(StrEnum):
     NO_PAYPAL_EMAIL = "no_paypal_email"
     PAYPAL_ERROR = "paypal_error"
     PAYPAL_NOT_CONFIGURED = "paypal_not_configured"
+    RATE_LIMITED = "rate_limited"
     SUBMISSION_TOO_LARGE = "submission_too_large"
     UNAUTHORIZED = "unauthorized"
     VALIDATION_ERROR = "validation_error"

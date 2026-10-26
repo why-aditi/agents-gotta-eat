@@ -13,6 +13,7 @@ import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
+import { publish } from "../events";
 import { transition } from "./state";
 import { voidEscrow } from "../escrow";
 
@@ -177,16 +178,41 @@ export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: stri
     }
     const [updated] = await tx.update(bounties).set({ status }).where(eq(bounties.id, row.id)).returning();
     if (!updated) throw new Error(`bounty ${row.id} vanished`);
+    // A draft was never public, so cancelling one is not news.
+    if (row.status !== "draft") {
+      await publish(tx, {
+        type: "bounty.cancelled",
+        bountyId: row.id,
+        data: { bountyId: row.id, title: row.title },
+      });
+    }
     return toBountyDto(updated, 0);
   });
 }
 
-// draft -> open for a locked bounty row, once its escrow is authorized (dev or PayPal).
+// The public bounty.opened event, in the transaction that opens the bounty.
+export async function publishOpened(tx: Tx, row: BountyRow): Promise<void> {
+  await publish(tx, {
+    type: "bounty.opened",
+    bountyId: row.id,
+    data: {
+      bountyId: row.id,
+      title: row.title,
+      taskType: row.taskType,
+      rewardCents: toJsonCents(row.rewardCents),
+      deadlineAt: row.deadlineAt.toISOString(),
+    },
+  });
+}
+
+// draft -> open for a locked bounty row, once its escrow is authorized (dev or PayPal). Publishes bounty.opened;
+// the caller wakes the house agents after its transaction commits.
 export async function openDraft(tx: Tx, row: BountyRow, now: Date): Promise<BountyRow> {
   const status = transition(row.status, "open");
   if (row.deadlineAt.getTime() <= now.getTime()) throw new ApiError("deadline_passed");
   const [updated] = await tx.update(bounties).set({ status, openedAt: now }).where(eq(bounties.id, row.id)).returning();
   if (!updated) throw new Error(`bounty ${row.id} vanished`);
+  await publishOpened(tx, updated);
   return updated;
 }
 

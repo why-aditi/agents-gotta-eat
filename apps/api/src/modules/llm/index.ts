@@ -10,5 +10,6 @@ export {
   type LlmRequest,
   type LlmResult,
 } from "./client";
-export { llmConfigFromEnv, type LlmEnv } from "./config";
+export { dailyBudgetFromEnv, llmConfigFromEnv, type LlmEnv } from "./config";
+export { llmUsage, RECENT_CALLS_LIMIT, type LlmUsage } from "./usage";
 export { flagInjection, neutraliseMarkers, UNTRUSTED_NOTICE, wrapUntrusted } from "./untrusted";

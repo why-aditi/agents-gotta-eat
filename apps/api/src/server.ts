@@ -6,6 +6,7 @@ import { startDeadlineSweep } from "./modules/arena";
 import { startReauthorizeSweep } from "./modules/escrow";
 import { startPaymentJobs } from "./modules/payments";
 import { configurePayPal, createPayPalClient } from "./modules/paypal";
+import { startPruneSweep } from "./modules/events";
 import { aiRanker } from "./modules/judge";
 import { llmConfigFromEnv } from "./modules/llm";
 import { startExpirySweep } from "./modules/policy";
@@ -48,11 +49,15 @@ let stopSweep: (() => void) | undefined;
 let stopDeadlineSweep: (() => void) | undefined;
 let stopPaymentJobs: (() => Promise<void>) | undefined;
 let stopReauthorizeSweep: (() => void) | undefined;
-// Hooks run in order: stop the sweep before the pool closes.
+let stopEvents: (() => void) | undefined;
+let stopPrune: (() => void) | undefined;
+// Hooks run in order: stop the sweeps before the pool closes.
 app.addHook("onClose", async () => {
   stopSweep?.();
   stopDeadlineSweep?.();
   stopReauthorizeSweep?.();
+  stopEvents?.();
+  stopPrune?.();
   await stopPaymentJobs?.();
 });
 app.addHook("onClose", () => pool.end());
@@ -77,6 +82,10 @@ try {
       app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),
     );
   }
+  // Fans new events out to the open SSE streams, polling once a second.
+  stopEvents = app.eventBus.start(1000, (err) => app.log.error({ err }, "event poll failed"));
+  // Deletes events and agent runs older than 30 days, at startup and then daily.
+  stopPrune = startPruneSweep(db, (err) => app.log.error({ err }, "event prune failed"));
 } catch (err) {
   app.log.error(err);
   process.exit(1);

@@ -13,3 +13,17 @@ export { postJournal, type JournalKind, type JournalLine, type PostJournalInput,
 export { devCredit, hold, lockWallet, openWallet, release, settle, stakeFromHold } from "./wallets";
 export { creditTopup, holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawals";
 export { forfeitStake, payBountyReward, refundStake } from "./bounty";
+export {
+  decodeJournalCursor,
+  getJournal,
+  JOURNAL_PAGE_DEFAULT,
+  JOURNAL_PAGE_MAX,
+  listAccounts,
+  listJournals,
+  type AccountType,
+  type AccountView,
+  type JournalDetail,
+  type JournalDetailLine,
+  type JournalPage,
+  type JournalSummary,
+} from "./reads";

@@ -5,6 +5,8 @@ import type { Db, Tx } from "../../db";
 import { bounties, spendRequests } from "../../db/schema";
 import type { UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
+import { toJsonCents } from "../../lib/cents";
+import { agentName, publish } from "../events";
 import { release, settle, stakeFromHold } from "../ledger";
 import { expireLocked, isOverdue, releaseExpired } from "./expiry";
 import { insertDecision, ledgerKey, loadSpendRequest, type SpendRow, withDecisions } from "./requests";
@@ -94,6 +96,19 @@ export async function decideApproval(
       verdict: decision === "approve" && !bountyClosed ? "allow" : "deny",
       detail: bountyClosed ? { decidedBy: owner.userId, bountyClosed: true } : { decidedBy: owner.userId },
       now,
+    });
+    await publish(tx, {
+      type: "approval.decided",
+      bountyId: row.bountyId,
+      ownerId: row.ownerId,
+      data: {
+        spendRequestId: row.id,
+        agentId: row.agentId,
+        agentName: await agentName(tx, row.agentId),
+        amountCents: toJsonCents(row.amountCents + row.feeCents),
+        category: row.category,
+        decision: decision === "approve" && !bountyClosed ? "approved" : "denied",
+      },
     });
     // The arena moves the entry on, in this same transaction.
     if (row.category === "stake") {

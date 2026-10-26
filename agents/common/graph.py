@@ -5,19 +5,37 @@ read_bounty → decide_enter → enter → [spend] → plan → work → self_ch
 self_check may send the run back to work (up to `max_attempts` work passes); still invalid → no submission.
 Each agent supplies plan, work and self_check; Grifter also supplies spend. Every node and LLM call is a budget
 step; running out of steps or tokens stops the run before submit.
+
+Steps are logged to the live arena (common.runlog): enter_decision, plan, work, self_check, spend, submit, and stop
+when a run ends early. Logging never breaks a run.
 """
 
 from __future__ import annotations
 
+import json
+import time
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict
 
 import structlog
 from langgraph.graph import END, START, StateGraph
 
-from common.api import BountyView, GottaeatApi
+from common.api import BountyView, GottaeatApi, SpendResult
 from common.decide import EnterDecision, decide_enter
 from common.llm import Budget, BudgetExceeded, LlmClient, LlmError
+from common.runlog import RunLog, format_cents
+
+# How a stopped run reads in the arena feed.
+STOP_REASONS = {
+    "stake_denied": "the stake was denied",
+    "entry_pending_stake": "the stake is waiting for the owner's approval",
+    "entry_submitted": "already submitted",
+    "entry_withdrawn": "the entry was withdrawn",
+    "self_check_failed": "self-check failed after a retry; nothing submitted",
+    "budget_exceeded": "out of budget",
+    "llm_error": "the model's reply was unusable",
+    "error": "an unexpected error",
+}
 
 SUPPORTED_TASK_TYPES = ("extract_data", "creative_writing")
 
@@ -75,7 +93,7 @@ class HouseAgent:
         """Deterministic Idempotency-Key, so a retried run replays instead of acting twice."""
         return f"{self.name}:{bounty_id}:{step}"
 
-    async def spend(self, state: RunState, budget: Budget, log: Any) -> None:
+    async def spend(self, state: RunState, budget: Budget, log: Any) -> SpendResult | None:
         return None
 
     async def plan(self, state: RunState, budget: Budget) -> str:
@@ -89,8 +107,16 @@ class HouseAgent:
         return []
 
 
-def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord) -> Any:
+def decision_summary(d: EnterDecision) -> str:
+    odds = f"EV {format_cents(d.ev_cents)}, {d.win_chance_pct}% win chance"
+    if d.enter:
+        return f"Enter: {odds}"
+    return f"Skip: {d.reason} ({odds})" if d.win_chance_pct else f"Skip: {d.reason}"
+
+
+def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord, runlog: RunLog | None = None) -> Any:
     log = structlog.get_logger().bind(agent=agent.name, bounty=record.bounty_id)
+    runlog = runlog or RunLog(agent.ctx.api, agent.name, record.bounty_id)
 
     async def read_bounty(state: RunState) -> RunState:
         budget.step("read_bounty")
@@ -117,6 +143,20 @@ def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord) -> Any:
             expected_spend_cents=agent.expected_spend_cents,
             reason=d.reason,
         )
+        await runlog.step(
+            "enter_decision",
+            decision_summary(d),
+            tool="decide_enter",
+            output=json.dumps(
+                {
+                    "enter": d.enter,
+                    "evCents": d.ev_cents,
+                    "winChancePct": d.win_chance_pct,
+                    "expectedSpendCents": agent.expected_spend_cents,
+                    "reason": d.reason,
+                }
+            ),
+        )
         return {"decision": d}
 
     async def enter(state: RunState) -> RunState:
@@ -141,24 +181,59 @@ def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord) -> Any:
 
     async def spend(state: RunState) -> RunState:
         budget.step("spend")
-        await agent.spend(state, budget, log)
+        res = await agent.spend(state, budget, log)
+        if res is not None:
+            reasons = f" ({', '.join(res.reasons)})" if res.reasons else ""
+            await runlog.step(
+                "spend",
+                f"{format_cents(res.amount_cents)} {res.category} spend: {res.decision}{reasons}",
+                tool="request_spend",
+                output=json.dumps({"spendRequestId": res.id, "status": res.status}),
+            )
         return {}
 
     async def plan(state: RunState) -> RunState:
         budget.step("plan")
-        return {"plan": await agent.plan(state, budget)}
+        tokens, started = budget.tokens, time.monotonic()
+        text = await agent.plan(state, budget)
+        summary = (
+            f"Plan: {text}" if text else f"Plan: up to {agent.max_attempts} work pass(es), self-check before submitting"
+        )
+        await runlog.step(
+            "plan",
+            summary,
+            output=text or None,
+            tokens=budget.tokens - tokens,
+            latency_ms=int((time.monotonic() - started) * 1000),
+        )
+        return {"plan": text}
 
     async def work(state: RunState) -> RunState:
         budget.step("work")
+        tokens, started = budget.tokens, time.monotonic()
         output = await agent.work(state, budget)
         attempts = state.get("attempts", 0) + 1
         log.info("work_done", attempt=attempts)
+        await runlog.step(
+            "work",
+            f"Work pass {attempts} done",
+            tool="llm",
+            output=json.dumps(output),
+            tokens=budget.tokens - tokens,
+            latency_ms=int((time.monotonic() - started) * 1000),
+        )
         return {"output": output, "attempts": attempts}
 
     async def self_check(state: RunState) -> RunState:
         budget.step("self_check")
         errors = await agent.self_check(state)
         log.info("self_check", valid=not errors, errors=errors[:5])
+        n = len(errors)
+        await runlog.step(
+            "self_check",
+            "Self-check passed" if not errors else f"Self-check failed: {n} error{'s' if n != 1 else ''}",
+            output="\n".join(errors[:20]) or None,
+        )
         return {"valid": not errors, "check_errors": errors}
 
     async def submit(state: RunState) -> RunState:
@@ -167,6 +242,7 @@ def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord) -> Any:
         sid = await agent.ctx.api.submit(state["entry_id"], state["output"], agent.key(b.id, "submit"))
         record.submission_id = sid
         log.info("submitted", entry=state["entry_id"], submission=sid)
+        await runlog.step("submit", f"Submitted {sid}", tool="submit_work")
         return {"submission_id": sid}
 
     def after_decide(state: RunState) -> Literal["enter", "__end__"]:
@@ -212,7 +288,8 @@ async def run_bounty(agent: HouseAgent, bounty: BountyView, budget: Budget | Non
     budget = budget or Budget()
     record = RunRecord(agent=agent.name, bounty_id=bounty.id)
     log = structlog.get_logger().bind(agent=agent.name, bounty=bounty.id)
-    graph = build_graph(agent, budget, record)
+    runlog = RunLog(agent.ctx.api, agent.name, bounty.id)
+    graph = build_graph(agent, budget, record, runlog)
     try:
         await graph.ainvoke({"bounty": bounty}, {"recursion_limit": 50})
     except BudgetExceeded as err:
@@ -224,4 +301,11 @@ async def run_bounty(agent: HouseAgent, bounty: BountyView, budget: Budget | Non
     except Exception as err:  # noqa: BLE001 - one bad bounty must not kill the poller
         record.stopped = "error"
         log.error("run_failed", error=repr(err)[:500])
+    if record.stopped:
+        await runlog.step(
+            "stop",
+            f"Stopped: {STOP_REASONS.get(record.stopped, record.stopped)}",
+            output=record.stopped,
+            tokens=budget.tokens,
+        )
     return record

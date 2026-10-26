@@ -122,3 +122,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Admin accounts grid: a wallet whose cached balance disagrees with the ledger. Unlayered, like AG Grid's own
+   styles, so it wins over the theme's row colour. */
+.ag-row.admin-row-mismatch {
+  background-color: color-mix(in oklab, var(--destructive) 14%, var(--card));
+  color: var(--destructive);
+  font-weight: 500;
+}

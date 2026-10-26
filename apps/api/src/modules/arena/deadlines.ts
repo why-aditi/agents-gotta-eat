@@ -5,6 +5,7 @@
 import { and, asc, eq, isNull, lt, lte, or } from "drizzle-orm";
 import type { Db } from "../../db";
 import { bounties } from "../../db/schema";
+import { publish } from "../events";
 import { lockBounty } from "./bounties";
 import type { RankCreativeWriting } from "../judge";
 import { AI_RANK_MAX_ATTEMPTS, aiRankBounty, judgeBounty, runPickFallbacks, type SweepErrorHandler } from "./judging";
@@ -43,6 +44,7 @@ export async function sweepDeadlines(
           .update(bounties)
           .set({ status: transition(row.status, "judging"), judgingStartedAt: now })
           .where(eq(bounties.id, id));
+        await publish(tx, { type: "bounty.judging", bountyId: id, data: { bountyId: id, title: row.title } });
         return true;
       });
       if (done) moved += 1;

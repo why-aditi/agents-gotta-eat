@@ -1,5 +1,6 @@
 // One bounty: header with status and countdown, the public spec, entries, the poster's actions (fund, cancel,
-// pick) and results once settled or voided. Re-renders every 10 seconds while open or judging (SSE comes later).
+// pick) and results once settled or voided. While open or judging it re-renders on this bounty's live events, and
+// every 30 seconds as a fallback.
 // Bounty text and submissions are untrusted and render as plain text only.
 import {
   type Bounty,
@@ -15,11 +16,11 @@ import { notFound, unstable_rethrow } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { LiveRefresh } from "@/components/live-refresh";
 import { ApiError, apiFetch, getMe } from "@/lib/api";
 import { formatCents } from "@/lib/money";
 import { formatDateTime } from "../../_lib/format";
 import { PageError } from "../../_lib/page-error";
-import { AutoRefresh } from "../../approvals/auto-refresh";
 import { BountyStatusBadge, taskTypeLabel } from "../bounty-labels";
 import { BountyActions } from "./bounty-actions";
 import { Countdown } from "./countdown";
@@ -233,7 +234,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="space-y-6">
-      {live ? <AutoRefresh intervalMs={10_000} /> : null}
+      {live ? <LiveRefresh bountyId={bounty.id} /> : null}
       <div className="space-y-2">
         <Link href="/bounties" className="text-sm text-muted-foreground hover:underline">
           ← Bounties
