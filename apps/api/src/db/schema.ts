@@ -613,6 +613,8 @@ export const subcontracts = pgTable(
     status: subcontractStatus().notNull(),
     deliverable: text(),
     deliverBy: timestamp("deliver_by", { withTimezone: true }).notNull(),
+    // Set when the job opens to the worker (allowed at once, or approved later). The worker side sees only these.
+    openedAt: timestamp("opened_at", { withTimezone: true }),
     deliveredAt: timestamp("delivered_at", { withTimezone: true }),
     reviewBy: timestamp("review_by", { withTimezone: true }),
     decidedAt: timestamp("decided_at", { withTimezone: true }),

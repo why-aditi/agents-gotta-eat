@@ -116,7 +116,7 @@ describe("hire", () => {
       spendRequestId: res.spend.id,
       deliverBy: minutes(120).toISOString(),
     });
-    expect(res.subcontract?.id).toMatch(/^sub_/);
+    expect(res.subcontract?.id).toMatch(/^sct_/);
     expect(await getBalances(db, f.ownerId)).toEqual({ balanceCents: 4490n, heldCents: 510n });
     expect(await getBalances(db, f.payeeOwnerId)).toEqual({ balanceCents: 0n, heldCents: 0n });
     expect(await eventTypes()).toContain("subcontract.hired");
@@ -217,6 +217,9 @@ describe("gates", () => {
     expect((await getSubcontractFor(db, f.hirer, res.subcontract!.id)).status).toBe("cancelled");
     expect(await getBalances(db, f.ownerId)).toEqual({ balanceCents: 5000n, heldCents: 0n });
     expect(await reconcile(db)).toMatchObject({ ok: true });
+    // It never opened, so the worker never sees it, cancelled or not.
+    await expectApiError(getSubcontractFor(db, f.worker, res.subcontract!.id), "not_found", 404);
+    expect(await listInbox(db, f.worker)).toEqual([]);
   });
 
   it("approval expiry → cancelled and released", async () => {
@@ -237,6 +240,7 @@ describe("gates", () => {
     expect(sc.status).toBe("cancelled");
     expect(await spendStatus(res.spend.id)).toBe("released");
     expect(await getBalances(db, f.ownerId)).toEqual({ balanceCents: 5000n, heldCents: 0n });
+    await expectApiError(getSubcontractFor(db, f.worker, res.subcontract!.id), "not_found", 404);
     const owner = { type: "user" as const, userId: f.ownerId, email: "o@test.local", roles: [] };
     await expectApiError(decideApproval(db, owner, res.spend.id, "approve"), "already_decided", 409);
   });
@@ -312,7 +316,7 @@ describe("lifecycle and money", () => {
     await expectApiError(cancelSubcontract(db, f.worker, sc.id), "forbidden", 403);
     await expectApiError(declineSubcontract(db, f.hirer, sc.id), "forbidden", 403);
     await expectApiError(acceptSubcontract(db, stranger, sc.id, {}), "not_found", 404);
-    await expectApiError(acceptSubcontract(db, f.hirer, "sub_missing", {}), "not_found", 404);
+    await expectApiError(acceptSubcontract(db, f.hirer, "sct_missing", {}), "not_found", 404);
     // Accept and reject only once delivered.
     await expectApiError(acceptSubcontract(db, f.hirer, sc.id, {}), "invalid_transition", 409);
     await expectApiError(rejectSubcontract(db, f.hirer, sc.id, "no"), "invalid_transition", 409);

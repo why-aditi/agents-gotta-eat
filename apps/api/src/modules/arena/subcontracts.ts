@@ -112,12 +112,12 @@ async function loadDto(conn: Conn, id: string): Promise<Subcontract> {
 type Side = "hirer" | "worker";
 
 // Which side of the job the caller is on, or null for a stranger. An agent is its own side; a user is the side of
-// their agents. The worker side sees nothing while the job is only offered (waiting for the hirer's owner).
+// their agents. The worker side sees a job only once it opened, so never one the hirer's owner denied or let expire.
 export function sideOf(p: Principal, j: Joined): Side | null {
   const isHirer = p.type === "agent" ? j.sc.hirerAgentId === p.agentId : j.hirerOwnerId === p.userId;
   if (isHirer) return "hirer";
   const isWorker = p.type === "agent" ? j.sc.workerAgentId === p.agentId : j.workerOwnerId === p.userId;
-  if (isWorker && j.sc.status !== "offered") return "worker";
+  if (isWorker && j.sc.openedAt !== null) return "worker";
   return null;
 }
 
@@ -202,7 +202,7 @@ export async function hireAgent(
     async (tx, decided) => {
       // A denied spend holds nothing and makes no job.
       if (decided.status === "denied") return;
-      const id = newId("sub");
+      const id = newId("sct");
       const status: SubcontractStatus = decided.status === "allowed" ? "open" : "offered";
       const amountCents = BigInt(input.amountCents);
       await tx.insert(subcontracts).values({
@@ -217,6 +217,8 @@ export async function hireAgent(
         feeCents: subcontractFee(amountCents),
         status,
         deliverBy,
+        // When the worker first sees it; never set for a job cancelled while still offered.
+        openedAt: status === "open" ? now : null,
         createdAt: now,
       });
       const j = await loadJoined(tx, id);
@@ -244,7 +246,7 @@ export async function onSubcontractAllowed(tx: Tx, spendRequestId: string): Prom
   if (!row || row.status !== "offered") return;
   await tx
     .update(subcontracts)
-    .set({ status: transitionSubcontract(row.status, "open") })
+    .set({ status: transitionSubcontract(row.status, "open"), openedAt: sql`now()` })
     .where(eq(subcontracts.id, row.id));
   const j = await loadJoined(tx, row.id);
   if (j) await publishHired(tx, j);
@@ -286,7 +288,7 @@ export async function listSubcontractsFor(
     principal.type === "agent"
       ? eq(subcontracts.workerAgentId, principal.agentId)
       : eq(worker.ownerId, principal.userId);
-  const asWorker = and(workerSide, ne(subcontracts.status, "offered")) as SQL;
+  const asWorker = and(workerSide, isNotNull(subcontracts.openedAt)) as SQL;
   const side = query.role === "hirer" ? asHirer : query.role === "worker" ? asWorker : (or(asHirer, asWorker) as SQL);
   const conds: SQL[] = [side];
   if (query.agentId) {
@@ -302,7 +304,7 @@ export async function listSubcontractsFor(
 // The worker's inbox: open and delivered jobs first, then the rest; newest first within each.
 export async function listInbox(db: Db, principal: AgentPrincipal): Promise<Subcontract[]> {
   const rows = await selectJoined(db)
-    .where(and(eq(subcontracts.workerAgentId, principal.agentId), ne(subcontracts.status, "offered")))
+    .where(and(eq(subcontracts.workerAgentId, principal.agentId), isNotNull(subcontracts.openedAt)))
     .orderBy(
       sql`case when ${subcontracts.status} in ('open', 'delivered') then 0 else 1 end`,
       desc(subcontracts.createdAt),

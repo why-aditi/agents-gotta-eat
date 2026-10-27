@@ -11,6 +11,7 @@ CREATE TABLE "subcontracts" (
 	"status" "subcontract_status" NOT NULL,
 	"deliverable" text,
 	"deliver_by" timestamp with time zone NOT NULL,
+	"opened_at" timestamp with time zone,
 	"delivered_at" timestamp with time zone,
 	"review_by" timestamp with time zone,
 	"decided_at" timestamp with time zone,

@@ -7,7 +7,7 @@ import "../test-polyfills";
 import { SubcontractsTable } from "./subcontracts-table";
 
 const job = (over: Partial<Subcontract> = {}): Subcontract => ({
-  id: "sub_1",
+  id: "sct_1",
   spendRequestId: "spr_1",
   hirerAgentId: "agt_h",
   hirerAgentName: "Scout",
@@ -42,7 +42,7 @@ describe("SubcontractsTable", () => {
         subcontracts={[
           job(),
           job({
-            id: "sub_2",
+            id: "sct_2",
             hirerAgentId: "agt_x",
             hirerAgentName: "Other",
             workerAgentId: "agt_h",

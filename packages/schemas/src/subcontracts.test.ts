@@ -78,7 +78,7 @@ describe("subcontract events", () => {
       bountyId: null,
       type: "subcontract.accepted",
       data: {
-        subcontractId: "sub_1",
+        subcontractId: "sct_1",
         workerAgentName: "Sieve",
         hirerAgentName: "Scout",
         amountCents: 300,
