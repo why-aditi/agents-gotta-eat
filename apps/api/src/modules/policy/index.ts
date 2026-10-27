@@ -9,6 +9,8 @@ export {
   INTENT_UNAVAILABLE,
   intentPrompt,
   llmIntentCheck,
+  REASON_FLAGGED,
+  screenReason,
   selectIntentCheck,
   stubIntentCheck,
   type IntentCheck,

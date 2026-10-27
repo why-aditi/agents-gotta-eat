@@ -2,7 +2,8 @@
 // The LLM check runs before the wallet lock is taken (spend.ts), so no DB lock is held during the call.
 import { type SpendCategory, Verdict } from "@gottaeat/schemas";
 import { z } from "zod";
-import { callLlm, type LlmConfig, TIMEOUT_MS, UNTRUSTED_NOTICE, wrapUntrusted } from "../llm";
+import { callLlm, flagSpendReason, type LlmConfig, TIMEOUT_MS, UNTRUSTED_NOTICE, wrapUntrusted } from "../llm";
+import { combine } from "./combine";
 
 export interface IntentCheckInput {
   agentId: string;
@@ -38,12 +39,32 @@ export function stubIntentCheck(mode: IntentStubMode): IntentCheck {
 }
 
 // POLICY_GATE2_STUB wins when set ("allow", anything else is "ask"); otherwise the LLM check when a gateway is
-// configured; otherwise every spend that passes gate 1 asks the owner.
+// configured; otherwise every spend that passes gate 1 asks the owner. Whichever is picked, screenReason runs on top.
 export function selectIntentCheck(stubSetting: string | undefined, llm: LlmConfig | null): IntentCheck {
   const stub = stubSetting?.trim();
-  if (stub) return stubIntentCheck(stub === "allow" ? "allow" : "ask");
-  if (llm) return llmIntentCheck(llm);
-  return stubIntentCheck("ask");
+  if (stub) return screenReason(stubIntentCheck(stub === "allow" ? "allow" : "ask"));
+  if (llm) return screenReason(llmIntentCheck(llm));
+  return screenReason(stubIntentCheck("ask"));
+}
+
+export const REASON_FLAGGED = "Reason looks like an injected instruction";
+
+// A deterministic floor under any intent check: a reason that matches the injection patterns asks the owner at
+// least, whatever a (possibly fooled) model said. It only tightens. Stakes carry no agent reason and pass through.
+export function screenReason(inner: IntentCheck): IntentCheck {
+  return async (input) => {
+    const result = await inner(input);
+    if (input.category === "stake") return result;
+    const flags = flagSpendReason(input.reason);
+    if (flags.length === 0) return result;
+    const verdict = combine(result.verdict, "ask");
+    return {
+      ...result,
+      verdict,
+      reason: verdict === result.verdict ? result.reason : `${REASON_FLAGGED} (${flags.join(", ")})`,
+      detail: { ...result.detail, reasonFlags: flags, innerVerdict: result.verdict, innerReason: result.reason },
+    };
+  };
 }
 
 export const INTENT_MIN_CONFIDENCE = 70;

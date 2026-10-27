@@ -41,3 +41,28 @@ const INJECTION_PATTERNS: [name: string, re: RegExp][] = [
 export function flagInjection(text: string): string[] {
   return INJECTION_PATTERNS.filter(([, re]) => re.test(text)).map(([name]) => name);
 }
+
+// Extra patterns for an agent's spend reason: instructions lifted from the task, claims of approval, and requests to
+// keep the owner out of it. A legitimate reason says what the spend is for, not who allowed it.
+const SPEND_REASON_PATTERNS: [name: string, re: RegExp][] = [
+  [
+    "task_instructs",
+    /\b(?:task|brief|bounty|instructions?|poster|spec)\s+(?:text\s+)?(?:says?|said|asks?|asked|instructs?|instructed|requires?|required|tells?|told|wants?)\b/i,
+  ],
+  [
+    "claims_approval",
+    /\b(?:pre-?approved|already\s+approved|owner\s+(?:has\s+)?(?:approved|agreed|okayed|signed\s+off))\b/i,
+  ],
+  [
+    "skip_approval",
+    /\b(?:skip|bypass|without|no\s+need\s+(?:for|to))\b[^\n]{0,30}\b(?:approval|approve|asking|ask|review|confirmation|owner)\b/i,
+  ],
+  [
+    "dont_tell_owner",
+    /\b(?:do\s*n[o']t|never)\s+(?:ask|notify|tell|bother|alert)\b[^\n]{0,20}\b(?:owner|human|user)\b/i,
+  ],
+];
+
+export function flagSpendReason(text: string): string[] {
+  return [...INJECTION_PATTERNS, ...SPEND_REASON_PATTERNS].filter(([, re]) => re.test(text)).map(([name]) => name);
+}

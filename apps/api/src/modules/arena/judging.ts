@@ -12,6 +12,7 @@ import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { captureEscrow, voidEscrow } from "../escrow";
 import { getJudgementsForBounty, type RankCreativeWriting, recordJudgement, verifyExtractData } from "../judge";
+import { flagInjection } from "../llm";
 import { agentNames, publish } from "../events";
 import { forfeitStake, payBountyReward, refundStake } from "../ledger";
 import { type BountyRow, lockBounty } from "./bounties";
@@ -384,7 +385,9 @@ export async function pickWinner(
 export type SweepErrorHandler = (err: unknown, bountyId?: string) => void;
 
 // Poster-judged bounties past their pick deadline: the AI judge's top entry wins; without a ranking the earliest
-// submission wins; no submissions voids. One transaction per bounty; a failure is reported and the rest go on.
+// submission wins; no submissions voids. Submissions the injection pre-filter flags are never picked here (a fooled
+// judge may have ranked one first); when every submission is flagged the bounty voids. The poster can still pick
+// any entry by hand. One transaction per bounty; a failure is reported and the rest go on.
 // Returns how many bounties it settled or voided.
 export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?: SweepErrorHandler): Promise<number> {
   const due = await db
@@ -406,7 +409,8 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
         const bounty = await lockBounty(tx, id);
         if (!bounty || bounty.status !== "judging" || bounty.settledAt || isAutoJudged(bounty.taskType)) return false;
         if (!bounty.pickDeadlineAt || bounty.pickDeadlineAt.getTime() > now.getTime()) return false;
-        const subs = await bountySubmissions(tx, id);
+        const all = await bountySubmissions(tx, id);
+        const subs = all.filter((s) => flagInjection(s.content).length === 0);
         const top = await aiTopPick(tx, id, subs);
         const [earliest] = subs;
         if (top) {
@@ -415,7 +419,11 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
             verifier: "fallback_ai_top",
             score: 100,
             rationale: "The poster did not pick by the deadline; the AI judge's top entry wins.",
-            rawOutput: { pickDeadlineAt: bounty.pickDeadlineAt.toISOString(), aiScore: top.score },
+            rawOutput: {
+              pickDeadlineAt: bounty.pickDeadlineAt.toISOString(),
+              aiScore: top.score,
+              skippedFlagged: all.length - subs.length,
+            },
           });
         } else if (earliest) {
           await recordJudgement(tx, {
@@ -423,7 +431,10 @@ export async function runPickFallbacks(db: Db, now: Date = new Date(), onError?:
             verifier: "fallback_earliest",
             score: 100,
             rationale: "The poster did not pick by the deadline; the earliest submission wins.",
-            rawOutput: { pickDeadlineAt: bounty.pickDeadlineAt.toISOString() },
+            rawOutput: {
+              pickDeadlineAt: bounty.pickDeadlineAt.toISOString(),
+              skippedFlagged: all.length - subs.length,
+            },
           });
         }
         const winner = top?.sub ?? earliest;

@@ -108,6 +108,7 @@ Run from the repo root unless noted. Keep this table current as commands are add
 | Generate clients | `pnpm openapi:export` writes `packages/schemas/openapi.json`; then `pnpm openapi:python` regenerates `agents/gottaeat_sdk` (openapi-python-client 0.29.1 via `uvx`). Commit both; tests fail when either is stale |
 | House agents setup | `pnpm --filter @gottaeat/api house:setup [--rotate]` (idempotent; creates house@gottaeat.dev, Sieve/Scout/Grifter with confirmed mandates and a one-time $60 dev credit; prints `*_API_KEY=` lines, keys only when created or rotated) |
 | E2E (Playwright) | `pnpm e2e` (starts a fake PayPal :4010, api :3001 and web :3000 against local Postgres; locally set `PW_CHROMIUM_PATH` to an installed Chromium, and free ports 3000/3001/4010). Screenshots in `tests/e2e/screenshots/` |
+| Red team (live) | `pnpm redteam` (the corpus in `tests/red-team/corpus.json` against the real gateway; needs `GATEWAY_URL`, `LITELLM_MASTER_KEY`, `DATABASE_URL`; the CI suite is `apps/api/src/redteam/`) |
 | Import demo recording | `pnpm demo:import [file]` (default `seed/recordings/rehearsal.json`; idempotent by title; features it when nothing is featured; needs `DATABASE_URL` and migrations) |
 | Make a user admin | `pnpm --filter @gottaeat/api grant-admin --email you@example.com` |
 | Dev user token | `pnpm --filter @gottaeat/api dev:token --email you@example.com` (needs `API_JWT_SECRET`) |
