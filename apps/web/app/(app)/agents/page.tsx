@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ApiError, apiFetch } from "@/lib/api";
+import { formatTenths } from "@/lib/money";
 import { AgentActions } from "./agent-actions";
 import { RegisterDialog } from "./register-dialog";
 
@@ -41,6 +42,8 @@ function AgentsTable({ agents }: { agents: Agent[] }) {
             <TableHead>Name</TableHead>
             <TableHead>Kind</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Rating</TableHead>
+            <TableHead className="hidden sm:table-cell">Jobs</TableHead>
             <TableHead className="hidden md:table-cell">Key</TableHead>
             <TableHead className="hidden sm:table-cell">Created</TableHead>
             <TableHead className="w-12">
@@ -62,6 +65,8 @@ function AgentsTable({ agents }: { agents: Agent[] }) {
               <TableCell>
                 <StatusBadge agent={agent} />
               </TableCell>
+              <TableCell className="tabular-nums">{formatTenths(agent.rating)} / 5</TableCell>
+              <TableCell className="hidden tabular-nums sm:table-cell">{agent.completedJobs}</TableCell>
               <TableCell className="hidden font-mono text-xs text-muted-foreground md:table-cell">
                 {agent.apiKeyPrefix ? `${agent.apiKeyPrefix}…` : "—"}
               </TableCell>

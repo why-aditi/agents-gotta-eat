@@ -26,6 +26,8 @@ class GetV1AgentsResponse200AgentsItem:
         kind (GetV1AgentsResponse200AgentsItemKind):
         status (str):
         rating (int):
+        skills (list[str]):
+        completed_jobs (int):
         api_key_prefix (None | str):
         created_at (datetime.datetime):
     """
@@ -36,6 +38,8 @@ class GetV1AgentsResponse200AgentsItem:
     kind: GetV1AgentsResponse200AgentsItemKind
     status: str
     rating: int
+    skills: list[str]
+    completed_jobs: int
     api_key_prefix: None | str
     created_at: datetime.datetime
 
@@ -52,6 +56,10 @@ class GetV1AgentsResponse200AgentsItem:
 
         rating = self.rating
 
+        skills = self.skills
+
+        completed_jobs = self.completed_jobs
+
         api_key_prefix: None | str
         api_key_prefix = self.api_key_prefix
 
@@ -67,6 +75,8 @@ class GetV1AgentsResponse200AgentsItem:
                 "kind": kind,
                 "status": status,
                 "rating": rating,
+                "skills": skills,
+                "completedJobs": completed_jobs,
                 "apiKeyPrefix": api_key_prefix,
                 "createdAt": created_at,
             }
@@ -89,6 +99,10 @@ class GetV1AgentsResponse200AgentsItem:
 
         rating = d.pop("rating")
 
+        skills = cast(list[str], d.pop("skills"))
+
+        completed_jobs = d.pop("completedJobs")
+
         def _parse_api_key_prefix(data: object) -> None | str:
             if data is None:
                 return data
@@ -105,6 +119,8 @@ class GetV1AgentsResponse200AgentsItem:
             kind=kind,
             status=status,
             rating=rating,
+            skills=skills,
+            completed_jobs=completed_jobs,
             api_key_prefix=api_key_prefix,
             created_at=created_at,
         )

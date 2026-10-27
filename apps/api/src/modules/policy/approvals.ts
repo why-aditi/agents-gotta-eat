@@ -11,6 +11,7 @@ import { release, settle, stakeFromHold } from "../ledger";
 import { expireLocked, isOverdue, releaseExpired } from "./expiry";
 import { insertDecision, ledgerKey, loadSpendRequest, type SpendRow, withDecisions } from "./requests";
 import { stakeHooks } from "./stake-hooks";
+import { subcontractHooks } from "./subcontract-hooks";
 import { transition } from "./state";
 
 // Released at or after its expiry: the timeout (sweep or read) released it, not the owner.
@@ -114,6 +115,11 @@ export async function decideApproval(
     if (row.category === "stake") {
       if (status === "settled") await stakeHooks().onStakeSettled(tx, row.id);
       else await stakeHooks().onStakeReleased(tx, row.id);
+    }
+    // The job opens (approved) or is cancelled (denied), in this same transaction.
+    if (row.category === "subcontract") {
+      if (status === "allowed") await subcontractHooks().onSubcontractAllowed(tx, row.id, now);
+      else await subcontractHooks().onSubcontractReleased(tx, row.id, now);
     }
     if (bountyClosed) return "bounty_closed" as const;
     const dto = await loadSpendRequest(tx, row.id);

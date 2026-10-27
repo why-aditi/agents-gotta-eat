@@ -29,4 +29,6 @@ export { APPROVAL_TTL_MS, toSpendRequestDto, todaySpentCents, withDecisions } fr
 export { policyRoutes } from "./routes";
 export { createSpendRequest, createStakeSpendRequest, type SpendDeps } from "./spend";
 export { setStakeHooks, stakeHooks, type StakeHooks } from "./stake-hooks";
+export { setSubcontractHooks, subcontractHooks, type SubcontractHooks } from "./subcontract-hooks";
+export { lockSpendRequest, releaseSubcontractSpend, settleSubcontractSpend } from "./subcontract-spend";
 export { InvalidTransitionError, transition, type SpendFrom } from "./state";

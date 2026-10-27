@@ -175,6 +175,55 @@ describe("describeEvent", () => {
     expect(describeEvent(settled, null)).toBe("Scout won “Tagline” and $15.00 (PayPal capture 3C679366HH908993F)");
   });
 
+  it("describes subcontracts by names and amounts only", () => {
+    const sub = { ...base, bountyId: null };
+    expect(
+      describeEvent(
+        {
+          ...sub,
+          type: "subcontract.hired",
+          data: {
+            subcontractId: "sub_1",
+            hirerAgentId: "a1",
+            hirerAgentName: "Scout",
+            workerAgentId: "a2",
+            workerAgentName: "Sieve",
+            amountCents: 300,
+            bountyId: null,
+          },
+        },
+        null,
+      ),
+    ).toBe("Scout hired Sieve for $3.00");
+    expect(
+      describeEvent(
+        {
+          ...sub,
+          type: "subcontract.delivered",
+          data: { subcontractId: "sub_1", workerAgentName: "Sieve", hirerAgentName: "Scout", bountyId: null },
+        },
+        null,
+      ),
+    ).toBe("Sieve delivered a job for Scout");
+    expect(
+      describeEvent(
+        {
+          ...sub,
+          type: "subcontract.accepted",
+          data: {
+            subcontractId: "sub_1",
+            workerAgentName: "Sieve",
+            hirerAgentName: "Scout",
+            amountCents: 300,
+            rating: 4,
+            bountyId: null,
+          },
+        },
+        null,
+      ),
+    ).toBe("Scout accepted Sieve's work: $3.00 paid, rated 4/5");
+  });
+
   it("shortTitle keeps short titles and cuts long ones", () => {
     expect(shortTitle("  Tagline ")).toBe("Tagline");
     expect(shortTitle("x".repeat(41))).toBe(`${"x".repeat(39)}…`);

@@ -2,12 +2,15 @@
 import {
   AgentList,
   Agent as AgentSchema,
+  AgentSearchList,
+  AgentSearchQuery,
   CreateAgentRequest,
   CreateAgentResponse,
   ErrorBody,
   type McpConfig,
   Me,
   RotateKeyResponse,
+  UpdateAgentRequest,
 } from "@gottaeat/schemas";
 import { eq } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
@@ -15,7 +18,7 @@ import { z } from "zod";
 import { users } from "../../db/schema";
 import { requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
-import { createAgent, getAgent, listAgents, revokeKey, rotateKey } from "./agents";
+import { createAgent, getAgent, listAgents, revokeKey, rotateKey, searchAgents, updateAgentSkills } from "./agents";
 
 const AgentIdParams = z.object({ id: z.string().min(1).max(64) });
 
@@ -80,6 +83,49 @@ export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req) => {
       const user = requireUser(req);
       return { agents: await listAgents(api.db, user.userId) };
+    },
+  );
+
+  // The spec's GET /v1/agents?skill=&minRating= lives here: GET /v1/agents is already the owner's own list.
+  api.get(
+    "/v1/agents/search",
+    {
+      config: { auth: "any" },
+      schema: {
+        tags: TAGS,
+        summary: "Find agents to hire, best rated first (at most 50)",
+        description:
+          "Active agents with a live key, of any owner. `minRating` is in tenths of a star (40 = 4.0). Names are " +
+          "agent-supplied text.",
+        querystring: AgentSearchQuery,
+        response: { 200: AgentSearchList, 400: ErrorBody, 401: ErrorBody },
+      },
+    },
+    async (req) => ({ agents: await searchAgents(api.db, req.query) }),
+  );
+
+  api.patch(
+    "/v1/agents/:id",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: TAGS,
+        summary: "Set an agent's skills",
+        description: "Replaces the skill list: lowercase letters, digits and dashes, 1-32 characters each, at most 10.",
+        params: AgentIdParams,
+        body: UpdateAgentRequest,
+        response: { 200: AgentSchema, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 404: ErrorBody },
+      },
+    },
+    async (req) => {
+      const user = requireUser(req);
+      const agent = await updateAgentSkills(api.db, {
+        agentId: req.params.id,
+        ownerId: user.userId,
+        skills: req.body.skills,
+      });
+      if (!agent) throw new ApiError("not_found", "Agent not found");
+      return agent;
     },
   );
 
