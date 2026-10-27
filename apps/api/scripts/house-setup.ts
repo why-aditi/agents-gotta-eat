@@ -14,7 +14,10 @@ try {
   console.log(`# dev credit: ${result.credited ? "credited" : "already credited earlier"}`);
   for (const a of result.agents) {
     const env = `${a.name.toUpperCase()}_API_KEY`;
-    console.log(`# ${a.name}: ${a.agentId}, mandate v${a.mandateVersion}${a.created ? " (created)" : ""}`);
+    const skills = a.skills.length ? a.skills.join(", ") : "none";
+    console.log(
+      `# ${a.name}: ${a.agentId}, mandate v${a.mandateVersion}, skills ${skills}${a.created ? " (created)" : ""}`,
+    );
     console.log(a.apiKey ? `${env}=${a.apiKey}` : `# ${env} unchanged (pass --rotate for a new key)`);
   }
   // The Grifter's $40 spend goes to another house agent.

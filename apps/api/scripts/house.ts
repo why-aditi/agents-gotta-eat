@@ -5,7 +5,14 @@ import { eq } from "drizzle-orm";
 import type { Db } from "../src/db";
 import { users } from "../src/db/schema";
 import { newId } from "../src/lib/ids";
-import { createAgent, HOUSE_CREDIT_CENTS, HOUSE_EMAIL, listAgents, rotateKey } from "../src/modules/identity";
+import {
+  createAgent,
+  HOUSE_CREDIT_CENTS,
+  HOUSE_EMAIL,
+  listAgents,
+  rotateKey,
+  updateAgentSkills,
+} from "../src/modules/identity";
 import { devCredit } from "../src/modules/ledger";
 import { confirmMandate, getActiveMandate, putMandate } from "../src/modules/policy";
 
@@ -21,16 +28,22 @@ const SAFE: MandateRules = {
   expiresAt: null,
 };
 
-export const HOUSE_AGENTS: { name: string; sourceText: string; rules: MandateRules }[] = [
+// Scout hires Sieve for facts (sub-01 part B). No minimum payee rating: the house agents share an owner and
+// same-owner jobs never change a rating, so Sieve's rating stays 0.
+const HIRING: MandateRules = { ...SAFE, allowedCategories: ["stake", "tool", "subcontract"] };
+
+export const HOUSE_AGENTS: { name: string; sourceText: string; rules: MandateRules; skills: string[] }[] = [
   {
     name: "Sieve",
-    sourceText: "Sieve may pay bounty stakes and tools: at most $5 per spend and $20 a day.",
-    rules: SAFE,
+    sourceText: "Sieve may pay bounty stakes, tools and subcontracts: at most $5 per spend and $20 a day.",
+    rules: HIRING,
+    skills: ["extraction"],
   },
   {
     name: "Scout",
-    sourceText: "Scout may pay bounty stakes and tools: at most $5 per spend and $20 a day.",
-    rules: SAFE,
+    sourceText: "Scout may pay bounty stakes, tools and subcontracts: at most $5 per spend and $20 a day.",
+    rules: HIRING,
+    skills: ["writing"],
   },
   {
     name: "Grifter",
@@ -38,12 +51,20 @@ export const HOUSE_AGENTS: { name: string; sourceText: string; rules: MandateRul
       "Grifter may pay bounty stakes and tools: at most $50 per spend and $100 a day; ask me above $45. " +
       "(Demo adversary: a loose mandate on purpose, so the intent check has to catch it.)",
     rules: { ...SAFE, perTxMaxCents: 5_000, dailyMaxCents: 10_000, askAboveCents: 4_500 },
+    skills: [],
   },
 ];
 
 export interface HouseSetupResult {
   ownerId: string;
-  agents: { name: string; agentId: string; apiKey: string | null; created: boolean; mandateVersion: number }[];
+  agents: {
+    name: string;
+    agentId: string;
+    apiKey: string | null;
+    created: boolean;
+    mandateVersion: number;
+    skills: string[];
+  }[];
   credited: boolean;
 }
 
@@ -79,6 +100,7 @@ export async function houseSetup(db: Db, opts: { rotate?: boolean } = {}): Promi
     const found = existing.find((a) => a.name === spec.name);
     let agentId: string;
     let apiKey: string | null = null;
+    let skills = found?.skills ?? [];
     if (!found) {
       const made = await createAgent(db, { ownerId, name: spec.name, kind: "house" });
       agentId = made.agent.id;
@@ -92,6 +114,12 @@ export async function houseSetup(db: Db, opts: { rotate?: boolean } = {}): Promi
       }
     }
 
+    if (skills.join(",") !== spec.skills.join(",")) {
+      const updated = await updateAgentSkills(db, { agentId, ownerId, skills: spec.skills });
+      if (!updated) throw new Error(`could not set ${spec.name}'s skills`);
+      skills = updated.skills;
+    }
+
     const active = await getActiveMandate(db, agentId);
     let mandateVersion = active?.version ?? 0;
     if (!active || !sameRules(active.rules, spec.rules)) {
@@ -99,7 +127,7 @@ export async function houseSetup(db: Db, opts: { rotate?: boolean } = {}): Promi
       await confirmMandate(db, ownerId, agentId, put.version);
       mandateVersion = put.version;
     }
-    result.agents.push({ name: spec.name, agentId, apiKey, created: !found, mandateVersion });
+    result.agents.push({ name: spec.name, agentId, apiKey, created: !found, mandateVersion, skills });
   }
 
   const journal = await db.transaction((tx) =>
