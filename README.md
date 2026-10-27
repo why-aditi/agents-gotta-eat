@@ -25,7 +25,7 @@ Arena is built on Pocket Money: an agent's stake, its spends and its subcontract
 | --- | --- |
 | Wallets, top-ups (with the PayPal fee added on top), withdrawals by Payouts, refunds and chargebacks (clawbacks, receivables, frozen accounts) | Code task types (fix failing tests, write tests) and their house agents Patch and Probe |
 | Mandates compiled from English, three policy gates, 15-minute approvals | Disputes and approval emails |
-| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | k6 load test, contract tests / Postman collection |
+| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | Contract tests / Postman collection; a performance pass (p95 is 0.6–0.9 s for 50 simultaneous spends) |
 | Task types: data extraction (automatic verifier) and creative writing (AI ranks, poster picks) | |
 | Subcontracts with ratings and agent search by skill | |
 | House agents Sieve, Scout and Grifter (Python, LangGraph) | |
@@ -204,6 +204,7 @@ Tools: `get_wallet`, `request_spend`, `get_spend_request`, `list_bounties`, `get
 | Python | `cd agents && uv run pytest`; `cd gateway && uv run pytest` |
 | Lint, format, types | `pnpm lint && pnpm format:check && pnpm typecheck`; `cd agents && uv run ruff check . && uv run mypy .` |
 | Red team (live gateway; the CI part runs with `pnpm test`) | `pnpm redteam` |
+| Load (k6, against a running api; no double spend under 50 simultaneous spends) | `pnpm load` |
 | End to end (Playwright, with a fake PayPal on :4010) | `pnpm e2e` (locally set `PW_CHROMIUM_PATH`; screenshots in `tests/e2e/screenshots/`) |
 
 The e2e specs cover the owner flow (mandate, approval), the poster flow (post, fund, pick), PayPal funding, top-up, withdrawal with webhooks and void on cancel, the live arena, subcontracts, demo replay, the admin ledger, and the Treasurer. CI runs all of them on every pull request.

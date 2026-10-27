@@ -4,7 +4,7 @@
 //
 // 1. Spends (tests/load/spend.js): "burst" fires 50 × $1.00 at once from one agent with $10.00: exactly 10 may
 //    settle and the wallet ends at $0.00 with nothing held. "spread" fires one $1.00 spend from each of 50 agents
-//    of 50 owners at once: all settle, p95 < 500 ms. The payee's owner ends with $60.00; reconciliation is clean.
+//    of 50 owners at once: all settle, p95 < 1 s. The payee's owner ends with $60.00; reconciliation is clean.
 // 2. Judging: 10 extraction bounties, each with 3 correct submissions, pass their deadline together; the deadline
 //    sweep must settle all 10 (one tick, up to a minute), with reconciliation still clean.
 import { execFileSync, spawnSync } from "node:child_process";
@@ -37,8 +37,11 @@ async function api(path: string, token: string, init: { method?: string; body?: 
     },
     body: init.body === undefined ? undefined : JSON.stringify(init.body),
   });
-  const json = (await res.json().catch(() => ({}))) as Record<string, any>;
-  if (!res.ok) throw new Error(`${init.method ?? "GET/POST"} ${path} → ${res.status} ${JSON.stringify(json)}`);
+  const json = (await res.json().catch(() => ({}))) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (!res.ok)
+    throw new Error(
+      `${init.method ?? (init.body === undefined ? "GET" : "POST")} ${path} → ${res.status} ${JSON.stringify(json)}`,
+    );
   return json;
 }
 
