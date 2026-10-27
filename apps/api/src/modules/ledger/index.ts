@@ -1,6 +1,7 @@
 export {
   PAYPAL_CLEARING,
   PLATFORM_FEES,
+  disputeHoldAccount,
   holdAccount,
   receivableAccount,
   stakeAccount,
@@ -14,7 +15,7 @@ export { postJournal, type JournalKind, type JournalLine, type PostJournalInput,
 export { devCredit, hold, lockWallet, openWallet, release, settle, stakeFromHold } from "./wallets";
 export { holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawals";
 export { clawbackEscrow, clawbackTopup, creditTopup, owedCents, type ClawbackResult } from "./receivables";
-export { forfeitStake, payBountyReward, refundStake } from "./bounty";
+export { forfeitStake, payBountyReward, refundDisputedReward, refundStake, releaseDisputeHold } from "./bounty";
 export {
   clearingMovements,
   decodeJournalCursor,

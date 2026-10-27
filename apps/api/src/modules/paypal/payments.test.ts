@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PayPalError } from "./errors";
-import { captureAuthorization, reauthorize, voidAuthorization } from "./payments";
+import { captureAuthorization, reauthorize, refundCapture, voidAuthorization } from "./payments";
 import { apiCalls, json, makeClient } from "./test-utils";
 
 describe("payments", () => {
@@ -47,5 +47,18 @@ describe("payments", () => {
     const { client, calls } = makeClient(() => new Response(null, { status: 204 }));
     await expect(voidAuthorization(client, "A1", "void:b1")).resolves.toBeUndefined();
     expect(apiCalls(calls)[0]!.path).toBe("/v2/payments/authorizations/A1/void");
+  });
+
+  it("refundCapture refunds an amount with the request id and returns the refund id", async () => {
+    const { client, calls } = makeClient(() => json(201, { id: "R1", status: "COMPLETED" }));
+    const out = await refundCapture(client, "C1", 2500n, "dispute-refund:dsp_1", "Dispute upheld for you");
+    const call = apiCalls(calls)[0]!;
+    expect(call.path).toBe("/v2/payments/captures/C1/refund");
+    expect(call.headers["PayPal-Request-Id"]).toBe("dispute-refund:dsp_1");
+    expect(JSON.parse(call.body!)).toEqual({
+      amount: { currency_code: "USD", value: "25.00" },
+      note_to_payer: "Dispute upheld for you",
+    });
+    expect(out).toEqual({ refundId: "R1", status: "COMPLETED" });
   });
 });
