@@ -1,0 +1,35 @@
+# Task: ops-01 Treasurer agent and PayPal reconciliation
+
+Status: approved Oct 27, 2026. Builds on pm-04 (`paypal` client, payments, escrow, webhooks), pm-04c (receivables), admin-01 (admin tabs, ledger reads, reconcile), pm-06 (`llm` module), sub-01 (merged before this starts).
+
+Spec sections: "PayPal integration" (Agent Toolkit: the Treasurer agent; Webhooks handled), `docs/tasks/paypal-spike.md` findings (toolkit `get_order` and `list_transactions` work; invoicing returns 403; no payouts or authorizations tools), "Testing" (Pre-submission: ledger reconciliation clean against PayPal sandbox), "Security" (untrusted text). Architecture: "Observability" (admin dashboard: PayPal calls with status, webhook events, reconciliation report green or red).
+
+## Decisions
+
+| Area | Decision |
+| --- | --- |
+| Module boundary | Only the `paypal` module calls PayPal. New `paypal/toolkit.ts` wraps `@paypal/agent-toolkit` (pinned `1.11.0`, OpenAI flavour's `handleToolCall` as in `spikes/paypal/src/09-toolkit.ts`; fresh toolkit per call so each gets its own `PayPal-Request-Id`; sandbox only, refusing any non-sandbox base like the client does) and exposes `toolkitGetOrder(orderId)` and `toolkitListTransactions({ start, end })`. The toolkit always targets `api-m.sandbox.paypal.com`; in tests and e2e (fake PayPal base on localhost) the wrapper falls back to the existing typed client's direct calls (`GET /v2/checkout/orders/{id}`, `GET /v1/reporting/transactions`) so the fake can serve them. Add direct reads to the client too: `getCapture`, `getAuthorization`, `getPayoutItem` (if not present) |
+| PayPal call log | Migration `0012_paypal_calls`: `paypal_calls` (`id` bigserial, `method`, `path` (no query string values beyond keys), `status` int nullable, `debug_id` nullable, `request_id` nullable, `duration_ms` int, `source` text `client` or `toolkit`, `created_at`). Written by the client's `logger` hook and the toolkit wrapper. Never request or response bodies, never tokens. Pruned after 30 days with the events prune |
+| Ledger read | New ledger read `clearingMovements(db, { from, to })` → each journal touching `paypal:clearing` in the window: journal id, kind, ref type/id, net cents on `paypal:clearing`, created_at, and the PayPal id it belongs to (topup → `topups.capture_id`; bounty capture → `escrows.capture_id`; withdrawal → `payouts.item_id`; clawback → refund id from its idempotency key) — the join lives in the module that owns each table, so expose small lookups from `payments`/`escrow` and combine in `treasurer` |
+| Reconciliation | `treasurer/reconcile.ts` `reconcilePayPal(db, { days = 7 })`: matches ledger movements with PayPal transactions (`transaction_info.transaction_id`, amount, `transaction_event_code`) by PayPal id. Classes: `matched`, `missing_in_paypal`, `missing_in_ledger`, `amount_mismatch`, `pending` (ledger side newer than 3 h — PayPal's transaction search lags). Result `{ checkedAt, window, counts, lines[] }`; cached 15 min in memory per process. Only PayPal transactions whose ids we know (or that carry our `custom_id` prefixes `topup:`/`bty_`) count as `missing_in_ledger`; unrelated sandbox account activity is ignored and counted separately as `unrelated` |
+| Admin routes | Under the existing admin check: `GET /v1/admin/paypal/calls?cursor` (newest first, 100/page), `GET /v1/admin/paypal/webhooks?cursor` (`webhook_events` without payload bodies: id, paypal event id, type, received/processed, error), `POST /v1/admin/reconcile/paypal { days? }` (runs or returns cached; `?fresh=true` bypasses cache). 503 `paypal_not_configured` when PayPal isn't configured |
+| Treasurer agent | `treasurer/agent.ts` `askTreasurer(db, cfg, question)`: tool loop through the gateway (`primary`, OpenAI tool-call format, at most 6 tool calls, 20 s per call, the existing `llm` client and budget; new `llm_calls` role `treasurer`). Tools: `find_payee(name)` → users/agents matching a name or email, `payouts_for(userId)`, `topups_for(userId)`, `bounty_money(bountyId)` (escrow + capture + reward settle), `get_order(orderId)` (toolkit), `get_capture(captureId)`, `list_transactions(days)` (toolkit, at most 7 days), `ledger_for(refType, refId)`, `reconcile_paypal(days)`. Every tool result goes back to the model wrapped with `wrapUntrusted` (PayPal and user text can carry free text) and the system prompt says so. The final answer must cite the ids it relied on; returned with the tool trace `[{ tool, args, ok, summary }]` (summaries, not raw bodies) |
+| No LLM | When the gateway is unset or the call fails: a fixed report — if the question names a known user/agent/bounty (simple matching), return its payouts, top-ups and bounty money as a plain table; otherwise "The Treasurer needs the LLM gateway; here is this week's PayPal reconciliation" with the reconcile counts. Never a guessed answer |
+| Route | `POST /v1/admin/treasurer/ask { question (1–500 chars) }` → `{ answer, cited: string[], trace, model, fallback: boolean }`. Admin only. Rate limit: 10 asks per minute per admin |
+| Web | Admin tabs: new **Treasurer** tab (question box, suggested questions "Why hasn't Scout's owner been paid?", "Does the ledger match PayPal this week?", "What happened to the last top-up?"; answer and cited ids as plain text; collapsible tool trace); **PayPal** tab (AG Grid of PayPal calls and of webhook events); Reconciliation tab gains a "PayPal" card with counts and a "Run against PayPal" button, mismatch lines listed below |
+| Fake PayPal | `tests/e2e/fake-paypal.mjs` gains `GET /v2/checkout/orders/:id`, `GET /v2/payments/captures/:id`, `GET /v1/reporting/transactions` built from what it has seen (captures, payouts), so e2e reconcile can be green |
+
+## Tests
+
+| Area | Cases |
+| --- | --- |
+| paypal | call log rows for success, 4xx (with debug id) and network error; no body/token stored; toolkit wrapper refuses non-sandbox; falls back to direct calls for a localhost base |
+| reconcile | matched top-up, capture, payout and clawback; missing in PayPal; missing in ledger (our id only); amount mismatch; pending under 3 h; unrelated activity ignored; cache hit and `fresh` |
+| treasurer | fake gateway drives a 3-step tool loop to an answer citing ids; tool results reach the model wrapped; 6-call cap stops the loop; over budget / no gateway → fallback report; `llm_calls` rows with role `treasurer`; non-admin 403; rate limit 429 |
+| admin routes | calls and webhooks pagination; webhooks list has no payload; 503 without PayPal |
+| web | Treasurer tab renders answer, cited ids and trace as plain text; PayPal tab grids; PayPal reconcile card states |
+| e2e `tests/e2e/treasurer.spec.ts` | after a fake-PayPal top-up, admin runs PayPal reconcile → all matched; asks the Treasurer (no gateway in e2e → fallback report naming the top-up's capture id); PayPal tab lists the calls |
+
+## Done when
+
+`pnpm lint && pnpm format:check && pnpm typecheck && pnpm test`, web build, all e2e specs on an empty database, agents pytest; `pnpm openapi:export` and `pnpm openapi:python` leave no diff; `.env.example` notes any new variables.
