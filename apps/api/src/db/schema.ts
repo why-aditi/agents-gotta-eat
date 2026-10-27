@@ -11,6 +11,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
   uniqueIndex,
@@ -48,10 +49,19 @@ export const agents = pgTable(
     // Tenths of a star: 4.0 is 40.
     rating: integer().notNull().default(0),
     status: text().notNull().default("active"),
+    // Lowercase [a-z0-9-]{1,32} tags the owner sets, at most 10 (sub-01).
+    skills: text()
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+    // Accepted subcontracts for agents of other owners.
+    completedJobs: integer("completed_jobs").notNull().default(0),
     createdAt: createdAt(),
   },
   (t) => [
     check("agents_rating_range", sql`${t.rating} between 0 and 50`),
+    check("agents_skills_max", sql`cardinality(${t.skills}) <= 10`),
+    check("agents_completed_jobs_nonneg", sql`${t.completedJobs} >= 0`),
     uniqueIndex("agents_api_key_hash_idx").on(t.apiKeyHash),
   ],
 );
@@ -566,5 +576,63 @@ export const recordingEvents = pgTable(
     primaryKey({ columns: [t.recordingId, t.seq] }),
     check("recording_events_offset_nonneg", sql`${t.offsetMs} >= 0`),
     uniqueIndex("recording_events_source_uniq").on(t.recordingId, t.sourceEventId),
+  ],
+);
+
+export const subcontractStatus = pgEnum("subcontract_status", [
+  "offered",
+  "open",
+  "delivered",
+  "accepted",
+  "rejected",
+  "declined",
+  "cancelled",
+  "expired",
+]);
+
+// One agent hiring another (sub-01), built on a spend request with category "subcontract": its hold carries
+// amount + fee until accept (settle) or any other end (release). Task and deliverable are agent-supplied,
+// untrusted text, readable only by the hirer and the worker (their agents and owners).
+export const subcontracts = pgTable(
+  "subcontracts",
+  {
+    id: text().primaryKey(),
+    spendRequestId: text("spend_request_id")
+      .notNull()
+      .references(() => spendRequests.id),
+    hirerAgentId: text("hirer_agent_id")
+      .notNull()
+      .references(() => agents.id),
+    workerAgentId: text("worker_agent_id")
+      .notNull()
+      .references(() => agents.id),
+    bountyId: text("bounty_id").references(() => bounties.id),
+    task: text().notNull(),
+    amountCents: bigint("amount_cents", { mode: "bigint" }).notNull(),
+    feeCents: bigint("fee_cents", { mode: "bigint" }).notNull(),
+    status: subcontractStatus().notNull(),
+    deliverable: text(),
+    deliverBy: timestamp("deliver_by", { withTimezone: true }).notNull(),
+    // Set when the job opens to the worker (allowed at once, or approved later). The worker side sees only these.
+    openedAt: timestamp("opened_at", { withTimezone: true }),
+    deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+    reviewBy: timestamp("review_by", { withTimezone: true }),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    rating: smallint(),
+    rejectReason: text("reject_reason"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("subcontracts_amount_pos", sql`${t.amountCents} > 0 and ${t.feeCents} >= 0`),
+    check("subcontracts_task_len", sql`char_length(${t.task}) between 1 and 4096`),
+    check("subcontracts_deliverable_len", sql`${t.deliverable} is null or octet_length(${t.deliverable}) <= 65536`),
+    check("subcontracts_rating_range", sql`${t.rating} is null or ${t.rating} between 1 and 5`),
+    check("subcontracts_reject_reason_len", sql`${t.rejectReason} is null or char_length(${t.rejectReason}) <= 500`),
+    check("subcontracts_distinct_agents", sql`${t.hirerAgentId} <> ${t.workerAgentId}`),
+    uniqueIndex("subcontracts_spend_request_idx").on(t.spendRequestId),
+    index("subcontracts_worker_status_idx").on(t.workerAgentId, t.status),
+    index("subcontracts_hirer_created_idx").on(t.hirerAgentId, t.createdAt),
+    index("subcontracts_status_deliver_by_idx").on(t.status, t.deliverBy),
+    index("subcontracts_status_review_by_idx").on(t.status, t.reviewBy),
   ],
 );

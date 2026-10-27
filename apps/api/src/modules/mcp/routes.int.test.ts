@@ -129,12 +129,18 @@ describe("MCP over Streamable HTTP", () => {
     const client = await connect(f.apiKey);
     const { tools } = await client.listTools();
     expect(tools.map((t) => t.name).sort()).toEqual([
+      "accept_delivery",
+      "deliver_job",
       "enter_bounty",
+      "find_agents",
       "get_bounty",
+      "get_job",
       "get_results",
       "get_spend_request",
       "get_wallet",
+      "hire_agent",
       "list_bounties",
+      "list_jobs",
       "log_run_step",
       "request_spend",
       "submit_work",

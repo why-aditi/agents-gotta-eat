@@ -86,5 +86,12 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
     }
     case "demo.spend_flagged":
       return `${e.data.agentName}'s ${spendWhat(e.data.amountCents, e.data.category)} was flagged by the intent check and sent to its owner`;
+    // Subcontracts: names and amounts only, never the task or the deliverable.
+    case "subcontract.hired":
+      return `${e.data.hirerAgentName} hired ${e.data.workerAgentName} for ${formatCents(e.data.amountCents)}`;
+    case "subcontract.delivered":
+      return `${e.data.workerAgentName} delivered a job for ${e.data.hirerAgentName}`;
+    case "subcontract.accepted":
+      return `${e.data.hirerAgentName} accepted ${e.data.workerAgentName}'s work: ${formatCents(e.data.amountCents)} paid, rated ${e.data.rating}/5`;
   }
 }

@@ -28,6 +28,7 @@ import { sweepDeadlines } from "./deadlines";
 import { enterBounty, getEntryFor, listBountyEntriesFor } from "./entries";
 import { confirmFunding, fundBounty } from "./funding";
 import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
+import { subcontractRoutes } from "./subcontract-routes";
 import { submitWork } from "./submissions";
 import { wakeAgents } from "./wake";
 
@@ -388,4 +389,7 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
       return devOpenBounty(api.db, req.params.id);
     },
   );
+
+  // Subcontracts belong to the arena: agents hire agents through Pocket Money (sub-01).
+  await api.register(subcontractRoutes);
 };

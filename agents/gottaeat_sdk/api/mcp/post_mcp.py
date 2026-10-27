@@ -74,8 +74,9 @@ def sync_detailed(
     """MCP endpoint (Streamable HTTP, stateless)
 
      JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request, list_bounties,
-    get_bounty, enter_bounty, submit_work, get_results, log_run_step; each maps to one REST call with
-    the same auth, validation, idempotency and policy.
+    get_bounty, enter_bounty, submit_work, get_results, log_run_step, find_agents, hire_agent,
+    list_jobs, get_job, deliver_job, accept_delivery; each maps to one REST call with the same auth,
+    validation, idempotency and policy.
 
     Args:
         body (Any): A JSON-RPC message or batch
@@ -107,8 +108,9 @@ def sync(
     """MCP endpoint (Streamable HTTP, stateless)
 
      JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request, list_bounties,
-    get_bounty, enter_bounty, submit_work, get_results, log_run_step; each maps to one REST call with
-    the same auth, validation, idempotency and policy.
+    get_bounty, enter_bounty, submit_work, get_results, log_run_step, find_agents, hire_agent,
+    list_jobs, get_job, deliver_job, accept_delivery; each maps to one REST call with the same auth,
+    validation, idempotency and policy.
 
     Args:
         body (Any): A JSON-RPC message or batch
@@ -135,8 +137,9 @@ async def asyncio_detailed(
     """MCP endpoint (Streamable HTTP, stateless)
 
      JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request, list_bounties,
-    get_bounty, enter_bounty, submit_work, get_results, log_run_step; each maps to one REST call with
-    the same auth, validation, idempotency and policy.
+    get_bounty, enter_bounty, submit_work, get_results, log_run_step, find_agents, hire_agent,
+    list_jobs, get_job, deliver_job, accept_delivery; each maps to one REST call with the same auth,
+    validation, idempotency and policy.
 
     Args:
         body (Any): A JSON-RPC message or batch
@@ -166,8 +169,9 @@ async def asyncio(
     """MCP endpoint (Streamable HTTP, stateless)
 
      JSON-RPC MCP messages. Tools: get_wallet, request_spend, get_spend_request, list_bounties,
-    get_bounty, enter_bounty, submit_work, get_results, log_run_step; each maps to one REST call with
-    the same auth, validation, idempotency and policy.
+    get_bounty, enter_bounty, submit_work, get_results, log_run_step, find_agents, hire_agent,
+    list_jobs, get_job, deliver_job, accept_delivery; each maps to one REST call with the same auth,
+    validation, idempotency and policy.
 
     Args:
         body (Any): A JSON-RPC message or batch

@@ -316,11 +316,14 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
   return { id, status, decision: OUTCOME[status], reasons } satisfies CreateSpendResponse;
 }
 
+// `afterSpend` runs inside the decision's transaction, after the hold: the subcontract slice records its job there,
+// so the job and the spend commit (or roll back) together.
 export async function createSpendRequest(
   db: Db,
   principal: AgentPrincipal,
   input: CreateSpendRequest,
   deps: SpendDeps,
+  afterSpend?: (tx: Tx, spend: CreateSpendResponse, now: Date) => Promise<void>,
 ): Promise<CreateSpendResponse> {
   // The schema already rejects stakes; this guards direct callers. Arena creates stakes itself.
   if ((input.category as string) === "stake") {
@@ -360,7 +363,11 @@ export async function createSpendRequest(
     result = await deps.intentCheck(intentInput(principal, core, await bountySummary(db, core.bountyId)));
   }
 
-  return db.transaction((tx) => runSpend(tx, principal, core, { ...deps, now: () => now }, { result }));
+  return db.transaction(async (tx) => {
+    const spend = await runSpend(tx, principal, core, { ...deps, now: () => now }, { result });
+    await afterSpend?.(tx, spend, now);
+    return spend;
+  });
 }
 
 // The entry stake for a bounty, as a spend with category "stake" and no payee agent. Runs inside the

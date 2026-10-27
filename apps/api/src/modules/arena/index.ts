@@ -48,3 +48,25 @@ export { arenaRoutes } from "./routes";
 export { InvalidBountyTransitionError, transition as bountyTransition } from "./state";
 export { canonicalContent, sha256Hex, submitWork } from "./submissions";
 export { WAKE_SECRET_HEADER, wakeAgents, type WakeConfig } from "./wake";
+export {
+  acceptSubcontract,
+  AUTO_ACCEPT_RATING,
+  cancelSubcontract,
+  declineSubcontract,
+  deliverSubcontract,
+  getSubcontractFor,
+  hireAgent,
+  listInbox,
+  listSubcontractsFor,
+  registerSubcontractHooks,
+  rejectSubcontract,
+  SUBCONTRACT_LIST_LIMIT,
+  sweepSubcontracts,
+  toSubcontractDto,
+} from "./subcontracts";
+export {
+  canTransitionSubcontract,
+  InvalidSubcontractTransitionError,
+  SUBCONTRACT_STATUSES,
+  transitionSubcontract,
+} from "./subcontract-state";

@@ -11,6 +11,10 @@ export const Agent = z.object({
   status: z.string(),
   // Tenths of a star: 4.0 is 40.
   rating: z.int().min(0).max(50),
+  // Lowercase skill tags the owner sets, for GET /v1/agents/search.
+  skills: z.array(z.string()),
+  // Accepted subcontracts for other owners' agents.
+  completedJobs: z.int().min(0),
   // First 14 chars of the key, for display. Null once the key is revoked.
   apiKeyPrefix: z.string().nullable(),
   createdAt: z.iso.datetime(),

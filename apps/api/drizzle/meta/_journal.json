@@ -78,6 +78,13 @@
       "when": 1793039661018,
       "tag": "0010_demo",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793081355089,
+      "tag": "0011_subcontracts",
+      "breakpoints": true
     }
   ]
 }
