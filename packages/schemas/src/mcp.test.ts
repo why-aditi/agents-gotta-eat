@@ -1,5 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { CreateSpendRequest, GetSpendRequestInput, McpToolName, McpTools, RequestSpendInput } from "./index";
+import {
+  AcceptDeliveryInput,
+  AcceptSubcontractRequest,
+  CreateSpendRequest,
+  CreateSubcontractRequest,
+  DeliverJobInput,
+  DeliverSubcontractRequest,
+  FindAgentsInput,
+  GetJobInput,
+  GetSpendRequestInput,
+  HireAgentInput,
+  ListJobsInput,
+  McpToolName,
+  McpTools,
+  RequestSpendInput,
+} from "./index";
 
 const spend = { payeeAgentId: "agt_01", amountCents: 100, category: "tool", reason: "API credits" };
 
@@ -16,6 +31,12 @@ describe("McpTools", () => {
       ["submit_work", "POST", "/v1/entries/:id/submissions"],
       ["get_results", "GET", "/v1/bounties/:id/results"],
       ["log_run_step", "POST", "/v1/agent-runs"],
+      ["find_agents", "GET", "/v1/agents/search"],
+      ["hire_agent", "POST", "/v1/subcontracts"],
+      ["list_jobs", "GET", "/v1/subcontracts/inbox"],
+      ["get_job", "GET", "/v1/subcontracts/:id"],
+      ["deliver_job", "POST", "/v1/subcontracts/:id/deliver"],
+      ["accept_delivery", "POST", "/v1/subcontracts/:id/accept"],
     ]);
     for (const t of McpTools) {
       expect(t.title.length).toBeGreaterThan(0);
@@ -52,5 +73,31 @@ describe("GetSpendRequestInput", () => {
     expect(GetSpendRequestInput.safeParse({ id: "" }).success).toBe(false);
     expect(GetSpendRequestInput.safeParse({ id: "x".repeat(65) }).success).toBe(false);
     expect(GetSpendRequestInput.safeParse({}).success).toBe(false);
+  });
+});
+
+describe("subcontract tools", () => {
+  it("are the REST bodies plus an id and an optional idempotencyKey", () => {
+    const keys = (o: { shape: object }) => Object.keys(o.shape).sort();
+    expect(keys(HireAgentInput)).toEqual([...Object.keys(CreateSubcontractRequest.shape), "idempotencyKey"].sort());
+    expect(keys(DeliverJobInput)).toEqual(
+      [...Object.keys(DeliverSubcontractRequest.shape), "id", "idempotencyKey"].sort(),
+    );
+    expect(keys(AcceptDeliveryInput)).toEqual(
+      [...Object.keys(AcceptSubcontractRequest.shape), "id", "idempotencyKey"].sort(),
+    );
+    expect(keys(GetJobInput)).toEqual(["id"]);
+    expect(keys(ListJobsInput)).toEqual([]);
+    expect(keys(FindAgentsInput)).toEqual(["minRating", "skill"]);
+  });
+
+  it("each maps to its route", () => {
+    const byName = Object.fromEntries(McpTools.map((t) => [t.name, t]));
+    expect(byName.hire_agent?.input).toBe(HireAgentInput);
+    expect(byName.list_jobs?.input).toBe(ListJobsInput);
+    expect(byName.get_job?.input).toBe(GetJobInput);
+    expect(byName.deliver_job?.input).toBe(DeliverJobInput);
+    expect(byName.accept_delivery?.input).toBe(AcceptDeliveryInput);
+    expect(byName.find_agents?.input).toBe(FindAgentsInput);
   });
 });

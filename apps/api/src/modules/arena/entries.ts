@@ -9,6 +9,7 @@ import { newId } from "../../lib/ids";
 import { agentName, publish } from "../events";
 import { createStakeSpendRequest, setStakeHooks, type SpendDeps, withDecisions } from "../policy";
 import { lockBounty } from "./bounties";
+import { registerSubcontractHooks } from "./subcontracts";
 
 export type EntryRow = typeof entries.$inferSelect;
 type Conn = Db | Tx;
@@ -134,9 +135,10 @@ export async function onStakeReleased(tx: Tx, spendRequestId: string): Promise<v
     .where(and(eq(entries.stakeSpendRequestId, spendRequestId), eq(entries.status, "pending_stake")));
 }
 
-// Called by buildApp, and by tests that drive policy directly.
+// Called by buildApp, and by tests that drive policy directly. Stakes move entries; subcontract spends move jobs.
 export function registerArenaHooks(): void {
   setStakeHooks({ onStakeSettled, onStakeReleased });
+  registerSubcontractHooks();
 }
 
 // A bounty's entries, oldest first, with the same visibility as getEntryFor: the poster sees every entry, a user

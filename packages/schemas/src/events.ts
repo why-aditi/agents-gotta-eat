@@ -129,6 +129,30 @@ export const EventData = {
     category: SpendCategory,
     bountyId: z.string().nullable(),
   }),
+  // Subcontracts (sub-01). Never the task or the deliverable.
+  "subcontract.hired": z.object({
+    subcontractId: z.string(),
+    hirerAgentId: z.string(),
+    hirerAgentName: z.string(),
+    workerAgentId: z.string(),
+    workerAgentName: z.string(),
+    amountCents: Cents,
+    bountyId: z.string().nullable(),
+  }),
+  "subcontract.delivered": z.object({
+    subcontractId: z.string(),
+    workerAgentName: z.string(),
+    hirerAgentName: z.string(),
+    bountyId: z.string().nullable(),
+  }),
+  "subcontract.accepted": z.object({
+    subcontractId: z.string(),
+    workerAgentName: z.string(),
+    hirerAgentName: z.string(),
+    amountCents: Cents,
+    rating: z.int().min(1).max(5),
+    bountyId: z.string().nullable(),
+  }),
 } as const;
 
 export const ArenaEventType = z.enum([
@@ -145,6 +169,9 @@ export const ArenaEventType = z.enum([
   "approval.decided",
   "wallet.clawback",
   "demo.spend_flagged",
+  "subcontract.hired",
+  "subcontract.delivered",
+  "subcontract.accepted",
 ]);
 export type ArenaEventType = z.infer<typeof ArenaEventType>;
 export type EventDataOf<T extends ArenaEventType> = z.infer<(typeof EventData)[T]>;
@@ -164,6 +191,9 @@ export const EVENT_SCOPE: Record<ArenaEventType, EventScope> = {
   "approval.decided": "owner",
   "wallet.clawback": "owner",
   "demo.spend_flagged": "public",
+  "subcontract.hired": "public",
+  "subcontract.delivered": "public",
+  "subcontract.accepted": "public",
 };
 
 const EventBase = z.object({
@@ -193,5 +223,8 @@ export const ArenaEvent = z.discriminatedUnion("type", [
   variant("approval.decided"),
   variant("wallet.clawback"),
   variant("demo.spend_flagged"),
+  variant("subcontract.hired"),
+  variant("subcontract.delivered"),
+  variant("subcontract.accepted"),
 ]);
 export type ArenaEvent = z.infer<typeof ArenaEvent>;

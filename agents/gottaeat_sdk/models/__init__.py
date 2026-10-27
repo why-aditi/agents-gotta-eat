@@ -234,6 +234,17 @@ from .get_v1_agents_response_403 import GetV1AgentsResponse403
 from .get_v1_agents_response_403_error import GetV1AgentsResponse403Error
 from .get_v1_agents_response_403_error_code import GetV1AgentsResponse403ErrorCode
 from .get_v1_agents_response_403_error_detail import GetV1AgentsResponse403ErrorDetail
+from .get_v1_agents_search_response_200 import GetV1AgentsSearchResponse200
+from .get_v1_agents_search_response_200_agents_item import GetV1AgentsSearchResponse200AgentsItem
+from .get_v1_agents_search_response_200_agents_item_kind import GetV1AgentsSearchResponse200AgentsItemKind
+from .get_v1_agents_search_response_400 import GetV1AgentsSearchResponse400
+from .get_v1_agents_search_response_400_error import GetV1AgentsSearchResponse400Error
+from .get_v1_agents_search_response_400_error_code import GetV1AgentsSearchResponse400ErrorCode
+from .get_v1_agents_search_response_400_error_detail import GetV1AgentsSearchResponse400ErrorDetail
+from .get_v1_agents_search_response_401 import GetV1AgentsSearchResponse401
+from .get_v1_agents_search_response_401_error import GetV1AgentsSearchResponse401Error
+from .get_v1_agents_search_response_401_error_code import GetV1AgentsSearchResponse401ErrorCode
+from .get_v1_agents_search_response_401_error_detail import GetV1AgentsSearchResponse401ErrorDetail
 from .get_v1_approvals_response_200 import GetV1ApprovalsResponse200
 from .get_v1_approvals_response_200_spend_requests_item import GetV1ApprovalsResponse200SpendRequestsItem
 from .get_v1_approvals_response_200_spend_requests_item_category import (
@@ -447,6 +458,47 @@ from .get_v1_spend_requests_id_response_404 import GetV1SpendRequestsIdResponse4
 from .get_v1_spend_requests_id_response_404_error import GetV1SpendRequestsIdResponse404Error
 from .get_v1_spend_requests_id_response_404_error_code import GetV1SpendRequestsIdResponse404ErrorCode
 from .get_v1_spend_requests_id_response_404_error_detail import GetV1SpendRequestsIdResponse404ErrorDetail
+from .get_v1_subcontracts_id_response_200 import GetV1SubcontractsIdResponse200
+from .get_v1_subcontracts_id_response_200_status import GetV1SubcontractsIdResponse200Status
+from .get_v1_subcontracts_id_response_400 import GetV1SubcontractsIdResponse400
+from .get_v1_subcontracts_id_response_400_error import GetV1SubcontractsIdResponse400Error
+from .get_v1_subcontracts_id_response_400_error_code import GetV1SubcontractsIdResponse400ErrorCode
+from .get_v1_subcontracts_id_response_400_error_detail import GetV1SubcontractsIdResponse400ErrorDetail
+from .get_v1_subcontracts_id_response_401 import GetV1SubcontractsIdResponse401
+from .get_v1_subcontracts_id_response_401_error import GetV1SubcontractsIdResponse401Error
+from .get_v1_subcontracts_id_response_401_error_code import GetV1SubcontractsIdResponse401ErrorCode
+from .get_v1_subcontracts_id_response_401_error_detail import GetV1SubcontractsIdResponse401ErrorDetail
+from .get_v1_subcontracts_id_response_404 import GetV1SubcontractsIdResponse404
+from .get_v1_subcontracts_id_response_404_error import GetV1SubcontractsIdResponse404Error
+from .get_v1_subcontracts_id_response_404_error_code import GetV1SubcontractsIdResponse404ErrorCode
+from .get_v1_subcontracts_id_response_404_error_detail import GetV1SubcontractsIdResponse404ErrorDetail
+from .get_v1_subcontracts_inbox_response_200 import GetV1SubcontractsInboxResponse200
+from .get_v1_subcontracts_inbox_response_200_subcontracts_item import GetV1SubcontractsInboxResponse200SubcontractsItem
+from .get_v1_subcontracts_inbox_response_200_subcontracts_item_status import (
+    GetV1SubcontractsInboxResponse200SubcontractsItemStatus,
+)
+from .get_v1_subcontracts_inbox_response_401 import GetV1SubcontractsInboxResponse401
+from .get_v1_subcontracts_inbox_response_401_error import GetV1SubcontractsInboxResponse401Error
+from .get_v1_subcontracts_inbox_response_401_error_code import GetV1SubcontractsInboxResponse401ErrorCode
+from .get_v1_subcontracts_inbox_response_401_error_detail import GetV1SubcontractsInboxResponse401ErrorDetail
+from .get_v1_subcontracts_inbox_response_403 import GetV1SubcontractsInboxResponse403
+from .get_v1_subcontracts_inbox_response_403_error import GetV1SubcontractsInboxResponse403Error
+from .get_v1_subcontracts_inbox_response_403_error_code import GetV1SubcontractsInboxResponse403ErrorCode
+from .get_v1_subcontracts_inbox_response_403_error_detail import GetV1SubcontractsInboxResponse403ErrorDetail
+from .get_v1_subcontracts_response_200 import GetV1SubcontractsResponse200
+from .get_v1_subcontracts_response_200_subcontracts_item import GetV1SubcontractsResponse200SubcontractsItem
+from .get_v1_subcontracts_response_200_subcontracts_item_status import (
+    GetV1SubcontractsResponse200SubcontractsItemStatus,
+)
+from .get_v1_subcontracts_response_400 import GetV1SubcontractsResponse400
+from .get_v1_subcontracts_response_400_error import GetV1SubcontractsResponse400Error
+from .get_v1_subcontracts_response_400_error_code import GetV1SubcontractsResponse400ErrorCode
+from .get_v1_subcontracts_response_400_error_detail import GetV1SubcontractsResponse400ErrorDetail
+from .get_v1_subcontracts_response_401 import GetV1SubcontractsResponse401
+from .get_v1_subcontracts_response_401_error import GetV1SubcontractsResponse401Error
+from .get_v1_subcontracts_response_401_error_code import GetV1SubcontractsResponse401ErrorCode
+from .get_v1_subcontracts_response_401_error_detail import GetV1SubcontractsResponse401ErrorDetail
+from .get_v1_subcontracts_role import GetV1SubcontractsRole
 from .get_v1_wallet_payout_email_response_200 import GetV1WalletPayoutEmailResponse200
 from .get_v1_wallet_payout_email_response_401 import GetV1WalletPayoutEmailResponse401
 from .get_v1_wallet_payout_email_response_401_error import GetV1WalletPayoutEmailResponse401Error
@@ -480,6 +532,25 @@ from .get_v1_wallet_withdrawals_response_403 import GetV1WalletWithdrawalsRespon
 from .get_v1_wallet_withdrawals_response_403_error import GetV1WalletWithdrawalsResponse403Error
 from .get_v1_wallet_withdrawals_response_403_error_code import GetV1WalletWithdrawalsResponse403ErrorCode
 from .get_v1_wallet_withdrawals_response_403_error_detail import GetV1WalletWithdrawalsResponse403ErrorDetail
+from .patch_v1_agents_id_body import PatchV1AgentsIdBody
+from .patch_v1_agents_id_response_200 import PatchV1AgentsIdResponse200
+from .patch_v1_agents_id_response_200_kind import PatchV1AgentsIdResponse200Kind
+from .patch_v1_agents_id_response_400 import PatchV1AgentsIdResponse400
+from .patch_v1_agents_id_response_400_error import PatchV1AgentsIdResponse400Error
+from .patch_v1_agents_id_response_400_error_code import PatchV1AgentsIdResponse400ErrorCode
+from .patch_v1_agents_id_response_400_error_detail import PatchV1AgentsIdResponse400ErrorDetail
+from .patch_v1_agents_id_response_401 import PatchV1AgentsIdResponse401
+from .patch_v1_agents_id_response_401_error import PatchV1AgentsIdResponse401Error
+from .patch_v1_agents_id_response_401_error_code import PatchV1AgentsIdResponse401ErrorCode
+from .patch_v1_agents_id_response_401_error_detail import PatchV1AgentsIdResponse401ErrorDetail
+from .patch_v1_agents_id_response_403 import PatchV1AgentsIdResponse403
+from .patch_v1_agents_id_response_403_error import PatchV1AgentsIdResponse403Error
+from .patch_v1_agents_id_response_403_error_code import PatchV1AgentsIdResponse403ErrorCode
+from .patch_v1_agents_id_response_403_error_detail import PatchV1AgentsIdResponse403ErrorDetail
+from .patch_v1_agents_id_response_404 import PatchV1AgentsIdResponse404
+from .patch_v1_agents_id_response_404_error import PatchV1AgentsIdResponse404Error
+from .patch_v1_agents_id_response_404_error_code import PatchV1AgentsIdResponse404ErrorCode
+from .patch_v1_agents_id_response_404_error_detail import PatchV1AgentsIdResponse404ErrorDetail
 from .post_mcp_response_401 import PostMcpResponse401
 from .post_mcp_response_401_error import PostMcpResponse401Error
 from .post_mcp_response_401_error_code import PostMcpResponse401ErrorCode
@@ -1194,6 +1265,173 @@ from .post_v1_spend_requests_response_422 import PostV1SpendRequestsResponse422
 from .post_v1_spend_requests_response_422_error import PostV1SpendRequestsResponse422Error
 from .post_v1_spend_requests_response_422_error_code import PostV1SpendRequestsResponse422ErrorCode
 from .post_v1_spend_requests_response_422_error_detail import PostV1SpendRequestsResponse422ErrorDetail
+from .post_v1_subcontracts_body import PostV1SubcontractsBody
+from .post_v1_subcontracts_id_accept_body import PostV1SubcontractsIdAcceptBody
+from .post_v1_subcontracts_id_accept_response_200 import PostV1SubcontractsIdAcceptResponse200
+from .post_v1_subcontracts_id_accept_response_200_status import PostV1SubcontractsIdAcceptResponse200Status
+from .post_v1_subcontracts_id_accept_response_400 import PostV1SubcontractsIdAcceptResponse400
+from .post_v1_subcontracts_id_accept_response_400_error import PostV1SubcontractsIdAcceptResponse400Error
+from .post_v1_subcontracts_id_accept_response_400_error_code import PostV1SubcontractsIdAcceptResponse400ErrorCode
+from .post_v1_subcontracts_id_accept_response_400_error_detail import PostV1SubcontractsIdAcceptResponse400ErrorDetail
+from .post_v1_subcontracts_id_accept_response_401 import PostV1SubcontractsIdAcceptResponse401
+from .post_v1_subcontracts_id_accept_response_401_error import PostV1SubcontractsIdAcceptResponse401Error
+from .post_v1_subcontracts_id_accept_response_401_error_code import PostV1SubcontractsIdAcceptResponse401ErrorCode
+from .post_v1_subcontracts_id_accept_response_401_error_detail import PostV1SubcontractsIdAcceptResponse401ErrorDetail
+from .post_v1_subcontracts_id_accept_response_403 import PostV1SubcontractsIdAcceptResponse403
+from .post_v1_subcontracts_id_accept_response_403_error import PostV1SubcontractsIdAcceptResponse403Error
+from .post_v1_subcontracts_id_accept_response_403_error_code import PostV1SubcontractsIdAcceptResponse403ErrorCode
+from .post_v1_subcontracts_id_accept_response_403_error_detail import PostV1SubcontractsIdAcceptResponse403ErrorDetail
+from .post_v1_subcontracts_id_accept_response_404 import PostV1SubcontractsIdAcceptResponse404
+from .post_v1_subcontracts_id_accept_response_404_error import PostV1SubcontractsIdAcceptResponse404Error
+from .post_v1_subcontracts_id_accept_response_404_error_code import PostV1SubcontractsIdAcceptResponse404ErrorCode
+from .post_v1_subcontracts_id_accept_response_404_error_detail import PostV1SubcontractsIdAcceptResponse404ErrorDetail
+from .post_v1_subcontracts_id_accept_response_409 import PostV1SubcontractsIdAcceptResponse409
+from .post_v1_subcontracts_id_accept_response_409_error import PostV1SubcontractsIdAcceptResponse409Error
+from .post_v1_subcontracts_id_accept_response_409_error_code import PostV1SubcontractsIdAcceptResponse409ErrorCode
+from .post_v1_subcontracts_id_accept_response_409_error_detail import PostV1SubcontractsIdAcceptResponse409ErrorDetail
+from .post_v1_subcontracts_id_accept_response_422 import PostV1SubcontractsIdAcceptResponse422
+from .post_v1_subcontracts_id_accept_response_422_error import PostV1SubcontractsIdAcceptResponse422Error
+from .post_v1_subcontracts_id_accept_response_422_error_code import PostV1SubcontractsIdAcceptResponse422ErrorCode
+from .post_v1_subcontracts_id_accept_response_422_error_detail import PostV1SubcontractsIdAcceptResponse422ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_200 import PostV1SubcontractsIdCancelResponse200
+from .post_v1_subcontracts_id_cancel_response_200_status import PostV1SubcontractsIdCancelResponse200Status
+from .post_v1_subcontracts_id_cancel_response_400 import PostV1SubcontractsIdCancelResponse400
+from .post_v1_subcontracts_id_cancel_response_400_error import PostV1SubcontractsIdCancelResponse400Error
+from .post_v1_subcontracts_id_cancel_response_400_error_code import PostV1SubcontractsIdCancelResponse400ErrorCode
+from .post_v1_subcontracts_id_cancel_response_400_error_detail import PostV1SubcontractsIdCancelResponse400ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_401 import PostV1SubcontractsIdCancelResponse401
+from .post_v1_subcontracts_id_cancel_response_401_error import PostV1SubcontractsIdCancelResponse401Error
+from .post_v1_subcontracts_id_cancel_response_401_error_code import PostV1SubcontractsIdCancelResponse401ErrorCode
+from .post_v1_subcontracts_id_cancel_response_401_error_detail import PostV1SubcontractsIdCancelResponse401ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_403 import PostV1SubcontractsIdCancelResponse403
+from .post_v1_subcontracts_id_cancel_response_403_error import PostV1SubcontractsIdCancelResponse403Error
+from .post_v1_subcontracts_id_cancel_response_403_error_code import PostV1SubcontractsIdCancelResponse403ErrorCode
+from .post_v1_subcontracts_id_cancel_response_403_error_detail import PostV1SubcontractsIdCancelResponse403ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_404 import PostV1SubcontractsIdCancelResponse404
+from .post_v1_subcontracts_id_cancel_response_404_error import PostV1SubcontractsIdCancelResponse404Error
+from .post_v1_subcontracts_id_cancel_response_404_error_code import PostV1SubcontractsIdCancelResponse404ErrorCode
+from .post_v1_subcontracts_id_cancel_response_404_error_detail import PostV1SubcontractsIdCancelResponse404ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_409 import PostV1SubcontractsIdCancelResponse409
+from .post_v1_subcontracts_id_cancel_response_409_error import PostV1SubcontractsIdCancelResponse409Error
+from .post_v1_subcontracts_id_cancel_response_409_error_code import PostV1SubcontractsIdCancelResponse409ErrorCode
+from .post_v1_subcontracts_id_cancel_response_409_error_detail import PostV1SubcontractsIdCancelResponse409ErrorDetail
+from .post_v1_subcontracts_id_cancel_response_422 import PostV1SubcontractsIdCancelResponse422
+from .post_v1_subcontracts_id_cancel_response_422_error import PostV1SubcontractsIdCancelResponse422Error
+from .post_v1_subcontracts_id_cancel_response_422_error_code import PostV1SubcontractsIdCancelResponse422ErrorCode
+from .post_v1_subcontracts_id_cancel_response_422_error_detail import PostV1SubcontractsIdCancelResponse422ErrorDetail
+from .post_v1_subcontracts_id_decline_response_200 import PostV1SubcontractsIdDeclineResponse200
+from .post_v1_subcontracts_id_decline_response_200_status import PostV1SubcontractsIdDeclineResponse200Status
+from .post_v1_subcontracts_id_decline_response_400 import PostV1SubcontractsIdDeclineResponse400
+from .post_v1_subcontracts_id_decline_response_400_error import PostV1SubcontractsIdDeclineResponse400Error
+from .post_v1_subcontracts_id_decline_response_400_error_code import PostV1SubcontractsIdDeclineResponse400ErrorCode
+from .post_v1_subcontracts_id_decline_response_400_error_detail import PostV1SubcontractsIdDeclineResponse400ErrorDetail
+from .post_v1_subcontracts_id_decline_response_401 import PostV1SubcontractsIdDeclineResponse401
+from .post_v1_subcontracts_id_decline_response_401_error import PostV1SubcontractsIdDeclineResponse401Error
+from .post_v1_subcontracts_id_decline_response_401_error_code import PostV1SubcontractsIdDeclineResponse401ErrorCode
+from .post_v1_subcontracts_id_decline_response_401_error_detail import PostV1SubcontractsIdDeclineResponse401ErrorDetail
+from .post_v1_subcontracts_id_decline_response_403 import PostV1SubcontractsIdDeclineResponse403
+from .post_v1_subcontracts_id_decline_response_403_error import PostV1SubcontractsIdDeclineResponse403Error
+from .post_v1_subcontracts_id_decline_response_403_error_code import PostV1SubcontractsIdDeclineResponse403ErrorCode
+from .post_v1_subcontracts_id_decline_response_403_error_detail import PostV1SubcontractsIdDeclineResponse403ErrorDetail
+from .post_v1_subcontracts_id_decline_response_404 import PostV1SubcontractsIdDeclineResponse404
+from .post_v1_subcontracts_id_decline_response_404_error import PostV1SubcontractsIdDeclineResponse404Error
+from .post_v1_subcontracts_id_decline_response_404_error_code import PostV1SubcontractsIdDeclineResponse404ErrorCode
+from .post_v1_subcontracts_id_decline_response_404_error_detail import PostV1SubcontractsIdDeclineResponse404ErrorDetail
+from .post_v1_subcontracts_id_decline_response_409 import PostV1SubcontractsIdDeclineResponse409
+from .post_v1_subcontracts_id_decline_response_409_error import PostV1SubcontractsIdDeclineResponse409Error
+from .post_v1_subcontracts_id_decline_response_409_error_code import PostV1SubcontractsIdDeclineResponse409ErrorCode
+from .post_v1_subcontracts_id_decline_response_409_error_detail import PostV1SubcontractsIdDeclineResponse409ErrorDetail
+from .post_v1_subcontracts_id_decline_response_422 import PostV1SubcontractsIdDeclineResponse422
+from .post_v1_subcontracts_id_decline_response_422_error import PostV1SubcontractsIdDeclineResponse422Error
+from .post_v1_subcontracts_id_decline_response_422_error_code import PostV1SubcontractsIdDeclineResponse422ErrorCode
+from .post_v1_subcontracts_id_decline_response_422_error_detail import PostV1SubcontractsIdDeclineResponse422ErrorDetail
+from .post_v1_subcontracts_id_deliver_body import PostV1SubcontractsIdDeliverBody
+from .post_v1_subcontracts_id_deliver_response_200 import PostV1SubcontractsIdDeliverResponse200
+from .post_v1_subcontracts_id_deliver_response_200_status import PostV1SubcontractsIdDeliverResponse200Status
+from .post_v1_subcontracts_id_deliver_response_400 import PostV1SubcontractsIdDeliverResponse400
+from .post_v1_subcontracts_id_deliver_response_400_error import PostV1SubcontractsIdDeliverResponse400Error
+from .post_v1_subcontracts_id_deliver_response_400_error_code import PostV1SubcontractsIdDeliverResponse400ErrorCode
+from .post_v1_subcontracts_id_deliver_response_400_error_detail import PostV1SubcontractsIdDeliverResponse400ErrorDetail
+from .post_v1_subcontracts_id_deliver_response_401 import PostV1SubcontractsIdDeliverResponse401
+from .post_v1_subcontracts_id_deliver_response_401_error import PostV1SubcontractsIdDeliverResponse401Error
+from .post_v1_subcontracts_id_deliver_response_401_error_code import PostV1SubcontractsIdDeliverResponse401ErrorCode
+from .post_v1_subcontracts_id_deliver_response_401_error_detail import PostV1SubcontractsIdDeliverResponse401ErrorDetail
+from .post_v1_subcontracts_id_deliver_response_403 import PostV1SubcontractsIdDeliverResponse403
+from .post_v1_subcontracts_id_deliver_response_403_error import PostV1SubcontractsIdDeliverResponse403Error
+from .post_v1_subcontracts_id_deliver_response_403_error_code import PostV1SubcontractsIdDeliverResponse403ErrorCode
+from .post_v1_subcontracts_id_deliver_response_403_error_detail import PostV1SubcontractsIdDeliverResponse403ErrorDetail
+from .post_v1_subcontracts_id_deliver_response_404 import PostV1SubcontractsIdDeliverResponse404
+from .post_v1_subcontracts_id_deliver_response_404_error import PostV1SubcontractsIdDeliverResponse404Error
+from .post_v1_subcontracts_id_deliver_response_404_error_code import PostV1SubcontractsIdDeliverResponse404ErrorCode
+from .post_v1_subcontracts_id_deliver_response_404_error_detail import PostV1SubcontractsIdDeliverResponse404ErrorDetail
+from .post_v1_subcontracts_id_deliver_response_409 import PostV1SubcontractsIdDeliverResponse409
+from .post_v1_subcontracts_id_deliver_response_409_error import PostV1SubcontractsIdDeliverResponse409Error
+from .post_v1_subcontracts_id_deliver_response_409_error_code import PostV1SubcontractsIdDeliverResponse409ErrorCode
+from .post_v1_subcontracts_id_deliver_response_409_error_detail import PostV1SubcontractsIdDeliverResponse409ErrorDetail
+from .post_v1_subcontracts_id_deliver_response_422 import PostV1SubcontractsIdDeliverResponse422
+from .post_v1_subcontracts_id_deliver_response_422_error import PostV1SubcontractsIdDeliverResponse422Error
+from .post_v1_subcontracts_id_deliver_response_422_error_code import PostV1SubcontractsIdDeliverResponse422ErrorCode
+from .post_v1_subcontracts_id_deliver_response_422_error_detail import PostV1SubcontractsIdDeliverResponse422ErrorDetail
+from .post_v1_subcontracts_id_reject_body import PostV1SubcontractsIdRejectBody
+from .post_v1_subcontracts_id_reject_response_200 import PostV1SubcontractsIdRejectResponse200
+from .post_v1_subcontracts_id_reject_response_200_status import PostV1SubcontractsIdRejectResponse200Status
+from .post_v1_subcontracts_id_reject_response_400 import PostV1SubcontractsIdRejectResponse400
+from .post_v1_subcontracts_id_reject_response_400_error import PostV1SubcontractsIdRejectResponse400Error
+from .post_v1_subcontracts_id_reject_response_400_error_code import PostV1SubcontractsIdRejectResponse400ErrorCode
+from .post_v1_subcontracts_id_reject_response_400_error_detail import PostV1SubcontractsIdRejectResponse400ErrorDetail
+from .post_v1_subcontracts_id_reject_response_401 import PostV1SubcontractsIdRejectResponse401
+from .post_v1_subcontracts_id_reject_response_401_error import PostV1SubcontractsIdRejectResponse401Error
+from .post_v1_subcontracts_id_reject_response_401_error_code import PostV1SubcontractsIdRejectResponse401ErrorCode
+from .post_v1_subcontracts_id_reject_response_401_error_detail import PostV1SubcontractsIdRejectResponse401ErrorDetail
+from .post_v1_subcontracts_id_reject_response_403 import PostV1SubcontractsIdRejectResponse403
+from .post_v1_subcontracts_id_reject_response_403_error import PostV1SubcontractsIdRejectResponse403Error
+from .post_v1_subcontracts_id_reject_response_403_error_code import PostV1SubcontractsIdRejectResponse403ErrorCode
+from .post_v1_subcontracts_id_reject_response_403_error_detail import PostV1SubcontractsIdRejectResponse403ErrorDetail
+from .post_v1_subcontracts_id_reject_response_404 import PostV1SubcontractsIdRejectResponse404
+from .post_v1_subcontracts_id_reject_response_404_error import PostV1SubcontractsIdRejectResponse404Error
+from .post_v1_subcontracts_id_reject_response_404_error_code import PostV1SubcontractsIdRejectResponse404ErrorCode
+from .post_v1_subcontracts_id_reject_response_404_error_detail import PostV1SubcontractsIdRejectResponse404ErrorDetail
+from .post_v1_subcontracts_id_reject_response_409 import PostV1SubcontractsIdRejectResponse409
+from .post_v1_subcontracts_id_reject_response_409_error import PostV1SubcontractsIdRejectResponse409Error
+from .post_v1_subcontracts_id_reject_response_409_error_code import PostV1SubcontractsIdRejectResponse409ErrorCode
+from .post_v1_subcontracts_id_reject_response_409_error_detail import PostV1SubcontractsIdRejectResponse409ErrorDetail
+from .post_v1_subcontracts_id_reject_response_422 import PostV1SubcontractsIdRejectResponse422
+from .post_v1_subcontracts_id_reject_response_422_error import PostV1SubcontractsIdRejectResponse422Error
+from .post_v1_subcontracts_id_reject_response_422_error_code import PostV1SubcontractsIdRejectResponse422ErrorCode
+from .post_v1_subcontracts_id_reject_response_422_error_detail import PostV1SubcontractsIdRejectResponse422ErrorDetail
+from .post_v1_subcontracts_response_201 import PostV1SubcontractsResponse201
+from .post_v1_subcontracts_response_201_spend import PostV1SubcontractsResponse201Spend
+from .post_v1_subcontracts_response_201_spend_decision import PostV1SubcontractsResponse201SpendDecision
+from .post_v1_subcontracts_response_201_spend_reasons_item import PostV1SubcontractsResponse201SpendReasonsItem
+from .post_v1_subcontracts_response_201_spend_status import PostV1SubcontractsResponse201SpendStatus
+from .post_v1_subcontracts_response_201_subcontract_type_0 import PostV1SubcontractsResponse201SubcontractType0
+from .post_v1_subcontracts_response_201_subcontract_type_0_status import (
+    PostV1SubcontractsResponse201SubcontractType0Status,
+)
+from .post_v1_subcontracts_response_400 import PostV1SubcontractsResponse400
+from .post_v1_subcontracts_response_400_error import PostV1SubcontractsResponse400Error
+from .post_v1_subcontracts_response_400_error_code import PostV1SubcontractsResponse400ErrorCode
+from .post_v1_subcontracts_response_400_error_detail import PostV1SubcontractsResponse400ErrorDetail
+from .post_v1_subcontracts_response_401 import PostV1SubcontractsResponse401
+from .post_v1_subcontracts_response_401_error import PostV1SubcontractsResponse401Error
+from .post_v1_subcontracts_response_401_error_code import PostV1SubcontractsResponse401ErrorCode
+from .post_v1_subcontracts_response_401_error_detail import PostV1SubcontractsResponse401ErrorDetail
+from .post_v1_subcontracts_response_403 import PostV1SubcontractsResponse403
+from .post_v1_subcontracts_response_403_error import PostV1SubcontractsResponse403Error
+from .post_v1_subcontracts_response_403_error_code import PostV1SubcontractsResponse403ErrorCode
+from .post_v1_subcontracts_response_403_error_detail import PostV1SubcontractsResponse403ErrorDetail
+from .post_v1_subcontracts_response_404 import PostV1SubcontractsResponse404
+from .post_v1_subcontracts_response_404_error import PostV1SubcontractsResponse404Error
+from .post_v1_subcontracts_response_404_error_code import PostV1SubcontractsResponse404ErrorCode
+from .post_v1_subcontracts_response_404_error_detail import PostV1SubcontractsResponse404ErrorDetail
+from .post_v1_subcontracts_response_409 import PostV1SubcontractsResponse409
+from .post_v1_subcontracts_response_409_error import PostV1SubcontractsResponse409Error
+from .post_v1_subcontracts_response_409_error_code import PostV1SubcontractsResponse409ErrorCode
+from .post_v1_subcontracts_response_409_error_detail import PostV1SubcontractsResponse409ErrorDetail
+from .post_v1_subcontracts_response_422 import PostV1SubcontractsResponse422
+from .post_v1_subcontracts_response_422_error import PostV1SubcontractsResponse422Error
+from .post_v1_subcontracts_response_422_error_code import PostV1SubcontractsResponse422ErrorCode
+from .post_v1_subcontracts_response_422_error_detail import PostV1SubcontractsResponse422ErrorDetail
 from .post_v1_wallet_topups_body import PostV1WalletTopupsBody
 from .post_v1_wallet_topups_id_confirm_response_200 import PostV1WalletTopupsIdConfirmResponse200
 from .post_v1_wallet_topups_id_confirm_response_200_status import PostV1WalletTopupsIdConfirmResponse200Status
@@ -1571,6 +1809,17 @@ __all__ = (
     "GetV1AgentsResponse403Error",
     "GetV1AgentsResponse403ErrorCode",
     "GetV1AgentsResponse403ErrorDetail",
+    "GetV1AgentsSearchResponse200",
+    "GetV1AgentsSearchResponse200AgentsItem",
+    "GetV1AgentsSearchResponse200AgentsItemKind",
+    "GetV1AgentsSearchResponse400",
+    "GetV1AgentsSearchResponse400Error",
+    "GetV1AgentsSearchResponse400ErrorCode",
+    "GetV1AgentsSearchResponse400ErrorDetail",
+    "GetV1AgentsSearchResponse401",
+    "GetV1AgentsSearchResponse401Error",
+    "GetV1AgentsSearchResponse401ErrorCode",
+    "GetV1AgentsSearchResponse401ErrorDetail",
     "GetV1ApprovalsResponse200",
     "GetV1ApprovalsResponse200SpendRequestsItem",
     "GetV1ApprovalsResponse200SpendRequestsItemCategory",
@@ -1762,6 +2011,43 @@ __all__ = (
     "GetV1SpendRequestsIdResponse404Error",
     "GetV1SpendRequestsIdResponse404ErrorCode",
     "GetV1SpendRequestsIdResponse404ErrorDetail",
+    "GetV1SubcontractsIdResponse200",
+    "GetV1SubcontractsIdResponse200Status",
+    "GetV1SubcontractsIdResponse400",
+    "GetV1SubcontractsIdResponse400Error",
+    "GetV1SubcontractsIdResponse400ErrorCode",
+    "GetV1SubcontractsIdResponse400ErrorDetail",
+    "GetV1SubcontractsIdResponse401",
+    "GetV1SubcontractsIdResponse401Error",
+    "GetV1SubcontractsIdResponse401ErrorCode",
+    "GetV1SubcontractsIdResponse401ErrorDetail",
+    "GetV1SubcontractsIdResponse404",
+    "GetV1SubcontractsIdResponse404Error",
+    "GetV1SubcontractsIdResponse404ErrorCode",
+    "GetV1SubcontractsIdResponse404ErrorDetail",
+    "GetV1SubcontractsInboxResponse200",
+    "GetV1SubcontractsInboxResponse200SubcontractsItem",
+    "GetV1SubcontractsInboxResponse200SubcontractsItemStatus",
+    "GetV1SubcontractsInboxResponse401",
+    "GetV1SubcontractsInboxResponse401Error",
+    "GetV1SubcontractsInboxResponse401ErrorCode",
+    "GetV1SubcontractsInboxResponse401ErrorDetail",
+    "GetV1SubcontractsInboxResponse403",
+    "GetV1SubcontractsInboxResponse403Error",
+    "GetV1SubcontractsInboxResponse403ErrorCode",
+    "GetV1SubcontractsInboxResponse403ErrorDetail",
+    "GetV1SubcontractsResponse200",
+    "GetV1SubcontractsResponse200SubcontractsItem",
+    "GetV1SubcontractsResponse200SubcontractsItemStatus",
+    "GetV1SubcontractsResponse400",
+    "GetV1SubcontractsResponse400Error",
+    "GetV1SubcontractsResponse400ErrorCode",
+    "GetV1SubcontractsResponse400ErrorDetail",
+    "GetV1SubcontractsResponse401",
+    "GetV1SubcontractsResponse401Error",
+    "GetV1SubcontractsResponse401ErrorCode",
+    "GetV1SubcontractsResponse401ErrorDetail",
+    "GetV1SubcontractsRole",
     "GetV1WalletPayoutEmailResponse200",
     "GetV1WalletPayoutEmailResponse401",
     "GetV1WalletPayoutEmailResponse401Error",
@@ -1791,6 +2077,25 @@ __all__ = (
     "GetV1WalletWithdrawalsResponse403Error",
     "GetV1WalletWithdrawalsResponse403ErrorCode",
     "GetV1WalletWithdrawalsResponse403ErrorDetail",
+    "PatchV1AgentsIdBody",
+    "PatchV1AgentsIdResponse200",
+    "PatchV1AgentsIdResponse200Kind",
+    "PatchV1AgentsIdResponse400",
+    "PatchV1AgentsIdResponse400Error",
+    "PatchV1AgentsIdResponse400ErrorCode",
+    "PatchV1AgentsIdResponse400ErrorDetail",
+    "PatchV1AgentsIdResponse401",
+    "PatchV1AgentsIdResponse401Error",
+    "PatchV1AgentsIdResponse401ErrorCode",
+    "PatchV1AgentsIdResponse401ErrorDetail",
+    "PatchV1AgentsIdResponse403",
+    "PatchV1AgentsIdResponse403Error",
+    "PatchV1AgentsIdResponse403ErrorCode",
+    "PatchV1AgentsIdResponse403ErrorDetail",
+    "PatchV1AgentsIdResponse404",
+    "PatchV1AgentsIdResponse404Error",
+    "PatchV1AgentsIdResponse404ErrorCode",
+    "PatchV1AgentsIdResponse404ErrorDetail",
     "PostMcpResponse401",
     "PostMcpResponse401Error",
     "PostMcpResponse401ErrorCode",
@@ -2371,6 +2676,171 @@ __all__ = (
     "PostV1SpendRequestsResponse422Error",
     "PostV1SpendRequestsResponse422ErrorCode",
     "PostV1SpendRequestsResponse422ErrorDetail",
+    "PostV1SubcontractsBody",
+    "PostV1SubcontractsIdAcceptBody",
+    "PostV1SubcontractsIdAcceptResponse200",
+    "PostV1SubcontractsIdAcceptResponse200Status",
+    "PostV1SubcontractsIdAcceptResponse400",
+    "PostV1SubcontractsIdAcceptResponse400Error",
+    "PostV1SubcontractsIdAcceptResponse400ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse400ErrorDetail",
+    "PostV1SubcontractsIdAcceptResponse401",
+    "PostV1SubcontractsIdAcceptResponse401Error",
+    "PostV1SubcontractsIdAcceptResponse401ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse401ErrorDetail",
+    "PostV1SubcontractsIdAcceptResponse403",
+    "PostV1SubcontractsIdAcceptResponse403Error",
+    "PostV1SubcontractsIdAcceptResponse403ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse403ErrorDetail",
+    "PostV1SubcontractsIdAcceptResponse404",
+    "PostV1SubcontractsIdAcceptResponse404Error",
+    "PostV1SubcontractsIdAcceptResponse404ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse404ErrorDetail",
+    "PostV1SubcontractsIdAcceptResponse409",
+    "PostV1SubcontractsIdAcceptResponse409Error",
+    "PostV1SubcontractsIdAcceptResponse409ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse409ErrorDetail",
+    "PostV1SubcontractsIdAcceptResponse422",
+    "PostV1SubcontractsIdAcceptResponse422Error",
+    "PostV1SubcontractsIdAcceptResponse422ErrorCode",
+    "PostV1SubcontractsIdAcceptResponse422ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse200",
+    "PostV1SubcontractsIdCancelResponse200Status",
+    "PostV1SubcontractsIdCancelResponse400",
+    "PostV1SubcontractsIdCancelResponse400Error",
+    "PostV1SubcontractsIdCancelResponse400ErrorCode",
+    "PostV1SubcontractsIdCancelResponse400ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse401",
+    "PostV1SubcontractsIdCancelResponse401Error",
+    "PostV1SubcontractsIdCancelResponse401ErrorCode",
+    "PostV1SubcontractsIdCancelResponse401ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse403",
+    "PostV1SubcontractsIdCancelResponse403Error",
+    "PostV1SubcontractsIdCancelResponse403ErrorCode",
+    "PostV1SubcontractsIdCancelResponse403ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse404",
+    "PostV1SubcontractsIdCancelResponse404Error",
+    "PostV1SubcontractsIdCancelResponse404ErrorCode",
+    "PostV1SubcontractsIdCancelResponse404ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse409",
+    "PostV1SubcontractsIdCancelResponse409Error",
+    "PostV1SubcontractsIdCancelResponse409ErrorCode",
+    "PostV1SubcontractsIdCancelResponse409ErrorDetail",
+    "PostV1SubcontractsIdCancelResponse422",
+    "PostV1SubcontractsIdCancelResponse422Error",
+    "PostV1SubcontractsIdCancelResponse422ErrorCode",
+    "PostV1SubcontractsIdCancelResponse422ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse200",
+    "PostV1SubcontractsIdDeclineResponse200Status",
+    "PostV1SubcontractsIdDeclineResponse400",
+    "PostV1SubcontractsIdDeclineResponse400Error",
+    "PostV1SubcontractsIdDeclineResponse400ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse400ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse401",
+    "PostV1SubcontractsIdDeclineResponse401Error",
+    "PostV1SubcontractsIdDeclineResponse401ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse401ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse403",
+    "PostV1SubcontractsIdDeclineResponse403Error",
+    "PostV1SubcontractsIdDeclineResponse403ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse403ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse404",
+    "PostV1SubcontractsIdDeclineResponse404Error",
+    "PostV1SubcontractsIdDeclineResponse404ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse404ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse409",
+    "PostV1SubcontractsIdDeclineResponse409Error",
+    "PostV1SubcontractsIdDeclineResponse409ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse409ErrorDetail",
+    "PostV1SubcontractsIdDeclineResponse422",
+    "PostV1SubcontractsIdDeclineResponse422Error",
+    "PostV1SubcontractsIdDeclineResponse422ErrorCode",
+    "PostV1SubcontractsIdDeclineResponse422ErrorDetail",
+    "PostV1SubcontractsIdDeliverBody",
+    "PostV1SubcontractsIdDeliverResponse200",
+    "PostV1SubcontractsIdDeliverResponse200Status",
+    "PostV1SubcontractsIdDeliverResponse400",
+    "PostV1SubcontractsIdDeliverResponse400Error",
+    "PostV1SubcontractsIdDeliverResponse400ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse400ErrorDetail",
+    "PostV1SubcontractsIdDeliverResponse401",
+    "PostV1SubcontractsIdDeliverResponse401Error",
+    "PostV1SubcontractsIdDeliverResponse401ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse401ErrorDetail",
+    "PostV1SubcontractsIdDeliverResponse403",
+    "PostV1SubcontractsIdDeliverResponse403Error",
+    "PostV1SubcontractsIdDeliverResponse403ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse403ErrorDetail",
+    "PostV1SubcontractsIdDeliverResponse404",
+    "PostV1SubcontractsIdDeliverResponse404Error",
+    "PostV1SubcontractsIdDeliverResponse404ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse404ErrorDetail",
+    "PostV1SubcontractsIdDeliverResponse409",
+    "PostV1SubcontractsIdDeliverResponse409Error",
+    "PostV1SubcontractsIdDeliverResponse409ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse409ErrorDetail",
+    "PostV1SubcontractsIdDeliverResponse422",
+    "PostV1SubcontractsIdDeliverResponse422Error",
+    "PostV1SubcontractsIdDeliverResponse422ErrorCode",
+    "PostV1SubcontractsIdDeliverResponse422ErrorDetail",
+    "PostV1SubcontractsIdRejectBody",
+    "PostV1SubcontractsIdRejectResponse200",
+    "PostV1SubcontractsIdRejectResponse200Status",
+    "PostV1SubcontractsIdRejectResponse400",
+    "PostV1SubcontractsIdRejectResponse400Error",
+    "PostV1SubcontractsIdRejectResponse400ErrorCode",
+    "PostV1SubcontractsIdRejectResponse400ErrorDetail",
+    "PostV1SubcontractsIdRejectResponse401",
+    "PostV1SubcontractsIdRejectResponse401Error",
+    "PostV1SubcontractsIdRejectResponse401ErrorCode",
+    "PostV1SubcontractsIdRejectResponse401ErrorDetail",
+    "PostV1SubcontractsIdRejectResponse403",
+    "PostV1SubcontractsIdRejectResponse403Error",
+    "PostV1SubcontractsIdRejectResponse403ErrorCode",
+    "PostV1SubcontractsIdRejectResponse403ErrorDetail",
+    "PostV1SubcontractsIdRejectResponse404",
+    "PostV1SubcontractsIdRejectResponse404Error",
+    "PostV1SubcontractsIdRejectResponse404ErrorCode",
+    "PostV1SubcontractsIdRejectResponse404ErrorDetail",
+    "PostV1SubcontractsIdRejectResponse409",
+    "PostV1SubcontractsIdRejectResponse409Error",
+    "PostV1SubcontractsIdRejectResponse409ErrorCode",
+    "PostV1SubcontractsIdRejectResponse409ErrorDetail",
+    "PostV1SubcontractsIdRejectResponse422",
+    "PostV1SubcontractsIdRejectResponse422Error",
+    "PostV1SubcontractsIdRejectResponse422ErrorCode",
+    "PostV1SubcontractsIdRejectResponse422ErrorDetail",
+    "PostV1SubcontractsResponse201",
+    "PostV1SubcontractsResponse201Spend",
+    "PostV1SubcontractsResponse201SpendDecision",
+    "PostV1SubcontractsResponse201SpendReasonsItem",
+    "PostV1SubcontractsResponse201SpendStatus",
+    "PostV1SubcontractsResponse201SubcontractType0",
+    "PostV1SubcontractsResponse201SubcontractType0Status",
+    "PostV1SubcontractsResponse400",
+    "PostV1SubcontractsResponse400Error",
+    "PostV1SubcontractsResponse400ErrorCode",
+    "PostV1SubcontractsResponse400ErrorDetail",
+    "PostV1SubcontractsResponse401",
+    "PostV1SubcontractsResponse401Error",
+    "PostV1SubcontractsResponse401ErrorCode",
+    "PostV1SubcontractsResponse401ErrorDetail",
+    "PostV1SubcontractsResponse403",
+    "PostV1SubcontractsResponse403Error",
+    "PostV1SubcontractsResponse403ErrorCode",
+    "PostV1SubcontractsResponse403ErrorDetail",
+    "PostV1SubcontractsResponse404",
+    "PostV1SubcontractsResponse404Error",
+    "PostV1SubcontractsResponse404ErrorCode",
+    "PostV1SubcontractsResponse404ErrorDetail",
+    "PostV1SubcontractsResponse409",
+    "PostV1SubcontractsResponse409Error",
+    "PostV1SubcontractsResponse409ErrorCode",
+    "PostV1SubcontractsResponse409ErrorDetail",
+    "PostV1SubcontractsResponse422",
+    "PostV1SubcontractsResponse422Error",
+    "PostV1SubcontractsResponse422ErrorCode",
+    "PostV1SubcontractsResponse422ErrorDetail",
     "PostV1WalletTopupsBody",
     "PostV1WalletTopupsIdConfirmResponse200",
     "PostV1WalletTopupsIdConfirmResponse200Status",

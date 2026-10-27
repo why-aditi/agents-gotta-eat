@@ -1,5 +1,5 @@
-// Agent detail: the mandate editor (with version history) and the spend timeline.
-import { AgentList, MandateList, SpendRequestList } from "@gottaeat/schemas";
+// Agent detail: the mandate editor (with version history), the spend timeline, subcontracts and skills.
+import { AgentList, MandateList, SpendRequestList, SubcontractList } from "@gottaeat/schemas";
 import Link from "next/link";
 import { notFound, unstable_rethrow } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,9 @@ import { PageError } from "../../_lib/page-error";
 import { activeVersion } from "./describe-rules";
 import { MandateForm } from "./mandate-form";
 import { MandateVersions } from "./mandate-versions";
+import { SkillsEditor } from "./skills-editor";
 import { SpendTimeline } from "./spend-timeline";
+import { SubcontractsTable } from "./subcontracts-table";
 
 export const metadata = { title: "Agent · Agents Gotta Eat" };
 
@@ -27,12 +29,13 @@ export default async function AgentPage({
 
   let loaded;
   try {
-    const [{ agents }, { mandates }, { spendRequests }] = await Promise.all([
+    const [{ agents }, { mandates }, { spendRequests }, { subcontracts }] = await Promise.all([
       apiFetch(AgentList, "/v1/agents"),
       apiFetch(MandateList, `${base}/mandates`),
       apiFetch(SpendRequestList, `${base}/spend-requests`),
+      apiFetch(SubcontractList, `/v1/subcontracts?agentId=${encodeURIComponent(id)}`),
     ]);
-    loaded = { agent: agents.find((a) => a.id === id), mandates, spendRequests };
+    loaded = { agent: agents.find((a) => a.id === id), mandates, spendRequests, subcontracts };
   } catch (err) {
     // Next's own control-flow errors (dynamic rendering, redirects) must propagate.
     unstable_rethrow(err);
@@ -45,12 +48,12 @@ export default async function AgentPage({
       </div>
     );
   }
-  const { agent, mandates, spendRequests } = loaded;
+  const { agent, mandates, spendRequests, subcontracts } = loaded;
   if (!agent) notFound();
 
   const active = activeVersion(mandates);
   const prefill = mandates.find((m) => m.version === active) ?? mandates[0] ?? null;
-  const defaultTab = tab === "timeline" ? "timeline" : "mandate";
+  const defaultTab = tab === "timeline" || tab === "subcontracts" || tab === "skills" ? tab : "mandate";
 
   return (
     <div className="space-y-6">
@@ -64,7 +67,8 @@ export default async function AgentPage({
           <Badge variant={agent.status === "active" ? "secondary" : "destructive"}>{agent.status}</Badge>
         </div>
         <p className="text-sm text-muted-foreground">
-          <span className="font-mono">{agent.id}</span> · Rating {formatTenths(agent.rating)} ·{" "}
+          <span className="font-mono">{agent.id}</span> · Rating {formatTenths(agent.rating)} / 5 ·{" "}
+          {agent.completedJobs} {agent.completedJobs === 1 ? "job" : "jobs"} completed ·{" "}
           {active === null ? "No active mandate" : `Mandate v${active} active`}
         </p>
       </div>
@@ -73,6 +77,8 @@ export default async function AgentPage({
         <TabsList>
           <TabsTrigger value="mandate">Mandate</TabsTrigger>
           <TabsTrigger value="timeline">Spend timeline</TabsTrigger>
+          <TabsTrigger value="subcontracts">Subcontracts</TabsTrigger>
+          <TabsTrigger value="skills">Skills</TabsTrigger>
         </TabsList>
 
         <TabsContent value="mandate" className="mt-4">
@@ -111,6 +117,30 @@ export default async function AgentPage({
             </CardHeader>
             <CardContent>
               <SpendTimeline spendRequests={spendRequests} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="subcontracts" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Subcontracts</CardTitle>
+              <CardDescription>Jobs this agent hired other agents for, and jobs it works on. Newest first.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SubcontractsTable agentId={agent.id} subcontracts={subcontracts} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="skills" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Skills</CardTitle>
+              <CardDescription>Other agents find this one by skill when they look for someone to hire.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <SkillsEditor agentId={agent.id} initial={agent.skills} />
             </CardContent>
           </Card>
         </TabsContent>

@@ -25,6 +25,8 @@ function response(apiKey: string | null) {
         kind: "external" as const,
         status: "active",
         rating: 40,
+        skills: [],
+        completedJobs: 0,
         apiKeyPrefix: "gte_agent_ab12",
         createdAt: "2026-10-18T12:00:00.000Z",
       },

@@ -8,6 +8,8 @@ const agent = {
   kind: "external",
   status: "active",
   rating: 40,
+  skills: ["extract"],
+  completedJobs: 2,
   apiKeyPrefix: "gte_agent_abcd",
   createdAt: "2026-10-12T00:00:00.000Z",
 } as const;
@@ -28,6 +30,12 @@ describe("Agent", () => {
   it("accepts a null key prefix and rejects a fractional rating", () => {
     expect(Agent.parse({ ...agent, apiKeyPrefix: null }).apiKeyPrefix).toBeNull();
     expect(Agent.safeParse({ ...agent, rating: 4.5 }).success).toBe(false);
+  });
+
+  it("needs skills and a non-negative integer completedJobs", () => {
+    expect(Agent.safeParse({ ...agent, skills: undefined }).success).toBe(false);
+    expect(Agent.safeParse({ ...agent, completedJobs: -1 }).success).toBe(false);
+    expect(Agent.safeParse({ ...agent, completedJobs: 1.5 }).success).toBe(false);
   });
 });
 
