@@ -19,10 +19,8 @@ services:
         sync: false
       - key: WEB_ORIGINS
         sync: false
-      # Wins over the LLM intent check while set. Remove it once the gateway has working keys, so gate 2 uses
-      # GATEWAY_URL (pm-06).
-      - key: POLICY_GATE2_STUB
-        value: allow
+      # POLICY_GATE2_STUB is deliberately not set: gate 2 then uses the LLM intent check via GATEWAY_URL, and with no
+      # gateway every spend that passes gate 1 asks its owner. Never set it to `allow` on a demo deploy.
       - key: ALLOW_DEV_CREDIT
         value: "true"
       - key: ALLOW_DEV_FUNDING

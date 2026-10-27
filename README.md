@@ -210,7 +210,7 @@ The e2e specs cover the owner flow (mandate, approval), the poster flow (post, f
 
 - **web:** Vercel, Root Directory `apps/web`. Environment in [`apps/web/README.md`](apps/web/README.md).
 - **api, gateway, agents:** Render free tier from the blueprint in [`render.yaml`](render.yaml). Postgres on Neon free.
-- Variables to fill in on Render are marked `sync: false` in `render.yaml`; `.env.example` explains each one. Before a demo, remove `POLICY_GATE2_STUB` once the gateway has working keys, or the intent check is skipped.
+- Variables to fill in on Render are marked `sync: false` in `render.yaml`; `.env.example` explains each one. The blueprint leaves `POLICY_GATE2_STUB` unset, so gate 2 uses the gateway; an older deploy may still have it set to `allow` in the Render dashboard (removing a variable from the blueprint doesn't delete it there), so delete it there once.
 
 ## Limits and honest notes
 
