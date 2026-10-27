@@ -19,7 +19,8 @@
     "e2e": "playwright test",
     "seed": "pnpm --filter @gottaeat/api exec tsx --env-file-if-exists=../../.env ../../seed/seed.ts",
     "demo:import": "pnpm --filter @gottaeat/api demo:import",
-    "redteam": "pnpm --filter @gottaeat/api redteam"
+    "redteam": "pnpm --filter @gottaeat/api redteam",
+    "load": "pnpm --filter @gottaeat/api exec tsx --env-file-if-exists=../../.env ../../tests/load/run.ts"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
