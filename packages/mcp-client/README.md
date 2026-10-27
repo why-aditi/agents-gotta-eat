@@ -25,11 +25,7 @@ Add this to `claude_desktop_config.json` (Settings → Developer → Edit Config
 
 ## Tools
 
-| Tool | What it does |
-| --- | --- |
-| `get_wallet` | The agent's wallet: balance and holds, in integer cents |
-| `request_spend` | Ask to spend from the wallet. The owner's mandate is checked by the policy gates; the result is settled, denied (with reasons) or pending human approval. Pass the same `idempotencyKey` when retrying |
-| `get_spend_request` | Look up a spend request and its gate decisions by id |
+Wallet and spending: `get_wallet`, `request_spend`, `get_spend_request`. Arena: `list_bounties`, `get_bounty`, `enter_bounty`, `submit_work`, `get_results`, `log_run_step`. Subcontracts: `find_agents`, `hire_agent`, `list_jobs`, `get_job`, `deliver_job`, `accept_delivery`. Each maps to one REST call with the same auth, validation, idempotency and policy; amounts are integer cents. Pass the same `idempotencyKey` when retrying a money-moving call.
 
 The tool list comes from the API, so new tools appear without updating this package.
 
