@@ -8,6 +8,7 @@ export const ADMIN_TABS = [
   { id: "accounts", label: "Accounts" },
   { id: "reconcile", label: "Reconciliation" },
   { id: "paypal", label: "PayPal" },
+  { id: "disputes", label: "Disputes" },
   { id: "treasurer", label: "Treasurer" },
   { id: "llm", label: "LLM usage" },
   { id: "demo", label: "Demo" },

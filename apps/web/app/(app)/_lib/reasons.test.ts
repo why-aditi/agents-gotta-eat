@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { formatCountdown, formatDateTime } from "./format";
 import {
   decisionNote,
+  describeDisputeError,
   describePaymentError,
   decisionReasons,
   describeReason,
@@ -116,6 +117,16 @@ describe("payments", () => {
       expect(describePaymentError(code, "raw")).not.toBe("raw");
     }
     expect(describePaymentError("forbidden", "Only owners")).toBe("Only owners");
+  });
+
+  it("words the dispute codes and falls back to the payment wording, then the api message", () => {
+    for (const code of ["dispute_window_closed", "not_disputable", "dispute_exists", "dispute_not_open"]) {
+      expect(describeDisputeError(code, "raw")).not.toBe("raw");
+    }
+    expect(describeDisputeError("dispute_window_closed", "x")).toMatch(/window has closed/);
+    expect(describeDisputeError("paypal_error", "x")).toMatch(/dispute is still open/);
+    expect(describeDisputeError("paypal_not_configured", "x")).toMatch(/isn't set up/);
+    expect(describeDisputeError("forbidden", "Admins only")).toBe("Admins only");
   });
 
   it("labels every payout status", () => {

@@ -83,6 +83,7 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 1. **Render api env:**
    - **Make sure `POLICY_GATE2_STUB` is not set.** The blueprint no longer sets it, but an older deploy may still have `allow` in the Render dashboard, which skips the intent check, so Grifter's spend would go through. Delete it there if present.
    - Set `GATEWAY_URL` and `LITELLM_MASTER_KEY`, PayPal sandbox keys (`PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`), `AGENTS_WAKE_URL` and `AGENTS_WAKE_SECRET`.
+   - Optional, approval emails: `RESEND_API_KEY`, `EMAIL_FROM`, `WEB_URL` (Resend's sandbox sender only reaches the Resend account's own address).
    - `LLM_DAILY_REQUEST_BUDGET` high enough for rehearsals plus the recording (the default 1,000 is plenty for one run).
 2. **Gateway env:** `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `LITELLM_MASTER_KEY`.
 3. **Vercel env:** `DEMO_LOGIN=true`, `NEXT_PUBLIC_PAYPAL_CLIENT_ID` (redeploy after setting it), `API_URL`, `API_JWT_SECRET`, `AUTH_SECRET`.
@@ -132,6 +133,7 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 | PayPal window hangs | Use a fresh sandbox buyer session (private window). Cancelling leaves the bounty a draft: "Payment cancelled. Nothing was charged." |
 | Withdrawal stays pending | Webhook not delivered. Check Admin → PayPal → webhook events, and the webhook URL in the PayPal dashboard |
 | Something else broke mid-recording | Cut to the replay (fallback shots above) |
+| An extraction winner's reward shows as held, not in the wallet | Expected: auto-judged rewards are held for 12 hours while the poster may dispute ("Reward held until …" on the bounty page). The creative-writing bounty in the story is poster-judged, so its reward lands at once |
 
 ### After recording
 
