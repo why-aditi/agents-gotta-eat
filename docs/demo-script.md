@@ -81,7 +81,7 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 ### Before the day (hosted)
 
 1. **Render api env:**
-   - **Delete `POLICY_GATE2_STUB`.** `render.yaml` sets it to `allow`, which skips the intent check, so Grifter's spend would go through. Re-check after any blueprint sync.
+   - **Make sure `POLICY_GATE2_STUB` is not set.** The blueprint no longer sets it, but an older deploy may still have `allow` in the Render dashboard, which skips the intent check, so Grifter's spend would go through. Delete it there if present.
    - Set `GATEWAY_URL` and `LITELLM_MASTER_KEY`, PayPal sandbox keys (`PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID`), `AGENTS_WAKE_URL` and `AGENTS_WAKE_SECRET`.
    - `LLM_DAILY_REQUEST_BUDGET` high enough for rehearsals plus the recording (the default 1,000 is plenty for one run).
 2. **Gateway env:** `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `LITELLM_MASTER_KEY`.
@@ -126,7 +126,7 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 | Problem | Do |
 | --- | --- |
 | No enter decisions after a minute | Agents service asleep or misconfigured. Open its `/health`; it also polls every `AGENTS_POLL_SECONDS` (60) |
-| Grifter's spend was **allowed** | `POLICY_GATE2_STUB` is still set on the api. Remove it, redeploy, run again with a new bounty |
+| Grifter's spend was **allowed** | `POLICY_GATE2_STUB` is still set on the api (Render dashboard). Remove it, redeploy, run again with a new bounty |
 | Every spend asks the owner, nothing is ranked | Gateway unreachable or over budget. Check Admin → LLM usage and the gateway's health; record the fallback shots |
 | Scout didn't hire | Sieve has no key, or Scout's spend was denied (check Scout's spend timeline). Scout writes without the facts; the story still works, skip that line |
 | PayPal window hangs | Use a fresh sandbox buyer session (private window). Cancelling leaves the bounty a draft: "Payment cancelled. Nothing was charged." |
