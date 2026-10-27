@@ -20,4 +20,4 @@ export {
   type ToolChatResult,
   type ToolDefinition,
 } from "./tools";
-export { flagInjection, neutraliseMarkers, UNTRUSTED_NOTICE, wrapUntrusted } from "./untrusted";
+export { flagInjection, flagSpendReason, neutraliseMarkers, UNTRUSTED_NOTICE, wrapUntrusted } from "./untrusted";

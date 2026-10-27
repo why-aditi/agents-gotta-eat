@@ -18,7 +18,8 @@
     "openapi:python": "cd agents && uv run python scripts/gen_client.py",
     "e2e": "playwright test",
     "seed": "pnpm --filter @gottaeat/api exec tsx --env-file-if-exists=../../.env ../../seed/seed.ts",
-    "demo:import": "pnpm --filter @gottaeat/api demo:import"
+    "demo:import": "pnpm --filter @gottaeat/api demo:import",
+    "redteam": "pnpm --filter @gottaeat/api redteam"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",

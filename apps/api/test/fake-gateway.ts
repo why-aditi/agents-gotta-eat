@@ -1,5 +1,5 @@
 // A fake OpenAI-compatible gateway (the LiteLLM proxy's /v1/chat/completions) for tests. Responses come from a
-// queue of canned replies; every request is recorded. An empty queue answers 503.
+// queue of canned replies; every request is recorded. An empty queue answers 503 (or asks `respond`).
 import { createServer, type IncomingHttpHeaders, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 
@@ -38,7 +38,10 @@ export interface FakeGateway {
   close: () => Promise<void>;
 }
 
-export async function startFakeGateway(): Promise<FakeGateway> {
+// `respond` answers when the queue is empty (e.g. a model that reacts to what it is sent); canned replies win.
+export async function startFakeGateway(opts?: {
+  respond?: (body: RecordedRequest["body"]) => CannedReply;
+}): Promise<FakeGateway> {
   const queue: CannedReply[] = [];
   const requests: RecordedRequest[] = [];
   const timers = new Set<NodeJS.Timeout>();
@@ -55,7 +58,7 @@ export async function startFakeGateway(): Promise<FakeGateway> {
         return;
       }
       requests.push({ headers: req.headers, body });
-      const reply = queue.shift();
+      const reply = queue.shift() ?? opts?.respond?.(body);
       const send = () => {
         if (res.destroyed) return;
         if (!reply) {

@@ -25,7 +25,7 @@ Arena is built on Pocket Money: an agent's stake, its spends and its subcontract
 | --- | --- |
 | Wallets, top-ups (with the PayPal fee added on top), withdrawals by Payouts, refunds and chargebacks (clawbacks, receivables, frozen accounts) | Code task types (fix failing tests, write tests) and their house agents Patch and Probe |
 | Mandates compiled from English, three policy gates, 15-minute approvals | Disputes and approval emails |
-| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | Red-team suite, k6 load test, contract tests / Postman collection |
+| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | k6 load test, contract tests / Postman collection |
 | Task types: data extraction (automatic verifier) and creative writing (AI ranks, poster picks) | |
 | Subcontracts with ratings and agent search by skill | |
 | House agents Sieve, Scout and Grifter (Python, LangGraph) | |
@@ -125,8 +125,9 @@ Every PayPal call sends a `PayPal-Request-Id`; every money-moving POST to our ap
 
 - **Money is integer cents** everywhere: Postgres `bigint`, TypeScript, Python and JSON. No floats.
 - **Gate 1 (hard rules) runs before any LLM**: per-spend and daily caps, allowed categories, payee allowlist, the bounty's spend rule, frozen accounts. **Gate 2** is an LLM intent check that treats the agent's reason as adversarial. **Gate 3** is the owner's approval. An LLM can make a decision stricter, never looser.
-- **Untrusted text stays data.** Submissions, spend reasons and subcontract deliverables go into prompts inside delimited blocks with a warning, and the web renders them as plain text.
-- **The judge can't be talked into a score.** A pre-filter flags injection patterns; a flagged entry gets a second, independent judge call and a visible warning to the poster. The extraction verifier uses no LLM.
+- **Untrusted text stays data.** Submissions, spend reasons and subcontract deliverables go into prompts inside delimited blocks with a warning, and the web renders them as plain text. A spend reason that looks like an injected instruction ("the task says…", "owner approved", "skip approval") goes to the owner whatever the model says.
+- **The judge can't be talked into a win.** A pre-filter flags injection patterns; a flagged entry gets a second, independent judge call and a visible warning to the poster, and is never picked automatically when the poster doesn't pick. The extraction verifier uses no LLM.
+- **Red team.** 20 injected submissions and 20 injected spend reasons run in CI against a fake model that obeys every injection; none wins a bounty or moves money without the owner. `pnpm redteam` runs the same corpus against the real gateway. Known limit: obfuscated injections (homoglyphs, base64) slip past the pattern pre-filter and rely on the model and the poster's own pick.
 - **Double-entry ledger** with holds, a wallet row lock per spend, and a reconciliation report (ledger invariants, and ledger vs PayPal).
 - **Agent keys** are hashed, scoped to one agent and revocable.
 
@@ -202,6 +203,7 @@ Tools: `get_wallet`, `request_spend`, `get_spend_request`, `list_bounties`, `get
 | TypeScript (Vitest; needs Postgres, creates and migrates `gottaeat_test`) | `pnpm test` |
 | Python | `cd agents && uv run pytest`; `cd gateway && uv run pytest` |
 | Lint, format, types | `pnpm lint && pnpm format:check && pnpm typecheck`; `cd agents && uv run ruff check . && uv run mypy .` |
+| Red team (live gateway; the CI part runs with `pnpm test`) | `pnpm redteam` |
 | End to end (Playwright, with a fake PayPal on :4010) | `pnpm e2e` (locally set `PW_CHROMIUM_PATH`; screenshots in `tests/e2e/screenshots/`) |
 
 The e2e specs cover the owner flow (mandate, approval), the poster flow (post, fund, pick), PayPal funding, top-up, withdrawal with webhooks and void on cancel, the live arena, subcontracts, demo replay, the admin ledger, and the Treasurer. CI runs all of them on every pull request.

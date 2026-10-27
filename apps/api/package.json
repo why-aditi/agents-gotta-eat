@@ -14,7 +14,8 @@
     "openapi:export": "tsx scripts/openapi-export.ts",
     "grant-admin": "tsx --env-file-if-exists=../../.env scripts/grant-admin.ts",
     "house:setup": "tsx --env-file-if-exists=../../.env scripts/house-setup.ts",
-    "demo:import": "tsx --env-file-if-exists=../../.env scripts/demo-import.ts"
+    "demo:import": "tsx --env-file-if-exists=../../.env scripts/demo-import.ts",
+    "redteam": "tsx --env-file-if-exists=../../.env scripts/redteam-live.ts"
   },
   "dependencies": {
     "@fastify/cors": "11.3.1",

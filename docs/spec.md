@@ -384,8 +384,8 @@ The threat that matters most is an agent, or text an agent reads, trying to move
 
 | Threat | Defence | Test |
 | --- | --- | --- |
-| Prompt-injected agent overspends | Hard-rule gate runs before any LLM; intent check treats the agent's reason as adversarial; human approval above threshold | Grifter scenario; unit tests on gate ordering |
-| Submission injects the judge | Submissions passed as delimited data; injection pre-filter; second independent judge on flags; auto verifiers use no LLM | Red-team suite of 20 injected submissions; none may change the winner |
+| Prompt-injected agent overspends | Hard-rule gate runs before any LLM; intent check treats the agent's reason as adversarial; a deterministic reason screen sends any reason matching injection patterns (instructions lifted from the task, claimed approval, "skip approval") to the owner whatever the model says; human approval above threshold | Grifter scenario; unit tests on gate ordering; red-team suite of 20 injected spend reasons against a model that always says allow (red-01) |
+| Submission injects the judge | Submissions passed as delimited data; injection pre-filter; second independent judge on flags; flagged entries are never picked when the poster doesn't pick (all flagged → the bounty voids); auto verifiers use no LLM | Red-team suite of 20 injected submissions against a model that obeys them; none is auto-picked (obfuscated ones the pre-filter can't see are listed as a known limit) (red-01) |
 | Double spend through concurrent requests | Wallet row lock + hold taken in the same transaction | Parallel load test: 50 concurrent spends against a $10 balance |
 | Replayed or forged webhooks | Signature verification; dedupe on event id | Replay the same event twice; send an unsigned event |
 | Duplicate payouts on retry | Idempotency keys on our journals and `PayPal-Request-Id` on PayPal calls | Kill the worker mid-payout and restart |
