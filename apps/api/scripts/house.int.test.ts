@@ -3,8 +3,9 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { createTestDb, resetDb } from "../test/db";
 import { agents, journals, users } from "../src/db/schema";
 import { hashApiKey } from "../src/http/auth";
+import { updateAgentSkills } from "../src/modules/identity";
 import { getBalances } from "../src/modules/ledger";
-import { getActiveMandate } from "../src/modules/policy";
+import { confirmMandate, getActiveMandate, putMandate } from "../src/modules/policy";
 import { HOUSE_CREDIT_CENTS, HOUSE_EMAIL, houseSetup } from "./house";
 
 const { db, pool } = createTestDb();
@@ -67,5 +68,59 @@ describe("houseSetup", () => {
       expect(a.apiKey).toMatch(/^gte_agent_/);
       expect(a.apiKey).not.toBe(first.agents[i]?.apiKey);
     }
+  });
+});
+
+describe("houseSetup: subcontracts (sub-01 part B)", () => {
+  it("sets skills and lets Scout and Sieve pay subcontracts, with no minimum payee rating", async () => {
+    const { agents: made } = await houseSetup(db);
+    const byName = Object.fromEntries(made.map((a) => [a.name, a]));
+    expect(byName.Sieve?.skills).toEqual(["extraction"]);
+    expect(byName.Scout?.skills).toEqual(["writing"]);
+    expect(byName.Grifter?.skills).toEqual([]);
+
+    const rows = await db.select().from(agents);
+    expect(rows.find((r) => r.name === "Sieve")?.skills).toEqual(["extraction"]);
+    expect(rows.find((r) => r.name === "Scout")?.skills).toEqual(["writing"]);
+    expect(rows.find((r) => r.name === "Grifter")?.skills).toEqual([]);
+
+    for (const name of ["Sieve", "Scout"]) {
+      const m = await getActiveMandate(db, byName[name]!.agentId);
+      expect(m?.rules.allowedCategories).toEqual(["stake", "tool", "subcontract"]);
+      expect(m?.rules.minPayeeRatingTenths).toBeUndefined();
+      expect(m?.confirmedAt).not.toBeNull();
+    }
+    const g = await getActiveMandate(db, byName.Grifter!.agentId);
+    expect(g?.rules.allowedCategories).not.toContain("subcontract");
+  });
+
+  it("upgrades an older install once: new mandate version and skills, then nothing on a rerun", async () => {
+    const first = await houseSetup(db);
+    const sieve = first.agents.find((a) => a.name === "Sieve")!;
+    // An install from before part B: stakes and tools only, no skills.
+    const old = await putMandate(db, first.ownerId, sieve.agentId, {
+      sourceText: "Sieve may pay bounty stakes and tools: at most $5 per spend and $20 a day.",
+      rules: {
+        perTxMaxCents: 500,
+        dailyMaxCents: 2_000,
+        allowedCategories: ["stake", "tool"],
+        payeeAllowlist: null,
+        scope: "any",
+        expiresAt: null,
+      },
+    });
+    await confirmMandate(db, first.ownerId, sieve.agentId, old.version);
+    await updateAgentSkills(db, { agentId: sieve.agentId, ownerId: first.ownerId, skills: [] });
+
+    const upgraded = await houseSetup(db);
+    const s2 = upgraded.agents.find((a) => a.name === "Sieve")!;
+    expect(s2.mandateVersion).toBe(old.version + 1);
+    expect(s2.skills).toEqual(["extraction"]);
+    expect((await getActiveMandate(db, sieve.agentId))?.rules.allowedCategories).toContain("subcontract");
+    // The others were already current.
+    expect(upgraded.agents.filter((a) => a.name !== "Sieve").map((a) => a.mandateVersion)).toEqual([1, 1]);
+
+    const again = await houseSetup(db);
+    expect(again.agents.map((a) => a.mandateVersion)).toEqual([old.version + 1, 1, 1]);
   });
 });

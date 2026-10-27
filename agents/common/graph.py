@@ -85,9 +85,15 @@ class HouseAgent:
     expected_spend_cents: int = 0
     max_attempts: int = 2
     has_spend: bool = False
+    # Works subcontracts from its inbox (common.runner polls it more often than bounties).
+    has_inbox: bool = False
 
     def __init__(self, ctx: AgentContext) -> None:
         self.ctx = ctx
+
+    async def check_inbox(self) -> int:
+        """Works the open jobs in the agent's inbox; returns how many were delivered. Must never raise."""
+        return 0
 
     def key(self, bounty_id: str, step: str) -> str:
         """Deterministic Idempotency-Key, so a retried run replays instead of acting twice."""
@@ -187,7 +193,7 @@ def build_graph(agent: HouseAgent, budget: Budget, record: RunRecord, runlog: Ru
             await runlog.step(
                 "spend",
                 f"{format_cents(res.amount_cents)} {res.category} spend: {res.decision}{reasons}",
-                tool="request_spend",
+                tool="hire_agent" if res.category == "subcontract" else "request_spend",
                 output=json.dumps({"spendRequestId": res.id, "status": res.status}),
             )
         return {}

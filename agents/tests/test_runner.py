@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import respx
 from fastapi.testclient import TestClient
 
 from app import create_app
 from common.config import Settings
+from common.graph import RunRecord
 from common.runner import AgentWorker, Poller, build_workers
 from sieve.agent import Sieve
 from tests.helpers import FakeLlm, MakeCtx, bounty_json, enter_json, load_seed_bounty, perfect_invoice_data
@@ -85,6 +88,46 @@ async def test_poll_survives_the_api_being_down(api_mock: respx.MockRouter, make
     api_mock.get("/v1/bounties").respond(502)
     worker = AgentWorker(Sieve(make_ctx()))
     assert await worker.poll() == []
+
+
+class StuckWorker(AgentWorker):
+    """A worker whose poll never finishes (Scout waiting on a hire)."""
+
+    async def poll(self) -> list[RunRecord]:
+        await asyncio.Event().wait()
+        return []
+
+
+class CountingWorker(AgentWorker):
+    def __init__(self, agent: Sieve) -> None:
+        super().__init__(agent)
+        self.polls = 0
+        self.inbox_checks = 0
+
+    async def poll(self) -> list[RunRecord]:
+        self.polls += 1
+        return []
+
+    async def check_inbox(self) -> int:
+        self.inbox_checks += 1
+        return 0
+
+
+async def test_one_agents_long_run_does_not_hold_up_another(make_ctx: MakeCtx) -> None:
+    counting = CountingWorker(Sieve(make_ctx()))
+    poller = Poller([StuckWorker(Sieve(make_ctx())), counting], poll_seconds=60, inbox_seconds=1)
+    poller.start()
+    try:
+        await asyncio.sleep(0.05)
+        assert counting.polls == 1
+        poller.wake()
+        await asyncio.sleep(0.05)
+        assert counting.polls == 2
+        # Sieve has an inbox: it is checked between bounty polls too.
+        await asyncio.sleep(1.1)
+        assert counting.inbox_checks >= 1
+    finally:
+        await poller.stop()
 
 
 def test_agent_without_key_is_disabled() -> None:
