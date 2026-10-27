@@ -4,7 +4,14 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("./actions", () => ({ loadJournals: vi.fn(), loadJournal: vi.fn() }));
+vi.mock("./actions", () => ({
+  loadJournals: vi.fn(),
+  loadJournal: vi.fn(),
+  loadPayPalCalls: vi.fn(),
+  loadWebhookEvents: vi.fn(),
+  runPayPalReconcile: vi.fn(),
+  askTreasurer: vi.fn(),
+}));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 const refresh = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));

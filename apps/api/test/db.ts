@@ -18,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate subcontracts, recordings, recording_events, events, agent_runs, webhook_events, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate paypal_calls, subcontracts, recordings, recording_events, events, agent_runs, webhook_events, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,

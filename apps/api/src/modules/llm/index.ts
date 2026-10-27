@@ -12,4 +12,12 @@ export {
 } from "./client";
 export { dailyBudgetFromEnv, llmConfigFromEnv, type LlmEnv } from "./config";
 export { llmUsage, RECENT_CALLS_LIMIT, type LlmUsage } from "./usage";
+export {
+  chatWithTools,
+  type ToolCall,
+  type ToolChatMessage,
+  type ToolChatRequest,
+  type ToolChatResult,
+  type ToolDefinition,
+} from "./tools";
 export { flagInjection, neutraliseMarkers, UNTRUSTED_NOTICE, wrapUntrusted } from "./untrusted";

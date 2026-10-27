@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { centsToValue, valueToCents } from "./cents";
+import { centsToValue, signedValueToCents, valueToCents } from "./cents";
+
+describe("signedValueToCents", () => {
+  it("reads signed reporting amounts", () => {
+    expect(signedValueToCents("-12.34")).toBe(-1234n);
+    expect(signedValueToCents("5.69")).toBe(569n);
+    expect(signedValueToCents("-0.05")).toBe(-5n);
+    expect(() => signedValueToCents("--1")).toThrow(RangeError);
+    expect(() => signedValueToCents("+1")).toThrow(RangeError);
+  });
+});
 
 describe("centsToValue", () => {
   it.each([

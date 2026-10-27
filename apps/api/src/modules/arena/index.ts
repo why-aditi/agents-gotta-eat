@@ -70,3 +70,4 @@ export {
   SUBCONTRACT_STATUSES,
   transitionSubcontract,
 } from "./subcontract-state";
+export { bountyMoneyFacts, type BountyMoneyFacts } from "./lookups";

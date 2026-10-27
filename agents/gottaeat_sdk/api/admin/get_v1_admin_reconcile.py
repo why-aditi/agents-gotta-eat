@@ -66,7 +66,7 @@ def sync_detailed(
     """Run the internal ledger reconciliation
 
      Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no
-    wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.
+    wallet or hold is negative. Ledger-vs-PayPal is POST /v1/admin/reconcile/paypal.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -92,7 +92,7 @@ def sync(
     """Run the internal ledger reconciliation
 
      Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no
-    wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.
+    wallet or hold is negative. Ledger-vs-PayPal is POST /v1/admin/reconcile/paypal.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,7 +114,7 @@ async def asyncio_detailed(
     """Run the internal ledger reconciliation
 
      Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no
-    wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.
+    wallet or hold is negative. Ledger-vs-PayPal is POST /v1/admin/reconcile/paypal.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -138,7 +138,7 @@ async def asyncio(
     """Run the internal ledger reconciliation
 
      Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no
-    wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.
+    wallet or hold is negative. Ledger-vs-PayPal is POST /v1/admin/reconcile/paypal.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

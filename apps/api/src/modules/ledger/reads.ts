@@ -4,6 +4,7 @@ import { and, asc, desc, eq, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import type { Db } from "../../db";
 import { journals, ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
+import { PAYPAL_CLEARING } from "./accounts";
 import type { JournalKind } from "./journal";
 
 export const JOURNAL_PAGE_DEFAULT = 100;
@@ -183,4 +184,74 @@ export async function listAccounts(db: Db): Promise<AccountView[]> {
       createdAt: r.createdAt,
     };
   });
+}
+
+// A journal's net movement on paypal:clearing: debits minus credits, so positive is money PayPal took in for us
+// (a capture) and negative is money that left through PayPal (a payout, a refund).
+export type ClearingMovement = {
+  journalId: string;
+  kind: JournalKind;
+  refType: string | null;
+  refId: string | null;
+  idempotencyKey: string;
+  netCents: bigint;
+  createdAt: Date;
+};
+
+// Every journal touching paypal:clearing created in [from, to), oldest first. For PayPal reconciliation.
+export async function clearingMovements(db: Db, opts: { from: Date; to: Date }): Promise<ClearingMovement[]> {
+  const rows = await db
+    .select({
+      journalId: journals.id,
+      kind: journals.kind,
+      refType: journals.refType,
+      refId: journals.refId,
+      idempotencyKey: journals.idempotencyKey,
+      createdAt: journals.createdAt,
+      net: sql<string>`sum(${ledgerEntries.debitCents} - ${ledgerEntries.creditCents})::bigint`,
+    })
+    .from(journals)
+    .innerJoin(ledgerEntries, eq(ledgerEntries.journalId, journals.id))
+    .where(
+      and(
+        eq(ledgerEntries.accountId, PAYPAL_CLEARING),
+        sql`${journals.createdAt} >= ${opts.from.toISOString()}::timestamptz`,
+        sql`${journals.createdAt} < ${opts.to.toISOString()}::timestamptz`,
+      ),
+    )
+    .groupBy(journals.id)
+    .orderBy(asc(journals.createdAt), asc(journals.id));
+  return rows.map((r) => ({
+    journalId: r.journalId,
+    kind: r.kind,
+    refType: r.refType,
+    refId: r.refId,
+    idempotencyKey: r.idempotencyKey,
+    netCents: BigInt(r.net),
+    createdAt: r.createdAt,
+  }));
+}
+
+export const JOURNALS_FOR_REF_LIMIT = 50;
+
+// The journals of one reference (e.g. "topup", "tup_..."), oldest first, with their totals. At most 50.
+export async function journalsForRef(db: Db, refType: string, refId: string): Promise<JournalSummary[]> {
+  const rows = await db
+    .select({
+      id: journals.id,
+      kind: journals.kind,
+      refType: journals.refType,
+      refId: journals.refId,
+      idempotencyKey: journals.idempotencyKey,
+      createdAt: journals.createdAt,
+      totalCents: totalDebits,
+      lineCount: sql<number>`count(${ledgerEntries.id})::int`,
+    })
+    .from(journals)
+    .leftJoin(ledgerEntries, eq(ledgerEntries.journalId, journals.id))
+    .where(and(eq(journals.refType, refType), eq(journals.refId, refId)))
+    .groupBy(journals.id)
+    .orderBy(asc(journals.createdAt), asc(journals.id))
+    .limit(JOURNALS_FOR_REF_LIMIT);
+  return rows.map((r) => ({ ...r, totalCents: BigInt(r.totalCents) }));
 }

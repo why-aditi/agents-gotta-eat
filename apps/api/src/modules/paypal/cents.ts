@@ -11,3 +11,8 @@ export function valueToCents(value: string): bigint {
   if (!m) throw new RangeError(`invalid money value: ${JSON.stringify(value)}`);
   return BigInt(m[1]!) * 100n + BigInt((m[2] ?? "").padEnd(2, "0") || "0");
 }
+
+// PayPal reporting amounts carry a sign ("-12.34" for money out). Same rules as valueToCents otherwise.
+export function signedValueToCents(value: string): bigint {
+  return value.startsWith("-") ? -valueToCents(value.slice(1)) : valueToCents(value);
+}

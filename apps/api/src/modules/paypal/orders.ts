@@ -1,7 +1,7 @@
 import type { PayPalClient } from "./client";
 import { centsToValue, valueToCents } from "./cents";
 
-interface RawOrder {
+export interface RawOrder {
   id: string;
   status: string;
   purchase_units?: {
@@ -27,7 +27,7 @@ export interface PayPalOrder {
   capturedCents: bigint | null;
 }
 
-function toOrder(raw: RawOrder): PayPalOrder {
+export function toOrder(raw: RawOrder): PayPalOrder {
   const unit = raw.purchase_units?.[0];
   const auth = unit?.payments?.authorizations?.[0];
   const capture = unit?.payments?.captures?.[0];

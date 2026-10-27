@@ -7,6 +7,8 @@ export const ADMIN_TABS = [
   { id: "journals", label: "Journals" },
   { id: "accounts", label: "Accounts" },
   { id: "reconcile", label: "Reconciliation" },
+  { id: "paypal", label: "PayPal" },
+  { id: "treasurer", label: "Treasurer" },
   { id: "llm", label: "LLM usage" },
   { id: "demo", label: "Demo" },
 ] as const;
@@ -40,4 +42,24 @@ export function usagePercent(used: number, budget: number): number {
 export function checkLabel(name: string): string {
   const words = name.replace(/_/g, " ");
   return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+// Signed cents ("-$6.00" for money out), or an em dash for none.
+export function signedCents(cents: number | null): string {
+  if (cents === null) return "—";
+  return formatCents(cents);
+}
+
+const RECONCILE_LABELS: Record<string, string> = {
+  matched: "Matched",
+  missing_in_paypal: "Missing in PayPal",
+  missing_in_ledger: "Missing in ledger",
+  amount_mismatch: "Amount mismatch",
+  pending: "Pending",
+  unrelated: "Unrelated",
+};
+
+// "missing_in_paypal" -> "Missing in PayPal".
+export function reconcileStatusLabel(status: string): string {
+  return RECONCILE_LABELS[status] ?? checkLabel(status);
 }

@@ -21,6 +21,7 @@
     "@fastify/swagger": "9.9.2",
     "@gottaeat/schemas": "workspace:*",
     "@modelcontextprotocol/sdk": "1.32.1",
+    "@paypal/agent-toolkit": "1.11.0",
     "ajv": "8.20.0",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.5",

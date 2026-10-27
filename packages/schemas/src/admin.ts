@@ -95,7 +95,7 @@ export const ReconcileReport = z.object({
 });
 export type ReconcileReport = z.infer<typeof ReconcileReport>;
 
-export const LlmRole = z.enum(["mandate_compile", "intent_check", "judge"]);
+export const LlmRole = z.enum(["mandate_compile", "intent_check", "judge", "treasurer"]);
 export type LlmRole = z.infer<typeof LlmRole>;
 
 export const LlmOutcome = z.enum(["ok", "invalid_output", "error", "timeout", "over_budget"]);

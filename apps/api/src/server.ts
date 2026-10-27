@@ -5,7 +5,14 @@ import { createDb, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
 import { startReauthorizeSweep } from "./modules/escrow";
 import { startPaymentJobs } from "./modules/payments";
-import { configurePayPal, createPayPalClient } from "./modules/paypal";
+import {
+  configurePayPal,
+  configurePayPalToolkit,
+  createPayPalClient,
+  createPayPalToolkit,
+  paypalCallLogger,
+  recordPayPalCall,
+} from "./modules/paypal";
 import { startPruneSweep } from "./modules/events";
 import { aiRanker } from "./modules/judge";
 import { llmConfigFromEnv } from "./modules/llm";
@@ -37,12 +44,28 @@ const { pool, db } = createDb(requireDatabaseUrl());
 const app = buildApp({ db, env });
 const paypalConfigured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
 if (paypalConfigured) {
-  configurePayPal(
-    createPayPalClient({
+  const apiBase = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
+  // Every attempt goes to the debug log and to paypal_calls (the admin PayPal tab).
+  const logCall = paypalCallLogger(db, (err) => app.log.error({ err }, "paypal call log write failed"));
+  const client = createPayPalClient({
+    clientId: process.env.PAYPAL_CLIENT_ID!,
+    clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
+    apiBase,
+    logger: async (entry) => {
+      app.log.debug({ paypal: entry }, "paypal call");
+      await logCall(entry);
+    },
+  });
+  configurePayPal(client);
+  // The Agent Toolkit for the Treasurer's reads (sandbox); a loopback fake gets the client's direct calls.
+  configurePayPalToolkit(
+    createPayPalToolkit({
       clientId: process.env.PAYPAL_CLIENT_ID!,
       clientSecret: process.env.PAYPAL_CLIENT_SECRET!,
-      apiBase: process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com",
-      logger: (entry) => app.log.debug({ paypal: entry }, "paypal call"),
+      apiBase,
+      client,
+      record: (call) =>
+        recordPayPalCall(db, call).catch((err: unknown) => app.log.error({ err }, "paypal call log write failed")),
     }),
   );
 }
