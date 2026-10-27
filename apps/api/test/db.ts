@@ -18,7 +18,7 @@ export function createTestDb(opts?: { max?: number }) {
 // TRUNCATE skips the append-only row triggers. The seeded system accounts are restored after.
 export async function resetDb(db: Db) {
   await db.execute(
-    sql`truncate events, agent_runs, webhook_events, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
+    sql`truncate recordings, recording_events, events, agent_runs, webhook_events, llm_calls, judgements, submissions, entries, escrows, bounty_assets, bounties, spend_decisions, spend_requests, mandates, idempotency_keys, ledger_entries, journals, wallets, ledger_accounts, agents, users cascade`,
   );
   await db.execute(
     sql`insert into ledger_accounts (id, type) values ('platform:fees', 'revenue'), ('paypal:clearing', 'asset')`,
@@ -55,7 +55,7 @@ export const TEST_JWT_SECRET = "test-secret-at-least-32-bytes-long-0123456789";
 export function buildTestApp(
   db: Db,
   env?: Partial<AppEnv>,
-  opts?: Pick<BuildAppOptions, "eventBus" | "eventsHeartbeatMs">,
+  opts?: Pick<BuildAppOptions, "eventBus" | "eventsHeartbeatMs" | "demo">,
 ) {
   return buildApp({
     db,

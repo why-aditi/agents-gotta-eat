@@ -5,14 +5,12 @@ import { eq } from "drizzle-orm";
 import type { Db } from "../src/db";
 import { users } from "../src/db/schema";
 import { newId } from "../src/lib/ids";
-import { createAgent, listAgents, rotateKey } from "../src/modules/identity";
+import { createAgent, HOUSE_CREDIT_CENTS, HOUSE_EMAIL, listAgents, rotateKey } from "../src/modules/identity";
 import { devCredit } from "../src/modules/ledger";
 import { confirmMandate, getActiveMandate, putMandate } from "../src/modules/policy";
 
-export const HOUSE_EMAIL = "house@gottaeat.dev";
-// $60, once. The spec said $20, but gate 1 denies a $40 spend from a $20 wallet (insufficient_funds), and the
-// Grifter demo needs gate 1 to pass its $40 so gate 2 catches it. $60 covers that plus stakes.
-export const HOUSE_CREDIT_CENTS = 6_000n;
+// The owner and its one-time $60 dev credit live in identity, so the demo reset can top the wallet back up.
+export { HOUSE_CREDIT_CENTS, HOUSE_EMAIL };
 
 const SAFE: MandateRules = {
   perTxMaxCents: 500,

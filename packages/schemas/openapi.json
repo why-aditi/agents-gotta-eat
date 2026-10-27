@@ -298,6 +298,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -371,6 +372,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -444,6 +446,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -517,6 +520,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -590,6 +594,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -746,6 +751,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -819,6 +825,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -944,6 +951,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1017,6 +1025,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1163,6 +1172,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1236,6 +1246,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1309,6 +1320,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1484,6 +1496,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1557,6 +1570,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1630,6 +1644,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1703,6 +1718,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1776,6 +1792,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1849,6 +1866,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -1952,6 +1970,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2025,6 +2044,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2098,6 +2118,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2171,6 +2192,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2395,6 +2417,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2468,6 +2491,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2541,6 +2565,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2614,6 +2639,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -2687,6 +2713,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3017,6 +3044,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3090,6 +3118,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3163,6 +3192,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3236,6 +3266,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3488,6 +3519,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3561,6 +3593,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3634,6 +3667,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3707,6 +3741,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -3951,6 +3986,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4024,6 +4060,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4097,6 +4134,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4170,6 +4208,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4403,6 +4442,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4606,6 +4646,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4679,6 +4720,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4752,6 +4794,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4825,6 +4868,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -4898,6 +4942,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5164,6 +5209,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5237,6 +5283,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5310,6 +5357,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5586,6 +5634,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5659,6 +5708,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -5732,6 +5782,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6017,6 +6068,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6090,6 +6142,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6163,6 +6216,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6236,6 +6290,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6309,6 +6364,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6382,6 +6438,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6656,6 +6713,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6729,6 +6787,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6802,6 +6861,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -6875,6 +6935,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7137,6 +7198,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7210,6 +7272,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7283,6 +7346,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7356,6 +7420,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7429,6 +7494,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7502,6 +7568,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7880,6 +7947,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -7953,6 +8021,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8026,6 +8095,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8099,6 +8169,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8172,6 +8243,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8432,6 +8504,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8505,6 +8578,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8678,6 +8752,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8751,6 +8826,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -8824,6 +8900,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9127,6 +9204,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9200,6 +9278,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9273,6 +9352,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9346,6 +9426,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9419,6 +9500,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9492,6 +9574,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9709,6 +9792,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9782,6 +9866,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -9855,6 +9940,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10069,6 +10155,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10142,6 +10229,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10215,6 +10303,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10288,6 +10377,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10361,6 +10451,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10434,6 +10525,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10555,6 +10647,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10628,6 +10721,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10701,6 +10795,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10774,6 +10869,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10847,6 +10943,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10920,6 +11017,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -10993,6 +11091,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11066,6 +11165,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11280,6 +11380,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11353,6 +11454,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11426,6 +11528,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11499,6 +11602,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11572,6 +11676,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11645,6 +11750,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11718,6 +11824,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -11791,6 +11898,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12036,6 +12144,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12109,6 +12218,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12182,6 +12292,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12255,6 +12366,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12328,6 +12440,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12401,6 +12514,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12629,6 +12743,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12702,6 +12817,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12775,6 +12891,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -12848,6 +12965,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13009,6 +13127,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13082,6 +13201,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13155,6 +13275,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13330,6 +13451,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13403,6 +13525,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13476,6 +13599,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13549,6 +13673,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13622,6 +13747,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13695,6 +13821,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13836,6 +13963,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13909,6 +14037,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -13982,6 +14111,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14055,6 +14185,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14281,6 +14412,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14354,6 +14486,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14427,6 +14560,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14500,6 +14634,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14573,6 +14708,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14646,6 +14782,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14790,6 +14927,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14863,6 +15001,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -14936,6 +15075,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15009,6 +15149,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15082,6 +15223,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15155,6 +15297,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15228,6 +15371,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15301,6 +15445,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15444,6 +15589,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15517,6 +15663,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15590,6 +15737,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15663,6 +15811,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15736,6 +15885,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15809,6 +15959,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15882,6 +16033,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -15955,6 +16107,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16113,6 +16266,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16186,6 +16340,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16259,6 +16414,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16332,6 +16488,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16405,6 +16562,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16478,6 +16636,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16551,6 +16710,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16624,6 +16784,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16771,6 +16932,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16844,6 +17006,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -16954,6 +17117,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17027,6 +17191,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17157,6 +17322,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17230,6 +17396,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17303,6 +17470,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17376,6 +17544,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17500,6 +17669,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17573,6 +17743,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17747,6 +17918,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17820,6 +17992,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17893,6 +18066,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -17966,6 +18140,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18039,6 +18214,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18112,6 +18288,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18185,6 +18362,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18295,6 +18473,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18368,6 +18547,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18454,6 +18634,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18527,6 +18708,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18600,6 +18782,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18686,6 +18869,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18759,6 +18943,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -18832,6 +19017,2591 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings": {
+      "get": {
+        "summary": "Every recording, newest first",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. The active recording (if any) has `endedAt` null.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "recordings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "notes": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "startedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          "endedAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "eventCount": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "featured": {
+                            "type": "boolean"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "live",
+                              "import"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title",
+                          "notes",
+                          "startedAt",
+                          "endedAt",
+                          "eventCount",
+                          "featured",
+                          "source"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "recordings"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings/start": {
+      "post": {
+        "summary": "Start recording public events",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Every public event from now until stop is saved with its offset. One recording at a time: 409 `recording_active` while one is running. Owner-scoped events are never recorded.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "notes": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "endedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "eventCount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "live",
+                        "import"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "notes",
+                    "startedAt",
+                    "endedAt",
+                    "eventCount",
+                    "featured",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings/stop": {
+      "post": {
+        "summary": "Stop the active recording",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Also copies any public event in the recording's window that the live recorder missed. 404 when no recording is active.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "notes": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "endedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "eventCount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "live",
+                        "import"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "notes",
+                    "startedAt",
+                    "endedAt",
+                    "eventCount",
+                    "featured",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings/window": {
+      "post": {
+        "summary": "Save a finished recording from events already stored",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Copies the public events between `from` and `to` (events are kept 30 days) into a new, finished recording.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "from": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                  },
+                  "to": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                  }
+                },
+                "required": [
+                  "title",
+                  "from",
+                  "to"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "notes": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "endedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "eventCount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "live",
+                        "import"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "notes",
+                    "startedAt",
+                    "endedAt",
+                    "eventCount",
+                    "featured",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings/{id}/feature": {
+      "post": {
+        "summary": "Feature a recording on /demo",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. Unfeatures the previous one. 409 `recording_active` for a recording still running.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "notes": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "startedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "endedAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "eventCount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "featured": {
+                      "type": "boolean"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "live",
+                        "import"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "notes",
+                    "startedAt",
+                    "endedAt",
+                    "eventCount",
+                    "featured",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/recordings/{id}": {
+      "delete": {
+        "summary": "Delete a recording and its events",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Default Response"
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/demo/reset": {
+      "post": {
+        "summary": "Reset the demo (dev only)",
+        "tags": [
+          "admin"
+        ],
+        "description": "Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true` and `ALLOW_DEV_CREDIT=true`. Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.",
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opened": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "title"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "skipped": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "creditedCents": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "opened",
+                    "skipped",
+                    "creditedCents"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19055,6 +21825,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19128,6 +21899,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19201,6 +21973,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19416,6 +22189,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19489,6 +22263,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19562,6 +22337,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19635,6 +22411,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19800,6 +22577,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -19873,6 +22651,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -20011,6 +22790,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -20084,6 +22864,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -20327,6 +23108,7 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },
@@ -20400,6 +23182,773 @@
                             "account_frozen",
                             "rate_limited",
                             "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/stream": {
+      "get": {
+        "summary": "Replay a recorded run (Server-Sent Events)",
+        "tags": [
+          "demo"
+        ],
+        "description": "No auth. `text/event-stream`. Replays `recording` (default: the featured one; 404 `not_found` when there is none) at `speed` 1 or 4. Each message has `id` (the event's seq), `event` (its type) and `data` (a ReplayEvent: `offsetMs` and the ArenaEvent). Events are sent when their time comes: the recorded gap divided by `speed`, at most 3 seconds. `from` resumes after that seq. Ends with `event: end`. A comment line every 15 seconds is the heartbeat. Rate limited with the other demo routes (30 requests a minute per IP, 429 `rate_limited`).",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "recording",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "speed",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "from",
+            "required": false
+          }
+        ],
+        "security": [],
+        "responses": {
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/status": {
+      "get": {
+        "summary": "The featured recording and whether live mode is near its LLM budget",
+        "tags": [
+          "demo"
+        ],
+        "description": "No auth. `live.fallback` is true once today's gateway requests reach 80% of the daily budget: the web app then sends new visitors to the replay. Rate limited with the other demo routes.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "featured": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "notes": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "startedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                            },
+                            "endedAt": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "eventCount": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "featured": {
+                              "type": "boolean"
+                            },
+                            "source": {
+                              "type": "string",
+                              "enum": [
+                                "live",
+                                "import"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "notes",
+                            "startedAt",
+                            "endedAt",
+                            "eventCount",
+                            "featured",
+                            "source"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "live": {
+                      "type": "object",
+                      "properties": {
+                        "budgetUsed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "budget": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "fallback": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "budgetUsed",
+                        "budget",
+                        "fallback"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "featured",
+                    "live"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/recordings/{id}/money": {
+      "get": {
+        "summary": "PayPal sandbox ids from a recorded run",
+        "tags": [
+          "demo"
+        ],
+        "description": "No auth. One link per PayPal id on the recording's bounty events: the order and authorization when a bounty opened, the capture when it settled. Authorizations and captures link to the sandbox activity page; orders have no stable sandbox URL, so `url` is null. Dev-funded bounties have no ids. Payout ids are private and never listed. Rate limited with the other demo routes.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "links": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bountyId": {
+                            "type": "string"
+                          },
+                          "bountyTitle": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "order",
+                              "authorization",
+                              "capture"
+                            ]
+                          },
+                          "paypalId": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "bountyId",
+                          "bountyTitle",
+                          "kind",
+                          "paypalId",
+                          "url"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "links"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
                             "internal"
                           ]
                         },

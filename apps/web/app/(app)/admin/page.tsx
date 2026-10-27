@@ -1,13 +1,16 @@
-// Admin dashboard (read-only): journals, accounts, reconciliation and LLM usage, one tab per `?tab=`.
+// Admin dashboard: journals, accounts, reconciliation and LLM usage (read-only), and demo recordings, one tab per
+// `?tab=`.
 // Only the active tab's data is loaded. Middleware already sends non-admins away; this checks again.
 import { AdminAccountList, AdminJournalList, LlmUsage, ReconcileReport } from "@gottaeat/schemas";
 import Link from "next/link";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { ADMIN_FALLBACK_PATH, isAdmin } from "@/lib/admin-access";
 import { apiFetch, getMe } from "@/lib/api";
+import { RecordingList } from "@gottaeat/schemas";
 import { cn } from "@/lib/utils";
 import { PageError } from "../_lib/page-error";
 import { AccountsGrid } from "./accounts-grid";
+import { DemoPanel } from "./demo-panel";
 import { ADMIN_TABS, type AdminTab, parseTab } from "./format";
 import { JournalsGrid } from "./journals-grid";
 import { LlmUsagePanel } from "./llm-usage";
@@ -30,6 +33,10 @@ async function TabContent({ tab }: { tab: AdminTab }) {
         return <ReconcileCards report={await apiFetch(ReconcileReport, "/v1/admin/reconcile")} />;
       case "llm":
         return <LlmUsagePanel usage={await apiFetch(LlmUsage, "/v1/admin/llm-usage")} />;
+      case "demo": {
+        const { recordings } = await apiFetch(RecordingList, "/v1/admin/recordings");
+        return <DemoPanel recordings={recordings} />;
+      }
     }
   } catch (err) {
     // Next's own control-flow errors (dynamic rendering, redirects) must propagate.
@@ -53,7 +60,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
-        <p className="text-sm text-muted-foreground">The full ledger, its reconciliation and LLM usage. Read-only.</p>
+        <p className="text-sm text-muted-foreground">
+          The full ledger, its reconciliation and LLM usage (read-only), and the demo recordings.
+        </p>
       </div>
       <nav aria-label="Admin sections" className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-[3px]">
         {ADMIN_TABS.map((t) => (

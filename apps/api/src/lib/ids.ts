@@ -1,7 +1,7 @@
 import { monotonicFactory } from "ulid";
 
 export type IdPrefix =
-  "usr" | "agt" | "jnl" | "len" | "mdt" | "spr" | "sdc" | "bty" | "bas" | "ent" | "sub" | "jdg" | "llm" | "run";
+  "usr" | "agt" | "jnl" | "len" | "mdt" | "spr" | "sdc" | "bty" | "bas" | "ent" | "sub" | "jdg" | "llm" | "run" | "rec";
 
 // Monotonic so ids minted in the same millisecond still sort in creation order.
 const ulid = monotonicFactory();

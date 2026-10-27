@@ -1,4 +1,5 @@
-// /v1/admin read-only dashboard: journals, accounts, reconciliation and LLM usage. Admin users only.
+// /v1/admin dashboard: journals, accounts, reconciliation and LLM usage (read-only), plus the demo controls
+// (demo module). Admin users only.
 // Routing and serialisation only: the ledger and llm modules own the reads.
 import {
   AdminAccountList,
@@ -14,6 +15,7 @@ import { z } from "zod";
 import { requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
+import { demoAdminRoutes } from "../demo";
 import { decodeJournalCursor, getJournal, listAccounts, listJournals, reconcile } from "../ledger";
 import { dailyBudgetFromEnv, llmUsage } from "../llm";
 
@@ -28,6 +30,9 @@ export const adminRoutes: FastifyPluginAsyncZod = async (api) => {
     const user = requireUser(req);
     if (!user.roles.includes("admin")) throw new ApiError("forbidden", "Admins only");
   });
+
+  // Recordings and the demo reset, behind the same admin check.
+  await api.register(demoAdminRoutes, { seedDir: api.demoOptions.seedDir });
 
   api.get(
     "/v1/admin/journals",

@@ -62,6 +62,9 @@ services:
         sync: false
       - key: AGENTS_WAKE_SECRET
         sync: false
+      # Render's proxy plus the web server, which forwards the visitor's address on /v1/demo/* calls
+      - key: TRUST_PROXY_HOPS
+        value: "2"
 
   - type: web
     name: gottaeat-gateway

@@ -17,3 +17,4 @@ export * from "./escrow";
 export * from "./payments";
 export * from "./admin";
 export * from "./events";
+export * from "./demo";

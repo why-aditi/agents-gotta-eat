@@ -287,6 +287,7 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
   }
 
   // The owner's live view: every decision, including the ones waiting for them.
+  const name = await agentName(tx, principal.agentId);
   await publish(tx, {
     type: "spend.decided",
     bountyId,
@@ -294,7 +295,7 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
     data: {
       spendRequestId: id,
       agentId: principal.agentId,
-      agentName: await agentName(tx, principal.agentId),
+      agentName: name,
       bountyId,
       amountCents: toJsonCents(totalCents),
       category,
@@ -302,6 +303,15 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
       reasons,
     },
   });
+  // The public demo-moment line: the intent check (gate 2) sent this spend to its owner. Not when only gate 1
+  // asked. No reason text and no owner id.
+  if (gate2?.verdict === "ask") {
+    await publish(tx, {
+      type: "demo.spend_flagged",
+      bountyId,
+      data: { agentId: principal.agentId, agentName: name, amountCents: toJsonCents(totalCents), category, bountyId },
+    });
+  }
 
   return { id, status, decision: OUTCOME[status], reasons } satisfies CreateSpendResponse;
 }

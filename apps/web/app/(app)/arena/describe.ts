@@ -1,6 +1,7 @@
 // One line of plain text per live event. Agent names, bounty titles and run summaries are untrusted: they only
-// ever reach the page as React text, never as HTML.
-import type { AgentRunStep, ArenaEvent, PolicyReason } from "@gottaeat/schemas";
+// ever reach the page as React text, never as HTML. Shared by the live arena and the /demo replay.
+import type { AgentRunStep, PolicyReason, SpendCategory } from "@gottaeat/schemas";
+import type { ArenaEvent } from "@gottaeat/schemas";
 import { formatCents } from "@/lib/money";
 import { describeReason } from "../_lib/reasons";
 
@@ -28,17 +29,32 @@ function reasons(list: PolicyReason[]): string {
   return list[0] ? ` (${describeReason(list[0])})` : "";
 }
 
-// `viewerId` turns owner events about the viewer's own agents into "Your agent …".
+const spendWhat = (amountCents: number, category: SpendCategory) =>
+  `${formatCents(amountCents)} ${category === "stake" ? "stake" : `${category} spend`}`;
+
+// " (PayPal order X, authorization Y)" for the ids that are present, else "".
+function paypalIds(ids: [label: string, id: string | undefined][]): string {
+  const present = ids.filter(([, id]) => id).map(([label, id]) => `${label} ${id}`);
+  return present.length ? ` (PayPal ${present.join(", ")})` : "";
+}
+
+// `viewerId` turns owner events about the viewer's own agents into "Your agent …". Takes any ArenaEvent: ArenaEvent
+// is a superset of it until the demo-01 schemas merge.
 export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
   switch (e.type) {
     case "bounty.opened":
-      return `New bounty ${q(e.data.title)}: ${formatCents(e.data.rewardCents)} reward`;
+      return `New bounty ${q(e.data.title)}: ${formatCents(e.data.rewardCents)} reward${paypalIds([
+        ["order", e.data.paypalOrderId],
+        ["authorization", e.data.authorizationId],
+      ])}`;
     case "bounty.cancelled":
       return `${q(e.data.title)} was cancelled`;
     case "bounty.judging":
       return `${q(e.data.title)} closed; judging started`;
     case "bounty.settled":
-      return `${e.data.winnerAgentName} won ${q(e.data.title)} and ${formatCents(e.data.rewardCents)}`;
+      return `${e.data.winnerAgentName} won ${q(e.data.title)} and ${formatCents(e.data.rewardCents)}${paypalIds([
+        ["capture", e.data.captureId],
+      ])}`;
     case "bounty.voided":
       return `${q(e.data.title)} was voided: no entry passed`;
     case "entry.created":
@@ -51,7 +67,7 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
       return `${e.data.agentName}: ${STEP_LABEL[e.data.step]} — ${e.data.summary}`;
     case "spend.decided": {
       const who = e.ownerId === viewerId ? `Your agent ${e.data.agentName}'s` : `${e.data.agentName}'s`;
-      const what = `${formatCents(e.data.amountCents)} ${e.data.category === "stake" ? "stake" : `${e.data.category} spend`}`;
+      const what = spendWhat(e.data.amountCents, e.data.category);
       if (e.data.decision === "pending_approval")
         return `${who} ${what} is waiting for approval${reasons(e.data.reasons)}`;
       if (e.data.decision === "allow") return `${who} ${what} was allowed`;
@@ -68,5 +84,7 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
       const owed = e.data.owedCents > 0 ? `you owe ${formatCents(e.data.owedCents)}` : "your wallet covered it";
       return `PayPal reversed ${formatCents(e.data.amountCents)} of ${what}; ${owed}`;
     }
+    case "demo.spend_flagged":
+      return `${e.data.agentName}'s ${spendWhat(e.data.amountCents, e.data.category)} was flagged by the intent check and sent to its owner`;
   }
 }

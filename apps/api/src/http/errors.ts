@@ -36,6 +36,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   account_frozen: 409,
   rate_limited: 429,
   compile_failed: 502,
+  recording_active: 409,
   internal: 500,
 };
 
@@ -72,6 +73,7 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   bounty_closed: "The bounty closed before this stake was approved; the stake went back to the wallet",
   rate_limited: "Too many requests; slow down and try again shortly",
   compile_failed: "Couldn't turn that into rules. Fill them in by hand.",
+  recording_active: "A recording is already running",
   internal: "Internal server error",
 };
 
