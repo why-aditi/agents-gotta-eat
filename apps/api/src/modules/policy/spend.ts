@@ -207,7 +207,9 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
     if (pre) {
       gate2 = pre.result ?? { verdict: "ask", confidence: 0, reason: INTENT_UNAVAILABLE, detail: { skipped: true } };
     } else {
-      gate2 = await deps.intentCheck(intentInput(principal, core, await bountySummary(tx, bountyId)));
+      // Only a model reads the bounty text; stakes skip the model.
+      const bounty = deps.intentCheck.isRemote && !isStake ? await bountySummary(tx, bountyId) : null;
+      gate2 = await deps.intentCheck(intentInput(principal, core, bounty));
     }
   }
 
@@ -268,11 +270,13 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
       spendRequestId: id,
       amountCents: totalCents,
       idempotencyKey: ledgerKey.hold(id),
+      // `id` was minted above, in this transaction: nothing to replay.
+      fresh: true,
     });
   }
   if (status === "settled" && isStake) {
     if (!bountyId) throw new Error(`stake ${id} has no bounty`);
-    await stakeFromHold(tx, { spendRequestId: id, bountyId, idempotencyKey: ledgerKey.stake(id) });
+    await stakeFromHold(tx, { spendRequestId: id, bountyId, idempotencyKey: ledgerKey.stake(id), fresh: true });
     await stakeHooks().onStakeSettled(tx, id);
   } else if (status === "settled") {
     // Only tool spends settle here, and they carry no fee. Gate 1 denies a missing payee.
@@ -283,11 +287,12 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
       amountCents,
       feeCents: 0n,
       idempotencyKey: ledgerKey.settle(id),
+      fresh: true,
     });
   }
 
   // The owner's live view: every decision, including the ones waiting for them.
-  const name = await agentName(tx, principal.agentId);
+  const name = principal.name ?? (await agentName(tx, principal.agentId));
   await publish(tx, {
     type: "spend.decided",
     bountyId,
@@ -350,9 +355,20 @@ export async function createSpendRequest(
     payee: { facts, row: payeeRow },
   };
 
-  // Pre-check without any lock or transaction: gate 1 on an unlocked balance read, then gate 2 only if gate 1
-  // didn't deny. Nothing here is trusted for the final decision; the transaction re-runs gate 1 under the lock.
   const now = deps.now?.() ?? new Date();
+  // A deterministic intent check costs nothing to run under the lock, so the pre-check only earns its round-trips
+  // when gate 2 calls a model (perf-01).
+  if (!deps.intentCheck.isRemote) {
+    return db.transaction(async (tx) => {
+      const spend = await runSpend(tx, principal, core, { ...deps, now: () => now });
+      await afterSpend?.(tx, spend, now);
+      return spend;
+    });
+  }
+
+  // Pre-check without any lock or transaction: gate 1 on an unlocked balance read, then gate 2 only if gate 1
+  // didn't deny, so a spend gate 1 denies never reaches the model. Nothing here is trusted for the final decision;
+  // the transaction re-runs gate 1 under the lock.
   const [walletRow] = await db
     .select({ balanceCents: wallets.balanceCents })
     .from(wallets)

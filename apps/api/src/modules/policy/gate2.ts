@@ -29,7 +29,9 @@ export interface IntentResult {
   detail?: Record<string, unknown>;
 }
 
-export type IntentCheck = (input: IntentCheckInput) => Promise<IntentResult>;
+// isRemote: the check calls a model, so a spend gate 1 would deny is pre-checked first and never reaches it (spend.ts).
+// A deterministic check (the stub) runs inside the spend transaction with no pre-check (perf-01).
+export type IntentCheck = ((input: IntentCheckInput) => Promise<IntentResult>) & { isRemote?: boolean };
 
 export type IntentStubMode = "allow" | "ask";
 
@@ -52,7 +54,7 @@ export const REASON_FLAGGED = "Reason looks like an injected instruction";
 // A deterministic floor under any intent check: a reason that matches the injection patterns asks the owner at
 // least, whatever a (possibly fooled) model said. It only tightens. Stakes carry no agent reason and pass through.
 export function screenReason(inner: IntentCheck): IntentCheck {
-  return async (input) => {
+  const check: IntentCheck = async (input) => {
     const result = await inner(input);
     if (input.category === "stake") return result;
     const flags = flagSpendReason(input.reason);
@@ -65,6 +67,8 @@ export function screenReason(inner: IntentCheck): IntentCheck {
       detail: { ...result.detail, reasonFlags: flags, innerVerdict: result.verdict, innerReason: result.reason },
     };
   };
+  check.isRemote = inner.isRemote;
+  return check;
 }
 
 export const INTENT_MIN_CONFIDENCE = 70;
@@ -118,7 +122,7 @@ export function intentPrompt(input: IntentCheckInput): { role: "system" | "user"
 
 // The real gate 2. Every failure path asks the owner; stakes skip the model (fixed amount, no agent reason).
 export function llmIntentCheck(cfg: LlmConfig): IntentCheck {
-  return async (input) => {
+  const check: IntentCheck = async (input) => {
     if (input.category === "stake") return { verdict: "allow", confidence: 100, reason: "stake: no intent check" };
     try {
       const res = await callLlm(cfg, {
@@ -158,4 +162,6 @@ export function llmIntentCheck(cfg: LlmConfig): IntentCheck {
       return { verdict: "ask", confidence: 0, reason: INTENT_UNAVAILABLE, detail: { model: "groq", failure: "error" } };
     }
   };
+  check.isRemote = true;
+  return check;
 }

@@ -1,7 +1,7 @@
 // ponytail: Render free has no pre-deploy step, so `start` runs migrations before the server.
 // tsx at runtime; switch to a tsup bundle if cold start matters.
 import { buildApp, type AppEnv } from "./app";
-import { createDb, requireDatabaseUrl } from "./db";
+import { createDb, poolMaxFromEnv, requireDatabaseUrl } from "./db";
 import { startDeadlineSweep } from "./modules/arena";
 import { startReauthorizeSweep } from "./modules/escrow";
 import { startPaymentJobs } from "./modules/payments";
@@ -45,7 +45,7 @@ function envFromProcess(): AppEnv {
 }
 
 const env = envFromProcess();
-const { pool, db } = createDb(requireDatabaseUrl());
+const { pool, db } = createDb(requireDatabaseUrl(), { max: poolMaxFromEnv(process.env.DATABASE_POOL_MAX) });
 const app = buildApp({ db, env });
 const paypalConfigured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
 if (paypalConfigured) {

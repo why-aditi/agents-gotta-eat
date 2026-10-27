@@ -3,8 +3,8 @@
 //  - burst:  one agent, one $10.00 wallet, 50 × $1.00. The wallet row lock serialises them on purpose (that is the
 //            double-spend defence), so this one is about correctness; its latency is the queue behind one lock.
 //  - spread: 50 agents of 50 owners, one $1.00 spend each. The latency budget: p95 < 1 s for 50 simultaneous
-//            requests on one api process (measured ~0.9 s locally; one at a time it is ~40 ms). The spec's 500 ms
-//            needs fewer round-trips per spend (a later performance pass; see docs/tasks/load-01-k6.md).
+//            requests on one api process (measured ~0.65 s locally after perf-01; one at a time it is ~40 ms).
+//            The spec's 500 ms would need prepared statements and lighter logging (docs/tasks/perf-01-spend-path.md).
 // Policy outcomes are all 201 (allow or deny); anything else fails the check. Every spend has its own Idempotency-Key.
 /* global __ENV */
 import http from "k6/http";

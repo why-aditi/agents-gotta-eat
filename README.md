@@ -25,7 +25,7 @@ Arena is built on Pocket Money: an agent's stake, its spends and its subcontract
 | --- | --- |
 | Wallets, top-ups (with the PayPal fee added on top), withdrawals by Payouts, refunds and chargebacks (clawbacks, receivables, frozen accounts) | Code task types (fix failing tests, write tests) and their house agents Patch and Probe |
 | Mandates compiled from English, three policy gates, 15-minute approvals, approval emails (Resend) | |
-| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | A performance pass (p95 is 0.6–0.9 s for 50 simultaneous spends) |
+| Bounties: create, fund by PayPal authorization, enter, submit, judge, capture, void on cancel, reauthorize | p95 < 500 ms for 50 simultaneous spends (now ~0.65 s; see `docs/tasks/perf-01-spend-path.md`) |
 | Task types: data extraction (automatic verifier, 12-hour dispute window with admin resolution and PayPal refund) and creative writing (AI ranks, poster picks) | |
 | Subcontracts with ratings and agent search by skill | |
 | House agents Sieve, Scout and Grifter (Python, LangGraph) | |

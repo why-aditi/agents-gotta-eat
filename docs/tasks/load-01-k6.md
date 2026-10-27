@@ -35,7 +35,11 @@ Not in CI (about 2 minutes plus a k6 download); CI already proves no double spen
 | Judging | No admin "sweep now" endpoint; reads after the deadline judge an extraction bounty, as the 60 s sweep does | Nothing new to build or secure |
 | Tokens | `run.ts` signs HS256 user tokens with `node:crypto` (10 minutes, the api's maximum) | `jose` isn't resolvable from `tests/`, and a process per owner is slow |
 
-## Follow-up: performance pass (not started)
+## Follow-up: performance pass (done: perf-01)
+
+See `docs/tasks/perf-01-spend-path.md`: spread p95 now 647–658 ms locally (from 874–934 ms); the 1 s budget stays.
+
+The original plan:
 
 - `DATABASE_POOL_MAX` (default 10; ~20 on Neon's pooler).
 - Skip the second gate 1 read set under the lock when the pre-lock read is reused safely (balance must still be read under the lock).

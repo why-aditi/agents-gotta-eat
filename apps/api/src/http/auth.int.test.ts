@@ -95,7 +95,7 @@ describe("valid credentials", () => {
     const { agentId, apiKey } = await createAgent(db, owner);
     const res = await get("/v1/_test/agent", `Bearer ${apiKey}`);
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ type: "agent", agentId, ownerId: owner });
+    expect(res.json()).toEqual({ type: "agent", agentId, ownerId: owner, name: "Test agent" });
   });
 
   it("JWT passes and sets the user principal (exactly 10 minutes is allowed)", async () => {

@@ -1,4 +1,5 @@
 import { eq, inArray, sql } from "drizzle-orm";
+import { PgTransaction } from "drizzle-orm/pg-core";
 import type { Tx } from "../../db";
 import { journals, ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
 import { newId } from "../../lib/ids";
@@ -9,6 +10,21 @@ export type Journal = typeof journals.$inferSelect;
 export type PostedJournal = Journal & { replayed: boolean };
 
 export type JournalLine = { accountId: string; debitCents?: bigint; creditCents?: bigint };
+
+type WalletRow = typeof wallets.$inferSelect;
+const lockedByTx = new WeakMap<object, Map<string, WalletRow>>();
+
+// The wallet rows a transaction has locked (lockWallet) or updated (postJournal), kept current. Only for real
+// transactions: a plain pool handle never remembers a lock, since each of its queries may run on another connection.
+export function lockedWallets(tx: Tx): Map<string, WalletRow> | undefined {
+  if (!(tx instanceof PgTransaction)) return undefined;
+  let rows = lockedByTx.get(tx);
+  if (!rows) {
+    rows = new Map();
+    lockedByTx.set(tx, rows);
+  }
+  return rows;
+}
 
 export type PostJournalInput = {
   kind: JournalKind;
@@ -92,22 +108,38 @@ export async function postJournal(tx: Tx, input: PostJournalInput): Promise<Post
     else delta.balance += net;
     deltas.set(ownerId, delta);
   }
-  for (const [ownerId, d] of deltas) {
-    const updated = await tx
-      .update(wallets)
-      .set({
-        balanceCents: sql`${wallets.balanceCents} + ${d.balance}::bigint`,
-        heldCents: sql`${wallets.heldCents} + ${d.held}::bigint`,
-        updatedAt: sql`now()`,
-      })
-      .where(
-        sql`${wallets.ownerId} = ${ownerId}
-          and ${wallets.balanceCents} + ${d.balance}::bigint >= 0
-          and ${wallets.heldCents} + ${d.held}::bigint >= 0`,
-      )
-      .returning({ ownerId: wallets.ownerId });
-    if (updated.length === 0) {
-      throw new LedgerError("INSUFFICIENT_FUNDS", `journal would take wallet of ${ownerId} below zero`);
+  // One statement for every touched owner. An UPDATE locks its rows until the transaction ends, so the returned rows
+  // are remembered as locked and current (lockWallet reads them instead of locking again).
+  if (deltas.size > 0) {
+    const values = sql.join(
+      [...deltas].map(([ownerId, d]) => sql`(${ownerId}::text, ${d.balance}::bigint, ${d.held}::bigint)`),
+      sql`, `,
+    );
+    const result = await tx.execute<{
+      owner_id: string;
+      balance_cents: string;
+      held_cents: string;
+      updated_at: string;
+    }>(
+      sql`update ${wallets} as w
+          set balance_cents = w.balance_cents + v.balance, held_cents = w.held_cents + v.held, updated_at = now()
+          from (values ${values}) as v(owner_id, balance, held)
+          where w.owner_id = v.owner_id and w.balance_cents + v.balance >= 0 and w.held_cents + v.held >= 0
+          returning w.owner_id, w.balance_cents, w.held_cents, w.updated_at`,
+    );
+    const done = new Set(result.rows.map((r) => r.owner_id));
+    const short = [...deltas.keys()].filter((ownerId) => !done.has(ownerId));
+    if (short.length > 0) {
+      throw new LedgerError("INSUFFICIENT_FUNDS", `journal would take wallet of ${short.join(", ")} below zero`);
+    }
+    const remembered = lockedWallets(tx);
+    for (const r of result.rows) {
+      remembered?.set(r.owner_id, {
+        ownerId: r.owner_id,
+        balanceCents: BigInt(r.balance_cents),
+        heldCents: BigInt(r.held_cents),
+        updatedAt: new Date(r.updated_at),
+      });
     }
   }
 
