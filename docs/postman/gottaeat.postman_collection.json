@@ -1634,6 +1634,100 @@
           }
         },
         {
+          "name": "List bounty disputes, newest first",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/admin/disputes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "admin",
+                "disputes"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "open",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Admins only. At most 200, optionally one `status`. The reason is poster-written: show it as plain text."
+          }
+        },
+        {
+          "name": "Uphold or overturn a dispute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "idempotency-key",
+                "value": "{{$guid}}",
+                "description": "Printable ASCII. A retry with the same key and body replays the first response."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"outcome\": \"uphold\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/admin/disputes/:id/resolve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "admin",
+                "disputes",
+                ":id",
+                "resolve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<id>"
+                }
+              ],
+              "query": []
+            },
+            "description": "Admins only. `uphold`: the held reward goes to the winner's wallet. `overturn`: the reward goes back to the poster (a PayPal refund of the capture for a PayPal escrow, the poster's wallet for a dev escrow); the platform keeps the fee and the bounty keeps its winner on record. 409 `dispute_not_open` once resolved; 502 `paypal_error` when the refund fails (the dispute stays open)."
+          }
+        },
+        {
           "name": "List journals, newest first",
           "request": {
             "method": "GET",
@@ -2133,6 +2227,62 @@
           }
         },
         {
+          "name": "Dispute the result of an auto-judged bounty",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "idempotency-key",
+                "value": "{{$guid}}",
+                "description": "Printable ASCII. A retry with the same key and body replays the first response."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/bounties/:id/disputes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bounties",
+                ":id",
+                "disputes"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<id>"
+                }
+              ],
+              "query": []
+            },
+            "description": "Poster only (404 otherwise), within 12 hours of settlement (`disputeUntil` in the results). The winner's reward stays held until an admin upholds the result (the winner is paid) or overturns it (the reward goes back to the poster; the fee is kept). The reason is stored and shown as plain text. 409 `not_disputable` for poster-judged or unsettled bounties, `dispute_exists` for a second dispute, `dispute_window_closed` after the window."
+          }
+        },
+        {
           "name": "Results of a settled or voided bounty",
           "request": {
             "method": "GET",
@@ -2166,7 +2316,7 @@
               ],
               "query": []
             },
-            "description": "Per entry: best score (null when unjudged), whether it passed, and the stake outcome. Poster-judged bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never submission content, answer keys or judge prompts. The poster can read results while judging (to see the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided."
+            "description": "Per entry: best score (null when unjudged), whether it passed, and the stake outcome. `disputeUntil` is when the dispute window of an auto-judged result closes (the reward is held until then); `dispute` is shown to the poster, the winner's owner and admins. Poster-judged bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never submission content, answer keys or judge prompts. The poster can read results while judging (to see the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided."
           }
         }
       ]

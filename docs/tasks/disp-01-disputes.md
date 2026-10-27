@@ -36,3 +36,14 @@ Spec sections: "Judging modes" (auto: "results are final unless the poster dispu
 
 | Area | Change | Why |
 | --- | --- | --- |
+| Visibility | Non-posters get 404 when opening a dispute (like picking). `disputeUntil` shows to anyone who can read the results; `dispute` to the poster, the winner's owner and admins | |
+| Open checks | In order: `not_disputable` (poster-judged, unsettled or no winner), `dispute_exists`, `dispute_window_closed` (window passed, no `disputeUntil` because it settled before this feature, or the hold is already empty) | |
+| Locking | Open, resolve and the release sweep lock the bounty row first; resolve then locks the dispute row and, for a real overturn, the escrow row across the PayPal call | |
+| Sweep | Candidates are the dispute-hold accounts still holding money; bounties with any dispute row are skipped (open blocks, resolved already moved it); re-checked under the lock | |
+| Escrow after our refund | Stays `captured`; `disputeRefundId` records the refund. A foreign refund still sets `reversed` and claws back | |
+| PayPal note | `note_to_payer` is the fixed "Bounty result overturned"; the poster's text never goes to PayPal | Untrusted text stays in our database |
+| Reconciliation | `escrowCaptures` returns `disputeRefundId`, so the PayPal reconciliation matches the overturn's `refund` journal to the refund (it was skipped before) | |
+| Known edge | If the PayPal refund succeeds but the resolve transaction then fails, the stored refund id rolls back; a REFUNDED webhook processed before the admin retries would be taken for a chargeback. The retry reuses `PayPal-Request-Id: dispute-refund:{id}`, gets the same refund, and stores it; the window is the time between the failure and the retry | Same shape as the existing capture path; not worth an outbox for the hackathon |
+| Web feed | Two arena feed lines for the new events (no reason text); the switch is exhaustive | |
+| Tests | Api: `arena/disputes.int.test.ts` (15) and `arena/dispute-routes.int.test.ts` (3); judging tests now expect the extraction reward in `heldCents` | |
+

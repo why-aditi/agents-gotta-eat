@@ -66,10 +66,7 @@ function toDisputeDto(row: DisputeRow, bounty: Pick<BountyRow, "title" | "reward
 
 async function winnerOwnerOf(tx: Tx, bounty: BountyRow): Promise<string> {
   if (!bounty.winnerEntryId) throw new Error(`bounty ${bounty.id} has no winner`);
-  const [row] = await tx
-    .select({ ownerId: entries.ownerId })
-    .from(entries)
-    .where(eq(entries.id, bounty.winnerEntryId));
+  const [row] = await tx.select({ ownerId: entries.ownerId }).from(entries).where(eq(entries.id, bounty.winnerEntryId));
   if (!row) throw new Error(`winning entry ${bounty.winnerEntryId} of bounty ${bounty.id} vanished`);
   return row.ownerId;
 }

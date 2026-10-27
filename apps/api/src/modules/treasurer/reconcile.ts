@@ -64,7 +64,10 @@ async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string
   const isDisputeRefund = (m: ClearingMovement) => m.kind === "refund" && m.refType === "bounty";
   const [captures, escrows, items] = await Promise.all([
     topupCaptureIds(db, ids(isTopup)),
-    escrowCaptures(db, ids((m) => isReward(m) || isDisputeRefund(m))),
+    escrowCaptures(
+      db,
+      ids((m) => isReward(m) || isDisputeRefund(m)),
+    ),
     payoutItemIds(db, ids(isWithdrawal)),
   ]);
   return movements.map((m) => {

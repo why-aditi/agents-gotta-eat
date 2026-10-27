@@ -65,8 +65,10 @@ describe("judgeBounty (extract_data)", () => {
     // The answer key never reaches a judgement.
     for (const j of scores) expect(JSON.stringify(j.rawOutput)).not.toMatch(/Acme|answerKey/);
 
-    // Reward to the winner's wallet; 100 and 60 refunded; 40 and the non-submitter forfeit.
-    expect(await balance(top)).toBe(5000n - 50n + 5000n + 50n);
+    // Reward to the winner's dispute hold (disp-01: held for 12 hours); 100 and 60 refunded; 40 and the
+    // non-submitter forfeit.
+    expect(await getBalances(db, top.ownerId)).toEqual({ balanceCents: 5000n - 50n + 50n, heldCents: 5000n });
+    expect(bounty.disputeUntil).toEqual(new Date(AFTER.getTime() + 12 * 3_600_000));
     expect(await balance(mid)).toBe(5000n);
     expect(await balance(low)).toBe(4950n);
     expect(await balance(idle)).toBe(4950n);
@@ -167,7 +169,8 @@ describe("judgeBounty (extract_data)", () => {
     await submit(db, winner, { data: dataMatching(5) }, 1);
     const moved = await Promise.all([1, 2, 3].map(() => sweepDeadlines(db, AFTER)));
     expect(moved.reduce((a, b) => a + b, 0)).toBe(1);
-    expect(await balance(winner)).toBe(10_000n);
+    // The reward is held once, for the dispute window.
+    expect(await getBalances(db, winner.ownerId)).toEqual({ balanceCents: 5000n, heldCents: 5000n });
     expect(await reconcile(db)).toMatchObject({ ok: true });
   });
 

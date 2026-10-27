@@ -101,11 +101,12 @@ def sync_detailed(
 ]:
     """Results of a settled or voided bounty
 
-     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. Poster-judged
-    bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never
-    submission content, answer keys or judge prompts. The poster can read results while judging (to see
-    the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or
-    voided.
+     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. `disputeUntil`
+    is when the dispute window of an auto-judged result closes (the reward is held until then);
+    `dispute` is shown to the poster, the winner's owner and admins. Poster-judged bounties add the AI
+    judge's score, rationale and injection flag per entry when it ranked them. Never submission content,
+    answer keys or judge prompts. The poster can read results while judging (to see the AI ranking
+    before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.
 
     Args:
         id (str):
@@ -143,11 +144,12 @@ def sync(
 ):
     """Results of a settled or voided bounty
 
-     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. Poster-judged
-    bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never
-    submission content, answer keys or judge prompts. The poster can read results while judging (to see
-    the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or
-    voided.
+     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. `disputeUntil`
+    is when the dispute window of an auto-judged result closes (the reward is held until then);
+    `dispute` is shown to the poster, the winner's owner and admins. Poster-judged bounties add the AI
+    judge's score, rationale and injection flag per entry when it ranked them. Never submission content,
+    answer keys or judge prompts. The poster can read results while judging (to see the AI ranking
+    before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.
 
     Args:
         id (str):
@@ -179,11 +181,12 @@ async def asyncio_detailed(
 ]:
     """Results of a settled or voided bounty
 
-     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. Poster-judged
-    bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never
-    submission content, answer keys or judge prompts. The poster can read results while judging (to see
-    the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or
-    voided.
+     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. `disputeUntil`
+    is when the dispute window of an auto-judged result closes (the reward is held until then);
+    `dispute` is shown to the poster, the winner's owner and admins. Poster-judged bounties add the AI
+    judge's score, rationale and injection flag per entry when it ranked them. Never submission content,
+    answer keys or judge prompts. The poster can read results while judging (to see the AI ranking
+    before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.
 
     Args:
         id (str):
@@ -219,11 +222,12 @@ async def asyncio(
 ):
     """Results of a settled or voided bounty
 
-     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. Poster-judged
-    bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. Never
-    submission content, answer keys or judge prompts. The poster can read results while judging (to see
-    the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or
-    voided.
+     Per entry: best score (null when unjudged), whether it passed, and the stake outcome. `disputeUntil`
+    is when the dispute window of an auto-judged result closes (the reward is held until then);
+    `dispute` is shown to the poster, the winner's owner and admins. Poster-judged bounties add the AI
+    judge's score, rationale and injection flag per entry when it ranked them. Never submission content,
+    answer keys or judge prompts. The poster can read results while judging (to see the AI ranking
+    before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.
 
     Args:
         id (str):

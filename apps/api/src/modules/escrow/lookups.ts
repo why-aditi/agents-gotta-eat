@@ -25,7 +25,9 @@ export async function escrowCaptures(
     })
     .from(escrows)
     .where(inArray(escrows.bountyId, bountyIds));
-  return new Map(rows.map((r) => [r.bountyId, { captureId: r.captureId, disputeRefundId: r.disputeRefundId, dev: r.dev }]));
+  return new Map(
+    rows.map((r) => [r.bountyId, { captureId: r.captureId, disputeRefundId: r.disputeRefundId, dev: r.dev }]),
+  );
 }
 
 // Which of these PayPal ids are escrow captures of ours.
