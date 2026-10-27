@@ -1,5 +1,5 @@
 // /v1/admin dashboard: journals, accounts, reconciliation and LLM usage (read-only), plus the demo controls
-// (demo module). Admin users only.
+// (demo module) and the PayPal operations (treasurer module). Admin users only.
 // Routing and serialisation only: the ledger and llm modules own the reads.
 import {
   AdminAccountList,
@@ -18,6 +18,7 @@ import { toJsonCents } from "../../lib/cents";
 import { demoAdminRoutes } from "../demo";
 import { decodeJournalCursor, getJournal, listAccounts, listJournals, reconcile } from "../ledger";
 import { dailyBudgetFromEnv, llmUsage } from "../llm";
+import { treasurerAdminRoutes } from "../treasurer";
 
 const TAGS = ["admin"];
 const IdParams = z.object({ id: z.string().min(1).max(64) });
@@ -33,6 +34,8 @@ export const adminRoutes: FastifyPluginAsyncZod = async (api) => {
 
   // Recordings and the demo reset, behind the same admin check.
   await api.register(demoAdminRoutes, { seedDir: api.demoOptions.seedDir });
+  // PayPal call log, webhook events, PayPal reconciliation and the Treasurer (ops-01).
+  await api.register(treasurerAdminRoutes);
 
   api.get(
     "/v1/admin/journals",
@@ -127,7 +130,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Run the internal ledger reconciliation",
         description:
           "Admins only. Journals balance, the ledger sums to zero, the wallets cache matches the entries and no " +
-          "wallet or hold is negative. Ledger-vs-PayPal checks come with PayPal top-ups.",
+          "wallet or hold is negative. Ledger-vs-PayPal is POST /v1/admin/reconcile/paypal.",
         response: { 200: ReconcileReport, ...DENIED },
       },
     },

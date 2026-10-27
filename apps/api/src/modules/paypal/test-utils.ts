@@ -3,6 +3,8 @@ import { createPayPalClient, type PayPalClient, type PayPalLogEntry } from "./cl
 export interface Call {
   method: string;
   path: string;
+  // The query string, "" when none.
+  search: string;
   headers: Record<string, string>;
   body: string | undefined;
 }
@@ -13,7 +15,7 @@ export const json = (status: number, body: unknown, headers: Record<string, stri
 // Stubbed fetch: the token endpoint is answered automatically, everything else goes to `handler`.
 export function makeClient(
   handler: (call: Call) => Response | Promise<Response>,
-  opts: { now?: () => number } = {},
+  opts: { now?: () => number; apiBase?: string; logger?: (e: PayPalLogEntry) => void | Promise<void> } = {},
 ): { client: PayPalClient; calls: Call[]; logs: PayPalLogEntry[] } {
   const calls: Call[] = [];
   const logs: PayPalLogEntry[] = [];
@@ -21,6 +23,7 @@ export function makeClient(
     const call: Call = {
       method: init?.method ?? "GET",
       path: new URL(String(url)).pathname,
+      search: new URL(String(url)).search,
       headers: { ...(init?.headers as Record<string, string>) },
       body: init?.body as string | undefined,
     };
@@ -33,9 +36,12 @@ export function makeClient(
     clientSecret: "secret",
     apiBase: "https://api-m.sandbox.paypal.com",
     fetch: stub,
-    logger: (e) => logs.push(e),
     sleep: async () => {},
     ...opts,
+    logger: async (e) => {
+      logs.push(e);
+      await opts.logger?.(e);
+    },
   });
   return { client, calls, logs };
 }

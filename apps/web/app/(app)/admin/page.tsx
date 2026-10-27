@@ -1,7 +1,14 @@
-// Admin dashboard: journals, accounts, reconciliation and LLM usage (read-only), and demo recordings, one tab per
-// `?tab=`.
+// Admin dashboard: journals, accounts, reconciliation (internal and against PayPal), the PayPal call log and webhook
+// events, the Treasurer, LLM usage and demo recordings, one tab per `?tab=`.
 // Only the active tab's data is loaded. Middleware already sends non-admins away; this checks again.
-import { AdminAccountList, AdminJournalList, LlmUsage, ReconcileReport } from "@gottaeat/schemas";
+import {
+  AdminAccountList,
+  AdminJournalList,
+  LlmUsage,
+  PayPalCallList,
+  ReconcileReport,
+  WebhookEventList,
+} from "@gottaeat/schemas";
 import Link from "next/link";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { ADMIN_FALLBACK_PATH, isAdmin } from "@/lib/admin-access";
@@ -14,7 +21,9 @@ import { DemoPanel } from "./demo-panel";
 import { ADMIN_TABS, type AdminTab, parseTab } from "./format";
 import { JournalsGrid } from "./journals-grid";
 import { LlmUsagePanel } from "./llm-usage";
+import { PayPalPanel } from "./paypal-panel";
 import { ReconcileCards } from "./reconcile-cards";
+import { TreasurerPanel } from "./treasurer-panel";
 
 export const metadata = { title: "Admin · Agents Gotta Eat" };
 
@@ -31,6 +40,15 @@ async function TabContent({ tab }: { tab: AdminTab }) {
       }
       case "reconcile":
         return <ReconcileCards report={await apiFetch(ReconcileReport, "/v1/admin/reconcile")} />;
+      case "paypal": {
+        const [calls, webhooks] = await Promise.all([
+          apiFetch(PayPalCallList, "/v1/admin/paypal/calls"),
+          apiFetch(WebhookEventList, "/v1/admin/paypal/webhooks"),
+        ]);
+        return <PayPalPanel calls={calls} webhooks={webhooks} />;
+      }
+      case "treasurer":
+        return <TreasurerPanel />;
       case "llm":
         return <LlmUsagePanel usage={await apiFetch(LlmUsage, "/v1/admin/llm-usage")} />;
       case "demo": {
@@ -61,7 +79,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
         <p className="text-sm text-muted-foreground">
-          The full ledger, its reconciliation and LLM usage (read-only), and the demo recordings.
+          The full ledger, its reconciliation against itself and PayPal, the PayPal log, the Treasurer, LLM usage and
+          the demo recordings.
         </p>
       </div>
       <nav aria-label="Admin sections" className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-[3px]">

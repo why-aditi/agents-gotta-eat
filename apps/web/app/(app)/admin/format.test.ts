@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { accountMismatch, centsCell, checkLabel, parseTab, usagePercent } from "./format";
+import {
+  accountMismatch,
+  centsCell,
+  checkLabel,
+  parseTab,
+  reconcileStatusLabel,
+  signedCents,
+  usagePercent,
+} from "./format";
 
 describe("admin format helpers", () => {
   it("parses the tab, defaulting to journals", () => {
@@ -7,6 +15,16 @@ describe("admin format helpers", () => {
     expect(parseTab(["llm", "x"])).toBe("llm");
     expect(parseTab("nope")).toBe("journals");
     expect(parseTab(undefined)).toBe("journals");
+    expect(parseTab("paypal")).toBe("paypal");
+    expect(parseTab("treasurer")).toBe("treasurer");
+  });
+
+  it("formats signed reconcile cents and labels", () => {
+    expect(signedCents(-600)).toBe("-$6.00");
+    expect(signedCents(2642)).toBe("$26.42");
+    expect(signedCents(null)).toBe("—");
+    expect(reconcileStatusLabel("missing_in_paypal")).toBe("Missing in PayPal");
+    expect(reconcileStatusLabel("something_new")).toBe("Something new");
   });
 
   it("formats cents cells and leaves non-integers blank", () => {

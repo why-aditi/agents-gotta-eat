@@ -7,3 +7,4 @@ export {
   startReauthorizeSweep,
   type ReauthorizeErrorHandler,
 } from "./reauthorize";
+export { escrowCaptures, escrowFor, knownEscrowCaptureIds } from "./lookups";

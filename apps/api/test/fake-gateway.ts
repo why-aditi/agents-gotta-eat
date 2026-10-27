@@ -8,6 +8,8 @@ export type CannedReply =
   | { json: unknown; delayMs?: number; model?: string }
   // A completion with this exact content (e.g. malformed JSON).
   | { content: string; delayMs?: number; model?: string }
+  // A tool-call turn (OpenAI format): the model asks for these tools, with optional content.
+  | { toolCalls: { name: string; arguments: unknown; id?: string }[]; content?: string | null; delayMs?: number }
   // A bare HTTP error.
   | { status: number; body?: string; delayMs?: number };
 
@@ -15,9 +17,16 @@ export interface RecordedRequest {
   headers: IncomingHttpHeaders;
   body: {
     model: string;
-    messages: { role: string; content: string }[];
+    messages: {
+      role: string;
+      content: string;
+      tool_calls?: { id: string; function: { name: string; arguments: string } }[];
+      tool_call_id?: string;
+    }[];
     temperature?: number;
     response_format?: unknown;
+    tools?: { function: { name: string } }[];
+    tool_choice?: unknown;
   };
 }
 
@@ -57,13 +66,28 @@ export async function startFakeGateway(): Promise<FakeGateway> {
           res.writeHead(reply.status, { "content-type": "text/plain" }).end(reply.body ?? "error");
           return;
         }
-        const content = "json" in reply ? JSON.stringify(reply.json) : reply.content;
+        const n = requests.length;
+        const message =
+          "toolCalls" in reply
+            ? {
+                role: "assistant",
+                content: reply.content ?? null,
+                tool_calls: reply.toolCalls.map((c, i) => ({
+                  id: c.id ?? `call_${n}_${i}`,
+                  type: "function",
+                  function: {
+                    name: c.name,
+                    arguments: typeof c.arguments === "string" ? c.arguments : JSON.stringify(c.arguments),
+                  },
+                })),
+              }
+            : { role: "assistant", content: "json" in reply ? JSON.stringify(reply.json) : reply.content };
         res.writeHead(200, { "content-type": "application/json" }).end(
           JSON.stringify({
-            id: `chatcmpl-${requests.length}`,
+            id: `chatcmpl-${n}`,
             object: "chat.completion",
-            model: reply.model ?? `served-${body.model}`,
-            choices: [{ index: 0, message: { role: "assistant", content }, finish_reason: "stop" }],
+            model: ("model" in reply ? reply.model : undefined) ?? `served-${body.model}`,
+            choices: [{ index: 0, message, finish_reason: "toolCalls" in reply ? "tool_calls" : "stop" }],
             usage: { prompt_tokens: 11, completion_tokens: 7, total_tokens: 18 },
           }),
         );

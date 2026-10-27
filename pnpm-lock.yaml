@@ -59,6 +59,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 1.32.1
         version: 1.32.1(zod@4.6.6)
+      '@paypal/agent-toolkit':
+        specifier: 1.11.0
+        version: 1.11.0(react@19.3.0)
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -5769,13 +5772,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@langchain/core@0.3.6(openai@4.86.1(zod@3.25.76))':
+  '@langchain/core@0.3.6(openai@4.86.1(zod@4.6.6))':
     dependencies:
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.1.68(openai@4.86.1(zod@3.25.76))
+      langsmith: 0.1.68(openai@4.86.1(zod@4.6.6))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -5884,7 +5887,7 @@ snapshots:
     dependencies:
       os: 0.1.2
       '@dotenvx/dotenvx': 1.75.1
-      '@langchain/core': 0.3.6(openai@4.86.1(zod@3.25.76))
+      '@langchain/core': 0.3.6(openai@4.86.1(zod@4.6.6))
       '@modelcontextprotocol/sdk': 1.32.1(zod@3.25.76)
       '@paypal/paypal-server-sdk': 1.1.0(debug@4.4.3)
       ai: 4.3.19(react@19.3.0)(zod@3.25.76)
@@ -8085,7 +8088,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langsmith@0.1.68(openai@4.86.1(zod@3.25.76)):
+  langsmith@0.1.68(openai@4.86.1(zod@4.6.6)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1

@@ -19,3 +19,4 @@ export * from "./admin";
 export * from "./events";
 export * from "./demo";
 export * from "./subcontracts";
+export * from "./treasurer";

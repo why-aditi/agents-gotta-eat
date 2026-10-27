@@ -11,7 +11,7 @@ import {
   resetDb,
   signUserToken,
 } from "../../../test/db";
-import { agentRuns, events } from "../../db/schema";
+import { agentRuns, events, paypalCalls } from "../../db/schema";
 import { callTool } from "../mcp";
 import { createAgentRun, pruneEvents, publish, RETENTION_MS, toArenaEvent } from "./index";
 
@@ -208,8 +208,14 @@ describe("pruneEvents", () => {
       createdAt: old,
     });
     await publish(db, { type: "bounty.judging", bountyId: null, data: { bountyId: "b", title: "kept" } });
+    // The PayPal call log is pruned with them.
+    await db.insert(paypalCalls).values([
+      { method: "GET", path: "/old", durationMs: 1, source: "client", createdAt: old },
+      { method: "GET", path: "/new", durationMs: 1, source: "client", createdAt: recent },
+    ]);
 
-    expect(await pruneEvents(db, now)).toEqual({ events: 1, agentRuns: 1 });
+    expect(await pruneEvents(db, now)).toEqual({ events: 1, agentRuns: 1, paypalCalls: 1 });
+    expect((await db.select({ path: paypalCalls.path }).from(paypalCalls)).map((c) => c.path)).toEqual(["/new"]);
     const runs = await db.select({ id: agentRuns.id }).from(agentRuns);
     expect(runs.map((r) => r.id)).toEqual([newRun.id]);
     expect(runs.map((r) => r.id)).not.toContain(oldRun.id);

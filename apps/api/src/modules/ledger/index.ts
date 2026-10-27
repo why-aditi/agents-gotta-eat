@@ -16,7 +16,11 @@ export { holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawal
 export { clawbackEscrow, clawbackTopup, creditTopup, owedCents, type ClawbackResult } from "./receivables";
 export { forfeitStake, payBountyReward, refundStake } from "./bounty";
 export {
+  clearingMovements,
   decodeJournalCursor,
+  journalsForRef,
+  JOURNALS_FOR_REF_LIMIT,
+  type ClearingMovement,
   getJournal,
   JOURNAL_PAGE_DEFAULT,
   JOURNAL_PAGE_MAX,

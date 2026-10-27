@@ -1,20 +1,38 @@
 import { randomUUID } from "node:crypto";
 import { PayPalError } from "./errors";
 
-const SANDBOX_BASE = "https://api-m.sandbox.paypal.com";
+export const SANDBOX_BASE = "https://api-m.sandbox.paypal.com";
 // Local fake PayPal for e2e only: no real money can move through a loopback host.
 const LOCAL_BASE = /^http:\/\/(localhost|127\.0\.0\.1):\d{1,5}$/;
+
+// The sandbox base, or "local" for a loopback fake. Anything else (live PayPal included) throws.
+export function checkApiBase(apiBase: string): "sandbox" | "local" {
+  const base = apiBase.replace(/\/+$/, "");
+  if (base === SANDBOX_BASE) return "sandbox";
+  if (LOCAL_BASE.test(base)) return "local";
+  throw new Error(`PAYPAL_API_BASE must be ${SANDBOX_BASE} (sandbox only) or http://localhost:<port> for a local fake`);
+}
 const MAX_RETRIES = 3;
 const TOKEN_MARGIN_MS = 60_000;
 
-export type PayPalLogEntry = Record<string, unknown>;
+// One HTTP attempt. No headers or bodies, so no secrets. `status` is 0 for a network error.
+export interface PayPalLogEntry {
+  method: string;
+  path: string;
+  requestId: string;
+  attempt: number;
+  status: number;
+  debugId: string | null;
+  durationMs: number;
+}
 
 export interface PayPalClientConfig {
   clientId: string;
   clientSecret: string;
   apiBase: string;
   fetch?: typeof fetch;
-  logger?: (entry: PayPalLogEntry) => void;
+  // Awaited after every attempt (so a call log row exists once the call returns); a throw or rejection is ignored.
+  logger?: (entry: PayPalLogEntry) => void | Promise<void>;
   // Injectable so tests do not wait on backoff and can move the clock.
   sleep?: (ms: number) => Promise<void>;
   now?: () => number;
@@ -34,11 +52,7 @@ export interface PayPalClient {
 
 export function createPayPalClient(config: PayPalClientConfig): PayPalClient {
   const base = config.apiBase.replace(/\/+$/, "");
-  if (base !== SANDBOX_BASE && !LOCAL_BASE.test(base)) {
-    throw new Error(
-      `PAYPAL_API_BASE must be ${SANDBOX_BASE} (sandbox only) or http://localhost:<port> for a local fake`,
-    );
-  }
+  checkApiBase(base);
   const doFetch = config.fetch ?? fetch;
   const log = config.logger ?? (() => {});
   const sleep = config.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
@@ -57,13 +71,19 @@ export function createPayPalClient(config: PayPalClientConfig): PayPalClient {
     for (let attempt = 0; ; attempt++) {
       let res: Response | null = null;
       let networkError: unknown;
+      const started = performance.now();
       try {
         res = await doFetch(`${base}${path}`, { method, headers, body });
       } catch (err) {
         networkError = err;
       }
+      const durationMs = Math.round(performance.now() - started);
       const debugId = res?.headers.get("paypal-debug-id") ?? null;
-      log({ method, path, requestId, attempt, status: res?.status ?? 0, debugId });
+      try {
+        await log({ method, path, requestId, attempt, status: res?.status ?? 0, debugId, durationMs });
+      } catch {
+        // Logging never fails a PayPal call.
+      }
 
       if (res?.ok) {
         const text = await res.text();

@@ -375,6 +375,28 @@ export const webhookEvents = pgTable("webhook_events", {
   error: text(),
 });
 
+// One row per PayPal HTTP request (each retry attempt too), from the paypal client's logger and the Agent Toolkit
+// wrapper. Never request or response bodies, headers or tokens; `path` keeps query keys only. Pruned after 30 days.
+export const paypalCalls = pgTable(
+  "paypal_calls",
+  {
+    id: bigserial({ mode: "number" }).primaryKey(),
+    method: text().notNull(),
+    path: text().notNull(),
+    // Null for a network error (no response).
+    status: integer(),
+    debugId: text("debug_id"),
+    requestId: text("request_id"),
+    durationMs: integer("duration_ms").notNull(),
+    source: text().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("paypal_calls_source", sql`${t.source} in ('client', 'toolkit')`),
+    index("paypal_calls_created_idx").on(t.createdAt),
+  ],
+);
+
 export const stakeOutcome = pgEnum("stake_outcome", ["refunded", "forfeited"]);
 
 export const entries = pgTable(
@@ -448,7 +470,7 @@ export const judgements = pgTable(
   ],
 );
 
-export const llmRole = pgEnum("llm_role", ["mandate_compile", "intent_check", "judge"]);
+export const llmRole = pgEnum("llm_role", ["mandate_compile", "intent_check", "judge", "treasurer"]);
 export const llmOutcome = pgEnum("llm_outcome", ["ok", "invalid_output", "error", "timeout", "over_budget"]);
 
 // One row per gateway request (and per request refused by the daily budget). Today's rows are the budget count.
