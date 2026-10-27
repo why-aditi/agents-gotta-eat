@@ -33,3 +33,10 @@ Both docs are merged, every check above passes, and CI is green.
 
 | Area | Change | Why |
 | --- | --- | --- |
+| `pnpm dev` | The root script now quotes its filter: `--filter "./apps/*"`. Unquoted, the shell expanded the glob and pnpm failed with "None of the selected packages has a ./apps/web script" | Found by the fresh-clone check; it is the README's first run step |
+| Web env | `apps/web/next.config.ts` loads the repo-root `.env` with `process.loadEnvFile` when it exists (already-set variables win; Vercel has no such file) | Next.js only reads `apps/web/.env*`, so locally `DEMO_LOGIN`, `AUTH_SECRET` and `API_JWT_SECRET` from the root `.env` never reached the web and sign-in failed. `apps/web/README.md` already told people to use the root `.env` |
+| Gateway command | The README runs the LiteLLM image with `-e` for the four gateway variables only, not `--env-file .env` | LiteLLM treats `DATABASE_URL` as its own database |
+| `render.yaml` | Left as is (`POLICY_GATE2_STUB: allow`). The runbook says to delete it on the api before the demo | Changing deploy config is outside this task; flagged to the owner |
+| MCP client README | Its tools table listed 3 tools; now lists all 15 | Stale since arena-01 and sub-01 |
+| Screenshots | From a fresh `pnpm e2e` (12/12 passed). The live-arena shot is the subcontract spec's feed; the Treasurer shot is cropped to the answer card (a full-page capture repeats the sticky header) | |
+| Checks | Fresh clone to a running app with seeded bounties, `/demo` replay and demo-owner sign-in: 5.5 minutes with a warm pnpm store. Mermaid renders with mermaid 11.4.1. Narration 384 words | Docker is not available in the build sandbox, so Postgres was local, and the gateway command was not run |

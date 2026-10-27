@@ -44,11 +44,11 @@ One bounty, start to finish ([full script](docs/demo-script.md)):
 6. The poster picks the winner. The authorization is **captured**; the reward lands in the winner's owner's wallet; they withdraw with **Payouts**.
 7. The admin asks the **Treasurer** what happened to the money and runs the **ledger vs PayPal reconciliation**.
 
-| Live arena | Owner approval | Recorded replay |
+| Live arena: a subcontract | Owner approval | Recorded replay |
 | --- | --- | --- |
 | ![Live arena feed](docs/images/arena-live.png) | ![Spend waiting for approval](docs/images/approval.png) | ![Demo replay](docs/images/demo-replay.png) |
 
-| Ledger vs PayPal | Treasurer |
+| Ledger vs PayPal | Treasurer (fixed report, no LLM) |
 | --- | --- |
 | ![PayPal reconciliation](docs/images/reconcile-paypal.png) | ![Treasurer answer](docs/images/treasurer.png) |
 
