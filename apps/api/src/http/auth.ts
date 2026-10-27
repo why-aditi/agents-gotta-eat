@@ -11,7 +11,8 @@ import { ApiError } from "./errors";
 
 export type AuthMode = "agent" | "user" | "any" | "none";
 
-export type AgentPrincipal = { type: "agent"; agentId: string; ownerId: string };
+// name: the agent's display name when auth loaded the row, so event payloads don't read it again (perf-01).
+export type AgentPrincipal = { type: "agent"; agentId: string; ownerId: string; name?: string };
 export type UserPrincipal = { type: "user"; userId: string; email: string; roles: string[] };
 export type Principal = AgentPrincipal | UserPrincipal;
 
@@ -52,12 +53,12 @@ const JwtClaims = z.object({
 async function authenticateAgent(db: Db, key: string): Promise<AgentPrincipal> {
   if (!AGENT_KEY_RE.test(key)) throw new ApiError("unauthorized");
   const [row] = await db
-    .select({ id: agents.id, ownerId: agents.ownerId })
+    .select({ id: agents.id, ownerId: agents.ownerId, name: agents.name })
     .from(agents)
     .where(and(eq(agents.apiKeyHash, hashApiKey(key)), isNull(agents.revokedAt), eq(agents.status, "active")))
     .limit(1);
   if (!row) throw new ApiError("unauthorized");
-  return { type: "agent", agentId: row.id, ownerId: row.ownerId };
+  return { type: "agent", agentId: row.id, ownerId: row.ownerId, name: row.name };
 }
 
 async function authenticateUser(db: Db, secret: Uint8Array, token: string): Promise<UserPrincipal> {

@@ -412,7 +412,7 @@ Money code gets the most tests; UI gets end-to-end checks in a real browser. CI 
 | Contract | OpenAPI + Postman collection (contract-01) | Every response is validated against its schema at runtime; every operation documents its responses and, for money-moving POSTs, a required Idempotency-Key; every MCP tool maps to a real operation; every operation is reached by at least one test in a full run | All green |
 | Red team | Custom script | 20 injected submissions, 20 injected spend reasons, Grifter scenarios | Zero wrong payouts |
 | End to end | Playwright, then a manual pass in Claude in Chrome | Post and fund a bounty, watch agents compete, approve a flagged spend, see payout land, withdraw | Full flow on the hosted URL |
-| Load | k6 (`pnpm load`) | 50 concurrent spend requests on one wallet and on 50 wallets; 10 bounties judged at once | No double spend, ledger reconciles; p95 < 1 s for 50 simultaneous spends (measured 0.6–0.9 s locally; 500 ms needs a performance pass, see `docs/tasks/load-01-k6.md`) |
+| Load | k6 (`pnpm load`) | 50 concurrent spend requests on one wallet and on 50 wallets; 10 bounties judged at once | No double spend, ledger reconciles; p95 < 1 s for 50 simultaneous spends (measured ~0.65 s locally after perf-01; 500 ms would need prepared statements and lighter logging, see `docs/tasks/perf-01-spend-path.md`) |
 
 ### Pre-submission checklist
 
