@@ -1,12 +1,13 @@
 // Open bounties past their deadline move to judging and are judged: on every bounty read and from a 60 s sweep.
 // Auto-judged bounties settle at once; poster-judged ones get a pick deadline, and the sweep runs the pick
-// fallback once it passes. The same loop moves subcontracts past their deadlines (sub-01). Pending stakes on closed bounties stay until their approval expires (policy's
+// fallback once it passes; auto-judged rewards leave their dispute hold once the window passes. The same loop moves subcontracts past their deadlines (sub-01). Pending stakes on closed bounties stay until their approval expires (policy's
 // expiry sweep). Each bounty is handled in its own transaction, so one failure doesn't stop the others.
 import { and, asc, eq, isNull, lt, lte, or } from "drizzle-orm";
 import type { Db } from "../../db";
 import { bounties } from "../../db/schema";
 import { publish } from "../events";
 import { lockBounty } from "./bounties";
+import { releaseDueDisputeHolds } from "./disputes";
 import type { RankCreativeWriting } from "../judge";
 import { AI_RANK_MAX_ATTEMPTS, aiRankBounty, judgeBounty, runPickFallbacks, type SweepErrorHandler } from "./judging";
 import { transition } from "./state";
@@ -99,6 +100,8 @@ export async function sweepDeadlines(
   }
 
   await runPickFallbacks(db, now, report);
+  // Held auto-judged rewards whose dispute window passed with no dispute go to the winners (disp-01).
+  await releaseDueDisputeHolds(db, now, report);
   // Subcontracts: expire open jobs past deliver-by, accept deliveries past their review window.
   await sweepSubcontracts(db, now, report);
   if (failures.length > 0) throw failures[0];

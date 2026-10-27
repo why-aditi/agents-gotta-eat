@@ -2,11 +2,18 @@
 // creative_writing is ranked by the AI judge (outside any transaction, results recorded in a new one), and waits up
 // to 24 h for the poster's pick; then the sweep picks the AI's top entry, or the earliest submission unranked.
 // Settlement runs in one transaction under the bounty row lock: escrow, reward, stakes, bounty status.
+// An auto-judged winner's reward waits in a dispute hold for 12 hours (disp-01, see disputes.ts).
 // Every step is idempotent (judgement uniqueness, ledger keys, status checks under the lock).
-import { type BountyResults, ENTRY_STAKE_CENTS, type SubmissionContent, type TaskType } from "@gottaeat/schemas";
+import {
+  type BountyResults,
+  DISPUTE_WINDOW_MS,
+  ENTRY_STAKE_CENTS,
+  type SubmissionContent,
+  type TaskType,
+} from "@gottaeat/schemas";
 import { and, asc, eq, isNull, lte, ne } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
-import { bounties, bountyAssets, entries, escrows, submissions } from "../../db/schema";
+import { bounties, bountyAssets, disputes, entries, escrows, submissions } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
@@ -16,6 +23,7 @@ import { flagInjection } from "../llm";
 import { agentNames, publish } from "../events";
 import { forfeitStake, payBountyReward, refundStake } from "../ledger";
 import { type BountyRow, lockBounty } from "./bounties";
+import { toBountyDisputeDto } from "./disputes";
 import { transition } from "./state";
 import { toSubmissionDto } from "./submissions";
 
@@ -102,6 +110,8 @@ export async function settleBounty(
     .orderBy(asc(entries.createdAt), asc(entries.id))
     .for("update");
   const best = await bestScores(tx, bounty.id);
+  // Auto-judged results can be disputed by the poster for 12 hours; until then the reward is held.
+  const holdForDispute = winnerEntryId !== null && isAutoJudged(bounty.taskType);
 
   if (winnerEntryId) {
     const winner = rows.find((e) => e.id === winnerEntryId);
@@ -115,6 +125,7 @@ export async function settleBounty(
       rewardCents: bounty.rewardCents,
       feeCents: bounty.feeCents,
       idempotencyKey: ledgerKeys.reward(bounty.id),
+      holdForDispute,
     });
   } else {
     await voidEscrow(tx, bounty.id);
@@ -152,6 +163,7 @@ export async function settleBounty(
       status: transition(bounty.status, winnerEntryId ? "settled" : "voided"),
       winnerEntryId,
       settledAt: now,
+      disputeUntil: holdForDispute ? new Date(now.getTime() + DISPUTE_WINDOW_MS) : null,
     })
     .where(eq(bounties.id, bounty.id))
     .returning();
@@ -379,7 +391,7 @@ export async function pickWinner(
     });
     await settleBounty(tx, bounty, entryId, now);
   });
-  return resultsOf(db, bountyId);
+  return resultsOf(db, bountyId, poster);
 }
 
 export type SweepErrorHandler = (err: unknown, bountyId?: string) => void;
@@ -454,7 +466,8 @@ function aiOf(j: { score: number; rationale: string; flagged: boolean } | undefi
   return j ? { aiScore: j.score, aiRationale: j.rationale, injectionFlagged: j.flagged } : {};
 }
 
-async function resultsOf(conn: Conn, bountyId: string): Promise<BountyResults> {
+// The dispute is shown to the poster, the winner's owner and admins; everyone else gets null.
+async function resultsOf(conn: Conn, bountyId: string, viewer: Principal): Promise<BountyResults> {
   const [bounty] = await conn.select().from(bounties).where(eq(bounties.id, bountyId));
   if (!bounty) throw new ApiError("not_found", "Bounty not found");
   const rows = await conn
@@ -468,11 +481,18 @@ async function resultsOf(conn: Conn, bountyId: string): Promise<BountyResults> {
   for (const j of await getJudgementsForBounty(conn, bountyId)) {
     if (j.verifier === "ai_judge") ai.set(j.entryId, { score: j.score, rationale: j.rationale, flagged: j.flagged });
   }
+  const winnerOwnerId = rows.find((e) => e.id === bounty.winnerEntryId)?.ownerId;
+  const maySeeDispute =
+    viewer.type === "user" &&
+    (viewer.userId === bounty.posterId || viewer.userId === winnerOwnerId || viewer.roles.includes("admin"));
+  const [dispute] = maySeeDispute ? await conn.select().from(disputes).where(eq(disputes.bountyId, bountyId)) : [];
   return {
     bountyId: bounty.id,
     status: bounty.status,
     winnerEntryId: bounty.winnerEntryId,
     settledAt: bounty.settledAt?.toISOString() ?? null,
+    disputeUntil: bounty.disputeUntil?.toISOString() ?? null,
+    dispute: dispute ? toBountyDisputeDto(dispute) : null,
     entries: rows.map((e) => {
       const score = best.get(e.id) ?? null;
       return {
@@ -504,7 +524,7 @@ export async function getResultsFor(db: Db, principal: Principal, bountyId: stri
       status: bounty.status,
     });
   }
-  return resultsOf(db, bountyId);
+  return resultsOf(db, bountyId, principal);
 }
 
 // The entry's agent, its owner, or the bounty's poster; anyone else gets 404. 409 entry_not_submitted when

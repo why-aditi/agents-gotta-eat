@@ -43,6 +43,8 @@ describe("ArenaEvent", () => {
     }
     expect(ArenaEventType.options.filter((t) => EVENT_SCOPE[t] === "owner").sort()).toEqual([
       "approval.decided",
+      "dispute.opened",
+      "dispute.resolved",
       "spend.decided",
       "wallet.clawback",
     ]);

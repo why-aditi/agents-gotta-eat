@@ -1,5 +1,5 @@
 // One bounty: header with status and countdown, the public spec, entries, the poster's actions (fund, cancel,
-// pick) and results once settled or voided. While open or judging it re-renders on this bounty's live events, and
+// pick, dispute) and results once settled or voided. While open or judging it re-renders on this bounty's live events, and
 // every 30 seconds as a fallback.
 // Bounty text and submissions are untrusted and render as plain text only.
 import {
@@ -24,6 +24,8 @@ import { PageError } from "../../_lib/page-error";
 import { BountyStatusBadge, taskTypeLabel } from "../bounty-labels";
 import { BountyActions } from "./bounty-actions";
 import { Countdown } from "./countdown";
+import { DisputeDialog } from "./dispute-dialog";
+import { DisputeStatus, type DisputeViewer } from "./dispute-status";
 import { FundCard } from "./fund-card";
 import { type PickableSubmission, PickCard } from "./pick-card";
 
@@ -128,8 +130,32 @@ function EntriesTable({ entries, results }: { entries: Entry[]; results: Map<str
   );
 }
 
-function ResultsCard({ bounty, results }: { bounty: Bounty; results: BountyResults }) {
+function payoutText(bounty: Bounty, results: BountyResults, windowOpen: boolean): string {
+  const reward = formatCents(bounty.rewardCents);
+  if (results.dispute?.status === "overturned") return `${reward} refunded to the poster`;
+  const held = results.dispute?.status === "open" || (windowOpen && results.disputeUntil !== null && !results.dispute);
+  return held ? `${reward} to the owner's wallet once the result is final` : `${reward} to the owner's wallet`;
+}
+
+function ResultsCard({
+  bounty,
+  results,
+  viewer,
+  windowOpen,
+}: {
+  bounty: Bounty;
+  results: BountyResults;
+  viewer: DisputeViewer;
+  windowOpen: boolean;
+}) {
   const winner = results.entries.find((e) => e.entryId === results.winnerEntryId) ?? null;
+  // Auto-judged results only: the api sets disputeUntil when one settles with a winner.
+  const canDispute =
+    viewer === "poster" &&
+    results.status === "settled" &&
+    windowOpen &&
+    results.disputeUntil !== null &&
+    !results.dispute;
   return (
     <Card>
       <CardHeader>
@@ -150,9 +176,11 @@ function ResultsCard({ bounty, results }: { bounty: Bounty; results: BountyResul
             <dt className="text-muted-foreground">Score</dt>
             <dd className="tabular-nums">{winner.score ?? "—"}</dd>
             <dt className="text-muted-foreground">Payout</dt>
-            <dd className="tabular-nums">{formatCents(bounty.rewardCents)} to the owner&apos;s wallet</dd>
+            <dd className="tabular-nums">{payoutText(bounty, results, windowOpen)}</dd>
           </dl>
         ) : null}
+        <DisputeStatus results={results} rewardCents={bounty.rewardCents} viewer={viewer} windowOpen={windowOpen} />
+        {canDispute ? <DisputeDialog bountyId={bounty.id} rewardCents={bounty.rewardCents} /> : null}
         {results.entries.length > 0 ? (
           <div>
             <p className="mb-1 font-medium">Stakes</p>
@@ -231,6 +259,13 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
   const canFund = bounty.status === "draft" && isPoster && me.roles.includes("admin");
   const needsFunding = bounty.status === "draft" && isPoster;
   const canCancel = isPoster && bounty.entryCount === 0 && (bounty.status === "draft" || bounty.status === "open");
+  // Entries are all of them for the poster and the reader's own otherwise, so a match means the reader owns the winner.
+  const viewer: DisputeViewer = isPoster
+    ? "poster"
+    : results?.winnerEntryId && entries.some((e) => e.id === results.winnerEntryId)
+      ? "winner"
+      : "other";
+  const windowOpen = results?.disputeUntil ? Date.parse(results.disputeUntil) > Date.now() : false;
 
   return (
     <div className="space-y-6">
@@ -272,7 +307,9 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
       {submissions ? (
         <PickCard bountyId={bounty.id} rewardCents={bounty.rewardCents} submissions={submissions} />
       ) : null}
-      {results && !submissions ? <ResultsCard bounty={bounty} results={results} /> : null}
+      {results && !submissions ? (
+        <ResultsCard bounty={bounty} results={results} viewer={viewer} windowOpen={windowOpen} />
+      ) : null}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]">
         <Card>

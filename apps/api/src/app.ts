@@ -14,6 +14,7 @@ import { arenaRoutes, registerArenaHooks } from "./modules/arena";
 import { DEFAULT_HEARTBEAT_MS, EventBus, eventsRoutes } from "./modules/events";
 import { identityRoutes } from "./modules/identity";
 import { mcpRoutes } from "./modules/mcp";
+import { notifyPlugin } from "./modules/notify";
 import { paymentsRoutes } from "./modules/payments";
 import { policyRoutes } from "./modules/policy";
 
@@ -40,6 +41,12 @@ export interface AppEnv {
   AGENTS_WAKE_SECRET?: string;
   // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
   TRUST_PROXY_HOPS?: string;
+  // Email (Resend). Unset key: no email is sent. EMAIL_FROM and WEB_URL (link target) have defaults;
+  // RESEND_API_URL is for tests.
+  RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  WEB_URL?: string;
+  RESEND_API_URL?: string;
 }
 
 export interface DemoOptions {
@@ -114,6 +121,8 @@ export function buildApp(opts: BuildAppOptions) {
     await api.register(mcpRoutes);
     await api.register(adminRoutes);
     await api.register(demoRoutes, { rateLimit: opts.demo?.rateLimit });
+    // No routes: emails the owner or the admins on the events that need them.
+    await api.register(notifyPlugin);
   });
 
   return app;

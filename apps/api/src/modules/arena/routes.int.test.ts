@@ -489,6 +489,9 @@ describe("GET /v1/bounties/:id/results", () => {
         status: "settled",
         winnerEntryId: entry!.id,
         settledAt: expect.any(String),
+        // Auto-judged: the poster can dispute for 12 hours (disp-01). No dispute yet.
+        disputeUntil: expect.any(String),
+        dispute: null,
         entries: [
           {
             entryId: entry!.id,

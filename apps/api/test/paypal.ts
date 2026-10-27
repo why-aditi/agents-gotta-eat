@@ -29,6 +29,7 @@ export function fakePayPal() {
       });
     }
     if (call.path.endsWith("/capture")) return json(201, { id: "CAP1", status: "COMPLETED" });
+    if (call.path.endsWith("/refund")) return json(201, { id: "REFUND1", status: "COMPLETED" });
     if (call.path.endsWith("/reauthorize")) return json(201, { id: "AUTH2", status: "CREATED" });
     if (call.path.endsWith("/void")) return new Response(null, { status: 204 });
     return json(404, { name: "NOT_FOUND", message: "unexpected call" });

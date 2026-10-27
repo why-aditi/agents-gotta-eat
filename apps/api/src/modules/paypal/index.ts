@@ -8,7 +8,13 @@ export {
   type PayPalLogEntry,
 } from "./client";
 export { authorizeOrder, captureOrder, createOrder, getOrder, type PayPalOrder } from "./orders";
-export { captureAuthorization, reauthorize, voidAuthorization, type PayPalAuthorization } from "./payments";
+export {
+  captureAuthorization,
+  reauthorize,
+  refundCapture,
+  voidAuthorization,
+  type PayPalAuthorization,
+} from "./payments";
 export {
   createPayoutBatch,
   getPayoutBatch,

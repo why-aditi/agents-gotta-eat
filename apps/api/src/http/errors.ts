@@ -37,6 +37,10 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   rate_limited: 429,
   compile_failed: 502,
   recording_active: 409,
+  dispute_window_closed: 409,
+  not_disputable: 409,
+  dispute_exists: 409,
+  dispute_not_open: 409,
   internal: 500,
 };
 
@@ -74,6 +78,10 @@ const DEFAULT_MESSAGE: Record<ErrorCode, string> = {
   rate_limited: "Too many requests; slow down and try again shortly",
   compile_failed: "Couldn't turn that into rules. Fill them in by hand.",
   recording_active: "A recording is already running",
+  dispute_window_closed: "The dispute window for this bounty has closed",
+  not_disputable: "Only settled, automatically judged bounties can be disputed",
+  dispute_exists: "This bounty already has a dispute",
+  dispute_not_open: "This dispute has already been resolved",
   internal: "Internal server error",
 };
 

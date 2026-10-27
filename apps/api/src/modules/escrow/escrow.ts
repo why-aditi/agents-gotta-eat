@@ -8,7 +8,7 @@ import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { publish } from "../events";
 import { clawbackEscrow } from "../ledger";
-import { captureAuthorization, PayPalError, requirePayPal, voidAuthorization } from "../paypal";
+import { captureAuthorization, PayPalError, refundCapture, requirePayPal, voidAuthorization } from "../paypal";
 
 export type EscrowRow = typeof escrows.$inferSelect;
 type FinalStatus = "captured" | "voided";
@@ -66,10 +66,34 @@ export function voidEscrow(tx: Tx, bountyId: string): Promise<EscrowRow> {
   return finish(tx, bountyId, "voided");
 }
 
+// An admin overturned a disputed result (disp-01): refunds `cents` (the reward; the fee stays) of a real escrow's
+// capture to the poster and stores the refund id, which the PAYMENT.CAPTURE.REFUNDED webhook then recognises as
+// ours. Locks the escrow row and keeps it locked across the PayPal call, inside the caller's transaction, so the
+// webhook (processed after commit) always sees the stored id. Stable request id: a retry after a failed commit
+// gets the same refund. Idempotent: a stored refund id is returned without a call.
+export async function refundEscrowForDispute(
+  tx: Tx,
+  bountyId: string,
+  disputeId: string,
+  cents: bigint,
+): Promise<string> {
+  const [row] = await tx.select().from(escrows).where(eq(escrows.bountyId, bountyId)).for("update");
+  if (!row) throw new Error(`bounty ${bountyId} has no escrow`);
+  if (row.disputeRefundId) return row.disputeRefundId;
+  if (row.dev || !row.captureId) throw new Error(`escrow for bounty ${bountyId} has no PayPal capture to refund`);
+  const captureId = row.captureId;
+  const { refundId } = await paypalCall(() =>
+    refundCapture(requirePayPal(), captureId, cents, `dispute-refund:${disputeId}`, "Bounty result overturned"),
+  );
+  await tx.update(escrows).set({ disputeRefundId: refundId }).where(eq(escrows.bountyId, bountyId));
+  return refundId;
+}
+
 // PayPal refunded or reversed (part of) a bounty's escrow capture: the winner keeps the reward, the poster owes
 // the platform what was taken back and stays frozen until a top-up repays it. Keyed by the refund id, so a
 // replay moves nothing. `cents` is read only once the capture is known to be ours. False when no escrow has
-// this capture id.
+// this capture id. Our own dispute refund (refundEscrowForDispute) is handled with no clawback: the ledger
+// already moved that money when the dispute was resolved.
 export async function reverseEscrowCapture(
   db: Db,
   input: { captureId: string; refundId: string; cents: () => bigint },
@@ -87,6 +111,7 @@ export async function reverseEscrowCapture(
       .from(bounties)
       .where(eq(bounties.id, found.bountyId));
     if (!row || !bounty) throw new Error(`escrow ${found.bountyId} vanished`);
+    if (row.disputeRefundId === input.refundId) return;
     const result = await clawbackEscrow(tx, {
       bountyId: row.bountyId,
       posterId: bounty.posterId,

@@ -16,7 +16,8 @@ export type IdPrefix =
   | "llm"
   | "run"
   | "rec"
-  | "sct";
+  | "sct"
+  | "dsp";
 
 // Monotonic so ids minted in the same millisecond still sort in creation order.
 const ulid = monotonicFactory();

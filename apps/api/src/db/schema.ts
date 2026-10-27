@@ -283,6 +283,8 @@ export const bounties = pgTable(
     aiRankedAt: timestamp("ai_ranked_at", { withTimezone: true }),
     aiRankFailedAt: timestamp("ai_rank_failed_at", { withTimezone: true }),
     aiRankAttempts: integer("ai_rank_attempts").notNull().default(0),
+    // Auto-judged with a winner: the poster may dispute until then; the reward waits in hold:dispute:{id}.
+    disputeUntil: timestamp("dispute_until", { withTimezone: true }),
     createdAt: createdAt(),
   },
   (t) => [
@@ -327,6 +329,8 @@ export const escrows = pgTable("escrows", {
   reauthorizedAt: timestamp("reauthorized_at", { withTimezone: true }),
   // True for the dev stand-in (ALLOW_DEV_FUNDING), which moves no PayPal money.
   dev: boolean().notNull().default(false),
+  // The PayPal refund an overturned dispute issued: its REFUNDED webhook is ours, not a chargeback.
+  disputeRefundId: text("dispute_refund_id"),
   createdAt: createdAt(),
 });
 
@@ -656,5 +660,36 @@ export const subcontracts = pgTable(
     index("subcontracts_hirer_created_idx").on(t.hirerAgentId, t.createdAt),
     index("subcontracts_status_deliver_by_idx").on(t.status, t.deliverBy),
     index("subcontracts_status_review_by_idx").on(t.status, t.reviewBy),
+  ],
+);
+
+export const disputeStatus = pgEnum("dispute_status", ["open", "upheld", "overturned"]);
+
+// disp-01: a poster's dispute of an auto-judged result, at most one per bounty, resolved by an admin.
+export const disputes = pgTable(
+  "disputes",
+  {
+    id: text().primaryKey(),
+    bountyId: text("bounty_id")
+      .notNull()
+      .references(() => bounties.id),
+    posterId: text("poster_id")
+      .notNull()
+      .references(() => users.id),
+    // UNTRUSTED poster text, shown as plain text.
+    reason: text().notNull(),
+    status: disputeStatus().notNull().default("open"),
+    openedAt: timestamp("opened_at", { withTimezone: true }).notNull(),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    resolvedBy: text("resolved_by").references(() => users.id),
+    note: text(),
+    refundId: text("refund_id"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check("disputes_reason_len", sql`char_length(${t.reason}) between 1 and 1000`),
+    check("disputes_note_len", sql`${t.note} is null or char_length(${t.note}) <= 1000`),
+    uniqueIndex("disputes_bounty_idx").on(t.bountyId),
+    index("disputes_status_opened_idx").on(t.status, t.openedAt),
   ],
 );

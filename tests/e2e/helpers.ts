@@ -1,4 +1,5 @@
-// Helpers shared by the PayPal e2e spec: the api over fetch, dev tokens, the fake PayPal's call log and screenshots.
+// Helpers shared by the PayPal and dispute e2e specs: the api over fetch, dev tokens, SQL, the fake PayPal's call log
+// and screenshots.
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import type { Page } from "@playwright/test";
@@ -15,6 +16,20 @@ export function apiScript(script: string, args: string[]): string {
     env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
     encoding: "utf8",
   }).trim();
+}
+
+// Runs one parameterised statement with the api's own pg driver (no psql needed on the runner).
+export function sql(text: string, params: unknown[]): void {
+  const script =
+    "const { Client } = require('pg');" +
+    "const c = new Client({ connectionString: process.env.DATABASE_URL });" +
+    "c.connect().then(() => c.query(process.argv[1], JSON.parse(process.argv[2]))).then(() => c.end())" +
+    ".catch((e) => { console.error(e); process.exit(1); });";
+  execFileSync(
+    "pnpm",
+    ["--silent", "--filter", "@gottaeat/api", "exec", "node", "-e", script, text, JSON.stringify(params)],
+    { env: { ...process.env, DATABASE_URL }, encoding: "utf8" },
+  );
 }
 
 export async function api(path: string, auth: string, init: { method?: string; body?: unknown; key?: string } = {}) {

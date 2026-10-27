@@ -1,9 +1,12 @@
-// Arena routes: bounties, entries, submissions, picks, results and the dev-only open (until PayPal escrow, pm-04).
+// Arena routes: bounties, entries, submissions, picks, results, disputes and the dev-only open (until PayPal escrow,
+// pm-04). The admin side of disputes is in dispute-routes.ts.
 import {
   Bounty,
   BountyList,
   BountyResults,
   CreateBountyRequest,
+  CreateDisputeRequest,
+  Dispute,
   DevFundRequest,
   EnterBountyResponse,
   Entry,
@@ -25,6 +28,7 @@ import { llmConfigFromEnv } from "../llm";
 import { selectIntentCheck } from "../policy";
 import { cancelBounty, createBounty, devOpenBounty, getBountyFor, listBounties } from "./bounties";
 import { sweepDeadlines } from "./deadlines";
+import { openDispute } from "./disputes";
 import { enterBounty, getEntryFor, listBountyEntriesFor } from "./entries";
 import { confirmFunding, fundBounty } from "./funding";
 import { getResultsFor, getSubmissionFor, pickWinner, type SweepErrorHandler } from "./judging";
@@ -263,6 +267,38 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
     },
   );
 
+  api.post(
+    "/v1/bounties/:id/disputes",
+    {
+      config: { auth: "user", idempotent: true },
+      schema: {
+        tags: ["bounties"],
+        summary: "Dispute the result of an auto-judged bounty",
+        description:
+          "Poster only (404 otherwise), within 12 hours of settlement (`disputeUntil` in the results). The winner's " +
+          "reward stays held until an admin upholds the result (the winner is paid) or overturns it (the reward goes " +
+          "back to the poster; the fee is kept). The reason is stored and shown as plain text. 409 `not_disputable` " +
+          "for poster-judged or unsettled bounties, `dispute_exists` for a second dispute, `dispute_window_closed` " +
+          "after the window.",
+        params: IdParams,
+        body: CreateDisputeRequest,
+        response: {
+          201: Dispute,
+          400: ErrorBody,
+          401: ErrorBody,
+          403: ErrorBody,
+          404: ErrorBody,
+          409: ErrorBody,
+          422: ErrorBody,
+        },
+      },
+    },
+    async (req, reply) => {
+      const user = requireUser(req);
+      return reply.code(201).send(await openDispute(api.db, user, req.params.id, req.body));
+    },
+  );
+
   api.get(
     "/v1/bounties/:id/results",
     {
@@ -272,6 +308,8 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Results of a settled or voided bounty",
         description:
           "Per entry: best score (null when unjudged), whether it passed, and the stake outcome. " +
+          "`disputeUntil` is when the dispute window of an auto-judged result closes (the reward is held until then); " +
+          "`dispute` is shown to the poster, the winner's owner and admins. " +
           "Poster-judged bounties add the AI judge's score, rationale and injection flag per entry when it ranked them. " +
           "Never submission content, answer keys or judge prompts. The poster can read results while judging (to see " +
           "the AI ranking before picking); everyone else gets 409 `not_judging` until the bounty is settled or voided.",

@@ -17,6 +17,7 @@ describe("admin format helpers", () => {
     expect(parseTab(undefined)).toBe("journals");
     expect(parseTab("paypal")).toBe("paypal");
     expect(parseTab("treasurer")).toBe("treasurer");
+    expect(parseTab("disputes")).toBe("disputes");
   });
 
   it("formats signed reconcile cents and labels", () => {

@@ -1,5 +1,6 @@
 // Arena: bounties, entries and submissions. Cents are JSON integers here and bigint inside the api.
 import { z } from "zod";
+import { BountyDispute } from "./disputes";
 
 export const TaskType = z.enum(["fix_tests", "extract_data", "write_tests", "research", "creative_writing"]);
 export type TaskType = z.infer<typeof TaskType>;
@@ -154,6 +155,11 @@ export const BountyResults = z.object({
       injectionFlagged: z.boolean().optional(),
     }),
   ),
+  // Auto-judged bounties that settled with a winner: the poster can dispute until then, and the reward is held
+  // until then (or until an admin resolves the dispute). Null otherwise.
+  disputeUntil: z.iso.datetime().nullable(),
+  // The poster's dispute, for the poster and the winner's owner (and admins); null for everyone else or none.
+  dispute: BountyDispute.nullable(),
 });
 export type BountyResults = z.infer<typeof BountyResults>;
 

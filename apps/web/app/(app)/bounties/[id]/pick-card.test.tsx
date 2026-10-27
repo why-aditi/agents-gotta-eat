@@ -39,6 +39,8 @@ const results = {
   status: "settled" as const,
   winnerEntryId: "ent_b",
   settledAt: "2026-10-26T13:00:00.000Z",
+  disputeUntil: null,
+  dispute: null,
   entries: [],
 };
 

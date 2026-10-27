@@ -1,5 +1,6 @@
 // Ledger-vs-PayPal reconciliation. Every journal touching paypal:clearing in the window is mapped to the PayPal id
-// it belongs to (top-up -> capture, bounty reward -> escrow capture, withdrawal -> payout item, clawback -> refund),
+// it belongs to (top-up -> capture, bounty reward -> escrow capture, withdrawal -> payout item, clawback -> refund,
+// overturned dispute -> the escrow's dispute refund),
 // then matched against PayPal's transaction search (through the Agent Toolkit) by that id and signed amount.
 //
 // Classes: matched, missing_in_paypal, missing_in_ledger, amount_mismatch, and pending (nothing in PayPal yet
@@ -60,9 +61,13 @@ async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string
   const isTopup = (m: ClearingMovement) => m.kind === "topup" && m.refType === "topup";
   const isReward = (m: ClearingMovement) => m.kind === "payout" && m.refType === "bounty";
   const isWithdrawal = (m: ClearingMovement) => m.kind === "payout" && m.refType === "payout";
+  const isDisputeRefund = (m: ClearingMovement) => m.kind === "refund" && m.refType === "bounty";
   const [captures, escrows, items] = await Promise.all([
     topupCaptureIds(db, ids(isTopup)),
-    escrowCaptures(db, ids(isReward)),
+    escrowCaptures(
+      db,
+      ids((m) => isReward(m) || isDisputeRefund(m)),
+    ),
     payoutItemIds(db, ids(isWithdrawal)),
   ]);
   return movements.map((m) => {
@@ -72,6 +77,11 @@ async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string
       const e = escrows.get(ref);
       if (!e || e.dev) return null;
       return e.captureId ?? "";
+    }
+    if (isDisputeRefund(m)) {
+      const e = escrows.get(ref);
+      if (!e || e.dev) return null;
+      return e.disputeRefundId ?? "";
     }
     if (isWithdrawal(m)) return items.get(ref) ?? "";
     if (m.kind === "clawback") {

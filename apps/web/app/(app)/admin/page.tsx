@@ -1,9 +1,10 @@
 // Admin dashboard: journals, accounts, reconciliation (internal and against PayPal), the PayPal call log and webhook
-// events, the Treasurer, LLM usage and demo recordings, one tab per `?tab=`.
+// events, bounty disputes, the Treasurer, LLM usage and demo recordings, one tab per `?tab=`.
 // Only the active tab's data is loaded. Middleware already sends non-admins away; this checks again.
 import {
   AdminAccountList,
   AdminJournalList,
+  DisputeList,
   LlmUsage,
   PayPalCallList,
   ReconcileReport,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { PageError } from "../_lib/page-error";
 import { AccountsGrid } from "./accounts-grid";
 import { DemoPanel } from "./demo-panel";
+import { DisputesPanel } from "./disputes-panel";
 import { ADMIN_TABS, type AdminTab, parseTab } from "./format";
 import { JournalsGrid } from "./journals-grid";
 import { LlmUsagePanel } from "./llm-usage";
@@ -46,6 +48,10 @@ async function TabContent({ tab }: { tab: AdminTab }) {
           apiFetch(WebhookEventList, "/v1/admin/paypal/webhooks"),
         ]);
         return <PayPalPanel calls={calls} webhooks={webhooks} />;
+      }
+      case "disputes": {
+        const { items } = await apiFetch(DisputeList, "/v1/admin/disputes");
+        return <DisputesPanel disputes={items} />;
       }
       case "treasurer":
         return <TreasurerPanel />;
@@ -79,8 +85,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Admin</h1>
         <p className="text-sm text-muted-foreground">
-          The full ledger, its reconciliation against itself and PayPal, the PayPal log, the Treasurer, LLM usage and
-          the demo recordings.
+          The full ledger, its reconciliation against itself and PayPal, the PayPal log, bounty disputes, the Treasurer,
+          LLM usage and the demo recordings.
         </p>
       </div>
       <nav aria-label="Admin sections" className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-[3px]">

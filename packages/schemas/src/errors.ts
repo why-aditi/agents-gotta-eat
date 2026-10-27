@@ -34,6 +34,10 @@ export const ErrorCode = z.enum([
   "rate_limited",
   "compile_failed",
   "recording_active",
+  "dispute_window_closed",
+  "not_disputable",
+  "dispute_exists",
+  "dispute_not_open",
   "internal",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCode>;

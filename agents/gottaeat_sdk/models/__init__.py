@@ -68,6 +68,22 @@ from .get_v1_admin_accounts_response_403 import GetV1AdminAccountsResponse403
 from .get_v1_admin_accounts_response_403_error import GetV1AdminAccountsResponse403Error
 from .get_v1_admin_accounts_response_403_error_code import GetV1AdminAccountsResponse403ErrorCode
 from .get_v1_admin_accounts_response_403_error_detail import GetV1AdminAccountsResponse403ErrorDetail
+from .get_v1_admin_disputes_response_200 import GetV1AdminDisputesResponse200
+from .get_v1_admin_disputes_response_200_items_item import GetV1AdminDisputesResponse200ItemsItem
+from .get_v1_admin_disputes_response_200_items_item_status import GetV1AdminDisputesResponse200ItemsItemStatus
+from .get_v1_admin_disputes_response_400 import GetV1AdminDisputesResponse400
+from .get_v1_admin_disputes_response_400_error import GetV1AdminDisputesResponse400Error
+from .get_v1_admin_disputes_response_400_error_code import GetV1AdminDisputesResponse400ErrorCode
+from .get_v1_admin_disputes_response_400_error_detail import GetV1AdminDisputesResponse400ErrorDetail
+from .get_v1_admin_disputes_response_401 import GetV1AdminDisputesResponse401
+from .get_v1_admin_disputes_response_401_error import GetV1AdminDisputesResponse401Error
+from .get_v1_admin_disputes_response_401_error_code import GetV1AdminDisputesResponse401ErrorCode
+from .get_v1_admin_disputes_response_401_error_detail import GetV1AdminDisputesResponse401ErrorDetail
+from .get_v1_admin_disputes_response_403 import GetV1AdminDisputesResponse403
+from .get_v1_admin_disputes_response_403_error import GetV1AdminDisputesResponse403Error
+from .get_v1_admin_disputes_response_403_error_code import GetV1AdminDisputesResponse403ErrorCode
+from .get_v1_admin_disputes_response_403_error_detail import GetV1AdminDisputesResponse403ErrorDetail
+from .get_v1_admin_disputes_status import GetV1AdminDisputesStatus
 from .get_v1_admin_journals_id_response_200 import GetV1AdminJournalsIdResponse200
 from .get_v1_admin_journals_id_response_200_kind import GetV1AdminJournalsIdResponse200Kind
 from .get_v1_admin_journals_id_response_200_lines_item import GetV1AdminJournalsIdResponse200LinesItem
@@ -347,6 +363,10 @@ from .get_v1_bounties_id_response_404_error import GetV1BountiesIdResponse404Err
 from .get_v1_bounties_id_response_404_error_code import GetV1BountiesIdResponse404ErrorCode
 from .get_v1_bounties_id_response_404_error_detail import GetV1BountiesIdResponse404ErrorDetail
 from .get_v1_bounties_id_results_response_200 import GetV1BountiesIdResultsResponse200
+from .get_v1_bounties_id_results_response_200_dispute_type_0 import GetV1BountiesIdResultsResponse200DisputeType0
+from .get_v1_bounties_id_results_response_200_dispute_type_0_status import (
+    GetV1BountiesIdResultsResponse200DisputeType0Status,
+)
 from .get_v1_bounties_id_results_response_200_entries_item import GetV1BountiesIdResultsResponse200EntriesItem
 from .get_v1_bounties_id_results_response_200_entries_item_stake_outcome_type_0 import (
     GetV1BountiesIdResultsResponse200EntriesItemStakeOutcomeType0,
@@ -651,6 +671,58 @@ from .post_v1_admin_demo_reset_response_422 import PostV1AdminDemoResetResponse4
 from .post_v1_admin_demo_reset_response_422_error import PostV1AdminDemoResetResponse422Error
 from .post_v1_admin_demo_reset_response_422_error_code import PostV1AdminDemoResetResponse422ErrorCode
 from .post_v1_admin_demo_reset_response_422_error_detail import PostV1AdminDemoResetResponse422ErrorDetail
+from .post_v1_admin_disputes_id_resolve_body import PostV1AdminDisputesIdResolveBody
+from .post_v1_admin_disputes_id_resolve_body_outcome import PostV1AdminDisputesIdResolveBodyOutcome
+from .post_v1_admin_disputes_id_resolve_response_200 import PostV1AdminDisputesIdResolveResponse200
+from .post_v1_admin_disputes_id_resolve_response_200_status import PostV1AdminDisputesIdResolveResponse200Status
+from .post_v1_admin_disputes_id_resolve_response_400 import PostV1AdminDisputesIdResolveResponse400
+from .post_v1_admin_disputes_id_resolve_response_400_error import PostV1AdminDisputesIdResolveResponse400Error
+from .post_v1_admin_disputes_id_resolve_response_400_error_code import PostV1AdminDisputesIdResolveResponse400ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_400_error_detail import (
+    PostV1AdminDisputesIdResolveResponse400ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_401 import PostV1AdminDisputesIdResolveResponse401
+from .post_v1_admin_disputes_id_resolve_response_401_error import PostV1AdminDisputesIdResolveResponse401Error
+from .post_v1_admin_disputes_id_resolve_response_401_error_code import PostV1AdminDisputesIdResolveResponse401ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_401_error_detail import (
+    PostV1AdminDisputesIdResolveResponse401ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_403 import PostV1AdminDisputesIdResolveResponse403
+from .post_v1_admin_disputes_id_resolve_response_403_error import PostV1AdminDisputesIdResolveResponse403Error
+from .post_v1_admin_disputes_id_resolve_response_403_error_code import PostV1AdminDisputesIdResolveResponse403ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_403_error_detail import (
+    PostV1AdminDisputesIdResolveResponse403ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_404 import PostV1AdminDisputesIdResolveResponse404
+from .post_v1_admin_disputes_id_resolve_response_404_error import PostV1AdminDisputesIdResolveResponse404Error
+from .post_v1_admin_disputes_id_resolve_response_404_error_code import PostV1AdminDisputesIdResolveResponse404ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_404_error_detail import (
+    PostV1AdminDisputesIdResolveResponse404ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_409 import PostV1AdminDisputesIdResolveResponse409
+from .post_v1_admin_disputes_id_resolve_response_409_error import PostV1AdminDisputesIdResolveResponse409Error
+from .post_v1_admin_disputes_id_resolve_response_409_error_code import PostV1AdminDisputesIdResolveResponse409ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_409_error_detail import (
+    PostV1AdminDisputesIdResolveResponse409ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_422 import PostV1AdminDisputesIdResolveResponse422
+from .post_v1_admin_disputes_id_resolve_response_422_error import PostV1AdminDisputesIdResolveResponse422Error
+from .post_v1_admin_disputes_id_resolve_response_422_error_code import PostV1AdminDisputesIdResolveResponse422ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_422_error_detail import (
+    PostV1AdminDisputesIdResolveResponse422ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_502 import PostV1AdminDisputesIdResolveResponse502
+from .post_v1_admin_disputes_id_resolve_response_502_error import PostV1AdminDisputesIdResolveResponse502Error
+from .post_v1_admin_disputes_id_resolve_response_502_error_code import PostV1AdminDisputesIdResolveResponse502ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_502_error_detail import (
+    PostV1AdminDisputesIdResolveResponse502ErrorDetail,
+)
+from .post_v1_admin_disputes_id_resolve_response_503 import PostV1AdminDisputesIdResolveResponse503
+from .post_v1_admin_disputes_id_resolve_response_503_error import PostV1AdminDisputesIdResolveResponse503Error
+from .post_v1_admin_disputes_id_resolve_response_503_error_code import PostV1AdminDisputesIdResolveResponse503ErrorCode
+from .post_v1_admin_disputes_id_resolve_response_503_error_detail import (
+    PostV1AdminDisputesIdResolveResponse503ErrorDetail,
+)
 from .post_v1_admin_reconcile_paypal_body import PostV1AdminReconcilePaypalBody
 from .post_v1_admin_reconcile_paypal_fresh import PostV1AdminReconcilePaypalFresh
 from .post_v1_admin_reconcile_paypal_response_200 import PostV1AdminReconcilePaypalResponse200
@@ -1118,6 +1190,33 @@ from .post_v1_bounties_id_cancel_response_422 import PostV1BountiesIdCancelRespo
 from .post_v1_bounties_id_cancel_response_422_error import PostV1BountiesIdCancelResponse422Error
 from .post_v1_bounties_id_cancel_response_422_error_code import PostV1BountiesIdCancelResponse422ErrorCode
 from .post_v1_bounties_id_cancel_response_422_error_detail import PostV1BountiesIdCancelResponse422ErrorDetail
+from .post_v1_bounties_id_disputes_body import PostV1BountiesIdDisputesBody
+from .post_v1_bounties_id_disputes_response_201 import PostV1BountiesIdDisputesResponse201
+from .post_v1_bounties_id_disputes_response_201_status import PostV1BountiesIdDisputesResponse201Status
+from .post_v1_bounties_id_disputes_response_400 import PostV1BountiesIdDisputesResponse400
+from .post_v1_bounties_id_disputes_response_400_error import PostV1BountiesIdDisputesResponse400Error
+from .post_v1_bounties_id_disputes_response_400_error_code import PostV1BountiesIdDisputesResponse400ErrorCode
+from .post_v1_bounties_id_disputes_response_400_error_detail import PostV1BountiesIdDisputesResponse400ErrorDetail
+from .post_v1_bounties_id_disputes_response_401 import PostV1BountiesIdDisputesResponse401
+from .post_v1_bounties_id_disputes_response_401_error import PostV1BountiesIdDisputesResponse401Error
+from .post_v1_bounties_id_disputes_response_401_error_code import PostV1BountiesIdDisputesResponse401ErrorCode
+from .post_v1_bounties_id_disputes_response_401_error_detail import PostV1BountiesIdDisputesResponse401ErrorDetail
+from .post_v1_bounties_id_disputes_response_403 import PostV1BountiesIdDisputesResponse403
+from .post_v1_bounties_id_disputes_response_403_error import PostV1BountiesIdDisputesResponse403Error
+from .post_v1_bounties_id_disputes_response_403_error_code import PostV1BountiesIdDisputesResponse403ErrorCode
+from .post_v1_bounties_id_disputes_response_403_error_detail import PostV1BountiesIdDisputesResponse403ErrorDetail
+from .post_v1_bounties_id_disputes_response_404 import PostV1BountiesIdDisputesResponse404
+from .post_v1_bounties_id_disputes_response_404_error import PostV1BountiesIdDisputesResponse404Error
+from .post_v1_bounties_id_disputes_response_404_error_code import PostV1BountiesIdDisputesResponse404ErrorCode
+from .post_v1_bounties_id_disputes_response_404_error_detail import PostV1BountiesIdDisputesResponse404ErrorDetail
+from .post_v1_bounties_id_disputes_response_409 import PostV1BountiesIdDisputesResponse409
+from .post_v1_bounties_id_disputes_response_409_error import PostV1BountiesIdDisputesResponse409Error
+from .post_v1_bounties_id_disputes_response_409_error_code import PostV1BountiesIdDisputesResponse409ErrorCode
+from .post_v1_bounties_id_disputes_response_409_error_detail import PostV1BountiesIdDisputesResponse409ErrorDetail
+from .post_v1_bounties_id_disputes_response_422 import PostV1BountiesIdDisputesResponse422
+from .post_v1_bounties_id_disputes_response_422_error import PostV1BountiesIdDisputesResponse422Error
+from .post_v1_bounties_id_disputes_response_422_error_code import PostV1BountiesIdDisputesResponse422ErrorCode
+from .post_v1_bounties_id_disputes_response_422_error_detail import PostV1BountiesIdDisputesResponse422ErrorDetail
 from .post_v1_bounties_id_entries_response_200 import PostV1BountiesIdEntriesResponse200
 from .post_v1_bounties_id_entries_response_200_entry_type_0 import PostV1BountiesIdEntriesResponse200EntryType0
 from .post_v1_bounties_id_entries_response_200_entry_type_0_status import (
@@ -1243,6 +1342,10 @@ from .post_v1_bounties_id_fund_response_503_error_code import PostV1BountiesIdFu
 from .post_v1_bounties_id_fund_response_503_error_detail import PostV1BountiesIdFundResponse503ErrorDetail
 from .post_v1_bounties_id_pick_body import PostV1BountiesIdPickBody
 from .post_v1_bounties_id_pick_response_200 import PostV1BountiesIdPickResponse200
+from .post_v1_bounties_id_pick_response_200_dispute_type_0 import PostV1BountiesIdPickResponse200DisputeType0
+from .post_v1_bounties_id_pick_response_200_dispute_type_0_status import (
+    PostV1BountiesIdPickResponse200DisputeType0Status,
+)
 from .post_v1_bounties_id_pick_response_200_entries_item import PostV1BountiesIdPickResponse200EntriesItem
 from .post_v1_bounties_id_pick_response_200_entries_item_stake_outcome_type_0 import (
     PostV1BountiesIdPickResponse200EntriesItemStakeOutcomeType0,
@@ -1753,6 +1856,22 @@ __all__ = (
     "GetV1AdminAccountsResponse403Error",
     "GetV1AdminAccountsResponse403ErrorCode",
     "GetV1AdminAccountsResponse403ErrorDetail",
+    "GetV1AdminDisputesResponse200",
+    "GetV1AdminDisputesResponse200ItemsItem",
+    "GetV1AdminDisputesResponse200ItemsItemStatus",
+    "GetV1AdminDisputesResponse400",
+    "GetV1AdminDisputesResponse400Error",
+    "GetV1AdminDisputesResponse400ErrorCode",
+    "GetV1AdminDisputesResponse400ErrorDetail",
+    "GetV1AdminDisputesResponse401",
+    "GetV1AdminDisputesResponse401Error",
+    "GetV1AdminDisputesResponse401ErrorCode",
+    "GetV1AdminDisputesResponse401ErrorDetail",
+    "GetV1AdminDisputesResponse403",
+    "GetV1AdminDisputesResponse403Error",
+    "GetV1AdminDisputesResponse403ErrorCode",
+    "GetV1AdminDisputesResponse403ErrorDetail",
+    "GetV1AdminDisputesStatus",
     "GetV1AdminJournalsIdResponse200",
     "GetV1AdminJournalsIdResponse200Kind",
     "GetV1AdminJournalsIdResponse200LinesItem",
@@ -1996,6 +2115,8 @@ __all__ = (
     "GetV1BountiesIdResponse404ErrorCode",
     "GetV1BountiesIdResponse404ErrorDetail",
     "GetV1BountiesIdResultsResponse200",
+    "GetV1BountiesIdResultsResponse200DisputeType0",
+    "GetV1BountiesIdResultsResponse200DisputeType0Status",
     "GetV1BountiesIdResultsResponse200EntriesItem",
     "GetV1BountiesIdResultsResponse200EntriesItemStakeOutcomeType0",
     "GetV1BountiesIdResultsResponse200EntriesItemStatus",
@@ -2282,6 +2403,42 @@ __all__ = (
     "PostV1AdminDemoResetResponse422Error",
     "PostV1AdminDemoResetResponse422ErrorCode",
     "PostV1AdminDemoResetResponse422ErrorDetail",
+    "PostV1AdminDisputesIdResolveBody",
+    "PostV1AdminDisputesIdResolveBodyOutcome",
+    "PostV1AdminDisputesIdResolveResponse200",
+    "PostV1AdminDisputesIdResolveResponse200Status",
+    "PostV1AdminDisputesIdResolveResponse400",
+    "PostV1AdminDisputesIdResolveResponse400Error",
+    "PostV1AdminDisputesIdResolveResponse400ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse400ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse401",
+    "PostV1AdminDisputesIdResolveResponse401Error",
+    "PostV1AdminDisputesIdResolveResponse401ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse401ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse403",
+    "PostV1AdminDisputesIdResolveResponse403Error",
+    "PostV1AdminDisputesIdResolveResponse403ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse403ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse404",
+    "PostV1AdminDisputesIdResolveResponse404Error",
+    "PostV1AdminDisputesIdResolveResponse404ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse404ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse409",
+    "PostV1AdminDisputesIdResolveResponse409Error",
+    "PostV1AdminDisputesIdResolveResponse409ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse409ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse422",
+    "PostV1AdminDisputesIdResolveResponse422Error",
+    "PostV1AdminDisputesIdResolveResponse422ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse422ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse502",
+    "PostV1AdminDisputesIdResolveResponse502Error",
+    "PostV1AdminDisputesIdResolveResponse502ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse502ErrorDetail",
+    "PostV1AdminDisputesIdResolveResponse503",
+    "PostV1AdminDisputesIdResolveResponse503Error",
+    "PostV1AdminDisputesIdResolveResponse503ErrorCode",
+    "PostV1AdminDisputesIdResolveResponse503ErrorDetail",
     "PostV1AdminReconcilePaypalBody",
     "PostV1AdminReconcilePaypalFresh",
     "PostV1AdminReconcilePaypalResponse200",
@@ -2635,6 +2792,33 @@ __all__ = (
     "PostV1BountiesIdCancelResponse422Error",
     "PostV1BountiesIdCancelResponse422ErrorCode",
     "PostV1BountiesIdCancelResponse422ErrorDetail",
+    "PostV1BountiesIdDisputesBody",
+    "PostV1BountiesIdDisputesResponse201",
+    "PostV1BountiesIdDisputesResponse201Status",
+    "PostV1BountiesIdDisputesResponse400",
+    "PostV1BountiesIdDisputesResponse400Error",
+    "PostV1BountiesIdDisputesResponse400ErrorCode",
+    "PostV1BountiesIdDisputesResponse400ErrorDetail",
+    "PostV1BountiesIdDisputesResponse401",
+    "PostV1BountiesIdDisputesResponse401Error",
+    "PostV1BountiesIdDisputesResponse401ErrorCode",
+    "PostV1BountiesIdDisputesResponse401ErrorDetail",
+    "PostV1BountiesIdDisputesResponse403",
+    "PostV1BountiesIdDisputesResponse403Error",
+    "PostV1BountiesIdDisputesResponse403ErrorCode",
+    "PostV1BountiesIdDisputesResponse403ErrorDetail",
+    "PostV1BountiesIdDisputesResponse404",
+    "PostV1BountiesIdDisputesResponse404Error",
+    "PostV1BountiesIdDisputesResponse404ErrorCode",
+    "PostV1BountiesIdDisputesResponse404ErrorDetail",
+    "PostV1BountiesIdDisputesResponse409",
+    "PostV1BountiesIdDisputesResponse409Error",
+    "PostV1BountiesIdDisputesResponse409ErrorCode",
+    "PostV1BountiesIdDisputesResponse409ErrorDetail",
+    "PostV1BountiesIdDisputesResponse422",
+    "PostV1BountiesIdDisputesResponse422Error",
+    "PostV1BountiesIdDisputesResponse422ErrorCode",
+    "PostV1BountiesIdDisputesResponse422ErrorDetail",
     "PostV1BountiesIdEntriesResponse200",
     "PostV1BountiesIdEntriesResponse200EntryType0",
     "PostV1BountiesIdEntriesResponse200EntryType0Status",
@@ -2740,6 +2924,8 @@ __all__ = (
     "PostV1BountiesIdFundResponse503ErrorDetail",
     "PostV1BountiesIdPickBody",
     "PostV1BountiesIdPickResponse200",
+    "PostV1BountiesIdPickResponse200DisputeType0",
+    "PostV1BountiesIdPickResponse200DisputeType0Status",
     "PostV1BountiesIdPickResponse200EntriesItem",
     "PostV1BountiesIdPickResponse200EntriesItemStakeOutcomeType0",
     "PostV1BountiesIdPickResponse200EntriesItemStatus",

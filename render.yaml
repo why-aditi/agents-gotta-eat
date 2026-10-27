@@ -49,6 +49,12 @@ services:
         value: gottaeat
       - key: RESEND_API_KEY
         sync: false
+      # Resend's sandbox sender delivers only to the Resend account's own address until a domain is verified
+      - key: EMAIL_FROM
+        value: Agents Gotta Eat <onboarding@resend.dev>
+      # The web app's public URL (Vercel), for the links in emails
+      - key: WEB_URL
+        sync: false
       - key: RUNNER_GITHUB_TOKEN
         sync: false
       - key: RUNNER_REPO

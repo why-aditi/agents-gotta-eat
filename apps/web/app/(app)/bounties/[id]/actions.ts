@@ -1,8 +1,15 @@
 "use server";
 
-// Poster and admin actions on one bounty: fund (PayPal and dev), cancel and pick. Each sends the Idempotency-Key its form made
+// Poster and admin actions on one bounty: fund (PayPal and dev), cancel, pick and dispute. Each sends the Idempotency-Key its form made
 // when it rendered, so a double click replays instead of repeating.
-import { Bounty, BountyResults, FundBountyResponse, PickWinnerRequest } from "@gottaeat/schemas";
+import {
+  Bounty,
+  BountyResults,
+  CreateDisputeRequest,
+  Dispute,
+  FundBountyResponse,
+  PickWinnerRequest,
+} from "@gottaeat/schemas";
 import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "@/lib/actions";
 import { apiFetch } from "@/lib/api";
@@ -87,6 +94,23 @@ export async function pickWinner(
       body: body.data,
       idempotencyKey,
     }),
+  );
+  if (result.ok) revalidate(bountyId);
+  return result;
+}
+
+// The poster disputes an auto-judged result. The reason is the poster's own text, sent trimmed.
+export async function openDispute(
+  bountyId: string,
+  reason: string,
+  idempotencyKey: string,
+): Promise<ActionResult<Dispute>> {
+  const bad = check(bountyId, idempotencyKey);
+  if (bad) return bad;
+  const body = CreateDisputeRequest.safeParse({ reason });
+  if (!body.success) return invalid("Say why the result is wrong, in at most 1,000 characters.");
+  const result = await runAction(() =>
+    apiFetch(Dispute, `/v1/bounties/${encodeURIComponent(bountyId)}/disputes`, { body: body.data, idempotencyKey }),
   );
   if (result.ok) revalidate(bountyId);
   return result;

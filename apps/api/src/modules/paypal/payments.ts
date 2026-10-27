@@ -43,3 +43,23 @@ export async function reauthorize(
 export async function voidAuthorization(client: PayPalClient, authId: string, requestId: string): Promise<void> {
   await client.request({ method: "POST", path: `/v2/payments/authorizations/${authId}/void`, requestId });
 }
+
+// A partial or full refund of a capture (disp-01: an admin overturned a dispute). Returns PayPal's refund id, which
+// the PAYMENT.CAPTURE.REFUNDED webhook will carry.
+export async function refundCapture(
+  client: PayPalClient,
+  captureId: string,
+  amountCents: bigint,
+  requestId: string,
+  noteToPayer?: string,
+): Promise<{ refundId: string; status: string | null }> {
+  const body: Record<string, unknown> = { amount: { currency_code: "USD", value: centsToValue(amountCents) } };
+  if (noteToPayer) body.note_to_payer = noteToPayer.slice(0, 255);
+  const raw = await client.request<{ id: string; status?: string }>({
+    method: "POST",
+    path: `/v2/payments/captures/${captureId}/refund`,
+    body,
+    requestId,
+  });
+  return { refundId: raw.id, status: raw.status ?? null };
+}

@@ -9,17 +9,25 @@ export async function escrowFor(db: Db, bountyId: string): Promise<EscrowRow | n
   return row ?? null;
 }
 
-// bounty id -> its escrow's capture id, and whether it is a dev stand-in (no PayPal money).
+// bounty id -> its escrow's capture id, its dispute refund id (disp-01), and whether it is a dev stand-in (no
+// PayPal money).
 export async function escrowCaptures(
   db: Db,
   bountyIds: string[],
-): Promise<Map<string, { captureId: string | null; dev: boolean }>> {
+): Promise<Map<string, { captureId: string | null; disputeRefundId: string | null; dev: boolean }>> {
   if (bountyIds.length === 0) return new Map();
   const rows = await db
-    .select({ bountyId: escrows.bountyId, captureId: escrows.captureId, dev: escrows.dev })
+    .select({
+      bountyId: escrows.bountyId,
+      captureId: escrows.captureId,
+      disputeRefundId: escrows.disputeRefundId,
+      dev: escrows.dev,
+    })
     .from(escrows)
     .where(inArray(escrows.bountyId, bountyIds));
-  return new Map(rows.map((r) => [r.bountyId, { captureId: r.captureId, dev: r.dev }]));
+  return new Map(
+    rows.map((r) => [r.bountyId, { captureId: r.captureId, disputeRefundId: r.disputeRefundId, dev: r.dev }]),
+  );
 }
 
 // Which of these PayPal ids are escrow captures of ours.

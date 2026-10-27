@@ -138,3 +138,17 @@ export const PAYOUT_STATUS_LABEL: Record<PayoutStatus, string> = {
   returned: "returned to your wallet",
   canceled: "returned to your wallet",
 };
+
+// Disputes (disp-01): wording for the codes opening or resolving a dispute can hit; anything else falls back to the
+// payment wording, then the api's own message.
+const DISPUTE_ERROR_TEXT: Partial<Record<ErrorCode, string>> = {
+  dispute_window_closed: "The 12-hour dispute window has closed, so the result is final.",
+  not_disputable: "Only a result the platform judged automatically can be disputed, once the bounty has settled.",
+  dispute_exists: "This result has already been disputed.",
+  dispute_not_open: "This dispute has already been resolved.",
+  paypal_error: "PayPal couldn't make the refund. The dispute is still open; try again in a moment.",
+};
+
+export function describeDisputeError(code: string, message: string): string {
+  return DISPUTE_ERROR_TEXT[code as ErrorCode] ?? describePaymentError(code, message);
+}
