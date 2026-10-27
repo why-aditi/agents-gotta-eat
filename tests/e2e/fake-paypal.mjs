@@ -1,5 +1,5 @@
 // A dependency-free fake of the PayPal REST endpoints the api calls, for `pnpm e2e` only. It keeps orders,
-// authorizations, captures and payouts in memory, records every call and honours PayPal-Request-Id (same id, same
+// authorizations, captures, refunds and payouts in memory, records every call and honours PayPal-Request-Id (same id, same
 // answer). The transaction search (/v1/reporting/transactions) is built from the captures and payout items it has
 // seen, so a PayPal reconciliation against it can come out clean.
 //   GET /__calls[?path=substr]  recorded calls, oldest first      POST /__reset  forget everything
@@ -52,6 +52,19 @@ function transactionSearch(query) {
         custom_field: c.custom_id,
       },
     });
+    for (const r of c.refunds ?? []) {
+      rows.push({
+        at: r.at,
+        info: {
+          transaction_id: r.id,
+          paypal_reference_id: c.id,
+          transaction_event_code: "T1107",
+          transaction_status: "S",
+          transaction_amount: { currency_code: "USD", value: `-${r.amount.value}` },
+          custom_field: c.custom_id,
+        },
+      });
+    }
   }
   // Payout items stay PENDING in this fake, so a search for successful transactions (S) leaves them out.
   for (const b of payouts.values()) {
@@ -162,6 +175,19 @@ function handle(method, path, body, query) {
     return [200, { id: authId, status: state, amount, custom_id, expiration_time }];
   }
   if (method === "GET" && path === "/v1/reporting/transactions") return [200, transactionSearch(query)];
+  // A (partial) refund of a capture: the api refunds the reward of an overturned dispute (disp-01).
+  m = /^\/v2\/payments\/captures\/([^/]+)\/refund$/.exec(path);
+  if (method === "POST" && m) {
+    const c = captures.get(m[1]);
+    if (!c) return notFound("capture");
+    const amount = body?.amount ?? c.amount;
+    c.refunds = [...(c.refunds ?? []), { id: `REFUND-${id(9)}`, amount, at: new Date().toISOString() }];
+    const refund = c.refunds.at(-1);
+    return [
+      201,
+      { id: refund.id, status: "COMPLETED", amount, links: [{ rel: "up", href: `/v2/payments/captures/${c.id}` }] },
+    ];
+  }
   m = /^\/v2\/payments\/authorizations\/([^/]+)\/(capture|void|reauthorize)$/.exec(path);
   if (method === "POST" && m) {
     const auth = auths.get(m[1]);

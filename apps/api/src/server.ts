@@ -14,6 +14,7 @@ import {
   recordPayPalCall,
 } from "./modules/paypal";
 import { startPruneSweep } from "./modules/events";
+import { notifyConfigFromEnv, startNotifyJobs } from "./modules/notify";
 import { aiRanker } from "./modules/judge";
 import { llmConfigFromEnv } from "./modules/llm";
 import { startExpirySweep } from "./modules/policy";
@@ -36,6 +37,10 @@ function envFromProcess(): AppEnv {
     AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
     AGENTS_WAKE_SECRET: process.env.AGENTS_WAKE_SECRET,
     TRUST_PROXY_HOPS: process.env.TRUST_PROXY_HOPS,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
+    WEB_URL: process.env.WEB_URL,
+    RESEND_API_URL: process.env.RESEND_API_URL,
   };
 }
 
@@ -75,6 +80,7 @@ let stopPaymentJobs: (() => Promise<void>) | undefined;
 let stopReauthorizeSweep: (() => void) | undefined;
 let stopEvents: (() => void) | undefined;
 let stopPrune: (() => void) | undefined;
+let stopNotifyJobs: (() => Promise<void>) | undefined;
 // Hooks run in order: stop the sweeps before the pool closes.
 app.addHook("onClose", async () => {
   stopSweep?.();
@@ -83,6 +89,7 @@ app.addHook("onClose", async () => {
   stopEvents?.();
   stopPrune?.();
   await stopPaymentJobs?.();
+  await stopNotifyJobs?.();
 });
 app.addHook("onClose", () => pool.end());
 
@@ -106,7 +113,21 @@ try {
       app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),
     );
   }
-  // Fans new events out to the open SSE streams, polling once a second.
+  // Approval and dispute emails, queued so a Resend hiccup retries. Unset key: the subscriber sends nothing.
+  // A queue that fails to start is logged, not fatal: email is a convenience, the dashboard is the record.
+  const notify = notifyConfigFromEnv(env);
+  if (notify.apiKey) {
+    try {
+      stopNotifyJobs = await startNotifyJobs(db, requireDatabaseUrl(), notify, (err) =>
+        app.log.error({ err }, "notify jobs"),
+      );
+    } catch (err) {
+      app.log.error({ err }, "notify jobs failed to start; emails send inline without retries");
+    }
+  } else {
+    app.log.info("email disabled: RESEND_API_KEY unset");
+  }
+  // Fans new events out to the open SSE streams (and the email subscriber), polling once a second.
   stopEvents = app.eventBus.start(1000, (err) => app.log.error({ err }, "event poll failed"));
   // Deletes events and agent runs older than 30 days, at startup and then daily.
   stopPrune = startPruneSweep(db, (err) => app.log.error({ err }, "event prune failed"));

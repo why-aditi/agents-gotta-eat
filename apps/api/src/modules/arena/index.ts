@@ -44,7 +44,16 @@ export {
   type JudgeOutcome,
   type SweepErrorHandler,
 } from "./judging";
+export {
+  DISPUTE_LIST_LIMIT,
+  disputeKeys,
+  listDisputes,
+  openDispute,
+  releaseDueDisputeHolds,
+  resolveDispute,
+} from "./disputes";
 export { arenaRoutes } from "./routes";
+export { disputeAdminRoutes } from "./dispute-routes";
 export { InvalidBountyTransitionError, transition as bountyTransition } from "./state";
 export { canonicalContent, sha256Hex, submitWork } from "./submissions";
 export { WAKE_SECRET_HEADER, wakeAgents, type WakeConfig } from "./wake";

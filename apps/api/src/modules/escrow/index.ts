@@ -1,4 +1,11 @@
-export { captureEscrow, paypalCall, reverseEscrowCapture, voidEscrow, type EscrowRow } from "./escrow";
+export {
+  captureEscrow,
+  paypalCall,
+  refundEscrowForDispute,
+  reverseEscrowCapture,
+  voidEscrow,
+  type EscrowRow,
+} from "./escrow";
 export {
   HONOR_MS,
   REAUTHORIZE_AFTER_MS,

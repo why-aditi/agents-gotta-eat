@@ -15,7 +15,15 @@ export { postJournal, type JournalKind, type JournalLine, type PostJournalInput,
 export { devCredit, hold, lockWallet, openWallet, release, settle, stakeFromHold } from "./wallets";
 export { holdWithdrawal, returnWithdrawal, settleWithdrawal } from "./withdrawals";
 export { clawbackEscrow, clawbackTopup, creditTopup, owedCents, type ClawbackResult } from "./receivables";
-export { forfeitStake, payBountyReward, refundDisputedReward, refundStake, releaseDisputeHold } from "./bounty";
+export {
+  disputeHoldCents,
+  forfeitStake,
+  openDisputeHoldBountyIds,
+  payBountyReward,
+  refundDisputedReward,
+  refundStake,
+  releaseDisputeHold,
+} from "./bounty";
 export {
   clearingMovements,
   decodeJournalCursor,

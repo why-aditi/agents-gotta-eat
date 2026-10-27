@@ -28,3 +28,12 @@ Spec sections: "Users and core flows" (owners get approval requests in the dashb
 
 | Area | Change | Why |
 | --- | --- | --- |
+| Stale jobs | A job whose spend is no longer `pending_approval`, or whose dispute is no longer `open`, sends nothing | A retry after the owner already answered must not email |
+| Dispute emails | One email per admin, Resend key `dispute:{id}:{adminUserId}`; the pg-boss `singletonKey` stays `dispute:{id}` | One shared key would make Resend drop the second admin's email as a duplicate |
+| Duplicate events | `dispute.opened` is published once per party, so the subscriber remembers keys it enqueued (bounded, 1,000), the queue uses pg-boss policy `short`, and Resend dedupes on its key | Three layers, so one dispute is one email per admin |
+| Reason wording | A server-side copy of the web's `REASON_TEXT`, typed `Record<PolicyReason, string>` so a new code fails typecheck | |
+| Untrusted text | Agent and poster reasons: ≤ 300 code points, escaped, in a `pre-wrap` block labelled as theirs. Names and titles: ≤ 80 chars, control characters and newlines stripped (subjects stay one line) | |
+| Queue start failure | `server.ts` logs it and carries on; emails then send inline without retries | Email is not worth failing the api over |
+| Renderers | `approvalEmail(facts, webUrl)` / `disputeEmail(facts, webUrl)`; amounts via `formatDollars` (bigint) | |
+| Tests | 23: render 11, send 4 (fake Resend server in `test/fake-resend.ts`), trigger 8 (event bus → job → fake Resend) | |
+

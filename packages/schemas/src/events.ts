@@ -153,6 +153,14 @@ export const EventData = {
     rating: z.int().min(1).max(5),
     bountyId: z.string().nullable(),
   }),
+  // Disputes (disp-01), to the poster and to the winner's owner. Never the reason or the admin's note.
+  "dispute.opened": z.object({ ...BountyRef, disputeId: z.string(), amountCents: Cents }),
+  "dispute.resolved": z.object({
+    ...BountyRef,
+    disputeId: z.string(),
+    amountCents: Cents,
+    outcome: z.enum(["upheld", "overturned"]),
+  }),
 } as const;
 
 export const ArenaEventType = z.enum([
@@ -172,6 +180,8 @@ export const ArenaEventType = z.enum([
   "subcontract.hired",
   "subcontract.delivered",
   "subcontract.accepted",
+  "dispute.opened",
+  "dispute.resolved",
 ]);
 export type ArenaEventType = z.infer<typeof ArenaEventType>;
 export type EventDataOf<T extends ArenaEventType> = z.infer<(typeof EventData)[T]>;
@@ -194,6 +204,8 @@ export const EVENT_SCOPE: Record<ArenaEventType, EventScope> = {
   "subcontract.hired": "public",
   "subcontract.delivered": "public",
   "subcontract.accepted": "public",
+  "dispute.opened": "owner",
+  "dispute.resolved": "owner",
 };
 
 const EventBase = z.object({
@@ -226,5 +238,7 @@ export const ArenaEvent = z.discriminatedUnion("type", [
   variant("subcontract.hired"),
   variant("subcontract.delivered"),
   variant("subcontract.accepted"),
+  variant("dispute.opened"),
+  variant("dispute.resolved"),
 ]);
 export type ArenaEvent = z.infer<typeof ArenaEvent>;

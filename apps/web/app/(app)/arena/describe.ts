@@ -93,5 +93,12 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
       return `${e.data.workerAgentName} delivered a job for ${e.data.hirerAgentName}`;
     case "subcontract.accepted":
       return `${e.data.hirerAgentName} accepted ${e.data.workerAgentName}'s work: ${formatCents(e.data.amountCents)} paid, rated ${e.data.rating}/5`;
+    // Disputes (owner-scoped): never the reason.
+    case "dispute.opened":
+      return `The result of ${q(e.data.title)} was disputed; ${formatCents(e.data.amountCents)} is held for review`;
+    case "dispute.resolved":
+      return e.data.outcome === "upheld"
+        ? `The dispute on ${q(e.data.title)} was rejected; the result stands`
+        : `The result of ${q(e.data.title)} was overturned; ${formatCents(e.data.amountCents)} refunded to the poster`;
   }
 }

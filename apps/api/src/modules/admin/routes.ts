@@ -1,5 +1,5 @@
 // /v1/admin dashboard: journals, accounts, reconciliation and LLM usage (read-only), plus the demo controls
-// (demo module) and the PayPal operations (treasurer module). Admin users only.
+// (demo module), the PayPal operations (treasurer module) and bounty disputes (arena module). Admin users only.
 // Routing and serialisation only: the ledger and llm modules own the reads.
 import {
   AdminAccountList,
@@ -15,6 +15,7 @@ import { z } from "zod";
 import { requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
+import { disputeAdminRoutes } from "../arena";
 import { demoAdminRoutes } from "../demo";
 import { decodeJournalCursor, getJournal, listAccounts, listJournals, reconcile } from "../ledger";
 import { dailyBudgetFromEnv, llmUsage } from "../llm";
@@ -36,6 +37,8 @@ export const adminRoutes: FastifyPluginAsyncZod = async (api) => {
   await api.register(demoAdminRoutes, { seedDir: api.demoOptions.seedDir });
   // PayPal call log, webhook events, PayPal reconciliation and the Treasurer (ops-01).
   await api.register(treasurerAdminRoutes);
+  // Bounty disputes (disp-01).
+  await api.register(disputeAdminRoutes);
 
   api.get(
     "/v1/admin/journals",

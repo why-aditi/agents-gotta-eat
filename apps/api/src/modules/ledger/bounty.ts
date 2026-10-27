@@ -1,9 +1,9 @@
 // Bounty settlement journals. The escrow stand-in: the captured reward + fee arrives in paypal:clearing
 // (dev escrows move no real money; pm-04 makes the capture real), the reward goes to the winner owner's
 // wallet and the fee to platform:fees. Stakes leave stake:{bountyId} as refunds or forfeits.
-import { eq } from "drizzle-orm";
-import type { Tx } from "../../db";
-import { ledgerAccounts } from "../../db/schema";
+import { eq, like, sql } from "drizzle-orm";
+import type { Db, Tx } from "../../db";
+import { ledgerAccounts, ledgerEntries } from "../../db/schema";
 import { disputeHoldAccount, PAYPAL_CLEARING, PLATFORM_FEES, stakeAccount, walletAccount } from "./accounts";
 import { LedgerError } from "./errors";
 import { findJournal, postJournal, type PostedJournal } from "./journal";
@@ -157,4 +157,21 @@ export async function refundDisputedReward(
       { accountId: input.toPosterWallet ? walletAccount(input.posterId) : PAYPAL_CLEARING, creditCents: h.balance },
     ],
   });
+}
+
+// What the dispute hold of a bounty holds now; 0 once released or refunded, or when there never was one.
+export function disputeHoldCents(conn: Db | Tx, bountyId: string): Promise<bigint> {
+  return accountBalance(conn, disputeHoldAccount(bountyId));
+}
+
+// Bounties whose dispute hold still holds money.
+export async function openDisputeHoldBountyIds(conn: Db | Tx): Promise<string[]> {
+  const prefix = disputeHoldAccount("");
+  const rows = await conn
+    .select({ id: ledgerEntries.accountId })
+    .from(ledgerEntries)
+    .where(like(ledgerEntries.accountId, `${prefix}%`))
+    .groupBy(ledgerEntries.accountId)
+    .having(sql`sum(${ledgerEntries.creditCents} - ${ledgerEntries.debitCents}) > 0`);
+  return rows.map((r) => r.id.slice(prefix.length));
 }
