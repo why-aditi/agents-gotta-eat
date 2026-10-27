@@ -140,8 +140,12 @@ export async function stopRecording(db: Db, now: Date = new Date()): Promise<Rec
   const id = await db.transaction(async (tx) => {
     const [active] = await tx.select().from(recordings).where(isNull(recordings.endedAt)).for("update");
     if (!active) throw new ApiError("not_found", "No recording is active");
-    const endedAt = now.getTime() < active.startedAt.getTime() ? active.startedAt : now;
-    await tx.update(recordings).set({ endedAt }).where(eq(recordings.id, active.id));
+    // Never before the database's own clock: events take created_at from Postgres now() in microseconds, and a JS
+    // Date only has milliseconds, so an event committed in the same millisecond would fall after a JS end time.
+    await tx
+      .update(recordings)
+      .set({ endedAt: sql`greatest(${now.toISOString()}::timestamptz, now(), ${recordings.startedAt})` })
+      .where(eq(recordings.id, active.id));
     await backfill(tx, active.id);
     return active.id;
   });

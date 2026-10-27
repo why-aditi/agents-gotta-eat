@@ -114,6 +114,16 @@ describe("live recording", () => {
     await expect(stopRecording(db)).rejects.toMatchObject({ code: "not_found" });
   });
 
+  it("keeps an event committed in the same millisecond as the stop", async () => {
+    await startRecording(db, "Run", new Date(Date.now() - 2_000));
+    const eventId = await publicEvent(1);
+    const [row] = await db.select({ createdAt: events.createdAt }).from(events).where(eq(events.id, eventId));
+    // A JS clock reading in the event's own millisecond: Postgres stored the event in microseconds, so this is
+    // (almost always) a little before it.
+    const stopped = await stopRecording(db, new Date(row!.createdAt.getTime()));
+    expect(stopped.eventCount).toBe(1);
+  });
+
   it("replay rebuilds public ArenaEvents with id = seq and createdAt = start + offset", async () => {
     const rec = await startRecording(db, "Run", new Date(Date.now() - 2_000));
     await publicEvent(1);
