@@ -163,10 +163,6 @@ class GottaeatApi:
             httpx_args=self._httpx_args,
         )
 
-    def _idempotent(self, key: str) -> AuthenticatedClient:
-        # A fresh client per money-moving POST: with_headers on a live client would leak the key into later calls.
-        return self._new_client({"Idempotency-Key": key})
-
     async def aclose(self) -> None:
         await self._client.get_async_httpx_client().aclose()
         await self._run_log_client.get_async_httpx_client().aclose()
@@ -194,8 +190,9 @@ class GottaeatApi:
         ]
 
     async def enter(self, bounty_id: str, idempotency_key: str) -> EntryResult:
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_bounties_id_entries.asyncio_detailed(bounty_id, client=client)
+        res = await post_v1_bounties_id_entries.asyncio_detailed(
+            bounty_id, client=self._client, idempotency_key=idempotency_key
+        )
         parsed = res.parsed
         if not isinstance(parsed, PostV1BountiesIdEntriesResponse200 | PostV1BountiesIdEntriesResponse201):
             raise ApiError(f"POST /v1/bounties/{bounty_id}/entries", res.status_code, res.content)
@@ -213,8 +210,9 @@ class GottaeatApi:
 
     async def submit(self, entry_id: str, content: dict[str, Any], idempotency_key: str) -> str:
         body = PostV1EntriesIdSubmissionsBody.from_dict({"content": content})
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_entries_id_submissions.asyncio_detailed(entry_id, client=client, body=body)
+        res = await post_v1_entries_id_submissions.asyncio_detailed(
+            entry_id, client=self._client, body=body, idempotency_key=idempotency_key
+        )
         return _expect(res, PostV1EntriesIdSubmissionsResponse201, f"POST /v1/entries/{entry_id}/submissions").id
 
     async def request_spend(
@@ -223,8 +221,9 @@ class GottaeatApi:
         body = PostV1SpendRequestsBody.from_dict(
             {"payeeAgentId": payee_agent_id, "amountCents": amount_cents, "category": category, "reason": reason}
         )
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_spend_requests.asyncio_detailed(client=client, body=body)
+        res = await post_v1_spend_requests.asyncio_detailed(
+            client=self._client, body=body, idempotency_key=idempotency_key
+        )
         parsed = _expect(res, PostV1SpendRequestsResponse201, "POST /v1/spend-requests")
         return SpendResult(
             id=parsed.id,
@@ -271,8 +270,9 @@ class GottaeatApi:
             bounty_id=bounty_id if bounty_id is not None else UNSET,
             deliver_by_minutes=deliver_by_minutes if deliver_by_minutes is not None else UNSET,
         )
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_subcontracts.asyncio_detailed(client=client, body=body)
+        res = await post_v1_subcontracts.asyncio_detailed(
+            client=self._client, body=body, idempotency_key=idempotency_key
+        )
         parsed = _expect(res, PostV1SubcontractsResponse201, "POST /v1/subcontracts")
         spend = SpendResult(
             id=parsed.spend.id,
@@ -295,27 +295,31 @@ class GottaeatApi:
 
     async def accept_subcontract(self, subcontract_id: str, rating: int, idempotency_key: str) -> JobView:
         body = PostV1SubcontractsIdAcceptBody(rating=rating)
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_subcontracts_id_accept.asyncio_detailed(subcontract_id, client=client, body=body)
+        res = await post_v1_subcontracts_id_accept.asyncio_detailed(
+            subcontract_id, client=self._client, body=body, idempotency_key=idempotency_key
+        )
         what = f"POST /v1/subcontracts/{subcontract_id}/accept"
         return _job(_expect(res, PostV1SubcontractsIdAcceptResponse200, what))
 
     async def cancel_subcontract(self, subcontract_id: str, idempotency_key: str) -> JobView:
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_subcontracts_id_cancel.asyncio_detailed(subcontract_id, client=client)
+        res = await post_v1_subcontracts_id_cancel.asyncio_detailed(
+            subcontract_id, client=self._client, idempotency_key=idempotency_key
+        )
         what = f"POST /v1/subcontracts/{subcontract_id}/cancel"
         return _job(_expect(res, PostV1SubcontractsIdCancelResponse200, what))
 
     async def deliver_subcontract(self, subcontract_id: str, deliverable: str, idempotency_key: str) -> JobView:
         body = PostV1SubcontractsIdDeliverBody(deliverable=deliverable)
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_subcontracts_id_deliver.asyncio_detailed(subcontract_id, client=client, body=body)
+        res = await post_v1_subcontracts_id_deliver.asyncio_detailed(
+            subcontract_id, client=self._client, body=body, idempotency_key=idempotency_key
+        )
         what = f"POST /v1/subcontracts/{subcontract_id}/deliver"
         return _job(_expect(res, PostV1SubcontractsIdDeliverResponse200, what))
 
     async def decline_subcontract(self, subcontract_id: str, idempotency_key: str) -> JobView:
-        async with self._idempotent(idempotency_key) as client:
-            res = await post_v1_subcontracts_id_decline.asyncio_detailed(subcontract_id, client=client)
+        res = await post_v1_subcontracts_id_decline.asyncio_detailed(
+            subcontract_id, client=self._client, idempotency_key=idempotency_key
+        )
         what = f"POST /v1/subcontracts/{subcontract_id}/decline"
         return _job(_expect(res, PostV1SubcontractsIdDeclineResponse200, what))
 

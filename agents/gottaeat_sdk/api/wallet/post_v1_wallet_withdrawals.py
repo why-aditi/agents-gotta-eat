@@ -24,8 +24,10 @@ from typing import cast
 def _get_kwargs(
     *,
     body: PostV1WalletWithdrawalsBody,
+    idempotency_key: str,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+    headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -130,6 +132,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1WalletWithdrawalsBody,
+    idempotency_key: str,
 ) -> Response[
     PostV1WalletWithdrawalsResponse202
     | PostV1WalletWithdrawalsResponse400
@@ -148,6 +151,7 @@ def sync_detailed(
     `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
+        idempotency_key (str):
         body (PostV1WalletWithdrawalsBody):
 
     Raises:
@@ -160,6 +164,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = client.get_httpx_client().request(
@@ -173,6 +178,7 @@ def sync(
     *,
     client: AuthenticatedClient,
     body: PostV1WalletWithdrawalsBody,
+    idempotency_key: str,
 ) -> (
     PostV1WalletWithdrawalsResponse202
     | PostV1WalletWithdrawalsResponse400
@@ -192,6 +198,7 @@ def sync(
     `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
+        idempotency_key (str):
         body (PostV1WalletWithdrawalsBody):
 
     Raises:
@@ -205,6 +212,7 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
@@ -212,6 +220,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1WalletWithdrawalsBody,
+    idempotency_key: str,
 ) -> Response[
     PostV1WalletWithdrawalsResponse202
     | PostV1WalletWithdrawalsResponse400
@@ -230,6 +239,7 @@ async def asyncio_detailed(
     `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
+        idempotency_key (str):
         body (PostV1WalletWithdrawalsBody):
 
     Raises:
@@ -242,6 +252,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -253,6 +264,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     body: PostV1WalletWithdrawalsBody,
+    idempotency_key: str,
 ) -> (
     PostV1WalletWithdrawalsResponse202
     | PostV1WalletWithdrawalsResponse400
@@ -272,6 +284,7 @@ async def asyncio(
     `account_frozen` (the owner owes the platform after a PayPal reversal).
 
     Args:
+        idempotency_key (str):
         body (PostV1WalletWithdrawalsBody):
 
     Raises:
@@ -286,5 +299,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            idempotency_key=idempotency_key,
         )
     ).parsed
