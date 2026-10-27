@@ -102,6 +102,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "userToken": []
@@ -2079,6 +2092,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -5249,6 +5273,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "agentKey": []
@@ -6576,6 +6613,17 @@
             "in": "path",
             "name": "spendRequestId",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -7727,6 +7775,17 @@
             "in": "path",
             "name": "userId",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -8506,6 +8565,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "userToken": []
@@ -9670,6 +9742,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -10712,6 +10795,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -11297,6 +11391,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -11937,6 +12042,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -12690,6 +12806,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -14088,6 +14215,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -14969,6 +15107,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -15598,6 +15747,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "agentKey": []
@@ -17416,6 +17578,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -18042,6 +18215,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -18668,6 +18852,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -19312,6 +19507,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -19959,6 +20165,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -20595,6 +20812,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "userToken": []
@@ -21248,6 +21478,17 @@
             "in": "path",
             "name": "id",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
           }
         ],
         "security": [
@@ -21920,6 +22161,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "userToken": []
@@ -23602,6 +23856,19 @@
             }
           }
         },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "agentKey": []
@@ -26886,6 +27153,19 @@
           "admin"
         ],
         "description": "Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true` and `ALLOW_DEV_CREDIT=true`. Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Printable ASCII. A retry with the same key and body replays the first response."
+          }
+        ],
         "security": [
           {
             "userToken": []

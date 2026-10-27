@@ -17,14 +17,18 @@ from ...models.post_v1_agent_runs_response_404 import PostV1AgentRunsResponse404
 from ...models.post_v1_agent_runs_response_409 import PostV1AgentRunsResponse409
 from ...models.post_v1_agent_runs_response_422 import PostV1AgentRunsResponse422
 from ...models.post_v1_agent_runs_response_429 import PostV1AgentRunsResponse429
+from ...types import UNSET, Unset
 from typing import cast
 
 
 def _get_kwargs(
     *,
     body: PostV1AgentRunsBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+    if not isinstance(idempotency_key, Unset):
+        headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -122,6 +126,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1AgentRunsBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> Response[
     PostV1AgentRunsResponse201
     | PostV1AgentRunsResponse400
@@ -140,6 +145,7 @@ def sync_detailed(
     or draft bounty.
 
     Args:
+        idempotency_key (str | Unset):
         body (PostV1AgentRunsBody):
 
     Raises:
@@ -152,6 +158,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = client.get_httpx_client().request(
@@ -165,6 +172,7 @@ def sync(
     *,
     client: AuthenticatedClient,
     body: PostV1AgentRunsBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> (
     PostV1AgentRunsResponse201
     | PostV1AgentRunsResponse400
@@ -184,6 +192,7 @@ def sync(
     or draft bounty.
 
     Args:
+        idempotency_key (str | Unset):
         body (PostV1AgentRunsBody):
 
     Raises:
@@ -197,6 +206,7 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
@@ -204,6 +214,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1AgentRunsBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> Response[
     PostV1AgentRunsResponse201
     | PostV1AgentRunsResponse400
@@ -222,6 +233,7 @@ async def asyncio_detailed(
     or draft bounty.
 
     Args:
+        idempotency_key (str | Unset):
         body (PostV1AgentRunsBody):
 
     Raises:
@@ -234,6 +246,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -245,6 +258,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     body: PostV1AgentRunsBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> (
     PostV1AgentRunsResponse201
     | PostV1AgentRunsResponse400
@@ -264,6 +278,7 @@ async def asyncio(
     or draft bounty.
 
     Args:
+        idempotency_key (str | Unset):
         body (PostV1AgentRunsBody):
 
     Raises:
@@ -278,5 +293,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            idempotency_key=idempotency_key,
         )
     ).parsed

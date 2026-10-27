@@ -18,13 +18,19 @@ from ...models.post_v1_admin_demo_reset_response_422 import PostV1AdminDemoReset
 from typing import cast
 
 
-def _get_kwargs() -> dict[str, Any]:
+def _get_kwargs(
+    *,
+    idempotency_key: str,
+) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
+    headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
         "url": "/v1/admin/demo/reset",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -103,6 +109,7 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
+    idempotency_key: str,
 ) -> Response[
     PostV1AdminDemoResetResponse200
     | PostV1AdminDemoResetResponse400
@@ -118,6 +125,9 @@ def sync_detailed(
     Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet
     back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.
 
+    Args:
+        idempotency_key (str):
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -126,7 +136,9 @@ def sync_detailed(
         Response[PostV1AdminDemoResetResponse200 | PostV1AdminDemoResetResponse400 | PostV1AdminDemoResetResponse401 | PostV1AdminDemoResetResponse403 | PostV1AdminDemoResetResponse404 | PostV1AdminDemoResetResponse409 | PostV1AdminDemoResetResponse422]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        idempotency_key=idempotency_key,
+    )
 
     response = client.get_httpx_client().request(
         **kwargs,
@@ -138,6 +150,7 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
+    idempotency_key: str,
 ) -> (
     PostV1AdminDemoResetResponse200
     | PostV1AdminDemoResetResponse400
@@ -154,6 +167,9 @@ def sync(
     Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet
     back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.
 
+    Args:
+        idempotency_key (str):
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -164,12 +180,14 @@ def sync(
 
     return sync_detailed(
         client=client,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
+    idempotency_key: str,
 ) -> Response[
     PostV1AdminDemoResetResponse200
     | PostV1AdminDemoResetResponse400
@@ -185,6 +203,9 @@ async def asyncio_detailed(
     Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet
     back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.
 
+    Args:
+        idempotency_key (str):
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -193,7 +214,9 @@ async def asyncio_detailed(
         Response[PostV1AdminDemoResetResponse200 | PostV1AdminDemoResetResponse400 | PostV1AdminDemoResetResponse401 | PostV1AdminDemoResetResponse403 | PostV1AdminDemoResetResponse404 | PostV1AdminDemoResetResponse409 | PostV1AdminDemoResetResponse422]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        idempotency_key=idempotency_key,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -203,6 +226,7 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
+    idempotency_key: str,
 ) -> (
     PostV1AdminDemoResetResponse200
     | PostV1AdminDemoResetResponse400
@@ -218,6 +242,9 @@ async def asyncio(
      Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true` and `ALLOW_DEV_CREDIT=true`.
     Creates and opens (dev funding) each seed bounty that isn't open, and tops the house owner's wallet
     back up to $60 with one dev credit of the difference. Needs an `Idempotency-Key`.
+
+    Args:
+        idempotency_key (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -230,5 +257,6 @@ async def asyncio(
     return (
         await asyncio_detailed(
             client=client,
+            idempotency_key=idempotency_key,
         )
     ).parsed

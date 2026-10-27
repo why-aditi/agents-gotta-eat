@@ -9,13 +9,14 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=../../.env src/migrate.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "CONTRACT_COVERAGE=1 vitest run",
     "dev:token": "tsx --env-file-if-exists=../../.env scripts/dev-token.ts",
     "openapi:export": "tsx scripts/openapi-export.ts",
     "grant-admin": "tsx --env-file-if-exists=../../.env scripts/grant-admin.ts",
     "house:setup": "tsx --env-file-if-exists=../../.env scripts/house-setup.ts",
     "demo:import": "tsx --env-file-if-exists=../../.env scripts/demo-import.ts",
-    "redteam": "tsx --env-file-if-exists=../../.env scripts/redteam-live.ts"
+    "redteam": "tsx --env-file-if-exists=../../.env scripts/redteam-live.ts",
+    "postman:export": "tsx scripts/postman-export.ts"
   },
   "dependencies": {
     "@fastify/cors": "11.3.1",

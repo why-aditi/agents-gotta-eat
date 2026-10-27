@@ -1,4 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { parseEnv } from "node:util";
 import { defineConfig } from "vitest/config";
 
@@ -14,11 +16,14 @@ function testDatabaseUrl(): string {
 
 const TEST_DATABASE_URL = testDatabaseUrl();
 process.env.TEST_DATABASE_URL = TEST_DATABASE_URL;
+// Every route the test apps answer is appended here; test/global-setup.ts checks coverage after a full run.
+const TEST_HITLOG = join(tmpdir(), `gottaeat-route-hits-${process.pid}.log`);
+process.env.TEST_HITLOG = TEST_HITLOG;
 
 export default defineConfig({
   test: {
     globalSetup: ["./test/global-setup.ts"],
-    env: { TEST_DATABASE_URL },
+    env: { TEST_DATABASE_URL, TEST_HITLOG },
     // Integration tests share one database and truncate it between tests.
     fileParallelism: false,
     testTimeout: 30_000,

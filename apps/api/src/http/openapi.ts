@@ -27,7 +27,27 @@ export function registerOpenApi(app: FastifyInstance) {
     transform: (doc) => {
       const out = jsonSchemaTransform(doc);
       const auth = doc.route.config?.auth ?? "none";
-      return { ...out, schema: { ...out.schema, security: SECURITY[auth] } };
+      const schema: Record<string, unknown> = { ...out.schema, security: SECURITY[auth] };
+      // Money-moving POSTs need an Idempotency-Key (http/idempotency.ts); document it as a header parameter.
+      const idem = doc.route.config?.idempotent;
+      if (idem) {
+        const headers = (schema.headers ?? {}) as { type?: string; properties?: object; required?: string[] };
+        schema.headers = {
+          type: "object",
+          ...headers,
+          properties: {
+            ...headers.properties,
+            "idempotency-key": {
+              type: "string",
+              minLength: 1,
+              maxLength: 255,
+              description: "Printable ASCII. A retry with the same key and body replays the first response.",
+            },
+          },
+          required: idem === "optional" ? (headers.required ?? []) : [...(headers.required ?? []), "idempotency-key"],
+        };
+      }
+      return { ...out, schema };
     },
     transformObject: jsonSchemaTransformObject,
   });

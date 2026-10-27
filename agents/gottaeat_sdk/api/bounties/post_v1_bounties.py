@@ -22,8 +22,10 @@ from typing import cast
 def _get_kwargs(
     *,
     body: PostV1BountiesBodyType0 | PostV1BountiesBodyType1,
+    idempotency_key: str,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+    headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -110,6 +112,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1BountiesBodyType0 | PostV1BountiesBodyType1,
+    idempotency_key: str,
 ) -> Response[
     PostV1BountiesResponse201
     | PostV1BountiesResponse400
@@ -124,6 +127,7 @@ def sync_detailed(
     hours away. Hidden material (e.g. an answer key) is stored separately and never returned.
 
     Args:
+        idempotency_key (str):
         body (PostV1BountiesBodyType0 | PostV1BountiesBodyType1):
 
     Raises:
@@ -136,6 +140,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = client.get_httpx_client().request(
@@ -149,6 +154,7 @@ def sync(
     *,
     client: AuthenticatedClient,
     body: PostV1BountiesBodyType0 | PostV1BountiesBodyType1,
+    idempotency_key: str,
 ) -> (
     PostV1BountiesResponse201
     | PostV1BountiesResponse400
@@ -164,6 +170,7 @@ def sync(
     hours away. Hidden material (e.g. an answer key) is stored separately and never returned.
 
     Args:
+        idempotency_key (str):
         body (PostV1BountiesBodyType0 | PostV1BountiesBodyType1):
 
     Raises:
@@ -177,6 +184,7 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
@@ -184,6 +192,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1BountiesBodyType0 | PostV1BountiesBodyType1,
+    idempotency_key: str,
 ) -> Response[
     PostV1BountiesResponse201
     | PostV1BountiesResponse400
@@ -198,6 +207,7 @@ async def asyncio_detailed(
     hours away. Hidden material (e.g. an answer key) is stored separately and never returned.
 
     Args:
+        idempotency_key (str):
         body (PostV1BountiesBodyType0 | PostV1BountiesBodyType1):
 
     Raises:
@@ -210,6 +220,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -221,6 +232,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     body: PostV1BountiesBodyType0 | PostV1BountiesBodyType1,
+    idempotency_key: str,
 ) -> (
     PostV1BountiesResponse201
     | PostV1BountiesResponse400
@@ -236,6 +248,7 @@ async def asyncio(
     hours away. Hidden material (e.g. an answer key) is stored separately and never returned.
 
     Args:
+        idempotency_key (str):
         body (PostV1BountiesBodyType0 | PostV1BountiesBodyType1):
 
     Raises:
@@ -250,5 +263,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            idempotency_key=idempotency_key,
         )
     ).parsed

@@ -16,6 +16,7 @@ from ...models.post_v1_subcontracts_id_deliver_response_403 import PostV1Subcont
 from ...models.post_v1_subcontracts_id_deliver_response_404 import PostV1SubcontractsIdDeliverResponse404
 from ...models.post_v1_subcontracts_id_deliver_response_409 import PostV1SubcontractsIdDeliverResponse409
 from ...models.post_v1_subcontracts_id_deliver_response_422 import PostV1SubcontractsIdDeliverResponse422
+from ...types import UNSET, Unset
 from typing import cast
 
 
@@ -23,8 +24,11 @@ def _get_kwargs(
     id: str,
     *,
     body: PostV1SubcontractsIdDeliverBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+    if not isinstance(idempotency_key, Unset):
+        headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -118,6 +122,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1SubcontractsIdDeliverBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> Response[
     PostV1SubcontractsIdDeliverResponse200
     | PostV1SubcontractsIdDeliverResponse400
@@ -134,6 +139,7 @@ def sync_detailed(
 
     Args:
         id (str):
+        idempotency_key (str | Unset):
         body (PostV1SubcontractsIdDeliverBody):
 
     Raises:
@@ -147,6 +153,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         id=id,
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = client.get_httpx_client().request(
@@ -161,6 +168,7 @@ def sync(
     *,
     client: AuthenticatedClient,
     body: PostV1SubcontractsIdDeliverBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> (
     PostV1SubcontractsIdDeliverResponse200
     | PostV1SubcontractsIdDeliverResponse400
@@ -178,6 +186,7 @@ def sync(
 
     Args:
         id (str):
+        idempotency_key (str | Unset):
         body (PostV1SubcontractsIdDeliverBody):
 
     Raises:
@@ -192,6 +201,7 @@ def sync(
         id=id,
         client=client,
         body=body,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
@@ -200,6 +210,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     body: PostV1SubcontractsIdDeliverBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> Response[
     PostV1SubcontractsIdDeliverResponse200
     | PostV1SubcontractsIdDeliverResponse400
@@ -216,6 +227,7 @@ async def asyncio_detailed(
 
     Args:
         id (str):
+        idempotency_key (str | Unset):
         body (PostV1SubcontractsIdDeliverBody):
 
     Raises:
@@ -229,6 +241,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         id=id,
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -241,6 +254,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     body: PostV1SubcontractsIdDeliverBody,
+    idempotency_key: str | Unset = UNSET,
 ) -> (
     PostV1SubcontractsIdDeliverResponse200
     | PostV1SubcontractsIdDeliverResponse400
@@ -258,6 +272,7 @@ async def asyncio(
 
     Args:
         id (str):
+        idempotency_key (str | Unset):
         body (PostV1SubcontractsIdDeliverBody):
 
     Raises:
@@ -273,5 +288,6 @@ async def asyncio(
             id=id,
             client=client,
             body=body,
+            idempotency_key=idempotency_key,
         )
     ).parsed

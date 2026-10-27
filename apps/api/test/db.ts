@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { appendFileSync } from "node:fs";
 import type { BountyStatus, CreateBountyRequest, MandateRules } from "@gottaeat/schemas";
 import { eq, sql } from "drizzle-orm";
 import { SignJWT } from "jose";
@@ -57,12 +58,20 @@ export function buildTestApp(
   env?: Partial<AppEnv>,
   opts?: Pick<BuildAppOptions, "eventBus" | "eventsHeartbeatMs" | "demo">,
 ) {
-  return buildApp({
+  const app = buildApp({
     db,
     logger: false,
     env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001", ...env },
     ...opts,
   });
+  // Route coverage (contract-01): the route each response came from, checked in test/global-setup.ts.
+  const hitlog = process.env.TEST_HITLOG;
+  if (hitlog) {
+    app.addHook("onResponse", async (req) => {
+      if (req.routeOptions.url) appendFileSync(hitlog, `${req.method} ${req.routeOptions.url}\n`);
+    });
+  }
+  return app;
 }
 
 export function newAgentKey(): string {
