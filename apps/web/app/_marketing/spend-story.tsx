@@ -333,7 +333,7 @@ function ApprovalCard({ pos }: { pos: number }) {
           </span>
         </span>
       </div>
-      <Stamp amount={stamp} tone="rose" className="right-3 top-1/2 -mt-5 sm:right-5">
+      <Stamp amount={stamp} tone="rose" className="-bottom-5 right-3 sm:right-5">
         stopped · $0 moved
       </Stamp>
     </div>
