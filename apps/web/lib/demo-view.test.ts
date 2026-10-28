@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { DemoStatus, ArenaEvent, Recording } from "@gottaeat/schemas";
-import { deriveBounties, formatOffset, homeTarget, replayBanner, sandboxUrl } from "./demo-view";
+import type { ArenaEvent, Recording } from "@gottaeat/schemas";
+import { deriveBounties, formatOffset, replayBanner, sandboxUrl } from "./demo-view";
 
 const recording: Recording = {
   id: "rec_1",
@@ -12,24 +12,6 @@ const recording: Recording = {
   featured: true,
   source: "live",
 };
-const status = (featured: Recording | null): DemoStatus => ({
-  featured,
-  live: { budgetUsed: 0, budget: 1000, fallback: false },
-});
-
-describe("homeTarget", () => {
-  it("sends signed-in users to the app, whatever the demo status", () => {
-    expect(homeTarget(true, status(recording))).toBe("/agents");
-    expect(homeTarget(true, null)).toBe("/agents");
-  });
-
-  it("sends signed-out visitors to /demo only when a recording is featured", () => {
-    expect(homeTarget(false, status(recording))).toBe("/demo");
-    expect(homeTarget(false, status(null))).toBe("/login");
-    // Api down: the login page.
-    expect(homeTarget(false, null)).toBe("/login");
-  });
-});
 
 describe("replayBanner", () => {
   it("says when the run was recorded", () => {

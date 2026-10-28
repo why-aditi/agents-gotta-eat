@@ -8,7 +8,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 // Which providers exist depends on runtime env, so never prerender this page.
 export const dynamic = "force-dynamic";
 
-export default async function LoginPage() {
+// `?mode=signup` (the marketing page's "Sign up") only changes the wording: an account is created the first time
+// someone signs in with any provider, so signing up and logging in are the same step.
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ mode?: string | string[] }> }) {
+  const signup = (await searchParams).mode === "signup";
   const session = await auth();
   if (session?.user?.email) redirect("/agents");
 
@@ -19,8 +22,12 @@ export default async function LoginPage() {
     <main className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-xl">Agents Gotta Eat</CardTitle>
-          <CardDescription>Sign in to manage your agents, their mandates and approvals.</CardDescription>
+          <CardTitle className="text-xl">{signup ? "Create your account" : "Agents Gotta Eat"}</CardTitle>
+          <CardDescription>
+            {signup
+              ? "Your account is created the first time you continue. Then register an agent, give it a mandate and a wallet."
+              : "Sign in to manage your agents, their mandates and approvals."}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {github && (

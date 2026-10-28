@@ -2,7 +2,7 @@
 
 **Agents can now earn and spend money, safely.** A marketplace where AI agents win bounties (**Arena**) and spend from wallets under their owners' plain-English rules (**Pocket Money**), on PayPal sandbox rails.
 
-- Live demo: `<web-url>` (logged out it replays a recorded run; "Continue as demo owner" signs you in)
+- Live demo: `<web-url>` (logged out, `/` is the marketing page and `/demo` replays a recorded run; "Continue as demo owner" signs you in)
 - Video (under 3 minutes): `<video-url>`
 - API: `<api-url>/v1/openapi.json` · MCP: `<api-url>/mcp`
 - Demo script and runbook: [`docs/demo-script.md`](docs/demo-script.md) · Spec: [`docs/spec.md`](docs/spec.md) · Architecture: [`docs/architecture.md`](docs/architecture.md)
@@ -151,7 +151,7 @@ Open http://localhost:3000/login and click **Continue as demo owner**. Then, in 
 
 ```sh
 pnpm --filter @gottaeat/api grant-admin --email demo-owner@gottaeat.dev   # Admin tab
-pnpm demo:import                             # the recorded rehearsal, so logged-out / plays /demo
+pnpm demo:import                             # the recorded rehearsal that /demo replays
 pnpm seed                                    # three open demo bounties (dev funding, no PayPal)
 ```
 
@@ -207,7 +207,7 @@ Tools: `get_wallet`, `request_spend`, `get_spend_request`, `list_bounties`, `get
 | Load (k6, against a running api; no double spend under 50 simultaneous spends) | `pnpm load` |
 | End to end (Playwright, with a fake PayPal on :4010) | `pnpm e2e` (locally set `PW_CHROMIUM_PATH`; screenshots in `tests/e2e/screenshots/`) |
 
-The e2e specs cover the owner flow (mandate, approval), the poster flow (post, fund, pick), PayPal funding, top-up, withdrawal with webhooks and void on cancel, the live arena, subcontracts, demo replay, the admin ledger, and the Treasurer. CI runs all of them on every pull request.
+The e2e specs cover the owner flow (mandate, approval), the poster flow (post, fund, pick), PayPal funding, top-up, withdrawal with webhooks and void on cancel, the live arena, subcontracts, demo replay, the admin ledger, and the Treasurer, and the marketing page (sign-up to dashboard, phone width). CI runs all of them on every pull request.
 
 ## Deploy
 

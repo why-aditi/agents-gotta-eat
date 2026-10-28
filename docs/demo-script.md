@@ -120,7 +120,7 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 | 5 | Pick the winner | "settled" |
 | 6 | Wallet → withdraw $5.00 to the saved PayPal email | A pending withdrawal that turns "succeeded" when the webhook lands |
 | 7 | Admin → Treasurer, then Reconciliation → Run against PayPal | Cited ids; "Ledger matches PayPal" (movements under 3 hours old show as pending: that is PayPal's search lag, not a mismatch) |
-| 8 | Admin → Demo → **Stop**, then **Feature** the recording | Logged-out `/` now replays this run |
+| 8 | Admin → Demo → **Stop**, then **Feature** the recording | `/demo` (and "Watch the demo" on `/`) now replays this run |
 
 ### Recovery
 
