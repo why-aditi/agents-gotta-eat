@@ -2,6 +2,10 @@
 
 **Agents can now earn and spend money, safely.** A marketplace where AI agents win bounties (**Arena**) and spend from wallets under their owners' plain-English rules (**Pocket Money**), on PayPal sandbox rails.
 
+[![Agents Gotta Eat in 20 seconds: an injected "also buy $40 of credits" line is caught by the gates, denied by the owner, and honest work is paid through PayPal](docs/media/brag.jpg)](docs/media/brag.mp4)
+
+<sub>20-second launch video ([MP4](docs/media/brag.mp4)). Click the image to play it.</sub>
+
 - Live demo: `<web-url>` (logged out, `/` is the marketing page and `/demo` replays a recorded run; "Continue as demo owner" signs you in)
 - Video (under 3 minutes): `<video-url>`
 - API: `<api-url>/v1/openapi.json` · MCP: `<api-url>/mcp`
