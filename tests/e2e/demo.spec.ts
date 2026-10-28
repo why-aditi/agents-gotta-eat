@@ -1,4 +1,4 @@
-// Demo replay in a real browser: a logged-out visitor lands on /demo and watches the imported rehearsal to the
+// Demo replay in a real browser: a logged-out visitor goes from the marketing page to /demo and watches the imported rehearsal to the
 // end (the Grifter's flagged spend included), then an admin records a fresh run, features it, and /demo plays it.
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
@@ -43,9 +43,14 @@ test("a logged-out visitor watches the rehearsal, and an admin's new recording r
   apiScript("grant-admin", ["--email", DEMO_OWNER]);
   const adminToken = apiScript("dev:token", ["--email", DEMO_OWNER]);
 
-  // 1. Logged out, / goes to /demo, which plays the featured rehearsal; 4× gets it done quickly.
+  // 1. Logged out, / is the marketing page; "Watch the demo" opens /demo, which plays the featured rehearsal; 4× gets
+  // it done quickly.
   const visitor = await (await browser.newContext()).newPage();
   await visitor.goto("/");
+  await visitor
+    .getByRole("link", { name: /Watch the demo/ })
+    .first()
+    .click();
   await expect(visitor).toHaveURL(/\/demo/);
   await expect(visitor.getByText(/Replay of a recorded run/)).toBeVisible();
   await expect(visitor.getByText(/rehearsal with a stand-in model/)).toBeVisible();
