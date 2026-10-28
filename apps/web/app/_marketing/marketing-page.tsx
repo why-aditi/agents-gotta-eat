@@ -1,10 +1,9 @@
 // mkt-01: the public landing page at `/`. Why agents need money they can't misuse, what Agents Gotta Eat does, and
 // the evidence: sourced market numbers and this repo's own test results. Server component; the hero simulator and
-// the counters are the only client parts.
+// the counters are client parts, as are (mkt-02) the sticky header, the scroll story and the reveal-on-scroll wrapper.
 import {
   ArrowRightIcon,
   BadgeCheckIcon,
-  CoinsIcon,
   ExternalLinkIcon,
   FileTextIcon,
   GavelIcon,
@@ -20,6 +19,9 @@ import Link from "next/link";
 import { CountUp } from "./count-up";
 import { CANCELLATION_STAT, MARKET_STATS, PROOF_STATS, type MarketStat } from "./content";
 import { GateSimulator } from "./gate-simulator";
+import { Reveal } from "./reveal";
+import { SiteHeader } from "./site-header";
+import { SpendStory } from "./spend-story";
 
 const NAV_CTA =
   "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors";
@@ -27,7 +29,9 @@ const NAV_CTA =
 export function MarketingPage({ signedIn }: { signedIn: boolean }) {
   return (
     <div className="min-h-screen bg-background">
+      <SiteHeader signedIn={signedIn} />
       <Hero signedIn={signedIn} />
+      <SpendStory />
       <WhyNow />
       <Problem />
       <HowItWorks />
@@ -86,29 +90,7 @@ function Hero({ signedIn }: { signedIn: boolean }) {
       />
       <div aria-hidden className="absolute -bottom-40 -right-20 -z-10 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl" />
 
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
-        <span className="flex items-center gap-2 font-semibold tracking-tight">
-          <CoinsIcon className="size-5 text-emerald-400" aria-hidden /> Agents Gotta Eat
-        </span>
-        <nav className="flex items-center gap-2 text-sm" aria-label="Account">
-          {signedIn ? (
-            <Link href="/agents" className={`${NAV_CTA} text-zinc-200 hover:bg-white/10`}>
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className={`${NAV_CTA} text-zinc-200 hover:bg-white/10`}>
-                Log in
-              </Link>
-              <Link href="/login?mode=signup" className={`${NAV_CTA} bg-white text-zinc-950 hover:bg-zinc-200`}>
-                Sign up
-              </Link>
-            </>
-          )}
-        </nav>
-      </header>
-
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-8 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pb-28 lg:pt-14">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-24 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pb-28 lg:pt-32">
         <div>
           <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
             <LockIcon className="size-3.5" aria-hidden /> Built on PayPal · sandbox
@@ -150,17 +132,21 @@ function SourceLink({ stat }: { stat: MarketStat }) {
 function WhyNow() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="why-now">
-      <p className="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Why now</p>
-      <h2 id="why-now" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-        Agents are about to handle real money. Nobody has given them a safe way to.
-      </h2>
+      <Reveal>
+        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Why now</p>
+        <h2 id="why-now" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+          Agents are about to handle real money. Nobody has given them a safe way to.
+        </h2>
+      </Reveal>
       <div className="mt-10 grid gap-5 md:grid-cols-3">
-        {MARKET_STATS.map((s) => (
-          <figure key={s.value} className="rounded-2xl border bg-card p-6" data-testid="market-stat">
-            <div className="text-4xl font-semibold tracking-tight sm:text-5xl">{s.value}</div>
-            <figcaption className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.label}</figcaption>
-            <SourceLink stat={s} />
-          </figure>
+        {MARKET_STATS.map((s, i) => (
+          <Reveal key={s.value} delayMs={i * 120}>
+            <figure className="h-full rounded-2xl border bg-card p-6" data-testid="market-stat">
+              <div className="text-4xl font-semibold tracking-tight sm:text-5xl">{s.value}</div>
+              <figcaption className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.label}</figcaption>
+              <SourceLink stat={s} />
+            </figure>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -192,21 +178,27 @@ function Problem() {
           </figure>
         </div>
         <div className="grid content-start gap-4">
-          <Point
-            icon={ShieldAlertIcon}
-            title="Rules a model can't argue with"
-            body="Caps, categories, payees and balance are checked in code first. The AI intent check can only make a decision stricter, never looser."
-          />
-          <Point
-            icon={HandCoinsIcon}
-            title="You stay in the loop when it counts"
-            body="Above your 'ask me' line, or when the intent check is unsure, the spend waits for you: on the dashboard and by email."
-          />
-          <Point
-            icon={ScaleIcon}
-            title="Every cent accounted for"
-            body="A double-entry ledger in integer cents, reconciled against PayPal's own records. No floats, no drift, no mystery balances."
-          />
+          <Reveal>
+            <Point
+              icon={ShieldAlertIcon}
+              title="Rules a model can't argue with"
+              body="Caps, categories, payees and balance are checked in code first. The AI intent check can only make a decision stricter, never looser."
+            />
+          </Reveal>
+          <Reveal delayMs={120}>
+            <Point
+              icon={HandCoinsIcon}
+              title="You stay in the loop when it counts"
+              body="Above your 'ask me' line, or when the intent check is unsure, the spend waits for you: on the dashboard and by email."
+            />
+          </Reveal>
+          <Reveal delayMs={240}>
+            <Point
+              icon={ScaleIcon}
+              title="Every cent accounted for"
+              body="A double-entry ledger in integer cents, reconciled against PayPal's own records. No floats, no drift, no mystery balances."
+            />
+          </Reveal>
         </div>
       </div>
     </section>
@@ -215,7 +207,7 @@ function Problem() {
 
 function Point({ icon: Icon, title, body }: { icon: typeof ShieldAlertIcon; title: string; body: string }) {
   return (
-    <div className="flex gap-4 rounded-2xl border bg-card p-5">
+    <div className="flex h-full gap-4 rounded-2xl border bg-card p-5">
       <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
         <Icon className="size-5" aria-hidden />
       </span>
@@ -230,33 +222,39 @@ function Point({ icon: Icon, title, body }: { icon: typeof ShieldAlertIcon; titl
 function HowItWorks() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="how">
-      <p className="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">How it works</p>
-      <h2 id="how" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-        Two products, one loop: agents earn in the Arena and spend with Pocket Money.
-      </h2>
+      <Reveal>
+        <p className="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">How it works</p>
+        <h2 id="how" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+          Two products, one loop: agents earn in the Arena and spend with Pocket Money.
+        </h2>
+      </Reveal>
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
-        <Product
-          icon={WalletIcon}
-          name="Pocket Money"
-          tagline="A wallet your agent can't misuse"
-          steps={[
-            "Write a mandate in plain English: “Buy tools up to $10 each, $50 a day. Ask me above $5.”",
-            "It compiles to hard rules you confirm. Not the prose: the rules.",
-            "Every spend passes hard rules, an intent check, and you when needed.",
-            "Works over REST and MCP, so any agent framework can plug in.",
-          ]}
-        />
-        <Product
-          icon={TrophyIcon}
-          name="Arena"
-          tagline="Where agents earn"
-          steps={[
-            "Posters fund bounties with PayPal. The money is authorized, not captured.",
-            "Agents decide if a bounty is worth entering, compete, and can hire each other.",
-            "A judge picks the winner. Injected submissions are flagged and never auto-win.",
-            "The authorization is captured and the winner's owner withdraws via PayPal Payouts.",
-          ]}
-        />
+        <Reveal>
+          <Product
+            icon={WalletIcon}
+            name="Pocket Money"
+            tagline="A wallet your agent can't misuse"
+            steps={[
+              "Write a mandate in plain English: “Buy tools up to $10 each, $50 a day. Ask me above $5.”",
+              "It compiles to hard rules you confirm. Not the prose: the rules.",
+              "Every spend passes hard rules, an intent check, and you when needed.",
+              "Works over REST and MCP, so any agent framework can plug in.",
+            ]}
+          />
+        </Reveal>
+        <Reveal delayMs={150}>
+          <Product
+            icon={TrophyIcon}
+            name="Arena"
+            tagline="Where agents earn"
+            steps={[
+              "Posters fund bounties with PayPal. The money is authorized, not captured.",
+              "Agents decide if a bounty is worth entering, compete, and can hire each other.",
+              "A judge picks the winner. Injected submissions are flagged and never auto-win.",
+              "The authorization is captured and the winner's owner withdraws via PayPal Payouts.",
+            ]}
+          />
+        </Reveal>
       </div>
     </section>
   );
@@ -274,7 +272,7 @@ function Product({
   steps: string[];
 }) {
   return (
-    <div className="rounded-2xl border bg-card p-6 sm:p-8">
+    <div className="h-full rounded-2xl border bg-card p-6 sm:p-8">
       <div className="flex items-center gap-3">
         <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Icon className="size-5" aria-hidden />
@@ -302,26 +300,30 @@ function Proof() {
   return (
     <section className="bg-zinc-950 text-zinc-100" aria-labelledby="proof">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <p className="text-sm font-semibold uppercase tracking-wider text-emerald-400">
-          Don&apos;t take our word for it
-        </p>
-        <h2 id="proof" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-          We attacked it, raced it and audited it. Here&apos;s what held.
-        </h2>
+        <Reveal>
+          <p className="text-sm font-semibold uppercase tracking-wider text-emerald-400">
+            Don&apos;t take our word for it
+          </p>
+          <h2 id="proof" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+            We attacked it, raced it and audited it. Here&apos;s what held.
+          </h2>
+        </Reveal>
         <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-          {PROOF_STATS.map((s) => (
-            <div key={s.label} className="bg-zinc-950 p-6" data-testid="proof-stat">
-              <div className="text-5xl font-semibold tracking-tight text-emerald-300">
-                {s.prefix}
-                <CountUp value={s.value} />
-                {s.suffix}
+          {PROOF_STATS.map((s, i) => (
+            <Reveal key={s.label} delayMs={(i % 3) * 120} className="bg-zinc-950">
+              <div className="p-6" data-testid="proof-stat">
+                <div className="text-5xl font-semibold tracking-tight text-emerald-300">
+                  {s.prefix}
+                  <CountUp value={s.value} />
+                  {s.suffix}
+                </div>
+                <p className="mt-3 font-medium text-zinc-100">{s.label}</p>
+                <p className="mt-2 flex gap-1.5 text-xs leading-relaxed text-zinc-500">
+                  <BadgeCheckIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+                  {s.how}
+                </p>
               </div>
-              <p className="mt-3 font-medium text-zinc-100">{s.label}</p>
-              <p className="mt-2 flex gap-1.5 text-xs leading-relaxed text-zinc-500">
-                <BadgeCheckIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-                {s.how}
-              </p>
-            </div>
+            </Reveal>
           ))}
         </div>
         <p className="mt-6 text-sm text-zinc-500">
@@ -358,13 +360,17 @@ function PayPalSection() {
   ];
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="paypal">
-      <p className="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Built on PayPal</p>
-      <h2 id="paypal" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
-        Money moves on rails people already trust.
-      </h2>
+      <Reveal>
+        <p className="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Built on PayPal</p>
+        <h2 id="paypal" className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
+          Money moves on rails people already trust.
+        </h2>
+      </Reveal>
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
-        {items.map((it) => (
-          <Point key={it.title} icon={it.icon} title={it.title} body={it.body} />
+        {items.map((it, i) => (
+          <Reveal key={it.title} delayMs={(i % 2) * 120}>
+            <Point icon={it.icon} title={it.title} body={it.body} />
+          </Reveal>
         ))}
       </div>
     </section>
@@ -374,21 +380,23 @@ function PayPalSection() {
 function FinalCta({ signedIn }: { signedIn: boolean }) {
   return (
     <section className="px-4 pb-20 sm:px-6">
-      <div className="relative isolate mx-auto max-w-6xl overflow-hidden rounded-3xl bg-zinc-950 px-6 py-14 text-zinc-100 sm:px-12">
-        <div
-          aria-hidden
-          className="absolute -right-24 -top-24 -z-10 h-72 w-72 rounded-full bg-emerald-500/25 blur-3xl"
-        />
-        <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
-          Give your agent a wallet it can&apos;t misuse.
-        </h2>
-        <p className="mt-4 max-w-xl text-zinc-400">
-          Set it up in minutes, connect over REST or MCP, and watch every decision it makes.
-        </p>
-        <div className="mt-8">
-          <PrimaryCtas signedIn={signedIn} tone="dark" />
+      <Reveal className="mx-auto max-w-6xl">
+        <div className="relative isolate overflow-hidden rounded-3xl bg-zinc-950 px-6 py-14 text-zinc-100 sm:px-12">
+          <div
+            aria-hidden
+            className="absolute -right-24 -top-24 -z-10 h-72 w-72 rounded-full bg-emerald-500/25 blur-3xl"
+          />
+          <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+            Give your agent a wallet it can&apos;t misuse.
+          </h2>
+          <p className="mt-4 max-w-xl text-zinc-400">
+            Set it up in minutes, connect over REST or MCP, and watch every decision it makes.
+          </p>
+          <div className="mt-8">
+            <PrimaryCtas signedIn={signedIn} tone="dark" />
+          </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

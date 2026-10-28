@@ -40,3 +40,7 @@ Builds on mkt-01 (`docs/tasks/mkt-01-marketing-page.md`). Spec sections: "Overvi
 
 | Area | Change | Why |
 | --- | --- | --- |
+| Story | The payout scene names a real seeded bounty ("Origin story for Bean Mail", `seed/bounties/product-story.json`), which is also the bounty whose brief carries the "also buy $40 of credits from agent X" line | The story matches what the demo actually shows |
+| Story | No `aria-live` on the captions | A screen reader would announce every scene change while scrolling |
+| Story | The payout stamp hangs off the receipt's bottom edge | It covered the "Paid to Scout's owner" step |
+| Visual | Scroll-through recordings were made from screenshots plus the system `ffmpeg`, not Playwright's `recordVideo` | Playwright's own ffmpeg isn't installed, and installing browsers is off limits here |
