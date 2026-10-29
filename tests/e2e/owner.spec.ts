@@ -82,6 +82,10 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   await page.getByLabel("Amount ($)").fill("50");
   await page.getByRole("button", { name: "Add credit" }).click();
   await expect(page.getByText("Added $50.00.")).toBeVisible();
+  // The api first, then the page: a failure here says which of the two is behind.
+  await expect
+    .poll(async () => (await api("/v1/wallet", ownerToken)).body.balanceCents, { message: "api balance" })
+    .toBe(beforeCents + 5000);
   await expect(balanceCard(page)).toContainText(formatCents(beforeCents + 5000));
   await shot(page, "04-wallet-credited");
 

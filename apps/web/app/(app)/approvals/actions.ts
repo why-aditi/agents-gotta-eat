@@ -3,7 +3,6 @@
 // Approve or deny a pending spend. Each card sends the Idempotency-Key it generated when it rendered, one per
 // decision, so a double click replays instead of deciding twice.
 import { ApprovalRequest, SpendRequest } from "@gottaeat/schemas";
-import { revalidatePath } from "next/cache";
 import { type ActionResult, runAction } from "@/lib/actions";
 import { apiFetch } from "@/lib/api";
 
@@ -26,8 +25,8 @@ async function decideSpend(
       idempotencyKey,
     }),
   );
-  // The nav badge counts pending approvals, so refresh the whole signed-in tree.
-  revalidatePath("/", "layout");
+  // No revalidatePath here: it would re-render the page with the action's response and drop the card before its
+  // stamp shows. The card calls router.refresh() itself once the stamp has landed, which also updates the nav badge.
   return result;
 }
 

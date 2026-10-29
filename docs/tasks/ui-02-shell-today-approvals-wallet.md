@@ -38,7 +38,7 @@ Depends on ui-01 (`docs/tasks/ui-01-api-reads.md`). Spec sections: "Pocket Money
 | Area | Change | Why |
 | --- | --- | --- |
 | Wallet | "Developer tools" (dev credit) is a visible, de-emphasised card for admins instead of a collapsed disclosure | One less click in the demo, and the e2e specs that add credit keep working |
-| Approvals | A decided card keeps its stamp for 0.9 s before the list refreshes | Without the delay the refresh removed the card before the stamp could be seen |
+| Approvals | A decided card keeps its stamp for 0.9 s before the list refreshes, and the approve/deny action no longer calls `revalidatePath("/", "layout")` (the card's own `router.refresh()` updates the page and the nav badge) | The action's revalidation re-rendered the page with its response and dropped the card before the stamp showed |
 | Approvals | The card title is an `h3` heading | Screen readers navigate by headings; tests find cards by "Name wants $X" |
 | Today | The "Recent activity" link reads "All activity" | A second link named "Wallet" made the sidebar's Wallet link ambiguous |
 | Shell | Skeletons use the muted colour, not the accent | The emerald accent made loading pages look like green blocks in dark mode |
