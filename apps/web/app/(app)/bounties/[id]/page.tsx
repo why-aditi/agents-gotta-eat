@@ -13,11 +13,12 @@ import {
 } from "@gottaeat/schemas";
 import Link from "next/link";
 import { notFound, unstable_rethrow } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
+import { VerdictBadge } from "@/components/app/verdict-badge";
+import { Creature } from "@/components/creature/creature";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LiveRefresh } from "@/components/live-refresh";
 import { ApiError, apiFetch, getMe } from "@/lib/api";
+import { DISH } from "@/lib/menu";
 import { formatCents } from "@/lib/money";
 import { formatDateTime } from "../../_lib/format";
 import { PageError } from "../../_lib/page-error";
@@ -36,7 +37,7 @@ type Results = BountyResults["entries"][number];
 function PlainText({ children, mono }: { children: string; mono?: boolean }) {
   return (
     <p
-      className={`max-h-96 overflow-auto rounded-md bg-muted p-3 text-sm break-words whitespace-pre-wrap ${mono ? "font-mono text-xs" : ""}`}
+      className={`max-h-96 overflow-auto rounded-xl bg-muted p-3 text-sm break-words whitespace-pre-wrap ${mono ? "font-mono text-xs" : ""}`}
     >
       {children}
     </p>
@@ -89,44 +90,36 @@ function PublicSpec({ bounty }: { bounty: Bounty }) {
   return <PlainText mono>{JSON.stringify(spec, null, 2)}</PlainText>;
 }
 
-function EntriesTable({ entries, results }: { entries: Entry[]; results: Map<string, Results> | null }) {
+// ui-05: the agents at the table, each with its creature and name.
+function TableSeats({ entries, results }: { entries: Entry[]; results: Map<string, Results> | null }) {
   if (entries.length === 0) {
-    return <p className="rounded-md border border-dashed p-6 text-center text-muted-foreground">No entries yet.</p>;
+    return (
+      <p className="rounded-xl border border-dashed p-6 text-center text-muted-foreground">No one at the table yet.</p>
+    );
   }
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Agent</TableHead>
-            <TableHead className="hidden sm:table-cell">Entered</TableHead>
-            <TableHead>Submitted</TableHead>
-            <TableHead className="text-right">Score</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {entries.map((e) => {
-            const r = results?.get(e.id);
-            return (
-              <TableRow key={e.id}>
-                <TableCell className="font-mono text-xs break-all">{e.agentId}</TableCell>
-                <TableCell className="hidden text-muted-foreground sm:table-cell">
-                  {formatDateTime(e.createdAt)}
-                </TableCell>
-                <TableCell>
-                  {e.submissionId ? (
-                    <Badge variant="secondary">submitted</Badge>
-                  ) : (
-                    <Badge variant="outline">{e.status === "submitted" ? "submitted" : `no (${e.status})`}</Badge>
-                  )}
-                </TableCell>
-                <TableCell className="text-right tabular-nums">{r?.score ?? "—"}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+    <ul className="divide-y">
+      {entries.map((e) => {
+        const r = results?.get(e.id);
+        return (
+          <li key={e.id} data-testid="entry-row" className="flex items-center gap-3 py-3">
+            <Creature id={e.agentId} name={e.agentName} mood="fed" size="sm" crop="head" still className="size-10" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-medium">{e.agentName}</p>
+              <p className="text-xs text-muted-foreground">Entered {formatDateTime(e.createdAt)}</p>
+            </div>
+            {e.submissionId ? (
+              <VerdictBadge tone="allow">submitted</VerdictBadge>
+            ) : (
+              <VerdictBadge tone="neutral">{e.status === "submitted" ? "submitted" : `no (${e.status})`}</VerdictBadge>
+            )}
+            <span className="w-12 text-right tabular-nums" aria-label="Score">
+              {r?.score ?? "—"}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -159,7 +152,7 @@ function ResultsCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Results</CardTitle>
+        <CardTitle>{results.status === "voided" ? "Results" : "🏆 Results"}</CardTitle>
         <CardDescription>
           {results.status === "voided"
             ? "No entry passed, so nobody won. The escrow was released."
@@ -168,16 +161,19 @@ function ResultsCard({
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         {winner ? (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
-            <dt className="text-muted-foreground">Winner</dt>
-            <dd className="font-mono break-all" data-testid="winner">
-              {winner.agentId}
-            </dd>
-            <dt className="text-muted-foreground">Score</dt>
-            <dd className="tabular-nums">{winner.score ?? "—"}</dd>
-            <dt className="text-muted-foreground">Payout</dt>
-            <dd className="tabular-nums">{payoutText(bounty, results, windowOpen)}</dd>
-          </dl>
+          <div className="sticker flex items-center gap-4 bg-allow-soft p-4">
+            <Creature id={winner.agentId} name={winner.agentName} mood="feasting" size="md" className="size-20" />
+            <dl className="grid min-w-0 grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+              <dt className="text-muted-foreground">Winner</dt>
+              <dd className="font-display text-lg font-semibold break-words" data-testid="winner">
+                {winner.agentName}
+              </dd>
+              <dt className="text-muted-foreground">Score</dt>
+              <dd className="tabular-nums">{winner.score ?? "—"}</dd>
+              <dt className="text-muted-foreground">Payout</dt>
+              <dd className="tabular-nums">{payoutText(bounty, results, windowOpen)}</dd>
+            </dl>
+          </div>
         ) : null}
         <DisputeStatus results={results} rewardCents={bounty.rewardCents} viewer={viewer} windowOpen={windowOpen} />
         {canDispute ? <DisputeDialog bountyId={bounty.id} rewardCents={bounty.rewardCents} /> : null}
@@ -187,7 +183,7 @@ function ResultsCard({
             <ul className="space-y-1">
               {results.entries.map((e) => (
                 <li key={e.entryId} className="flex flex-wrap justify-between gap-2">
-                  <span className="font-mono text-xs break-all">{e.agentId}</span>
+                  <span className="break-all">{e.agentName}</span>
                   <span className="text-muted-foreground">
                     {e.stakeOutcome ?? "no stake"}
                     {e.passed ? " · passed" : ""}
@@ -214,6 +210,7 @@ async function loadSubmissions(entries: Entry[], ranking: BountyResults | null):
     return {
       entryId: s.entryId,
       agentId: submitted[i]!.agentId,
+      agentName: submitted[i]!.agentName,
       submittedAt: s.submittedAt,
       content: s.content,
       aiScore: r?.aiScore ?? null,
@@ -248,7 +245,7 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
     if (err instanceof ApiError && err.status === 404) notFound();
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Bounty</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">Bounty</h1>
         <PageError title="Couldn't load this bounty" error={err} />
       </div>
     );
@@ -274,18 +271,30 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
         <Link href="/bounties" className="text-sm text-muted-foreground hover:underline">
           ← Bounties
         </Link>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight break-words">{bounty.title}</h1>
-          <BountyStatusBadge status={bounty.status} />
+        <div className="sticker flex flex-col gap-4 p-6 sm:flex-row sm:items-center">
+          <span aria-hidden className="text-6xl">
+            {DISH[bounty.taskType].emoji}
+          </span>
+          <div className="min-w-0 flex-1 space-y-2">
+            <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              {taskTypeLabel(bounty.taskType)} <BountyStatusBadge status={bounty.status} />
+            </p>
+            <h1 className="font-display text-3xl font-semibold tracking-tight break-words sm:text-4xl">
+              {bounty.title}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {bounty.status === "open" ? (
+                <Countdown deadlineAt={bounty.deadlineAt} />
+              ) : (
+                <>Deadline {formatDateTime(bounty.deadlineAt)}</>
+              )}
+            </p>
+          </div>
+          <div className="sm:text-right">
+            <p className="text-xs text-muted-foreground">Reward</p>
+            <p className="font-display text-4xl font-semibold tabular-nums">{formatCents(bounty.rewardCents)}</p>
+          </div>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {taskTypeLabel(bounty.taskType)} · {formatCents(bounty.rewardCents)} reward ·{" "}
-          {bounty.status === "open" ? (
-            <Countdown deadlineAt={bounty.deadlineAt} />
-          ) : (
-            <>Deadline {formatDateTime(bounty.deadlineAt)}</>
-          )}
-        </p>
         {bounty.status === "judging" ? (
           <p className="text-sm">
             {bounty.taskType === "creative_writing"
@@ -350,11 +359,13 @@ export default async function BountyPage({ params }: { params: Promise<{ id: str
         <CardHeader>
           <CardTitle>Entries</CardTitle>
           <CardDescription>
-            {isPoster ? "Every agent that entered, oldest first." : "Your agents' entries on this bounty."}
+            {isPoster
+              ? "At the table: every agent that entered, oldest first."
+              : "At the table: your agents' entries on this bounty."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <EntriesTable entries={entries} results={resultsByEntry} />
+          <TableSeats entries={entries} results={resultsByEntry} />
         </CardContent>
       </Card>
     </div>

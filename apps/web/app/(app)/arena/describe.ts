@@ -102,3 +102,70 @@ export function describeEvent(e: ArenaEvent, viewerId: string | null): string {
         : `The result of ${q(e.data.title)} was overturned; ${formatCents(e.data.amountCents)} refunded to the poster`;
   }
 }
+
+// ui-05: the feeding frenzy. Who the line is about (for their creature head), an emoji for what happened, and for
+// the big moments a playful headline that sits above the plain line from describeEvent (which never changes).
+export interface EventFace {
+  agent: { id: string; name: string } | null;
+  emoji: string;
+  headline: string | null;
+}
+
+// An allowed spend this big gets a headline of its own.
+export const BIG_BITE_CENTS = 2000;
+
+export function eventFace(e: ArenaEvent): EventFace {
+  const face = (agent: EventFace["agent"], emoji: string, headline: string | null = null): EventFace => ({
+    agent,
+    emoji,
+    headline,
+  });
+  const ref = (d: { agentId: string; agentName: string }) => ({ id: d.agentId, name: d.agentName });
+  switch (e.type) {
+    case "bounty.opened":
+      return face(null, "🍽️");
+    case "bounty.cancelled":
+      return face(null, "🚫");
+    case "bounty.judging":
+      return face(null, "⏳");
+    case "bounty.settled":
+      return face(
+        { id: e.data.winnerAgentId, name: e.data.winnerAgentName },
+        "🏆",
+        `${e.data.winnerAgentName} is feasting: ${formatCents(e.data.rewardCents)} won`,
+      );
+    case "bounty.voided":
+      return face(null, "🫙");
+    case "entry.created":
+      return face(ref(e.data), "🪑");
+    case "submission.received":
+      return face(ref(e.data), "📨");
+    case "judgement.recorded":
+      return face(ref(e.data), "⭐");
+    case "agent.run_step":
+      return face(ref(e.data), "💭");
+    case "spend.decided":
+      return face(
+        ref(e.data),
+        e.data.decision === "deny" ? "🙅" : e.data.decision === "pending_approval" ? "🥺" : "🍪",
+        e.data.decision === "allow" && e.data.amountCents >= BIG_BITE_CENTS
+          ? `${e.data.agentName} ate ${formatCents(e.data.amountCents)} in one bite`
+          : null,
+      );
+    case "approval.decided":
+      return face(ref(e.data), e.data.decision === "approved" ? "✅" : e.data.decision === "denied" ? "🙅" : "⌛");
+    case "wallet.clawback":
+      return face(null, "↩️");
+    case "demo.spend_flagged":
+      return face(ref(e.data), "🚨", `${e.data.agentName} got caught reaching for ${formatCents(e.data.amountCents)}`);
+    case "subcontract.hired":
+      return face({ id: e.data.hirerAgentId, name: e.data.hirerAgentName }, "🤝");
+    case "subcontract.delivered":
+      return face(null, "📦");
+    case "subcontract.accepted":
+      return face(null, "💸");
+    case "dispute.opened":
+    case "dispute.resolved":
+      return face(null, "⚖️");
+  }
+}

@@ -1,6 +1,6 @@
 import type { ArenaEvent } from "@gottaeat/schemas";
 import { describe, expect, it } from "vitest";
-import { describeEvent, shortTitle } from "./describe";
+import { BIG_BITE_CENTS, describeEvent, eventFace, shortTitle } from "./describe";
 
 const base = { id: 1, createdAt: "2026-10-26T12:00:00.000Z", scope: "public" as const, ownerId: null, bountyId: "b" };
 const title = "Extract line items from the three attached invoices";
@@ -227,5 +227,66 @@ describe("describeEvent", () => {
   it("shortTitle keeps short titles and cuts long ones", () => {
     expect(shortTitle("  Tagline ")).toBe("Tagline");
     expect(shortTitle("x".repeat(41))).toBe(`${"x".repeat(39)}…`);
+  });
+});
+
+describe("eventFace", () => {
+  const spend = (amountCents: number, decision: "allow" | "deny" | "pending_approval"): ArenaEvent => ({
+    ...base,
+    type: "spend.decided",
+    scope: "owner",
+    ownerId: "usr_1",
+    data: {
+      spendRequestId: "s",
+      agentId: "agt_g",
+      agentName: "Grifter",
+      bountyId: null,
+      amountCents,
+      category: "tool",
+      decision,
+      reasons: [],
+    },
+  });
+
+  it("puts the winner's face and a feast headline on a settled bounty", () => {
+    const face = eventFace({
+      ...base,
+      type: "bounty.settled",
+      data: {
+        bountyId: "b",
+        title: "Tagline",
+        winnerEntryId: "e",
+        winnerAgentId: "agt_s",
+        winnerAgentName: "Scout",
+        rewardCents: 4000,
+      },
+    });
+    expect(face).toEqual({
+      agent: { id: "agt_s", name: "Scout" },
+      emoji: "🏆",
+      headline: "Scout is feasting: $40.00 won",
+    });
+  });
+
+  it("gives big allowed spends a headline, and small or refused ones none", () => {
+    expect(eventFace(spend(BIG_BITE_CENTS, "allow")).headline).toBe("Grifter ate $20.00 in one bite");
+    expect(eventFace(spend(BIG_BITE_CENTS - 1, "allow")).headline).toBeNull();
+    expect(eventFace(spend(5000, "deny"))).toMatchObject({ emoji: "🙅", headline: null });
+    expect(eventFace(spend(5000, "pending_approval"))).toMatchObject({ emoji: "🥺", headline: null });
+  });
+
+  it("calls out a flagged spend and leaves bounty-only events faceless", () => {
+    expect(
+      eventFace({
+        ...base,
+        type: "demo.spend_flagged",
+        data: { agentId: "agt_g", agentName: "Grifter", amountCents: 4000, category: "tool", bountyId: null },
+      }).headline,
+    ).toBe("Grifter got caught reaching for $40.00");
+    expect(eventFace({ ...base, type: "bounty.voided", data: { bountyId: "b", title: "Tagline" } })).toEqual({
+      agent: null,
+      emoji: "🫙",
+      headline: null,
+    });
   });
 });

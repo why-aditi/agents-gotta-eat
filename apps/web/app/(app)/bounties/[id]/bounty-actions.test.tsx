@@ -26,6 +26,7 @@ const bounty = {
   status: "open" as const,
   openedAt: "2026-10-26T12:00:00.000Z",
   entryCount: 0,
+  entrants: [],
   createdAt: "2026-10-26T12:00:00.000Z",
 };
 

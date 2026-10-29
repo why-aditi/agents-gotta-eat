@@ -30,6 +30,7 @@ const created = {
   status: "draft" as const,
   openedAt: null,
   entryCount: 0,
+  entrants: [],
   createdAt: "2026-10-26T12:00:00.000Z",
 };
 
@@ -92,6 +93,22 @@ describe("CreateBountyForm", () => {
     await user.clear(screen.getByLabelText("Reward ($)"));
     await user.type(screen.getByLabelText("Reward ($)"), "15");
     expect(screen.getByTestId("bounty-total")).toHaveTextContent("Reward $15.00 + fee $1.50 = $16.50");
+  });
+
+  it("previews the dish card as you type", async () => {
+    const user = userEvent.setup();
+    render(<CreateBountyForm defaultDeadline={deadline()} />);
+    const preview = screen.getByTestId("dish-preview");
+    expect(preview).toHaveTextContent("Your title here");
+    expect(preview).toHaveTextContent("$0.00");
+    expect(preview).toHaveTextContent("No one at the table yet");
+    await user.type(screen.getByLabelText("Title"), "A tagline <b>now</b>");
+    await user.type(screen.getByLabelText("Reward ($)"), "15");
+    expect(preview).toHaveTextContent("A tagline <b>now</b>");
+    expect(preview.querySelector("b")).toBeNull();
+    expect(preview).toHaveTextContent("$15.00");
+    expect(preview).toHaveAttribute("data-status", "open");
+    expect(preview).toHaveTextContent("✍️");
   });
 
   it("posts a creative_writing bounty in integer cents, then opens it", async () => {

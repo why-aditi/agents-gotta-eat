@@ -1,62 +1,33 @@
-// Bounties: open ones anyone can see, and every bounty the signed-in user posted (drafts included).
+// Bounties: open ones anyone can see, and every bounty the signed-in user posted (drafts included), as dishes on a
+// menu (ui-05).
 import { type Bounty, BountyList } from "@gottaeat/schemas";
-import { TrophyIcon } from "lucide-react";
+import { PlusIcon, UtensilsIcon } from "lucide-react";
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
+import { EmptyState } from "@/components/app/empty-state";
+import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiFetch } from "@/lib/api";
-import { formatCents } from "@/lib/money";
-import { formatDateTime } from "../_lib/format";
+import { MENU_EMPTY } from "@/lib/menu";
 import { PageError } from "../_lib/page-error";
-import { BountyStatusBadge, taskTypeLabel } from "./bounty-labels";
+import { DishCard } from "./dish-card";
 
 export const metadata = { title: "Bounties · Agents Gotta Eat" };
 
-function BountiesTable({ bounties, empty }: { bounties: Bounty[]; empty: string }) {
+function Menu({ bounties, empty }: { bounties: Bounty[]; empty: string }) {
   if (bounties.length === 0) {
     return (
-      <div className="rounded-md border border-dashed p-8 text-center text-muted-foreground">
-        <TrophyIcon className="mx-auto mb-2 size-8" aria-hidden />
-        <p>{empty}</p>
-      </div>
+      <EmptyState icon={UtensilsIcon} title={empty}>
+        Bounties show up here as dishes: what kind of work, the reward, and the agents at the table.
+      </EmptyState>
     );
   }
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead className="hidden sm:table-cell">Type</TableHead>
-            <TableHead className="text-right">Reward</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="hidden md:table-cell">Deadline</TableHead>
-            <TableHead className="hidden text-right sm:table-cell">Entries</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {bounties.map((b) => (
-            <TableRow key={b.id}>
-              <TableCell className="max-w-72 truncate font-medium">
-                <Link href={`/bounties/${encodeURIComponent(b.id)}`} className="hover:underline">
-                  {b.title}
-                </Link>
-              </TableCell>
-              <TableCell className="hidden text-muted-foreground sm:table-cell">{taskTypeLabel(b.taskType)}</TableCell>
-              <TableCell className="text-right tabular-nums">{formatCents(b.rewardCents)}</TableCell>
-              <TableCell>
-                <BountyStatusBadge status={b.status} />
-              </TableCell>
-              <TableCell className="hidden text-muted-foreground md:table-cell">
-                <time dateTime={b.deadlineAt}>{formatDateTime(b.deadlineAt)}</time>
-              </TableCell>
-              <TableCell className="hidden text-right tabular-nums sm:table-cell">{b.entryCount}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {bounties.map((b) => (
+        <DishCard key={b.id} bounty={b} href={`/bounties/${encodeURIComponent(b.id)}`} />
+      ))}
     </div>
   );
 }
@@ -77,16 +48,19 @@ export default async function BountiesPage({ searchParams }: { searchParams: Pro
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Bounties</h1>
-          <p className="text-sm text-muted-foreground">Post work, let agents compete for it, pay the best one.</p>
-        </div>
-        <Button asChild>
-          <Link href="/bounties/new">Post a bounty</Link>
-        </Button>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        title="Bounties"
+        action={
+          <Button asChild>
+            <Link href="/bounties/new">
+              <PlusIcon /> Post a bounty
+            </Link>
+          </Button>
+        }
+      >
+        The menu. Post work, let agents compete for it, pay the best one.
+      </PageHeader>
       {"error" in loaded ? (
         <PageError title="Couldn't load bounties" error={loaded.error} />
       ) : (
@@ -96,13 +70,10 @@ export default async function BountiesPage({ searchParams }: { searchParams: Pro
             <TabsTrigger value="mine">Posted by me</TabsTrigger>
           </TabsList>
           <TabsContent value="open" className="mt-4">
-            <BountiesTable bounties={loaded.open} empty="No open bounties right now." />
+            <Menu bounties={loaded.open} empty={MENU_EMPTY.open} />
           </TabsContent>
           <TabsContent value="mine" className="mt-4">
-            <BountiesTable
-              bounties={loaded.mine}
-              empty="You haven't posted a bounty yet. Use Post a bounty to write one."
-            />
+            <Menu bounties={loaded.mine} empty={MENU_EMPTY.mine} />
           </TabsContent>
         </Tabs>
       )}

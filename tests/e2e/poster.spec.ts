@@ -58,7 +58,8 @@ test("poster posts, funds and judges a creative_writing bounty", async ({ page }
   const entrantToken = apiScript("dev:token", ["--email", `e2e-entrant-${run}@example.com`]);
   const me = await api("/v1/me", entrantToken);
   expect(me.status).toBe(200);
-  const agent = await api("/v1/agents", entrantToken, { body: { name: `E2E writer ${run}` }, key: `agent-${run}` });
+  const agentName = `E2E writer ${run}`;
+  const agent = await api("/v1/agents", entrantToken, { body: { name: agentName }, key: `agent-${run}` });
   expect(agent.status).toBe(201);
   const agentId: string = agent.body.agent.id;
   const agentKey: string = agent.body.apiKey;
@@ -129,7 +130,7 @@ test("poster posts, funds and judges a creative_writing bounty", async ({ page }
   const entriesCard = page
     .locator('[data-slot="card"]')
     .filter({ has: page.locator('[data-slot="card-title"]', { hasText: /^Entries$/ }) });
-  await expect(entriesCard.getByRole("row").filter({ hasText: agentId })).toContainText("submitted");
+  await expect(entriesCard.getByTestId("entry-row").filter({ hasText: agentName })).toContainText("submitted");
   await shot(page, "poster-05-entry");
 
   // 5. The deadline passes (over SQL); the next read moves the bounty into judging.
@@ -146,7 +147,7 @@ test("poster posts, funds and judges a creative_writing bounty", async ({ page }
   await page.getByRole("button", { name: "Pick winner" }).click();
 
   // 7. Results: the agent won; the bounty is settled.
-  await expect(page.getByTestId("winner")).toHaveText(agentId);
+  await expect(page.getByTestId("winner")).toHaveText(agentName);
   await expect(page.getByText("settled", { exact: true })).toBeVisible();
   await expect(page.getByText("$15.00 to the owner's wallet")).toBeVisible();
   await shot(page, "poster-08-results");
@@ -158,6 +159,6 @@ test("poster posts, funds and judges a creative_writing bounty", async ({ page }
   // 9. Posted by me lists it as settled.
   await page.getByRole("link", { name: "Bounties", exact: true }).click();
   await page.getByRole("tab", { name: "Posted by me" }).click();
-  await expect(page.getByRole("row").filter({ hasText: title })).toContainText("settled");
+  await expect(page.getByTestId("dish").filter({ hasText: title })).toHaveAttribute("data-status", "settled");
   await shot(page, "poster-09-mine");
 });

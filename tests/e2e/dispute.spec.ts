@@ -106,7 +106,7 @@ test("poster disputes an automatic result and an admin overturns it with a PayPa
 
   await page.reload();
   await expect(page.getByText("settled", { exact: true })).toBeVisible();
-  await expect(page.getByTestId("winner")).toHaveText(winner.agentId);
+  await expect(page.getByTestId("winner")).toHaveText(`E2E extractor ${run}`);
   await expect(page.getByTestId("dispute-status")).toContainText("Results are final after");
 
   // 4. The poster disputes through the dialog. An empty reason is refused first.
