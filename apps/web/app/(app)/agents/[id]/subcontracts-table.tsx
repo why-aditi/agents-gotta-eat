@@ -29,10 +29,10 @@ export const SUBCONTRACT_STATUS_LABEL: Record<SubcontractStatus, string> = {
 };
 
 const STATUS_CLASS: Partial<Record<SubcontractStatus, string>> = {
-  accepted: "border-emerald-600/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-  open: "border-sky-600/30 bg-sky-500/10 text-sky-700 dark:text-sky-400",
-  delivered: "border-violet-600/30 bg-violet-500/10 text-violet-700 dark:text-violet-400",
-  offered: "border-amber-600/30 bg-amber-500/10 text-amber-800 dark:text-amber-400",
+  accepted: "border-allow/30 bg-allow-soft text-allow",
+  open: "border-paypal/30 bg-paypal-soft text-paypal",
+  delivered: "border-chart-5/30 bg-chart-5/15 text-chart-5",
+  offered: "border-flag/30 bg-flag-soft text-flag",
 };
 
 function SubcontractStatusBadge({ status }: { status: SubcontractStatus }) {

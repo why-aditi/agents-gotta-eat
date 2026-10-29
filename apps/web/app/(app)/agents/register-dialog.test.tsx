@@ -54,9 +54,9 @@ function setup() {
 }
 
 async function openAndRegister(user: ReturnType<typeof userEvent.setup>, name = "Scout") {
-  await user.click(screen.getByRole("button", { name: "Register agent" }));
+  await user.click(screen.getByRole("button", { name: "Adopt an agent" }));
   await user.type(screen.getByLabelText("Agent name"), name);
-  await user.click(screen.getByRole("button", { name: "Register" }));
+  await user.click(screen.getByRole("button", { name: "Adopt" }));
 }
 
 describe("RegisterDialog", () => {
@@ -68,12 +68,12 @@ describe("RegisterDialog", () => {
 
   it("rejects an empty or whitespace name without calling the api", async () => {
     const { user } = setup();
-    await user.click(screen.getByRole("button", { name: "Register agent" }));
-    await user.click(screen.getByRole("button", { name: "Register" }));
+    await user.click(screen.getByRole("button", { name: "Adopt an agent" }));
+    await user.click(screen.getByRole("button", { name: "Adopt" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Enter a name");
     expect(screen.getByLabelText("Agent name")).toHaveAttribute("aria-invalid", "true");
     await user.type(screen.getByLabelText("Agent name"), "   ");
-    await user.click(screen.getByRole("button", { name: "Register" }));
+    await user.click(screen.getByRole("button", { name: "Adopt" }));
     expect(registerAgent).not.toHaveBeenCalled();
   });
 
@@ -87,11 +87,11 @@ describe("RegisterDialog", () => {
   it("submits the trimmed name with the idempotency key generated on open", async () => {
     vi.mocked(registerAgent).mockResolvedValue(response(KEY));
     const { user } = setup();
-    await user.click(screen.getByRole("button", { name: "Register agent" }));
+    await user.click(screen.getByRole("button", { name: "Adopt an agent" }));
     const hidden = document.querySelector<HTMLInputElement>('input[name="idempotencyKey"]');
     expect(hidden?.value).toMatch(/^[0-9a-f-]{36}$/);
     await user.type(screen.getByLabelText("Agent name"), "  Scout  ");
-    await user.click(screen.getByRole("button", { name: "Register" }));
+    await user.click(screen.getByRole("button", { name: "Adopt" }));
     expect(registerAgent).toHaveBeenCalledWith("Scout", hidden?.value);
   });
 
@@ -166,11 +166,11 @@ describe("RegisterDialog", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(screen.queryByDisplayValue(KEY)).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Register agent" }));
+    await user.click(screen.getByRole("button", { name: "Adopt an agent" }));
     expect(screen.getByLabelText("Agent name")).toHaveValue("");
     expect(screen.queryByLabelText("API key")).not.toBeInTheDocument();
     await user.type(screen.getByLabelText("Agent name"), "Probe");
-    await user.click(screen.getByRole("button", { name: "Register" }));
+    await user.click(screen.getByRole("button", { name: "Adopt" }));
     const secondKey = vi.mocked(registerAgent).mock.lastCall?.[1];
     expect(secondKey).toBeTruthy();
     expect(secondKey).not.toEqual(firstKey);

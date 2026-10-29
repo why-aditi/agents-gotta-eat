@@ -1,124 +1,70 @@
-// Agents: the owner's agents with their key status. Register, rotate and revoke happen in client components
-// that call the server actions in ./actions.
-import { type Agent, AgentList } from "@gottaeat/schemas";
-import { BotIcon, TriangleAlertIcon } from "lucide-react";
-import Link from "next/link";
+// Agents: the owner's crew as creature cards (ui-04). Adopt, rotate and revoke happen in client components that
+// call the server actions in ./actions. Approvals and activity only feed the moods, so either failing costs the
+// mood, not the page.
+import { AgentList, SpendRequestList, WalletActivity } from "@gottaeat/schemas";
+import { UtensilsIcon } from "lucide-react";
 import { unstable_rethrow } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ApiError, apiFetch } from "@/lib/api";
-import { formatTenths } from "@/lib/money";
-import { AgentActions } from "./agent-actions";
+import { EmptyState } from "@/components/app/empty-state";
+import { PageHeader } from "@/components/app/page-header";
+import { apiFetch } from "@/lib/api";
+import { crewMoods } from "@/lib/crew";
+import { PageError } from "../_lib/page-error";
+import { AgentCard } from "./agent-card";
 import { RegisterDialog } from "./register-dialog";
 
-type Loaded = { ok: true; agents: Agent[] } | { ok: false; message: string };
+export const metadata = { title: "Agents · Agents Gotta Eat" };
 
-async function loadAgents(): Promise<Loaded> {
+async function orNull<T>(p: Promise<T>): Promise<T | null> {
   try {
-    const { agents } = await apiFetch(AgentList, "/v1/agents");
-    return { ok: true, agents };
+    return await p;
   } catch (err) {
+    // Next's own control-flow errors (dynamic rendering, redirects) must propagate.
     unstable_rethrow(err);
-    if (err instanceof ApiError) return { ok: false, message: err.message };
-    console.error(err);
-    return { ok: false, message: "Couldn't reach the api. Try again in a moment." };
+    return null;
   }
 }
 
-const dateFormat = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" });
-
-function StatusBadge({ agent }: { agent: Agent }) {
-  if (agent.apiKeyPrefix === null) return <Badge variant="destructive">key revoked</Badge>;
-  return <Badge variant={agent.status === "active" ? "secondary" : "outline"}>{agent.status}</Badge>;
-}
-
-function AgentsTable({ agents }: { agents: Agent[] }) {
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Kind</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Rating</TableHead>
-            <TableHead className="hidden sm:table-cell">Jobs</TableHead>
-            <TableHead className="hidden md:table-cell">Key</TableHead>
-            <TableHead className="hidden sm:table-cell">Created</TableHead>
-            <TableHead className="w-12">
-              <span className="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {agents.map((agent) => (
-            <TableRow key={agent.id}>
-              <TableCell className="max-w-64 truncate font-medium">
-                <Link href={`/agents/${encodeURIComponent(agent.id)}`} className="hover:underline">
-                  {agent.name}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">{agent.kind}</Badge>
-              </TableCell>
-              <TableCell>
-                <StatusBadge agent={agent} />
-              </TableCell>
-              <TableCell className="tabular-nums">{formatTenths(agent.rating)} / 5</TableCell>
-              <TableCell className="hidden tabular-nums sm:table-cell">{agent.completedJobs}</TableCell>
-              <TableCell className="hidden font-mono text-xs text-muted-foreground md:table-cell">
-                {agent.apiKeyPrefix ? `${agent.apiKeyPrefix}…` : "—"}
-              </TableCell>
-              <TableCell className="hidden text-muted-foreground sm:table-cell">
-                <time dateTime={agent.createdAt}>{dateFormat.format(new Date(agent.createdAt))}</time>
-              </TableCell>
-              <TableCell className="text-right">
-                <AgentActions agent={{ id: agent.id, name: agent.name, apiKeyPrefix: agent.apiKeyPrefix }} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
-
 export default async function AgentsPage() {
-  const result = await loadAgents();
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Agents</h1>
-          <p className="text-sm text-muted-foreground">Each agent has its own API key, wallet and mandate.</p>
-        </div>
-        {/* One dialog in a fixed spot: it must stay mounted when registering the first agent swaps the
-            empty state for the table, or the one-time key view disappears with it. */}
-        {result.ok && <RegisterDialog />}
-      </div>
+  const [agents, approvals, activity] = await Promise.all([
+    apiFetch(AgentList, "/v1/agents").then(
+      (r) => ({ ok: r.agents }) as const,
+      (err: unknown) => {
+        unstable_rethrow(err);
+        return { error: err } as const;
+      },
+    ),
+    orNull(apiFetch(SpendRequestList, "/v1/approvals?status=pending")),
+    orNull(apiFetch(WalletActivity, "/v1/wallet/activity?limit=50")),
+  ]);
+  const crew =
+    "ok" in agents
+      ? crewMoods(agents.ok, approvals?.spendRequests ?? [], activity?.items ?? [], Date.now())
+      : [];
 
-      {!result.ok ? (
-        <Card role="alert" className="border-destructive/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <TriangleAlertIcon className="size-4" aria-hidden /> Couldn&apos;t load your agents
-            </CardTitle>
-            <CardDescription>{result.message}</CardDescription>
-          </CardHeader>
-        </Card>
-      ) : result.agents.length === 0 ? (
-        <Card>
-          <CardHeader className="items-center text-center">
-            <BotIcon className="mx-auto size-8 text-muted-foreground" aria-hidden />
-            <CardTitle>No agents yet</CardTitle>
-            <CardDescription>
-              Use Register agent to get its API key and MCP config. Then write a mandate that says what it may spend.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+  return (
+    <div className="space-y-8">
+      <PageHeader
+        title="Agents"
+        // One dialog in a fixed spot: it must stay mounted when adopting the first agent swaps the empty state for
+        // the grid, or the one-time key view disappears with it.
+        action={"ok" in agents ? <RegisterDialog /> : undefined}
+      >
+        Your crew. Each one has its own key, its own diet and a seat at the table.
+      </PageHeader>
+
+      {"error" in agents ? (
+        <PageError title="Couldn't load your agents" error={agents.error} />
+      ) : crew.length === 0 ? (
+        <EmptyState icon={UtensilsIcon} title="The kitchen is empty">
+          Adopt your first agent: it gets its own API key and MCP config. Then give it a diet that says what it may
+          spend on.
+        </EmptyState>
       ) : (
-        <AgentsTable agents={result.agents} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {crew.map(({ agent, mood }) => (
+            <AgentCard key={agent.id} agent={agent} mood={mood} />
+          ))}
+        </div>
       )}
     </div>
   );
