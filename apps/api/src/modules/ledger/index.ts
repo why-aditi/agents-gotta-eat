@@ -41,4 +41,8 @@ export {
   type JournalDetailLine,
   type JournalPage,
   type JournalSummary,
+  walletActivity,
+  WALLET_ACTIVITY_MAX,
+  type WalletActivityKind,
+  type WalletMovement,
 } from "./reads";

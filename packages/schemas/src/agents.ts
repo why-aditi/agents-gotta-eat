@@ -18,6 +18,9 @@ export const Agent = z.object({
   // First 14 chars of the key, for display. Null once the key is revoked.
   apiKeyPrefix: z.string().nullable(),
   createdAt: z.iso.datetime(),
+  // GET /v1/agents only: spend counted against the daily cap since 00:00 UTC, and the confirmed mandate's cap
+  // (null without a confirmed mandate).
+  today: z.object({ spentCents: z.int().min(0), dailyCapCents: z.int().min(0).nullable() }).optional(),
 });
 export type Agent = z.infer<typeof Agent>;
 

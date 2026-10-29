@@ -18,7 +18,9 @@ function spend(overrides: Partial<SpendRequest> = {}): SpendRequest {
   return {
     id: "spr_1",
     agentId: "agt_buyer",
+    agentName: "Patch",
     payeeAgentId: "agt_seller",
+    payeeAgentName: "Scout",
     amountCents: 800,
     feeCents: 40,
     category: "subcontract",

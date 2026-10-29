@@ -9,8 +9,12 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 from ..models.get_v1_agents_me_response_200_kind import GetV1AgentsMeResponse200Kind
+from ..types import UNSET, Unset
 from typing import cast
 import datetime
+
+if TYPE_CHECKING:
+    from ..models.get_v1_agents_me_response_200_today import GetV1AgentsMeResponse200Today
 
 
 T = TypeVar("T", bound="GetV1AgentsMeResponse200")
@@ -30,6 +34,7 @@ class GetV1AgentsMeResponse200:
         completed_jobs (int):
         api_key_prefix (None | str):
         created_at (datetime.datetime):
+        today (GetV1AgentsMeResponse200Today | Unset):
     """
 
     id: str
@@ -42,8 +47,11 @@ class GetV1AgentsMeResponse200:
     completed_jobs: int
     api_key_prefix: None | str
     created_at: datetime.datetime
+    today: GetV1AgentsMeResponse200Today | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.get_v1_agents_me_response_200_today import GetV1AgentsMeResponse200Today  # noqa: PLC0415
+
         id = self.id
 
         owner_id = self.owner_id
@@ -65,6 +73,10 @@ class GetV1AgentsMeResponse200:
 
         created_at = self.created_at.isoformat()
 
+        today: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.today, Unset):
+            today = self.today.to_dict()
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -81,11 +93,15 @@ class GetV1AgentsMeResponse200:
                 "createdAt": created_at,
             }
         )
+        if today is not UNSET:
+            field_dict["today"] = today
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.get_v1_agents_me_response_200_today import GetV1AgentsMeResponse200Today  # noqa: PLC0415
+
         d = dict(src_dict)
         id = d.pop("id")
 
@@ -112,6 +128,13 @@ class GetV1AgentsMeResponse200:
 
         created_at = datetime.datetime.fromisoformat(d.pop("createdAt"))
 
+        _today = d.pop("today", UNSET)
+        today: GetV1AgentsMeResponse200Today | Unset
+        if isinstance(_today, Unset):
+            today = UNSET
+        else:
+            today = GetV1AgentsMeResponse200Today.from_dict(_today)
+
         get_v1_agents_me_response_200 = cls(
             id=id,
             owner_id=owner_id,
@@ -123,6 +146,7 @@ class GetV1AgentsMeResponse200:
             completed_jobs=completed_jobs,
             api_key_prefix=api_key_prefix,
             created_at=created_at,
+            today=today,
         )
 
         return get_v1_agents_me_response_200

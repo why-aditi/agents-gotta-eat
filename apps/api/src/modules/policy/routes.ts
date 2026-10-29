@@ -14,6 +14,8 @@ import {
   SpendRequest,
   SpendRequestList,
   Wallet,
+  WalletActivity,
+  WalletActivityQuery,
 } from "@gottaeat/schemas";
 import { eq } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
@@ -25,6 +27,7 @@ import { principalKey, requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
 import { getBalances, openWallet, owedCents, PAYPAL_CLEARING, postJournal, walletAccount } from "../ledger";
+import { listWalletActivity } from "./activity";
 import { decideApproval, listPendingApprovals } from "./approvals";
 import { llmConfigFromEnv } from "../llm";
 import { compileMandate } from "./compile";
@@ -165,6 +168,26 @@ export const policyRoutes: FastifyPluginAsyncZod = async (api) => {
         ...wallet,
         agent: { agentId: principal.agentId, todaySpentCents: toJsonCents(spent), limits: mandate?.rules ?? null },
       };
+    },
+  );
+
+  api.get(
+    "/v1/wallet/activity",
+    {
+      config: { auth: "user" },
+      schema: {
+        tags: ["wallet"],
+        summary: "The owner's wallet movements, newest first",
+        description:
+          "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money " +
+          "in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text.",
+        querystring: WalletActivityQuery,
+        response: { 200: WalletActivity, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody },
+      },
+    },
+    async (req) => {
+      const user = requireUser(req);
+      return { items: await listWalletActivity(api.db, user.userId, req.query.limit) };
     },
   );
 

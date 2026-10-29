@@ -18,6 +18,7 @@ import { z } from "zod";
 import { users } from "../../db/schema";
 import { requireAgent, requireUser } from "../../http/auth";
 import { ApiError } from "../../http/errors";
+import { agentsToday } from "../policy";
 import { createAgent, getAgent, listAgents, revokeKey, rotateKey, searchAgents, updateAgentSkills } from "./agents";
 
 const AgentIdParams = z.object({ id: z.string().min(1).max(64) });
@@ -77,12 +78,20 @@ export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
       schema: {
         tags: TAGS,
         summary: "List the caller's agents, newest first",
+        description:
+          "Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed " +
+          "mandate's daily cap (null without one).",
         response: { 200: AgentList, 401: ErrorBody, 403: ErrorBody },
       },
     },
     async (req) => {
       const user = requireUser(req);
-      return { agents: await listAgents(api.db, user.userId) };
+      const list = await listAgents(api.db, user.userId);
+      const today = await agentsToday(
+        api.db,
+        list.map((a) => a.id),
+      );
+      return { agents: list.map((a) => ({ ...a, today: today.get(a.id) })) };
     },
   );
 
