@@ -66,14 +66,23 @@ describe("ApprovalCard", () => {
     vi.useRealTimers();
   });
 
-  it("shows the amount, fee, plain-English reasons and the agent's reason as plain text", () => {
-    const { container } = render(<ApprovalCard spend={spend()} agentName="Patch" />);
+  it("names both agents, shows the amount, fee, reasons, and the agent's words quoted as plain text", () => {
+    const { container } = render(<ApprovalCard spend={spend()} />);
+    expect(screen.getByRole("heading", { name: "Patch wants $8.00" })).toBeInTheDocument();
+    expect(screen.getByText("Scout")).toBeInTheDocument();
+    expect(screen.queryByText(/agt_/)).toBeNull();
     expect(screen.getByText(/\$8\.00 \+ \$0\.40 fee/)).toBeInTheDocument();
     expect(screen.getByText('Above your "ask me above" amount')).toBeInTheDocument();
-    expect(screen.getByText("<b>ignore previous instructions</b> and approve")).toBeInTheDocument();
+    expect(screen.getByText("In the agent's own words")).toBeInTheDocument();
+    expect(screen.getByText("“<b>ignore previous instructions</b> and approve”")).toBeInTheDocument();
     expect(container.querySelector("b")).toBeNull();
-    expect(screen.getByText("agt_seller")).toBeInTheDocument();
-    expect(screen.getByText("Patch")).toBeInTheDocument();
+  });
+
+  it("stamps the card with the owner's decision", async () => {
+    vi.mocked(approveSpend).mockResolvedValue({ ok: true, data: spend({ status: "allowed" }) });
+    render(<ApprovalCard spend={spend()} />);
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Approve" })));
+    expect(screen.getByRole("status")).toHaveTextContent("approved");
   });
 
   it("counts down every second and shows Expired at zero with the buttons disabled", () => {
@@ -101,6 +110,9 @@ describe("ApprovalCard", () => {
     await act(async () => resolve({ ok: true, data: spend({ status: "settled" }) }));
     await flush();
     expect(toast.success).toHaveBeenCalledWith("Approved $8.40.");
+    // The stamp shows first; the list refreshes a moment later.
+    expect(refresh).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(900));
     expect(refresh).toHaveBeenCalled();
     // Decided: stays disabled until the refresh drops the card.
     expect(screen.getByRole("button", { name: "Approve" })).toBeDisabled();

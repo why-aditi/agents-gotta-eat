@@ -56,7 +56,7 @@ test("an agent hires another owner's agent, accepts the delivery and the worker'
   // 1. Sign in and watch the Arena feed.
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
   await page.getByRole("link", { name: "Arena", exact: true }).click();
   await expect(page.getByText("Live", { exact: true })).toBeVisible();
   await page.waitForTimeout(1500);

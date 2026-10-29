@@ -13,14 +13,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOutAction } from "@/lib/auth-actions";
+import { cn } from "@/lib/utils";
 
-export function UserMenu({ name, email }: { name: string | null; email: string }) {
+export function UserMenu({ name, email, className }: { name: string | null; email: string; className?: string }) {
   const { theme, setTheme } = useTheme();
   const label = name ?? email;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="max-w-48 gap-2" aria-label="Account menu">
+        <Button variant="ghost" size="sm" className={cn("max-w-48 gap-2", className)} aria-label="Account menu">
           <UserIcon className="size-4" />
           <span className="hidden truncate sm:inline">{label}</span>
         </Button>

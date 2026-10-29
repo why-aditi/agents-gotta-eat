@@ -35,7 +35,8 @@ async function shot(page: Page, name: string) {
 }
 
 function balanceCard(page: Page) {
-  return page.locator('[data-slot="card"]').filter({ has: page.getByText("Balance", { exact: true }) });
+  // ui-02: the amount in the wallet's balance card.
+  return page.getByTestId("wallet-balance");
 }
 
 test("owner signs in, sets a mandate and approves a spend", async ({ page }) => {
@@ -52,9 +53,10 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   await page.goto("/login");
   await shot(page, "01-login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 
   // 2. Register an agent and keep its key.
+  await page.getByRole("link", { name: "Agents", exact: true }).click();
   const agentName = `E2E buyer ${run}`;
   await page.getByRole("button", { name: "Register agent" }).first().click();
   await page.getByLabel("Agent name").fill(agentName);
@@ -71,7 +73,7 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
 
   // 3. Fund the wallet with dev credit.
   await page.getByRole("link", { name: "Wallet", exact: true }).click();
-  const before = (await balanceCard(page).locator('[data-slot="card-title"]').innerText()).trim();
+  const before = (await balanceCard(page).innerText()).trim();
   const beforeCents = Number(before.replace(/[$,]/g, "").replace(".", ""));
   await page.getByLabel("Amount ($)").fill("50");
   await page.getByRole("button", { name: "Add credit" }).click();

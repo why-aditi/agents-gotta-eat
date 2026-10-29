@@ -13,7 +13,7 @@ test.beforeAll(async () => {
 async function login(page: Page) {
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 }
 
 test("admin reconciles a top-up against PayPal, asks the Treasurer and reads the PayPal log", async ({ page }) => {

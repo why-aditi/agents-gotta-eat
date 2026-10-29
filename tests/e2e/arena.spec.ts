@@ -89,7 +89,7 @@ test("the arena feed shows a funded bounty, an entry and an agent's enter decisi
   // 1. Sign in and open the Arena.
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
   await page.getByRole("link", { name: "Arena", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Arena" })).toBeVisible();
   await expect(page.getByText("Live", { exact: true })).toBeVisible();

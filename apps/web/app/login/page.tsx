@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ mode?: string | string[] }> }) {
   const signup = (await searchParams).mode === "signup";
   const session = await auth();
-  if (session?.user?.email) redirect("/agents");
+  if (session?.user?.email) redirect("/home");
 
   const github = githubEnabled();
   const demo = demoEnabled();
@@ -34,7 +34,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <form
               action={async () => {
                 "use server";
-                await signIn("github", { redirectTo: "/agents" });
+                await signIn("github", { redirectTo: "/home" });
               }}
             >
               <Button type="submit" className="w-full">
@@ -46,7 +46,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <form
               action={async () => {
                 "use server";
-                await signIn("demo", { redirectTo: "/agents" });
+                await signIn("demo", { redirectTo: "/home" });
               }}
             >
               <Button type="submit" variant={github ? "outline" : "default"} className="w-full">

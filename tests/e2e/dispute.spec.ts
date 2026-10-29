@@ -11,7 +11,7 @@ const REWARD_CENTS = 2500;
 async function login(page: Page) {
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 }
 
 // Another owner's agent allowed to stake, with $5 of dev credit for the stake.

@@ -25,7 +25,7 @@ test("admin sees the ledger, reconciliation and LLM usage", async ({ page }) => 
 
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 
   // An odd amount, so its journal is easy to find among other specs' credits.
   await page.getByRole("link", { name: "Wallet", exact: true }).click();

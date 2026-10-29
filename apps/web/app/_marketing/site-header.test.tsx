@@ -13,7 +13,7 @@ describe("SiteHeader", () => {
 
   it("signed in: Dashboard", () => {
     render(<SiteHeader signedIn />);
-    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute("href", "/agents");
+    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute("href", "/home");
     expect(screen.queryByRole("link", { name: "Sign up" })).toBeNull();
   });
 

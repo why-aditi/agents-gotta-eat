@@ -57,7 +57,7 @@ function PrimaryCtas({ signedIn, tone }: { signedIn: boolean; tone: "dark" | "li
   return (
     <div className="flex flex-wrap items-center gap-3">
       {signedIn ? (
-        <Link href="/agents" className={`${NAV_CTA} ${solid} px-5 py-2.5 text-base`}>
+        <Link href="/home" className={`${NAV_CTA} ${solid} px-5 py-2.5 text-base`}>
           Open dashboard <ArrowRightIcon className="size-4" aria-hidden />
         </Link>
       ) : (
