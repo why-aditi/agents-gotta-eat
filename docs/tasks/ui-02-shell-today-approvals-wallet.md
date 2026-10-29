@@ -43,5 +43,6 @@ Depends on ui-01 (`docs/tasks/ui-01-api-reads.md`). Spec sections: "Pocket Money
 | Today | The "Recent activity" link reads "All activity" | A second link named "Wallet" made the sidebar's Wallet link ambiguous |
 | Shell | Skeletons use the muted colour, not the accent | The emerald accent made loading pages look like green blocks in dark mode |
 | Wallet | The balance doesn't count up; it always shows the exact amount and glows briefly when it changes | The count-up showed values the wallet didn't have and stalled a cent short on CI after a PayPal top-up. Money must never be shown wrong, even for a moment |
+| Login | With no sign-in method configured, the page says "Sign-in isn't set up yet" and points to the demo, instead of "Create your account" | Found on the Vercel preview before its env was set: it invited a sign-up that couldn't happen |
 | Copy | The marketing page's "Open dashboard" and "Dashboard" go to `/home` | Today is the dashboard now |
 | Today | The checklist's mandate step counts an agent with a daily cap as having a mandate | `dailyMaxCents` is required in a mandate, so a cap exists exactly when a confirmed mandate does |
