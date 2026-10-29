@@ -90,7 +90,7 @@ test("an owner approves a waiting spend from Today", async ({ browser }) => {
   await signIn(page);
   const needs = page.getByRole("region", { name: "Needs you" });
   const card = needs.locator('[data-slot="card"]').filter({ hasText: agentName });
-  await expect(card.getByRole("heading", { name: `${agentName} wants $8.00` })).toBeVisible();
+  await expect(card.getByRole("heading", { name: `${agentName} is begging for $8.00 of snacks` })).toBeVisible();
   await expect(card).toContainText(`Home payee ${run}`);
   await expect(card).not.toContainText("agt_");
   await expect(page.getByRole("meter", { name: new RegExp(agentName) })).toBeVisible();

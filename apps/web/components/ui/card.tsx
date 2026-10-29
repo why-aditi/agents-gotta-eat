@@ -28,7 +28,13 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="card-title" className={cn("leading-none font-semibold", className)} {...props} />;
+  return (
+    <div
+      data-slot="card-title"
+      className={cn("font-display text-lg leading-none font-semibold", className)}
+      {...props}
+    />
+  );
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {

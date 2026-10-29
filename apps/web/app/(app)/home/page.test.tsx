@@ -83,23 +83,25 @@ async function renderToday() {
 describe("Today", () => {
   it("greets the owner and says what needs them and what their agents spent", async () => {
     await renderToday();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Hi, Aditi");
-    expect(screen.getByText(/One spend needs you\./)).toHaveTextContent("Your agents spent $7.50 today.");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/, Aditi$/);
+    expect(screen.getByText(/One agent is begging\./)).toHaveTextContent("Your crew ate $7.50 today.");
+    // Scout has a spend waiting, so it is begging; its card says so.
+    expect(screen.getByTestId("crew-card")).toHaveAttribute("data-mood", "begging");
     const needs = screen.getByRole("region", { name: "Needs you" });
-    expect(within(needs).getByRole("heading", { name: "Scout wants $4.00" })).toBeInTheDocument();
+    expect(within(needs).getByRole("heading", { name: "Scout is begging for $4.00 of snacks" })).toBeInTheDocument();
     expect(within(needs).getByRole("button", { name: "Approve" })).toBeInTheDocument();
   });
 
   it("shows the wallet, earnings this week, each agent's cap and recent activity", async () => {
     await renderToday();
-    const wallet = screen.getByRole("region", { name: "Wallet" });
+    const wallet = screen.getByRole("region", { name: "The pantry" });
     expect(wallet).toHaveTextContent("$56.37");
     expect(wallet).toHaveTextContent("$4.00");
     expect(wallet).toHaveTextContent("$120.00");
     expect(screen.getByRole("meter", { name: /Scout/ })).toHaveAttribute("aria-valuenow", "75");
     expect(screen.getByTestId("activity-item")).toHaveTextContent("Won a bounty");
     // An owner with a funded wallet and a capped agent is past onboarding.
-    expect(screen.queryByRole("region", { name: "Get your first agent spending safely" })).toBeNull();
+    expect(screen.queryByRole("region", { name: "Set up your kitchen" })).toBeNull();
   });
 
   it("says all clear when nothing waits, and walks a new owner through the first steps", async () => {
@@ -109,7 +111,7 @@ describe("Today", () => {
     responses.set("/v1/wallet/activity", { items: [] });
     await renderToday();
     expect(screen.getByText("All clear")).toBeInTheDocument();
-    const steps = screen.getByRole("region", { name: "Get your first agent spending safely" });
+    const steps = screen.getByRole("region", { name: "Set up your kitchen" });
     expect(
       within(steps)
         .getAllByRole("link")
@@ -122,6 +124,6 @@ describe("Today", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     await renderToday();
     expect(screen.getByText("Couldn't load activity")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Scout wants $4.00" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Scout is begging for $4.00 of snacks" })).toBeInTheDocument();
   });
 });

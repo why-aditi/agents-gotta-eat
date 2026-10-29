@@ -9,6 +9,7 @@ import { AnimatedMoney } from "@/components/app/animated-money";
 import { Money } from "@/components/app/money";
 import { PageHeader } from "@/components/app/page-header";
 import { apiFetch, getMe } from "@/lib/api";
+import { SUBTITLE } from "@/lib/kitchen";
 import { PageError } from "../_lib/page-error";
 import { DevCreditForm } from "./dev-credit-form";
 import { FrozenBanner } from "./frozen-banner";
@@ -55,45 +56,46 @@ export default async function WalletPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Wallet">
-        Your agents spend from here. Add money with PayPal, or withdraw it to your PayPal account.
-      </PageHeader>
+      <PageHeader title="Wallet">{SUBTITLE.wallet}</PageHeader>
       {"error" in loaded ? (
         <PageError title="Couldn't load your wallet" error={loaded.error} />
       ) : (
         <>
           <FrozenBanner owedCents={loaded.wallet.owedCents} />
-          <section
-            aria-label="Balance"
-            className="relative isolate overflow-hidden rounded-3xl bg-zinc-950 p-6 text-zinc-100 shadow-xl sm:p-8"
-          >
+          <section aria-label="Balance" className="sticker relative isolate overflow-hidden bg-snack-soft p-6 sm:p-8">
+            {/* The pantry shelf: decoration only. */}
             <div
               aria-hidden
-              className="absolute -top-24 -right-16 -z-10 size-72 rounded-full bg-emerald-500/25 blur-3xl"
-            />
-            <p className="flex items-center gap-2 text-sm text-zinc-400">
-              <WalletIcon className="size-4" aria-hidden /> Available to spend
+              className="absolute top-6 right-6 hidden flex-col items-end gap-1 text-4xl select-none sm:flex"
+            >
+              <span>🥫🍯🥖</span>
+              <span className="h-1.5 w-40 rounded-full bg-outline/30" />
+              <span>🧀🍎🥨🍪</span>
+              <span className="h-1.5 w-48 rounded-full bg-outline/30" />
+            </div>
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <WalletIcon className="size-4" aria-hidden /> Available to eat
             </p>
             <AnimatedMoney
               cents={loaded.wallet.balanceCents}
               data-testid="wallet-balance"
-              className="mt-2 block text-5xl font-semibold tracking-tight sm:text-6xl"
+              className="font-display mt-2 block text-6xl font-semibold tracking-tight sm:text-7xl"
             />
             <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4 text-sm">
               <div>
-                <dt className="text-zinc-400">Held</dt>
+                <dt className="text-muted-foreground">On hold</dt>
                 <dd className="mt-0.5 text-lg">
-                  <Money cents={loaded.wallet.heldCents} className="text-amber-300" />
+                  <Money cents={loaded.wallet.heldCents} className="text-flag" />
                 </dd>
-                <dd className="text-xs text-zinc-500">Waiting on approvals or payouts</dd>
+                <dd className="text-xs text-muted-foreground">Waiting on approvals or payouts</dd>
               </div>
               {loaded.wallet.owedCents > 0 && (
                 <div>
-                  <dt className="text-zinc-400">Owed</dt>
+                  <dt className="text-muted-foreground">Owed</dt>
                   <dd className="mt-0.5 text-lg">
-                    <Money cents={loaded.wallet.owedCents} className="text-rose-300" />
+                    <Money cents={loaded.wallet.owedCents} className="text-deny" />
                   </dd>
-                  <dd className="text-xs text-zinc-500">After a PayPal reversal</dd>
+                  <dd className="text-xs text-muted-foreground">After a PayPal reversal</dd>
                 </div>
               )}
             </dl>
@@ -102,8 +104,8 @@ export default async function WalletPage() {
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
             <Card className="order-2 lg:order-1">
               <CardHeader>
-                <CardTitle>Activity</CardTitle>
-                <CardDescription>Every cent in and out, newest first.</CardDescription>
+                <CardTitle>Meals and deliveries</CardTitle>
+                <CardDescription>Every cent in and out of the pantry, newest first.</CardDescription>
               </CardHeader>
               <CardContent>
                 {"error" in loaded.activity ? (

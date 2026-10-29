@@ -31,3 +31,6 @@ Follows ui-02 (`docs/tasks/ui-02-shell-today-approvals-wallet.md`). Spec section
 
 | Area | Change | Why |
 | --- | --- | --- |
+| Moods | Precedence: sleeping, begging, feasting, sulking, then the cap | A spend waiting on the owner is the one thing they can act on, so it outranks a win |
+| Creatures | `hashId` moved to `components/creature/looks.ts` and re-exported from `agent-avatar` | Avoids a circular import between the avatar and the creature |
+| Avatar | `AgentAvatar` shows a creature head instead of initials | The creatures are the agents' faces everywhere |

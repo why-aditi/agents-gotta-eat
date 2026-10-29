@@ -58,7 +58,7 @@ function PendingBadge({ count, className }: { count: number | null; className?: 
     <span
       aria-label={`${count} pending`}
       className={cn(
-        "inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-flag px-1.5 text-[0.7rem] font-semibold text-zinc-950 tabular-nums",
+        "inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-snack px-1.5 text-[0.7rem] font-semibold text-zinc-950 tabular-nums",
         className,
       )}
     >
