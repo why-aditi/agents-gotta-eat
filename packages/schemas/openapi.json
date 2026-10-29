@@ -176,6 +176,33 @@
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        "today": {
+                          "type": "object",
+                          "properties": {
+                            "spentCents": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "dailyCapCents": {
+                              "anyOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "spentCents",
+                            "dailyCapCents"
+                          ],
+                          "additionalProperties": false
                         }
                       },
                       "required": [
@@ -677,6 +704,7 @@
         "tags": [
           "agents"
         ],
+        "description": "Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed mandate's daily cap (null without one).",
         "security": [
           {
             "userToken": []
@@ -740,6 +768,33 @@
                             "type": "string",
                             "format": "date-time",
                             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          "today": {
+                            "type": "object",
+                            "properties": {
+                              "spentCents": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "dailyCapCents": {
+                                "anyOf": [
+                                  {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 9007199254740991
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "spentCents",
+                              "dailyCapCents"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -1285,6 +1340,33 @@
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "today": {
+                      "type": "object",
+                      "properties": {
+                        "spentCents": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "dailyCapCents": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "spentCents",
+                        "dailyCapCents"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -1891,6 +1973,33 @@
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "today": {
+                      "type": "object",
+                      "properties": {
+                        "spentCents": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "dailyCapCents": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "spentCents",
+                        "dailyCapCents"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -2238,6 +2347,33 @@
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                        },
+                        "today": {
+                          "type": "object",
+                          "properties": {
+                            "spentCents": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "dailyCapCents": {
+                              "anyOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "spentCents",
+                            "dailyCapCents"
+                          ],
+                          "additionalProperties": false
                         }
                       },
                       "required": [
@@ -5405,6 +5541,353 @@
         }
       }
     },
+    "/v1/wallet/activity": {
+      "get": {
+        "summary": "The owner's wallet movements, newest first",
+        "tags": [
+          "wallet"
+        ],
+        "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text.",
+        "parameters": [
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "topup",
+                              "spend",
+                              "earning",
+                              "hold",
+                              "release",
+                              "withdrawal",
+                              "refund",
+                              "fee",
+                              "credit",
+                              "other"
+                            ]
+                          },
+                          "amountCents": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "agentId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "agentName": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "bountyId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "amountCents",
+                          "label",
+                          "agentId",
+                          "agentName",
+                          "bountyId",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "dispute_window_closed",
+                            "not_disputable",
+                            "dispute_exists",
+                            "dispute_not_open",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "dispute_window_closed",
+                            "not_disputable",
+                            "dispute_exists",
+                            "dispute_not_open",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "dispute_window_closed",
+                            "not_disputable",
+                            "dispute_exists",
+                            "dispute_not_open",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/spend-requests": {
       "post": {
         "summary": "Ask to spend from the owner's wallet",
@@ -5979,7 +6462,16 @@
                     "agentId": {
                       "type": "string"
                     },
+                    "agentName": {
+                      "type": "string"
+                    },
                     "payeeAgentId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "payeeAgentName": {
                       "type": [
                         "string",
                         "null"
@@ -6111,7 +6603,9 @@
                   "required": [
                     "id",
                     "agentId",
+                    "agentName",
                     "payeeAgentId",
+                    "payeeAgentName",
                     "amountCents",
                     "feeCents",
                     "category",
@@ -6409,7 +6903,16 @@
                           "agentId": {
                             "type": "string"
                           },
+                          "agentName": {
+                            "type": "string"
+                          },
                           "payeeAgentId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "payeeAgentName": {
                             "type": [
                               "string",
                               "null"
@@ -6541,7 +7044,9 @@
                         "required": [
                           "id",
                           "agentId",
+                          "agentName",
                           "payeeAgentId",
+                          "payeeAgentName",
                           "amountCents",
                           "feeCents",
                           "category",
@@ -6873,7 +7378,16 @@
                     "agentId": {
                       "type": "string"
                     },
+                    "agentName": {
+                      "type": "string"
+                    },
                     "payeeAgentId": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "payeeAgentName": {
                       "type": [
                         "string",
                         "null"
@@ -7005,7 +7519,9 @@
                   "required": [
                     "id",
                     "agentId",
+                    "agentName",
                     "payeeAgentId",
+                    "payeeAgentName",
                     "amountCents",
                     "feeCents",
                     "category",
@@ -7535,7 +8051,16 @@
                           "agentId": {
                             "type": "string"
                           },
+                          "agentName": {
+                            "type": "string"
+                          },
                           "payeeAgentId": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "payeeAgentName": {
                             "type": [
                               "string",
                               "null"
@@ -7667,7 +8192,9 @@
                         "required": [
                           "id",
                           "agentId",
+                          "agentName",
                           "payeeAgentId",
+                          "payeeAgentName",
                           "amountCents",
                           "feeCents",
                           "category",

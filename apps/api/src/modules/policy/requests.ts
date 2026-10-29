@@ -5,6 +5,7 @@ import type { Db, Tx } from "../../db";
 import { spendDecisions, spendRequests } from "../../db/schema";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
+import { agentNames } from "../events";
 import { RATE_LIMIT_WINDOW_MS } from "./gate1";
 
 type Conn = Db | Tx;
@@ -37,11 +38,18 @@ function toDecisionDto(row: DecisionRow): SpendDecision {
   };
 }
 
-export function toSpendRequestDto(row: SpendRow, decisions: DecisionRow[]): SpendRequest {
+// `names` maps agent ids to names; a missing name reads as the id.
+export function toSpendRequestDto(
+  row: SpendRow,
+  decisions: DecisionRow[],
+  names: ReadonlyMap<string, string> = new Map(),
+): SpendRequest {
   return {
     id: row.id,
     agentId: row.agentId,
+    agentName: names.get(row.agentId) ?? row.agentId,
     payeeAgentId: row.payeeId,
+    payeeAgentName: row.payeeId === null ? null : (names.get(row.payeeId) ?? row.payeeId),
     amountCents: toJsonCents(row.amountCents),
     feeCents: toJsonCents(row.feeCents),
     category: row.category,
@@ -55,9 +63,13 @@ export function toSpendRequestDto(row: SpendRow, decisions: DecisionRow[]): Spen
   };
 }
 
-// Attaches each request's decisions, in the order they were written.
+// Attaches each request's decisions, in the order they were written, and the spender's and payee's names.
 export async function withDecisions(conn: Conn, rows: SpendRow[]): Promise<SpendRequest[]> {
   if (rows.length === 0) return [];
+  const names = await agentNames(
+    conn,
+    rows.flatMap((r) => (r.payeeId === null ? [r.agentId] : [r.agentId, r.payeeId])),
+  );
   const decisions = await conn
     .select()
     .from(spendDecisions)
@@ -70,7 +82,7 @@ export async function withDecisions(conn: Conn, rows: SpendRow[]): Promise<Spend
     .orderBy(asc(spendDecisions.id));
   const byRequest = new Map<string, DecisionRow[]>();
   for (const d of decisions) byRequest.set(d.spendRequestId, [...(byRequest.get(d.spendRequestId) ?? []), d]);
-  return rows.map((r) => toSpendRequestDto(r, byRequest.get(r.id) ?? []));
+  return rows.map((r) => toSpendRequestDto(r, byRequest.get(r.id) ?? [], names));
 }
 
 export async function loadSpendRequest(conn: Conn, id: string): Promise<SpendRequest | null> {

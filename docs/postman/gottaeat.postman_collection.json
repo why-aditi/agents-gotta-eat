@@ -132,7 +132,8 @@
               ],
               "variable": [],
               "query": []
-            }
+            },
+            "description": "Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed mandate's daily cap (null without one)."
           }
         },
         {
@@ -600,6 +601,43 @@
               "query": []
             },
             "description": "An agent sees its owner's wallet plus its own spend today and active mandate rules."
+          }
+        },
+        {
+          "name": "The owner's wallet movements, newest first",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/wallet/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "wallet",
+                "activity"
+              ],
+              "variable": [],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text."
           }
         },
         {

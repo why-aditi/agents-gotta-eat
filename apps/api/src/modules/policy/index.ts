@@ -26,7 +26,8 @@ export {
   requireOwnedAgent,
   toMandateDto,
 } from "./mandates";
-export { getSpendRequestFor, listAgentSpendRequests } from "./queries";
+export { agentsToday, getSpendRequestFor, listAgentSpendRequests, type AgentToday } from "./queries";
+export { listWalletActivity } from "./activity";
 export { APPROVAL_TTL_MS, toSpendRequestDto, todaySpentCents, withDecisions } from "./requests";
 export { policyRoutes } from "./routes";
 export { createSpendRequest, createStakeSpendRequest, type SpendDeps } from "./spend";

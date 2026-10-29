@@ -32,7 +32,9 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
     Attributes:
         id (str):
         agent_id (str):
+        agent_name (str):
         payee_agent_id (None | str):
+        payee_agent_name (None | str):
         amount_cents (int):
         fee_cents (int):
         category (GetV1AgentsIdSpendRequestsResponse200SpendRequestsItemCategory):
@@ -47,7 +49,9 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
 
     id: str
     agent_id: str
+    agent_name: str
     payee_agent_id: None | str
+    payee_agent_name: None | str
     amount_cents: int
     fee_cents: int
     category: GetV1AgentsIdSpendRequestsResponse200SpendRequestsItemCategory
@@ -68,8 +72,13 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
 
         agent_id = self.agent_id
 
+        agent_name = self.agent_name
+
         payee_agent_id: None | str
         payee_agent_id = self.payee_agent_id
+
+        payee_agent_name: None | str
+        payee_agent_name = self.payee_agent_name
 
         amount_cents = self.amount_cents
 
@@ -109,7 +118,9 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
             {
                 "id": id,
                 "agentId": agent_id,
+                "agentName": agent_name,
                 "payeeAgentId": payee_agent_id,
+                "payeeAgentName": payee_agent_name,
                 "amountCents": amount_cents,
                 "feeCents": fee_cents,
                 "category": category,
@@ -136,12 +147,21 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
 
         agent_id = d.pop("agentId")
 
+        agent_name = d.pop("agentName")
+
         def _parse_payee_agent_id(data: object) -> None | str:
             if data is None:
                 return data
             return cast(None | str, data)
 
         payee_agent_id = _parse_payee_agent_id(d.pop("payeeAgentId"))
+
+        def _parse_payee_agent_name(data: object) -> None | str:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        payee_agent_name = _parse_payee_agent_name(d.pop("payeeAgentName"))
 
         amount_cents = d.pop("amountCents")
 
@@ -204,7 +224,9 @@ class GetV1AgentsIdSpendRequestsResponse200SpendRequestsItem:
         get_v1_agents_id_spend_requests_response_200_spend_requests_item = cls(
             id=id,
             agent_id=agent_id,
+            agent_name=agent_name,
             payee_agent_id=payee_agent_id,
+            payee_agent_name=payee_agent_name,
             amount_cents=amount_cents,
             fee_cents=fee_cents,
             category=category,

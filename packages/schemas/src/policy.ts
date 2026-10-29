@@ -124,7 +124,11 @@ export type SpendDecision = z.infer<typeof SpendDecision>;
 export const SpendRequest = z.object({
   id: z.string(),
   agentId: z.string(),
+  // The spending agent's name. Agent-supplied text.
+  agentName: z.string(),
   payeeAgentId: z.string().nullable(),
+  // Null when there is no payee agent (a stake).
+  payeeAgentName: z.string().nullable(),
   amountCents: PositiveCents,
   feeCents: Cents,
   category: SpendCategory,
@@ -172,6 +176,47 @@ export const Wallet = z.object({
     .optional(),
 });
 export type Wallet = z.infer<typeof Wallet>;
+
+// GET /v1/wallet/activity: one movement of the owner's available balance per ledger journal, newest first.
+export const WalletActivityKind = z.enum([
+  "topup",
+  "spend",
+  "earning",
+  "hold",
+  "release",
+  "withdrawal",
+  "refund",
+  "fee",
+  "credit",
+  "other",
+]);
+export type WalletActivityKind = z.infer<typeof WalletActivityKind>;
+
+export const WALLET_ACTIVITY_DEFAULT = 50;
+export const WALLET_ACTIVITY_MAX = 100;
+
+export const WalletActivityQuery = z.object({
+  limit: z.coerce.number().int().min(1).max(WALLET_ACTIVITY_MAX).default(WALLET_ACTIVITY_DEFAULT),
+});
+export type WalletActivityQuery = z.infer<typeof WalletActivityQuery>;
+
+export const WalletActivityItem = z.object({
+  id: z.string(),
+  kind: WalletActivityKind,
+  // Signed: positive is money into the available balance, negative is money out of it.
+  amountCents: z.int(),
+  // Plain English, no ids.
+  label: z.string(),
+  agentId: z.string().nullable(),
+  // Agent-supplied text.
+  agentName: z.string().nullable(),
+  bountyId: z.string().nullable(),
+  createdAt: z.iso.datetime(),
+});
+export type WalletActivityItem = z.infer<typeof WalletActivityItem>;
+
+export const WalletActivity = z.object({ items: z.array(WalletActivityItem) });
+export type WalletActivity = z.infer<typeof WalletActivity>;
 
 export const DevCreditRequest = z.object({ amountCents: PositiveCents });
 export type DevCreditRequest = z.infer<typeof DevCreditRequest>;

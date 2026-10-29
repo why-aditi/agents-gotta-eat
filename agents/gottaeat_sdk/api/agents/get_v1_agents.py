@@ -65,6 +65,9 @@ def sync_detailed(
 ) -> Response[GetV1AgentsResponse200 | GetV1AgentsResponse401 | GetV1AgentsResponse403]:
     """List the caller's agents, newest first
 
+     Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed
+    mandate's daily cap (null without one).
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -88,6 +91,9 @@ def sync(
 ) -> GetV1AgentsResponse200 | GetV1AgentsResponse401 | GetV1AgentsResponse403 | None:
     """List the caller's agents, newest first
 
+     Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed
+    mandate's daily cap (null without one).
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -106,6 +112,9 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
 ) -> Response[GetV1AgentsResponse200 | GetV1AgentsResponse401 | GetV1AgentsResponse403]:
     """List the caller's agents, newest first
+
+     Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed
+    mandate's daily cap (null without one).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -127,6 +136,9 @@ async def asyncio(
     client: AuthenticatedClient,
 ) -> GetV1AgentsResponse200 | GetV1AgentsResponse401 | GetV1AgentsResponse403 | None:
     """List the caller's agents, newest first
+
+     Each agent carries `today`: its spend since 00:00 UTC as the daily cap counts it, and its confirmed
+    mandate's daily cap (null without one).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

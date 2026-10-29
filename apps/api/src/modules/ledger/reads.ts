@@ -4,7 +4,7 @@ import { and, asc, desc, eq, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import type { Db } from "../../db";
 import { journals, ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
-import { PAYPAL_CLEARING } from "./accounts";
+import { PAYPAL_CLEARING, walletAccount } from "./accounts";
 import type { JournalKind } from "./journal";
 
 export const JOURNAL_PAGE_DEFAULT = 100;
@@ -254,4 +254,81 @@ export async function journalsForRef(db: Db, refType: string, refId: string): Pr
     .orderBy(asc(journals.createdAt), asc(journals.id))
     .limit(JOURNALS_FOR_REF_LIMIT);
   return rows.map((r) => ({ ...r, totalCents: BigInt(r.totalCents) }));
+}
+
+// What a journal did to an owner's available balance, for the owner's wallet activity. `kind` is derived from
+// journal facts only; the caller adds names and labels from its own tables.
+export type WalletActivityKind =
+  "topup" | "spend" | "earning" | "hold" | "release" | "withdrawal" | "refund" | "fee" | "credit" | "other";
+
+export type WalletMovement = {
+  journalId: string;
+  journalKind: JournalKind;
+  kind: WalletActivityKind;
+  refType: string | null;
+  refId: string | null;
+  // Net change on wallet:{ownerId}: credits - debits, so positive is money into the available balance.
+  amountCents: bigint;
+  createdAt: Date;
+};
+
+export const WALLET_ACTIVITY_MAX = 100;
+
+// A spend's hold (kind "hire") reads as a spend once the hold was settled or staked; until then, or once released,
+// it is a hold. A bounty release is the winner's reward leaving the dispute hold, so it is an earning.
+function activityKind(journalKind: JournalKind, refType: string | null, holdConsumed: boolean): WalletActivityKind {
+  switch (journalKind) {
+    case "topup":
+      return refType === "dev_credit" ? "credit" : "topup";
+    case "hire":
+      return holdConsumed ? "spend" : "hold";
+    case "settle":
+    case "payout":
+      return "earning";
+    case "release":
+      return refType === "bounty" ? "earning" : "release";
+    case "withdrawal":
+      return "withdrawal";
+    case "refund":
+    case "withdrawal_return":
+      return "refund";
+    case "fee":
+      return "fee";
+    default:
+      return "other";
+  }
+}
+
+// Every journal that moved wallet:{ownerId}, newest first, at most `limit` (1-100). Only that owner's wallet
+// account is read, so another owner's movements never appear.
+export async function walletActivity(db: Db, ownerId: string, limit: number): Promise<WalletMovement[]> {
+  const n = Math.min(Math.max(Math.trunc(limit), 1), WALLET_ACTIVITY_MAX);
+  const rows = await db
+    .select({
+      journalId: journals.id,
+      journalKind: journals.kind,
+      refType: journals.refType,
+      refId: journals.refId,
+      createdAt: journals.createdAt,
+      net: sql<string>`sum(${ledgerEntries.creditCents} - ${ledgerEntries.debitCents})::bigint`,
+      holdConsumed: sql<boolean>`${journals.kind} = 'hire' and exists (select 1 from ${journals} as later
+        where later.ref_type = ${journals.refType} and later.ref_id = ${journals.refId}
+          and later.kind in ('settle', 'stake'))`,
+    })
+    .from(ledgerEntries)
+    .innerJoin(journals, eq(journals.id, ledgerEntries.journalId))
+    .where(eq(ledgerEntries.accountId, walletAccount(ownerId)))
+    .groupBy(journals.id)
+    .having(sql`sum(${ledgerEntries.creditCents} - ${ledgerEntries.debitCents}) <> 0`)
+    .orderBy(desc(journals.createdAt), desc(journals.id))
+    .limit(n);
+  return rows.map((r) => ({
+    journalId: r.journalId,
+    journalKind: r.journalKind,
+    kind: activityKind(r.journalKind, r.refType, r.holdConsumed),
+    refType: r.refType,
+    refId: r.refId,
+    amountCents: BigInt(r.net),
+    createdAt: r.createdAt,
+  }));
 }
