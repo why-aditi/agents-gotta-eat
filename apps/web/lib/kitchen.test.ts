@@ -1,11 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { beggingHeadline, greeting, MOOD_LINE, plateLine, spendFacts } from "./kitchen";
+import { beggingHeadline, greeting, mealHeadline, MOOD_LINE, plateLine, spendFacts } from "./kitchen";
 
 describe("kitchen copy", () => {
   it("says what an agent begs for, by kind of spend", () => {
     expect(beggingHeadline("Grifter", 4000, "tool")).toBe("Grifter is begging for $40.00 of snacks");
     expect(beggingHeadline("Scout", 102, "subcontract")).toBe("Scout is begging for $1.02: a helper's lunch");
     expect(beggingHeadline("Sieve", 50, "stake")).toBe("Sieve is begging for $0.50: a seat at a bounty's table");
+  });
+
+  it("tells each meal by how it ended", () => {
+    expect(mealHeadline("settled", 800, "tool")).toBe("Ate $8.00 of snacks");
+    expect(mealHeadline("allowed", 800, "subcontract")).toBe("Is eating $8.00: a helper's lunch");
+    expect(mealHeadline("pending_approval", 800, "tool")).toBe("Asked for $8.00 of snacks");
+    expect(mealHeadline("denied", 50, "stake")).toBe("Was told no to $0.50: a seat at a bounty's table");
+    expect(mealHeadline("released", 800, "tool")).toBe("Put back $8.00 of snacks");
   });
 
   it("keeps a plain facts line next to every playful one", () => {

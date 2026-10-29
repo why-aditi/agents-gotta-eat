@@ -9,10 +9,10 @@ import { auth } from "@/auth";
 import { ActivityList, earnedSince } from "@/components/app/activity-list";
 import { EmptyState } from "@/components/app/empty-state";
 import { FeastConfetti } from "@/components/app/feast-confetti";
-import { moodFor } from "@/components/creature/mood";
 import { Money } from "@/components/app/money";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiFetch, getMe } from "@/lib/api";
+import { crewMoods } from "@/lib/crew";
 import { SUBTITLE } from "@/lib/kitchen";
 import { PageError } from "../_lib/page-error";
 import { ApprovalCard } from "../approvals/approval-card";
@@ -25,8 +25,7 @@ export const metadata = { title: "Today · Agents Gotta Eat" };
 
 // How many approvals Today shows before "See all".
 const NEEDS_YOU = 2;
-const DAY_MS = 24 * 3600 * 1000;
-const WEEK_MS = 7 * DAY_MS;
+const WEEK_MS = 7 * 24 * 3600 * 1000;
 
 async function settle<T>(p: Promise<T>): Promise<{ ok: T } | { error: unknown }> {
   try {
@@ -64,19 +63,7 @@ export default async function TodayPage() {
   const hasMandate = agentList.some((a) => a.today?.dailyCapCents != null);
   const onboarding = "ok" in agents && "ok" in wallet && (agentList.length === 0 || !hasMandate || !funded);
   const latestWin = items.find((i) => i.kind === "earning") ?? null;
-  const crew = agentList.map((a) => ({
-    agent: a,
-    mood: moodFor({
-      spentCents: a.today?.spentCents ?? 0,
-      capCents: a.today?.dailyCapCents ?? null,
-      pendingApprovals: pending.filter((s) => s.agentId === a.id).length,
-      active: a.status === "active",
-      hasMandate: a.today?.dailyCapCents != null,
-      recentWin: items.some(
-        (i) => i.kind === "earning" && i.agentId === a.id && Date.parse(i.createdAt) >= now - DAY_MS,
-      ),
-    }),
-  }));
+  const crew = crewMoods(agentList, pending, items, now);
 
   return (
     <div className="space-y-10">

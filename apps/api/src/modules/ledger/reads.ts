@@ -1,6 +1,6 @@
 // Read-only views of the ledger for the admin dashboard. The ledger module owns these tables, so every read
 // of journals, entries and accounts outside the money paths lives here.
-import { and, asc, desc, eq, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, or, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
 import type { Db } from "../../db";
 import { journals, ledgerAccounts, ledgerEntries, wallets } from "../../db/schema";
@@ -299,10 +299,27 @@ function activityKind(journalKind: JournalKind, refType: string | null, holdCons
   }
 }
 
+// Journal references to keep: a journal matches when its ref_type is `refType` and its ref_id is one of `refIds`.
+export type WalletActivityRefs = { refType: string; refIds: string[] }[];
+
 // Every journal that moved wallet:{ownerId}, newest first, at most `limit` (1-100). Only that owner's wallet
-// account is read, so another owner's movements never appear.
-export async function walletActivity(db: Db, ownerId: string, limit: number): Promise<WalletMovement[]> {
+// account is read, so another owner's movements never appear. With `refs`, only journals referring to one of them
+// are read, in SQL, so `limit` counts matching journals; refs naming no ids match nothing.
+export async function walletActivity(
+  db: Db,
+  ownerId: string,
+  limit: number,
+  refs?: WalletActivityRefs,
+): Promise<WalletMovement[]> {
   const n = Math.min(Math.max(Math.trunc(limit), 1), WALLET_ACTIVITY_MAX);
+  let refFilter: SQL | undefined;
+  if (refs) {
+    const parts = refs
+      .filter((r) => r.refIds.length > 0)
+      .map((r) => and(eq(journals.refType, r.refType), inArray(journals.refId, [...new Set(r.refIds)])));
+    if (parts.length === 0) return [];
+    refFilter = or(...parts);
+  }
   const rows = await db
     .select({
       journalId: journals.id,
@@ -317,7 +334,7 @@ export async function walletActivity(db: Db, ownerId: string, limit: number): Pr
     })
     .from(ledgerEntries)
     .innerJoin(journals, eq(journals.id, ledgerEntries.journalId))
-    .where(eq(ledgerEntries.accountId, walletAccount(ownerId)))
+    .where(and(eq(ledgerEntries.accountId, walletAccount(ownerId)), refFilter))
     .groupBy(journals.id)
     .having(sql`sum(${ledgerEntries.creditCents} - ${ledgerEntries.debitCents}) <> 0`)
     .orderBy(desc(journals.createdAt), desc(journals.id))

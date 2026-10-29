@@ -1,13 +1,14 @@
 // GET /v1/wallet/activity: the ledger's movements of the owner's available balance, with the agent, bounty and a
 // plain-English label from the spend requests, entries and bounties they refer to. Labels never carry ids or
-// agent text; agentName is a separate field.
+// agent text; agentName is a separate field. With an agentId, only that agent's movements (the caller checks that the
+// agent is the owner's).
 import type { SpendCategory, WalletActivityItem } from "@gottaeat/schemas";
-import { inArray } from "drizzle-orm";
+import { eq, inArray, or } from "drizzle-orm";
 import type { Db } from "../../db";
 import { bounties, entries, spendRequests } from "../../db/schema";
 import { toJsonCents } from "../../lib/cents";
 import { agentNames } from "../events";
-import { walletActivity, type WalletMovement } from "../ledger";
+import { walletActivity, type WalletActivityRefs, type WalletMovement } from "../ledger";
 
 type SpendFacts = { agentId: string; payeeId: string | null; bountyId: string | null; category: SpendCategory };
 type EntryFacts = { agentId: string; bountyId: string };
@@ -62,8 +63,40 @@ const idsOf = (ms: WalletMovement[], refType: string) => [
   ...new Set(ms.filter((m) => m.refType === refType && m.refId !== null).map((m) => m.refId as string)),
 ];
 
-export async function listWalletActivity(db: Db, ownerId: string, limit: number): Promise<WalletActivityItem[]> {
-  const movements = await walletActivity(db, ownerId, limit);
+// The journal references that can move money for an agent: spend requests it made or was paid by, its entries
+// (stakes and their refunds) and the bounties it won (rewards).
+async function agentRefs(db: Db, agentId: string): Promise<WalletActivityRefs> {
+  const [spendRows, entryRows, wonRows] = await Promise.all([
+    db
+      .select({ id: spendRequests.id })
+      .from(spendRequests)
+      .where(or(eq(spendRequests.agentId, agentId), eq(spendRequests.payeeId, agentId))),
+    db.select({ id: entries.id }).from(entries).where(eq(entries.agentId, agentId)),
+    db
+      .select({ id: bounties.id })
+      .from(bounties)
+      .innerJoin(entries, eq(entries.id, bounties.winnerEntryId))
+      .where(eq(entries.agentId, agentId)),
+  ]);
+  return [
+    { refType: "spend_request", refIds: spendRows.map((r) => r.id) },
+    { refType: "entry", refIds: entryRows.map((r) => r.id) },
+    { refType: "bounty", refIds: wonRows.map((r) => r.id) },
+  ];
+}
+
+export async function listWalletActivity(
+  db: Db,
+  ownerId: string,
+  limit: number,
+  onlyAgentId?: string,
+): Promise<WalletActivityItem[]> {
+  let refs: WalletActivityRefs | undefined;
+  if (onlyAgentId !== undefined) {
+    refs = await agentRefs(db, onlyAgentId);
+    if (refs.every((r) => r.refIds.length === 0)) return [];
+  }
+  const movements = await walletActivity(db, ownerId, limit, refs);
   const spendIds = idsOf(movements, "spend_request");
   const entryIds = idsOf(movements, "entry");
   const bountyIds = idsOf(movements, "bounty");
@@ -131,11 +164,14 @@ export async function listWalletActivity(db: Db, ownerId: string, limit: number)
     return { m, spend, agentId, bountyId };
   });
 
+  // A journal of one of the agent's refs can belong to another agent, e.g. the payee's earning on a settle when
+  // both agents are the owner's; only the requested agent's movements are kept.
+  const kept = onlyAgentId === undefined ? facts : facts.filter((f) => f.agentId === onlyAgentId);
   const names = await agentNames(
     db,
-    facts.flatMap((f) => (f.agentId ? [f.agentId] : [])),
+    kept.flatMap((f) => (f.agentId ? [f.agentId] : [])),
   );
-  return facts.map(({ m, spend, agentId, bountyId }) => ({
+  return kept.map(({ m, spend, agentId, bountyId }) => ({
     id: m.journalId,
     kind: m.kind,
     amountCents: toJsonCents(m.amountCents),

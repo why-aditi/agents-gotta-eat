@@ -1,6 +1,6 @@
 "use client";
 
-// Register an agent. The Idempotency-Key is generated once per dialog open, so a double submit replays the
+// Adopt (register) an agent. The Idempotency-Key is generated once per dialog open, so a double submit replays the
 // first request instead of creating two agents. On success the dialog switches to the one-time key view.
 import type { CreateAgentResponse } from "@gottaeat/schemas";
 import { PlusIcon } from "lucide-react";
@@ -30,7 +30,7 @@ export function validateName(raw: string): string | null {
   return null;
 }
 
-export function RegisterDialog({ triggerLabel = "Register agent" }: { triggerLabel?: string }) {
+export function RegisterDialog({ triggerLabel = "Adopt an agent" }: { triggerLabel?: string }) {
   const [open, setOpen] = useState(false);
   const [idempotencyKey, setIdempotencyKey] = useState("");
   const [name, setName] = useState("");
@@ -78,9 +78,9 @@ export function RegisterDialog({ triggerLabel = "Register agent" }: { triggerLab
         {created ? (
           <>
             <DialogHeader>
-              <DialogTitle>{created.apiKey ? "Save your API key" : "Agent registered"}</DialogTitle>
+              <DialogTitle>{created.apiKey ? "Save your API key" : "Agent adopted"}</DialogTitle>
               <DialogDescription>
-                {created.agent.name} is registered. Give the key to the agent, or connect it over MCP.
+                {created.agent.name} is in your kitchen. Give the key to the agent, or connect it over MCP.
               </DialogDescription>
             </DialogHeader>
             <KeyReveal apiKey={created.apiKey} mcpConfig={created.mcpConfig} />
@@ -93,9 +93,9 @@ export function RegisterDialog({ triggerLabel = "Register agent" }: { triggerLab
         ) : (
           <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
             <DialogHeader>
-              <DialogTitle>Register an agent</DialogTitle>
+              <DialogTitle>Adopt an agent</DialogTitle>
               <DialogDescription>
-                The agent gets its own API key and wallet. You&apos;ll see the key once.
+                This creates an API key and MCP config for your agent. It spends from your wallet, within the diet you give it. You&apos;ll see the key once.
               </DialogDescription>
             </DialogHeader>
             <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
@@ -123,7 +123,7 @@ export function RegisterDialog({ triggerLabel = "Register agent" }: { triggerLab
                 Cancel
               </Button>
               <Button type="submit" disabled={pending} aria-busy={pending || undefined}>
-                {pending ? "Registering…" : "Register"}
+                {pending ? "Adopting…" : "Adopt"}
               </Button>
             </DialogFooter>
           </form>

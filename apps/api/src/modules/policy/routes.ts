@@ -180,14 +180,18 @@ export const policyRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "The owner's wallet movements, newest first",
         description:
           "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money " +
-          "in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text.",
+          "in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text. With `agentId` (one of your " +
+          "agents, else 404), only that agent's movements: its holds and spends, its earnings as a payee, its " +
+          "stakes and their refunds and the bounties it won; every item then has that `agentId`.",
         querystring: WalletActivityQuery,
-        response: { 200: WalletActivity, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody },
+        response: { 200: WalletActivity, 400: ErrorBody, 401: ErrorBody, 403: ErrorBody, 404: ErrorBody },
       },
     },
     async (req) => {
       const user = requireUser(req);
-      return { items: await listWalletActivity(api.db, user.userId, req.query.limit) };
+      const { limit, agentId } = req.query;
+      if (agentId !== undefined) await requireOwnedAgent(api.db, user.userId, agentId);
+      return { items: await listWalletActivity(api.db, user.userId, limit, agentId) };
     },
   );
 

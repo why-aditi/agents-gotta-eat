@@ -573,6 +573,10 @@ from .get_v1_wallet_activity_response_403 import GetV1WalletActivityResponse403
 from .get_v1_wallet_activity_response_403_error import GetV1WalletActivityResponse403Error
 from .get_v1_wallet_activity_response_403_error_code import GetV1WalletActivityResponse403ErrorCode
 from .get_v1_wallet_activity_response_403_error_detail import GetV1WalletActivityResponse403ErrorDetail
+from .get_v1_wallet_activity_response_404 import GetV1WalletActivityResponse404
+from .get_v1_wallet_activity_response_404_error import GetV1WalletActivityResponse404Error
+from .get_v1_wallet_activity_response_404_error_code import GetV1WalletActivityResponse404ErrorCode
+from .get_v1_wallet_activity_response_404_error_detail import GetV1WalletActivityResponse404ErrorDetail
 from .get_v1_wallet_payout_email_response_200 import GetV1WalletPayoutEmailResponse200
 from .get_v1_wallet_payout_email_response_401 import GetV1WalletPayoutEmailResponse401
 from .get_v1_wallet_payout_email_response_401_error import GetV1WalletPayoutEmailResponse401Error
@@ -2329,6 +2333,10 @@ __all__ = (
     "GetV1WalletActivityResponse403Error",
     "GetV1WalletActivityResponse403ErrorCode",
     "GetV1WalletActivityResponse403ErrorDetail",
+    "GetV1WalletActivityResponse404",
+    "GetV1WalletActivityResponse404Error",
+    "GetV1WalletActivityResponse404ErrorCode",
+    "GetV1WalletActivityResponse404ErrorDetail",
     "GetV1WalletPayoutEmailResponse200",
     "GetV1WalletPayoutEmailResponse401",
     "GetV1WalletPayoutEmailResponse401Error",

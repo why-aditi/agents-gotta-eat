@@ -634,10 +634,15 @@
                   "key": "limit",
                   "value": "50",
                   "disabled": true
+                },
+                {
+                  "key": "agentId",
+                  "value": "<string>",
+                  "disabled": true
                 }
               ]
             },
-            "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text."
+            "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text. With `agentId` (one of your agents, else 404), only that agent's movements: its holds and spends, its earnings as a payee, its stakes and their refunds and the bounties it won; every item then has that `agentId`."
           }
         },
         {

@@ -1,6 +1,6 @@
 // ui-03: the kitchen's voice. Every playful line comes with a plain facts line, and nothing here touches the agent's
 // own words, the policy reasons or the gate names: those stay plain wherever they are shown. Pure functions, no React.
-import type { SpendCategory } from "@gottaeat/schemas";
+import type { SpendCategory, SpendStatus } from "@gottaeat/schemas";
 import type { Mood } from "@/components/creature/mood";
 import { formatCents } from "@/lib/money";
 
@@ -17,6 +17,22 @@ export function beggingHeadline(name: string, amountCents: number, category: Spe
   return category === "tool"
     ? `${name} is begging for ${amount} of ${CRAVING.tool}`
     : `${name} is begging for ${amount}: ${CRAVING[category]}`;
+}
+
+// One spend in an agent's meal history, by how it ended: "Ate $8.00 of snacks", "Was told no to $8.00 of snacks".
+const MEAL_VERB: Record<SpendStatus, string> = {
+  settled: "Ate",
+  allowed: "Is eating",
+  pending_approval: "Asked for",
+  denied: "Was told no to",
+  released: "Put back",
+};
+
+export function mealHeadline(status: SpendStatus, amountCents: number, category: SpendCategory): string {
+  const amount = formatCents(amountCents);
+  return category === "tool"
+    ? `${MEAL_VERB[status]} ${amount} of ${CRAVING.tool}`
+    : `${MEAL_VERB[status]} ${amount}: ${CRAVING[category]}`;
 }
 
 // "$40.00 tool spend to Scout + $0.40 fee". The plain version of the headline.

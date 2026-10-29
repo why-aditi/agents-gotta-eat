@@ -44,5 +44,6 @@ export {
   walletActivity,
   WALLET_ACTIVITY_MAX,
   type WalletActivityKind,
+  type WalletActivityRefs,
   type WalletMovement,
 } from "./reads";

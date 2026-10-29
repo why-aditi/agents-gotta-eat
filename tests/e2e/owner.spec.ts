@@ -55,12 +55,12 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
   await expect(page).toHaveURL(/\/home$/);
 
-  // 2. Register an agent and keep its key.
+  // 2. Adopt an agent and keep its key.
   await page.getByRole("link", { name: "Agents", exact: true }).click();
   const agentName = `E2E buyer ${run}`;
-  await page.getByRole("button", { name: "Register agent" }).first().click();
+  await page.getByRole("button", { name: "Adopt an agent" }).first().click();
   await page.getByLabel("Agent name").fill(agentName);
-  await page.getByRole("button", { name: "Register", exact: true }).click();
+  await page.getByRole("button", { name: "Adopt", exact: true }).click();
   const keyField = page.getByLabel("API key", { exact: true });
   await expect(keyField).toHaveValue(/^gte_agent_/);
   const apiKey = await keyField.inputValue();
@@ -126,8 +126,8 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   // 7. The timeline shows it settled, with each gate's decision.
   await page.getByRole("link", { name: "Agents", exact: true }).click();
   await page.getByRole("link", { name: agentName }).click();
-  await page.getByRole("tab", { name: "Spend timeline" }).click();
-  const row = page.getByRole("row").filter({ hasText: "$8.00" });
+  await page.getByRole("tab", { name: "Timeline" }).click();
+  const row = page.getByTestId("meal").filter({ hasText: "$8.00" });
   await expect(row).toContainText("settled");
   await row.getByRole("button", { name: "Show decisions" }).click();
   await expect(page.getByText("You approved it")).toBeVisible();

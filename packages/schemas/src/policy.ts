@@ -197,6 +197,7 @@ export const WALLET_ACTIVITY_MAX = 100;
 
 export const WalletActivityQuery = z.object({
   limit: z.coerce.number().int().min(1).max(WALLET_ACTIVITY_MAX).default(WALLET_ACTIVITY_DEFAULT),
+  agentId: z.string().min(1).max(64).optional().describe("Only this agent's movements (one of your agents)"),
 });
 export type WalletActivityQuery = z.infer<typeof WalletActivityQuery>;
 

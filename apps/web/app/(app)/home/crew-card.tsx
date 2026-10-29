@@ -4,19 +4,10 @@ import type { Agent } from "@gottaeat/schemas";
 import Link from "next/link";
 import { Creature } from "@/components/creature/creature";
 import { MOOD_EMOJI, MOOD_LABEL, type Mood } from "@/components/creature/mood";
-import { MOOD_LINE, plateLine } from "@/lib/kitchen";
-import { cn } from "@/lib/utils";
-
-// Whole percent of the cap used, 0 to 100; null without a cap. Integer maths.
-export function capUsedPct(spentCents: number, capCents: number | null): number | null {
-  if (capCents === null || capCents <= 0) return null;
-  return Math.min(100, Math.floor((spentCents * 100) / capCents));
-}
+import { PlateMeter } from "@/components/app/plate-meter";
+import { MOOD_LINE } from "@/lib/kitchen";
 
 export function CrewCard({ agent, mood }: { agent: Agent; mood: Mood }) {
-  const spent = agent.today?.spentCents ?? 0;
-  const cap = agent.today?.dailyCapCents ?? null;
-  const pct = capUsedPct(spent, cap);
   return (
     <Link
       href={`/agents/${encodeURIComponent(agent.id)}`}
@@ -40,24 +31,11 @@ export function CrewCard({ agent, mood }: { agent: Agent; mood: Mood }) {
           {MOOD_LINE[mood]}
         </p>
       </div>
-      <div className="w-full">
-        {pct !== null && (
-          <div
-            role="meter"
-            aria-label={`${agent.name}: today's spend against its daily cap`}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={pct}
-            className="h-2.5 overflow-hidden rounded-full bg-muted"
-          >
-            <div
-              className={cn("h-full rounded-full", pct >= 90 ? "bg-deny" : pct >= 70 ? "bg-snack" : "bg-allow")}
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        )}
-        <p className="mt-1.5 text-xs text-muted-foreground tabular-nums">{plateLine(spent, cap)}</p>
-      </div>
+      <PlateMeter
+        name={agent.name}
+        spentCents={agent.today?.spentCents ?? 0}
+        capCents={agent.today?.dailyCapCents ?? null}
+      />
     </Link>
   );
 }
