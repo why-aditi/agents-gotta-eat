@@ -2,10 +2,10 @@
 // Phones: a slim top bar and a bottom tab bar. Server component: the pending count, the admin flag and the balance
 // are fetched here, each best effort.
 import { SpendRequestList, Wallet } from "@gottaeat/schemas";
-import { CoinsIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Money } from "@/components/app/money";
+import { Creature } from "@/components/creature/creature";
 import { NavLinks, TabBar } from "@/components/nav-links";
 import { UserMenu } from "@/components/user-menu";
 import { isAdmin } from "@/lib/admin-access";
@@ -42,10 +42,8 @@ async function balance(): Promise<number | null> {
 function Logo({ className }: { className?: string }) {
   return (
     <Link href="/home" className={className}>
-      <span className="flex size-8 items-center justify-center rounded-xl bg-emerald-400/15 text-emerald-400">
-        <CoinsIcon className="size-[1.1rem]" aria-hidden />
-      </span>
-      <span className="font-semibold tracking-tight">Agents Gotta Eat</span>
+      <Creature id="agents-gotta-eat" name="Chef" mood="feasting" size="sm" still className="size-9" />
+      <span className="font-display text-lg font-semibold tracking-tight">Agents Gotta Eat</span>
     </Link>
   );
 }
@@ -69,8 +67,13 @@ export async function AppShell({
               href="/wallet"
               className="block rounded-2xl border border-sidebar-border bg-gradient-to-br from-emerald-400/10 to-transparent p-4 transition-colors hover:border-emerald-400/30"
             >
-              <span className="text-xs text-sidebar-foreground/70">Wallet balance</span>
-              <Money cents={cents} className="mt-1 block text-xl font-semibold text-sidebar-accent-foreground" />
+              <span className="text-xs text-sidebar-foreground/70">
+                <span aria-hidden>🥫 </span>Pantry
+              </span>
+              <Money
+                cents={cents}
+                className="font-display mt-1 block text-2xl font-semibold text-sidebar-accent-foreground"
+              />
             </Link>
           )}
           <UserMenu

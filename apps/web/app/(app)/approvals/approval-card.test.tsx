@@ -68,8 +68,10 @@ describe("ApprovalCard", () => {
 
   it("names both agents, shows the amount, fee, reasons, and the agent's words quoted as plain text", () => {
     const { container } = render(<ApprovalCard spend={spend()} />);
-    expect(screen.getByRole("heading", { name: "Patch wants $8.00" })).toBeInTheDocument();
-    expect(screen.getByText("Scout")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Patch is begging for $8.00: a helper's lunch" })).toBeInTheDocument();
+    expect(screen.getByTestId("spend-facts")).toHaveTextContent("$8.00 subcontract spend to Scout + $0.40 fee");
+    // The creature begs while the card waits.
+    expect(container.querySelector("[data-mood]")).toHaveAttribute("data-mood", "begging");
     expect(screen.queryByText(/agt_/)).toBeNull();
     expect(screen.getByText(/\$8\.00 \+ \$0\.40 fee/)).toBeInTheDocument();
     expect(screen.getByText('Above your "ask me above" amount')).toBeInTheDocument();
@@ -83,6 +85,9 @@ describe("ApprovalCard", () => {
     render(<ApprovalCard spend={spend()} />);
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Approve" })));
     expect(screen.getByRole("status")).toHaveTextContent("approved");
+    // and the creature cheers.
+    expect(document.querySelector("[data-mood]")).toHaveAttribute("data-mood", "feasting");
+    expect(document.querySelector("[data-reaction]")).toHaveAttribute("data-reaction", "cheer");
   });
 
   it("counts down every second and shows Expired at zero with the buttons disabled", () => {

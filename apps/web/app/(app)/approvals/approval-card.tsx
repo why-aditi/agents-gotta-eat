@@ -5,16 +5,17 @@
 // and faces instead of ids, the agent's words quoted as theirs, and a stamp when the owner decides.
 import type { SpendRequest } from "@gottaeat/schemas";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { HandIcon, TimerIcon } from "lucide-react";
 import { AgentAvatar } from "@/components/app/agent-avatar";
-import { Money } from "@/components/app/money";
+import { Creature } from "@/components/creature/creature";
 import { Stamp } from "@/components/app/stamp";
 import { VerdictBadge } from "@/components/app/verdict-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatCents } from "@/lib/money";
+import { beggingHeadline, spendFacts } from "@/lib/kitchen";
 import { cn } from "@/lib/utils";
 import { formatCountdown } from "../_lib/format";
 import { spendRequestReasons } from "../_lib/reasons";
@@ -35,6 +36,14 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
   const [decided, setDecided] = useState(false);
   // The owner's own decision, stamped on the card; null when it closed another way (expired, decided elsewhere).
   const [outcome, setOutcome] = useState<"approve" | "deny" | null>(null);
+  // The delayed refresh after a decision; cancelled if the owner leaves the page first.
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    },
+    [],
+  );
   // One key per decision, made once per card, so a double click replays instead of deciding twice.
   const [keys] = useState(() => ({ approve: crypto.randomUUID(), deny: crypto.randomUUID() }));
 
@@ -66,7 +75,7 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
         if (result.code === "approval_expired" || result.code === "already_decided") setDecided(true);
       }
       // Let the stamp land before the refreshed list drops the card.
-      if (result.ok) setTimeout(() => router.refresh(), STAMP_MS);
+      if (result.ok) refreshTimer.current = setTimeout(() => router.refresh(), STAMP_MS);
       else router.refresh();
     });
   }
@@ -75,25 +84,29 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
   const total = spend.amountCents + spend.feeCents;
   const name = spend.agentName ?? agentName ?? "Your agent";
 
+  // ui-03: the creature begs while the card waits, then cheers or sulks with the owner's decision.
+  const mood = outcome === "approve" ? "feasting" : outcome === "deny" ? "sulking" : "begging";
+  const reaction = outcome === "approve" ? "cheer" : outcome === "deny" ? "sulk" : undefined;
+
   return (
-    <Card aria-labelledby={titleId} className={cn("relative gap-5 overflow-hidden", decided && "opacity-80")}>
+    <Card aria-labelledby={titleId} className={cn("relative gap-5 overflow-hidden", decided && "opacity-90")}>
       <CardHeader className="gap-3">
-        <div className="flex items-start gap-3">
-          <AgentAvatar id={spend.agentId} name={name} size="lg" />
+        <div className="flex items-start gap-4">
+          <Creature id={spend.agentId} name={name} mood={mood} reaction={reaction} size="md" className="shrink-0" />
           <div className="min-w-0 flex-1">
-            <h3 id={titleId} className="text-lg leading-snug font-semibold">
-              {name} wants <Money cents={spend.amountCents} className="font-semibold" />
+            <h3 id={titleId} className="font-display text-xl leading-snug font-semibold">
+              {beggingHeadline(name, spend.amountCents, spend.category)}
             </h3>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-              {spend.payeeAgentId ? (
-                <span className="inline-flex items-center gap-1.5">
-                  for
-                  <AgentAvatar id={spend.payeeAgentId} name={spend.payeeAgentName ?? "?"} size="sm" />
-                  <span className="font-medium text-foreground">{spend.payeeAgentName ?? "another agent"}</span>
-                </span>
-              ) : null}
-              <VerdictBadge tone="neutral">{spend.category}</VerdictBadge>
-            </div>
+            <p className="mt-1 text-sm text-muted-foreground tabular-nums" data-testid="spend-facts">
+              {spendFacts(spend.amountCents, spend.feeCents, spend.category, spend.payeeAgentName)}
+            </p>
+            {spend.payeeAgentId ? (
+              <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                for
+                <AgentAvatar id={spend.payeeAgentId} name={spend.payeeAgentName ?? "?"} size="sm" />
+                <span className="font-medium text-foreground">{spend.payeeAgentName ?? "another agent"}</span>
+              </p>
+            ) : null}
           </div>
           <VerdictBadge tone={expired ? "deny" : "flag"} className="shrink-0 tabular-nums">
             <TimerIcon className="size-3" aria-hidden />

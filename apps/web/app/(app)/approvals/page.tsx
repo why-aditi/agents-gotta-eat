@@ -5,6 +5,7 @@ import { CircleCheckIcon } from "lucide-react";
 import { EmptyState } from "@/components/app/empty-state";
 import { PageHeader } from "@/components/app/page-header";
 import { apiFetch } from "@/lib/api";
+import { SUBTITLE } from "@/lib/kitchen";
 import { PageError } from "../_lib/page-error";
 import { ApprovalCard } from "./approval-card";
 import { AutoRefresh } from "./auto-refresh";
@@ -28,15 +29,12 @@ export default async function ApprovalsPage() {
   return (
     <div className="space-y-6">
       <AutoRefresh intervalMs={10_000} />
-      <PageHeader title="Approvals">
-        Spends above your &quot;ask me above&quot; amount, or flagged by the intent check, wait here for 15 minutes.
-        Nothing moves until you decide.
-      </PageHeader>
+      <PageHeader title="Approvals">{SUBTITLE.approvals}</PageHeader>
       {"error" in loaded ? (
         <PageError title="Couldn't load approvals" error={loaded.error} />
       ) : loaded.spendRequests.length === 0 ? (
-        <EmptyState icon={CircleCheckIcon} title="All clear. Nothing needs you.">
-          When an agent asks for more than you allowed, or the intent check is unsure, it shows up here and by email.
+        <EmptyState icon={CircleCheckIcon} title="Everyone's fed. Nothing needs you.">
+          When an agent asks for more than you allowed, or the intent check is unsure, it begs here and by email.
         </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">

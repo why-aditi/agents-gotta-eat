@@ -40,7 +40,7 @@ export function TopupCard() {
     <section aria-labelledby={`${uid}-title`} data-testid="topup-card">
       <Card>
         <CardHeader>
-          <CardTitle id={`${uid}-title`}>Top up</CardTitle>
+          <CardTitle id={`${uid}-title`}>Stock up with PayPal</CardTitle>
           <CardDescription>
             Add money from PayPal. Minimum {formatCents(MIN_TOPUP_CENTS)}. PayPal&apos;s fee (3.49% + 49¢) is added on
             top, so your wallet gets the full amount.

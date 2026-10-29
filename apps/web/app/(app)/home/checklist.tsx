@@ -1,4 +1,4 @@
-// ui-02: first steps for a new owner, until they have an agent and money in the wallet.
+// ui-02: first steps for a new owner, until they have an agent and money in the wallet. ui-03: in kitchen words.
 import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -13,19 +13,24 @@ export function Checklist({
   funded: boolean;
 }) {
   const steps = [
-    { done: hasAgent, title: "Register an agent", body: "It gets its own API key and wallet access.", href: "/agents" },
     {
-      done: hasMandate,
-      title: "Give it a mandate",
-      body: "Rules in plain English, like “tools up to $10 each, ask me above $5”.",
+      done: hasAgent,
+      title: "Adopt your first agent",
+      body: "Register it: it gets its own API key and a seat at the table.",
       href: "/agents",
     },
-    { done: funded, title: "Top up your wallet", body: "With PayPal. Your agents spend from it.", href: "/wallet" },
+    {
+      done: hasMandate,
+      title: "Give it a diet",
+      body: "A mandate in plain English, like “tools up to $10 each, ask me above $5”.",
+      href: "/agents",
+    },
+    { done: funded, title: "Stock the pantry", body: "Top up with PayPal. Your agents eat from it.", href: "/wallet" },
   ];
   return (
-    <section aria-labelledby="get-started" className="rounded-2xl border bg-accent/40 p-5 sm:p-6">
-      <h2 id="get-started" className="font-semibold">
-        Get your first agent spending safely
+    <section aria-labelledby="get-started" className="sticker bg-accent/50 p-5 sm:p-6">
+      <h2 id="get-started" className="font-display text-xl font-semibold">
+        Set up your kitchen
       </h2>
       <ol className="mt-4 grid gap-3 sm:grid-cols-3">
         {steps.map((s, i) => (
