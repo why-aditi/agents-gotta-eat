@@ -157,11 +157,7 @@ export default async function TodayPage() {
           {"error" in wallet ? (
             <PageError title="Couldn't load your wallet" error={wallet.error} />
           ) : (
-            <Link
-              href="/wallet"
-              aria-label="Wallet"
-              className="sticker block bg-snack-soft p-6 transition-transform hover:-translate-y-1"
-            >
+            <Link href="/wallet" className="sticker block bg-snack-soft p-6 transition-transform hover:-translate-y-1">
               <span className="text-sm text-muted-foreground">Available to eat</span>
               <Money cents={wallet.ok.balanceCents} className="font-display mt-1 block text-5xl font-semibold" />
               <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-outline/20 pt-4 text-sm">

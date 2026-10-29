@@ -24,7 +24,14 @@ export function CrewCard({ agent, mood }: { agent: Agent; mood: Mood }) {
       data-mood={mood}
       className="sticker group flex flex-col items-center gap-2 p-4 text-center transition-transform hover:-translate-y-1"
     >
-      <Creature id={agent.id} name={agent.name} mood={mood} size="md" house={agent.kind === "house"} />
+      <Creature
+        id={agent.id}
+        name={agent.name}
+        mood={mood}
+        size="md"
+        house={agent.kind === "house"}
+        className="size-24"
+      />
       <div className="w-full min-w-0">
         <p className="font-display truncate text-lg font-semibold">{agent.name}</p>
         <p className="text-sm text-muted-foreground">

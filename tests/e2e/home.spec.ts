@@ -103,6 +103,7 @@ test("an owner approves a waiting spend from Today", async ({ browser }) => {
   // The wallet shows the payment in its activity.
   await page.getByRole("link", { name: "Wallet", exact: true }).click();
   await expect(page.getByTestId("activity-item").first()).toContainText("$8.00");
+  await expect(page.getByTestId("wallet-balance")).toBeVisible();
   await page.screenshot({ path: `${SHOTS}/ui02-wallet-light.png`, fullPage: true });
 });
 

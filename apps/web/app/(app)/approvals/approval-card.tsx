@@ -5,7 +5,7 @@
 // and faces instead of ids, the agent's words quoted as theirs, and a stamp when the owner decides.
 import type { SpendRequest } from "@gottaeat/schemas";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { HandIcon, TimerIcon } from "lucide-react";
 import { AgentAvatar } from "@/components/app/agent-avatar";
@@ -36,6 +36,14 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
   const [decided, setDecided] = useState(false);
   // The owner's own decision, stamped on the card; null when it closed another way (expired, decided elsewhere).
   const [outcome, setOutcome] = useState<"approve" | "deny" | null>(null);
+  // The delayed refresh after a decision; cancelled if the owner leaves the page first.
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    },
+    [],
+  );
   // One key per decision, made once per card, so a double click replays instead of deciding twice.
   const [keys] = useState(() => ({ approve: crypto.randomUUID(), deny: crypto.randomUUID() }));
 
@@ -67,7 +75,7 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
         if (result.code === "approval_expired" || result.code === "already_decided") setDecided(true);
       }
       // Let the stamp land before the refreshed list drops the card.
-      if (result.ok) setTimeout(() => router.refresh(), STAMP_MS);
+      if (result.ok) refreshTimer.current = setTimeout(() => router.refresh(), STAMP_MS);
       else router.refresh();
     });
   }
