@@ -63,7 +63,7 @@ test("a visitor reads the pitch, watches the gates, signs up and reaches the das
   await expect(page).toHaveURL(/\/login\?mode=signup$/);
   await expect(page.getByText("Create your account")).toBeVisible();
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 
   // Signed in, / stays the marketing page but points at the dashboard.
   await page.goto("/");
@@ -72,7 +72,7 @@ test("a visitor reads the pitch, watches the gates, signs up and reaches the das
     .getByRole("link", { name: /Open dashboard/ })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
 });
 
 test("on a phone, the page fits and under reduced motion the simulator is a still frame", async ({ browser }) => {

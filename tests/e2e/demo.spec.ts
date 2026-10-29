@@ -64,7 +64,7 @@ test("a logged-out visitor watches the rehearsal, and an admin's new recording r
   const page = await (await browser.newContext()).newPage();
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
   await page.goto("/admin?tab=demo");
   const recordingTitle = `E2E recording ${run}`;
   await page.getByLabel("Title", { exact: true }).first().fill(recordingTitle);

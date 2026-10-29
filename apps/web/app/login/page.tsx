@@ -13,20 +13,26 @@ export const dynamic = "force-dynamic";
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ mode?: string | string[] }> }) {
   const signup = (await searchParams).mode === "signup";
   const session = await auth();
-  if (session?.user?.email) redirect("/agents");
+  if (session?.user?.email) redirect("/home");
 
   const github = githubEnabled();
   const demo = demoEnabled();
+  // With no provider there is nothing to sign up or in with: say so instead of inviting the visitor in.
+  const configured = github || demo;
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-xl">{signup ? "Create your account" : "Agents Gotta Eat"}</CardTitle>
+          <CardTitle className="text-xl">
+            {!configured ? "Sign-in isn't set up yet" : signup ? "Create your account" : "Agents Gotta Eat"}
+          </CardTitle>
           <CardDescription>
-            {signup
-              ? "Your account is created the first time you continue. Then register an agent, give it a mandate and a wallet."
-              : "Sign in to manage your agents, their mandates and approvals."}
+            {!configured
+              ? "This server has no way to sign in yet. You can still watch the demo."
+              : signup
+                ? "Your account is created the first time you continue. Then register an agent, give it a mandate and a wallet."
+                : "Sign in to manage your agents, their mandates and approvals."}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -34,7 +40,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <form
               action={async () => {
                 "use server";
-                await signIn("github", { redirectTo: "/agents" });
+                await signIn("github", { redirectTo: "/home" });
               }}
             >
               <Button type="submit" className="w-full">
@@ -46,7 +52,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <form
               action={async () => {
                 "use server";
-                await signIn("demo", { redirectTo: "/agents" });
+                await signIn("demo", { redirectTo: "/home" });
               }}
             >
               <Button type="submit" variant={github ? "outline" : "default"} className="w-full">
@@ -54,7 +60,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               </Button>
             </form>
           )}
-          {!github && !demo && (
+          {!configured && (
             <p className="text-sm text-muted-foreground">
               No sign-in method is configured. Set <code>AUTH_GITHUB_ID</code> and <code>AUTH_GITHUB_SECRET</code>, or{" "}
               <code>DEMO_LOGIN=true</code>, on the web server.

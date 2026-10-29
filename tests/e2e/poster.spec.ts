@@ -88,7 +88,7 @@ test("poster posts, funds and judges a creative_writing bounty", async ({ page }
   // 1. Sign in and open Bounties.
   await page.goto("/login");
   await page.getByRole("button", { name: "Continue as demo owner" }).click();
-  await expect(page).toHaveURL(/\/agents$/);
+  await expect(page).toHaveURL(/\/home$/);
   await page.getByRole("link", { name: "Bounties", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Bounties" })).toBeVisible();
   await shot(page, "poster-01-bounties");

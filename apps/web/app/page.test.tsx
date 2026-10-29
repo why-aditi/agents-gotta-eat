@@ -33,7 +33,7 @@ describe("/", () => {
   it("signed in: Open dashboard instead of sign up", async () => {
     auth.mockResolvedValue({ user: { email: "o@example.com" } });
     await renderHome();
-    expect(screen.getAllByRole("link", { name: /Open dashboard/ })[0]).toHaveAttribute("href", "/agents");
+    expect(screen.getAllByRole("link", { name: /Open dashboard/ })[0]).toHaveAttribute("href", "/home");
     expect(screen.queryByRole("link", { name: /^Sign up/ })).toBeNull();
   });
 

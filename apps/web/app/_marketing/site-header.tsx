@@ -49,7 +49,7 @@ export function SiteHeader({ signedIn }: { signedIn: boolean }) {
         </Link>
         <nav className="flex items-center gap-2 text-sm" aria-label="Account">
           {signedIn ? (
-            <Link href="/agents" className={`${NAV_CTA} text-zinc-200 hover:bg-white/10`}>
+            <Link href="/home" className={`${NAV_CTA} text-zinc-200 hover:bg-white/10`}>
               Dashboard
             </Link>
           ) : (

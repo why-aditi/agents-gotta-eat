@@ -1,6 +1,9 @@
 // Spend requests waiting for the owner, oldest first. Server-rendered; AutoRefresh re-renders every 10 seconds.
 import { AgentList, SpendRequestList } from "@gottaeat/schemas";
 import { unstable_rethrow } from "next/navigation";
+import { CircleCheckIcon } from "lucide-react";
+import { EmptyState } from "@/components/app/empty-state";
+import { PageHeader } from "@/components/app/page-header";
 import { apiFetch } from "@/lib/api";
 import { PageError } from "../_lib/page-error";
 import { ApprovalCard } from "./approval-card";
@@ -25,20 +28,18 @@ export default async function ApprovalsPage() {
   return (
     <div className="space-y-6">
       <AutoRefresh intervalMs={10_000} />
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Approvals</h1>
-        <p className="text-sm text-muted-foreground">
-          Spends above your &quot;ask me above&quot; amount, or flagged by the intent check, wait here for 15 minutes.
-        </p>
-      </div>
+      <PageHeader title="Approvals">
+        Spends above your &quot;ask me above&quot; amount, or flagged by the intent check, wait here for 15 minutes.
+        Nothing moves until you decide.
+      </PageHeader>
       {"error" in loaded ? (
         <PageError title="Couldn't load approvals" error={loaded.error} />
       ) : loaded.spendRequests.length === 0 ? (
-        <p className="rounded-md border border-dashed p-8 text-center text-muted-foreground">
-          Nothing waiting for you.
-        </p>
+        <EmptyState icon={CircleCheckIcon} title="All clear. Nothing needs you.">
+          When an agent asks for more than you allowed, or the intent check is unsure, it shows up here and by email.
+        </EmptyState>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           {loaded.spendRequests.map((s) => (
             <ApprovalCard key={s.id} spend={s} agentName={loaded.names.get(s.agentId)} />
           ))}
