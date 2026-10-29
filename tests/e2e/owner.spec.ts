@@ -77,8 +77,11 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   const ownerToken = apiScript("dev:token", ["--email", "demo-owner@gottaeat.dev"]);
   const beforeCents: number = (await api("/v1/wallet", ownerToken)).body.balanceCents;
   await expect(balanceCard(page)).toHaveText(formatCents(beforeCents));
+  // Wait for the page to finish loading, or the click can land before the form is interactive.
+  await page.waitForLoadState("networkidle");
   await page.getByLabel("Amount ($)").fill("50");
   await page.getByRole("button", { name: "Add credit" }).click();
+  await expect(page.getByText("Added $50.00.")).toBeVisible();
   await expect(balanceCard(page)).toContainText(formatCents(beforeCents + 5000));
   await shot(page, "04-wallet-credited");
 

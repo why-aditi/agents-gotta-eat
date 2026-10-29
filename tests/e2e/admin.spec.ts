@@ -29,6 +29,9 @@ test("admin sees the ledger, reconciliation and LLM usage", async ({ page }) => 
 
   // An odd amount, so its journal is easy to find among other specs' credits.
   await page.getByRole("link", { name: "Wallet", exact: true }).click();
+  await expect(page.getByTestId("wallet-balance")).toBeVisible();
+  // Wait for the page to finish loading, or the click can land before the form is interactive.
+  await page.waitForLoadState("networkidle");
   await page.getByLabel("Amount ($)").fill("13.37");
   await page.getByRole("button", { name: "Add credit" }).click();
   await expect(page.getByText("Added $13.37.")).toBeVisible();
