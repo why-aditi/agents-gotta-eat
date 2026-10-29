@@ -81,7 +81,8 @@ test.beforeAll(async () => {
 
 test("the Agents kitchen and an agent's profile", async ({ browser }) => {
   mkdirSync(SHOTS, { recursive: true });
-  const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
   await signIn(page);
   await page.getByRole("link", { name: "Agents", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Agents", level: 1 })).toBeVisible();
@@ -109,13 +110,14 @@ test("the Agents kitchen and an agent's profile", async ({ browser }) => {
   await meal.getByRole("button", { name: "Show decisions" }).click();
   await expect(meal.getByTestId("spend-reason")).toHaveText("Spell checker");
   await page.screenshot({ path: `${SHOTS}/ui04-timeline-light.png`, fullPage: true });
+  // Close the context so its live streams don't stay open into later specs.
+  await ctx.close();
 });
 
 test("the Agents pages on a phone and in dark mode", async ({ browser }) => {
   mkdirSync(SHOTS, { recursive: true });
-  const phone = await (
-    await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "dark" })
-  ).newPage();
+  const phoneCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: "dark" });
+  const phone = await phoneCtx.newPage();
   await signIn(phone);
   await phone.goto("/agents");
   await expect(phone.getByRole("article", { name: agentName })).toBeVisible();
@@ -126,9 +128,9 @@ test("the Agents pages on a phone and in dark mode", async ({ browser }) => {
   expect(await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   await phone.screenshot({ path: `${SHOTS}/ui04-agent-phone-dark.png`, fullPage: true });
 
-  const desk = await (
-    await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: "dark" })
-  ).newPage();
+  await phoneCtx.close();
+  const deskCtx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: "dark" });
+  const desk = await deskCtx.newPage();
   await signIn(desk);
   await desk.goto("/agents");
   await expect(desk.getByRole("article", { name: agentName })).toBeVisible();
@@ -136,4 +138,5 @@ test("the Agents pages on a phone and in dark mode", async ({ browser }) => {
   await desk.goto(`/agents/${agentId}`);
   await expect(desk.getByRole("region", { name: "Current diet" })).toBeVisible();
   await desk.screenshot({ path: `${SHOTS}/ui04-agent-dark.png`, fullPage: true });
+  await deskCtx.close();
 });
