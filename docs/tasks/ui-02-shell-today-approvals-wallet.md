@@ -22,7 +22,7 @@ Depends on ui-01 (`docs/tasks/ui-01-api-reads.md`). Spec sections: "Pocket Money
 | Shared | `AgentAvatar` (deterministic colour and initials from the id), `Money`, `RelativeTime`, `VerdictBadge`, `Stamp`, `EmptyState`, `StatCard` |
 | Today | New `/home`; login and the logo land here. Greeting; Needs you (pending approvals with inline Approve/Deny); wallet (available, held, earned this week); your agents (today's spend against the daily cap); live arena feed; recent activity; empty states for a new owner |
 | Approvals | "Sieve wants $4.00" with both avatars, category, the agent's words in quotes and labelled as theirs, reasons as sentences, a countdown, large Approve/Deny; a stamp on decision; "All clear" empty state |
-| Wallet | Dark balance card (available, held, owed), Top up and Withdraw panels, activity grouped by day with signed amounts, balance counts up after a top-up, dev credit in an admin-only "Developer tools" disclosure |
+| Wallet | Dark balance card (available, held, owed), Top up and Withdraw panels, activity grouped by day with signed amounts, the balance glows when it changes, dev credit in an admin-only "Developer tools" disclosure |
 | Motion | Small and purposeful; off under reduced motion |
 
 ## Tests
@@ -42,5 +42,6 @@ Depends on ui-01 (`docs/tasks/ui-01-api-reads.md`). Spec sections: "Pocket Money
 | Approvals | The card title is an `h3` heading | Screen readers navigate by headings; tests find cards by "Name wants $X" |
 | Today | The "Recent activity" link reads "All activity" | A second link named "Wallet" made the sidebar's Wallet link ambiguous |
 | Shell | Skeletons use the muted colour, not the accent | The emerald accent made loading pages look like green blocks in dark mode |
+| Wallet | The balance doesn't count up; it always shows the exact amount and glows briefly when it changes | The count-up showed values the wallet didn't have and stalled a cent short on CI after a PayPal top-up. Money must never be shown wrong, even for a moment |
 | Copy | The marketing page's "Open dashboard" and "Dashboard" go to `/home` | Today is the dashboard now |
 | Today | The checklist's mandate step counts an agent with a daily cap as having a mandate | `dailyMaxCents` is required in a mandate, so a cap exists exactly when a confirmed mandate does |
