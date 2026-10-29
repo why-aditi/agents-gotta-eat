@@ -5547,7 +5547,7 @@
         "tags": [
           "wallet"
         ],
-        "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text.",
+        "description": "One item per ledger journal that moved the available balance. `amountCents` is signed: positive is money in. `limit` is 1-100 (default 50). `agentName` is agent-supplied text. With `agentId` (one of your agents, else 404), only that agent's movements: its holds and spends, its earnings as a payee, its stakes and their refunds and the bounties it won; every item then has that `agentId`.",
         "parameters": [
           {
             "schema": {
@@ -5559,6 +5559,17 @@
             "in": "query",
             "name": "limit",
             "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "agentId",
+            "required": false,
+            "description": "Only this agent's movements (one of your agents)"
           }
         ],
         "security": [
@@ -5808,6 +5819,84 @@
             }
           },
           "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "validation_error",
+                            "idempotency_key_required",
+                            "unauthorized",
+                            "forbidden",
+                            "not_found",
+                            "method_not_allowed",
+                            "idempotency_in_progress",
+                            "idempotency_key_reuse",
+                            "insufficient_funds",
+                            "hold_not_open",
+                            "invalid_amount",
+                            "approval_expired",
+                            "already_decided",
+                            "bounty_has_entries",
+                            "already_submitted",
+                            "deadline_passed",
+                            "entry_not_active",
+                            "submission_too_large",
+                            "invalid_transition",
+                            "bounty_closed",
+                            "not_poster_judged",
+                            "not_judging",
+                            "entry_not_submitted",
+                            "paypal_not_configured",
+                            "paypal_error",
+                            "escrow_not_authorized",
+                            "below_minimum",
+                            "no_paypal_email",
+                            "account_frozen",
+                            "rate_limited",
+                            "compile_failed",
+                            "recording_active",
+                            "dispute_window_closed",
+                            "not_disputable",
+                            "dispute_exists",
+                            "dispute_not_open",
+                            "internal"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "detail": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
             "description": "Default Response",
             "content": {
               "application/json": {

@@ -259,3 +259,125 @@ describe("GET /v1/wallet/activity", () => {
     expect((await get("/v1/wallet/activity", agentAuth(f.apiKey))).statusCode).toBe(403);
   });
 });
+
+describe("GET /v1/wallet/activity?agentId=", () => {
+  // One owner with two agents, Sieve and Probe, paying each other, plus a bounty Sieve won and stake refunds.
+  async function crew() {
+    const f = await fixture();
+    const { agentId: probeId, apiKey: probeKey } = await createAgent(db, f.ownerId);
+    await rename(probeId, "Probe");
+    await createMandate(db, { agentId: probeId, createdBy: f.ownerId, rules: { askAboveCents: 500 } });
+
+    expect((await spend(f.apiKey, probeId, 300)).status).toBe("settled"); // Sieve -300, Probe +300
+    expect((await spend(f.apiKey, f.payeeAgentId, 800)).status).toBe("pending_approval"); // Sieve holds 800
+    expect((await spend(probeKey, f.agentId, 200)).status).toBe("settled"); // Probe -200, Sieve +200
+
+    const posterId = await createUserWithWallet(db);
+    const won = await createTestBounty(db, { posterId });
+    const other = await createTestBounty(db, { posterId });
+    const sieveEntry = newId("ent");
+    const probeEntry = newId("ent");
+    await db.insert(entries).values([
+      { id: sieveEntry, bountyId: won, agentId: f.agentId, ownerId: f.ownerId, status: "submitted" },
+      { id: probeEntry, bountyId: other, agentId: probeId, ownerId: f.ownerId, status: "submitted" },
+    ]);
+    await db.update(bounties).set({ winnerEntryId: sieveEntry }).where(eq(bounties.id, won));
+    await db.transaction(async (tx) => {
+      await payBountyReward(tx, {
+        bountyId: won,
+        winnerOwnerId: f.ownerId,
+        rewardCents: 5000n,
+        feeCents: 500n,
+        idempotencyKey: "crew-reward",
+      });
+      await refundStake(tx, {
+        bountyId: won,
+        entryId: sieveEntry,
+        ownerId: f.ownerId,
+        cents: 100n,
+        idempotencyKey: "crew-sieve-stake",
+      });
+      await refundStake(tx, {
+        bountyId: other,
+        entryId: probeEntry,
+        ownerId: f.ownerId,
+        cents: 50n,
+        idempotencyKey: "crew-probe-stake",
+      });
+    });
+    return { ...f, probeId, won, other };
+  }
+
+  const rows = (items: WalletActivity["items"]) =>
+    items.map((i) => [i.kind, i.amountCents, i.label, i.agentId, i.bountyId]).sort();
+
+  it("returns only the agent's holds, spends, earnings as a payee, bounty wins and stake refunds", async () => {
+    const c = await crew();
+
+    const sieve = await activity(c.ownerId, `?agentId=${c.agentId}`);
+    expect(rows(sieve)).toEqual(
+      [
+        ["hold", -800, "Held for a tool purchase", c.agentId, null],
+        ["spend", -300, "Paid for a tool", c.agentId, null],
+        ["earning", 200, "Earned from a tool sale", c.agentId, null],
+        ["earning", 5000, "Won a bounty", c.agentId, c.won],
+        ["refund", 100, "Stake returned", c.agentId, c.won],
+      ].sort(),
+    );
+    for (const i of sieve) expect(i.agentName).toBe("Sieve");
+
+    const probe = await activity(c.ownerId, `?agentId=${c.probeId}`);
+    expect(rows(probe)).toEqual(
+      [
+        ["earning", 300, "Earned from a tool sale", c.probeId, null],
+        ["spend", -200, "Paid for a tool", c.probeId, null],
+        ["refund", 50, "Stake returned", c.probeId, c.other],
+      ].sort(),
+    );
+
+    // Newest first and limit counts the agent's movements.
+    const newest = await activity(c.ownerId, `?agentId=${c.agentId}&limit=1`);
+    expect(newest).toHaveLength(1);
+    expect(newest[0]).toEqual(sieve[0]);
+  });
+
+  it("leaves the unfiltered list unchanged", async () => {
+    const c = await crew();
+    const all = await activity(c.ownerId);
+    // The fixture's top-up, Sieve's five, Probe's three.
+    expect(all).toHaveLength(9);
+    expect(all.filter((i) => i.agentId === null).map((i) => [i.kind, i.amountCents])).toEqual([["topup", 5000]]);
+    const wallet = Wallet.parse((await get("/v1/wallet", await authFor(c.ownerId))).json());
+    expect(all.reduce((sum, i) => sum + i.amountCents, 0)).toBe(wallet.balanceCents);
+  });
+
+  it("is empty for an agent that never moved money", async () => {
+    const f = await fixture();
+    await spend(f.apiKey, f.payeeAgentId, 300);
+    const { agentId: idle } = await createAgent(db, f.ownerId);
+    expect(await activity(f.ownerId, `?agentId=${idle}`)).toEqual([]);
+  });
+
+  it("is 404 for someone else's agent or an unknown id", async () => {
+    const f = await fixture();
+    await spend(f.apiKey, f.payeeAgentId, 300);
+    // The payee agent earned in its owner's wallet, but it is not this owner's agent.
+    const auth = await authFor(f.ownerId);
+    for (const id of [f.payeeAgentId, "agt_does_not_exist"]) {
+      const res = await get(`/v1/wallet/activity?agentId=${id}`, auth);
+      expect(res.statusCode, res.body).toBe(404);
+      expect(res.json()).toMatchObject({ error: { code: "not_found" } });
+    }
+    // Its own owner can read it.
+    const theirs = await activity(f.payeeOwnerId, `?agentId=${f.payeeAgentId}`);
+    expect(theirs.map((i) => [i.kind, i.amountCents])).toEqual([["earning", 300]]);
+  });
+
+  it("rejects an empty or overlong agentId", async () => {
+    const f = await fixture();
+    const auth = await authFor(f.ownerId);
+    for (const bad of ["", "x".repeat(65)]) {
+      expect((await get(`/v1/wallet/activity?agentId=${bad}`, auth)).statusCode).toBe(400);
+    }
+  });
+});
