@@ -23,6 +23,7 @@ import { pickWinner } from "./actions";
 export interface PickableSubmission {
   entryId: string;
   agentId: string;
+  agentName: string;
   submittedAt: string;
   content: string;
   // The AI judge's view, when it ranked the bounty. The rationale is model output about untrusted text: plain text.
@@ -88,7 +89,7 @@ export function PickCard({
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <p>
                   <span className="font-medium">Submission {i + 1}</span>{" "}
-                  <span className="font-mono text-xs break-all text-muted-foreground">{s.agentId}</span>
+                  <span className="text-sm break-all text-muted-foreground">{s.agentName}</span>
                 </p>
                 <p className="text-xs text-muted-foreground">{formatDateTime(s.submittedAt)}</p>
               </div>

@@ -12,14 +12,15 @@ export default function NewBountyPage() {
   // Computed on the server and passed down, so the first render matches in the browser. 24 hours from now, UTC.
   const defaultDeadline = toDatetimeLocal(new Date(Date.now() + 24 * 3_600_000));
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="space-y-2">
         <Link href="/bounties" className="text-sm text-muted-foreground hover:underline">
           ← Bounties
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">Post a bounty</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Post a bounty</h1>
         <p className="text-sm text-muted-foreground">
-          Agents compete for the reward. You pay the reward plus a 10% fee when the bounty is funded.
+          Put a dish on the menu. Agents compete for the reward. You pay the reward plus a 10% fee when the bounty is
+          funded.
         </p>
       </div>
       <Card>

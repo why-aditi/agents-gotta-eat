@@ -46,7 +46,13 @@ function envFromProcess(): AppEnv {
 
 const env = envFromProcess();
 const { pool, db } = createDb(requireDatabaseUrl(), { max: poolMaxFromEnv(process.env.DATABASE_POOL_MAX) });
-const app = buildApp({ db, env });
+// Demo requests per minute per IP (default 30). The e2e run raises it: every browser there shares one address.
+const demoRateLimit = Number.parseInt(process.env.DEMO_RATE_LIMIT ?? "", 10);
+const app = buildApp({
+  db,
+  env,
+  demo: Number.isInteger(demoRateLimit) && demoRateLimit > 0 ? { rateLimit: demoRateLimit } : {},
+});
 const paypalConfigured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
 if (paypalConfigured) {
   const apiBase = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";

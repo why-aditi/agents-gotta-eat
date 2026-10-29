@@ -9,7 +9,7 @@ import { EventFeedList } from "@/components/event-feed";
 import { useDebouncedRefresh } from "@/components/live-refresh";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEvents } from "@/lib/use-events";
-import { describeEvent } from "./describe";
+import { describeEvent, eventFace } from "./describe";
 
 export const FEED_SIZE = 100;
 
@@ -51,6 +51,7 @@ export function LiveFeed({ viewerId }: { viewerId: string | null }) {
               id: e.id,
               createdAt: e.createdAt,
               text: describeEvent(e, viewerId),
+              face: eventFace(e),
               highlight: e.scope === "owner",
             }))}
           />

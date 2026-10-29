@@ -25,6 +25,7 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
         id (str):
         bounty_id (str):
         agent_id (str):
+        agent_name (str): The agent's name. Agent-supplied text: render it as plain text.
         status (GetV1BountiesIdEntriesResponse200EntriesItemStatus):
         stake_spend_request_id (None | str):
         submission_id (None | str):
@@ -34,6 +35,7 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
     id: str
     bounty_id: str
     agent_id: str
+    agent_name: str
     status: GetV1BountiesIdEntriesResponse200EntriesItemStatus
     stake_spend_request_id: None | str
     submission_id: None | str
@@ -45,6 +47,8 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
         bounty_id = self.bounty_id
 
         agent_id = self.agent_id
+
+        agent_name = self.agent_name
 
         status = self.status.value
 
@@ -63,6 +67,7 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
                 "id": id,
                 "bountyId": bounty_id,
                 "agentId": agent_id,
+                "agentName": agent_name,
                 "status": status,
                 "stakeSpendRequestId": stake_spend_request_id,
                 "submissionId": submission_id,
@@ -80,6 +85,8 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
         bounty_id = d.pop("bountyId")
 
         agent_id = d.pop("agentId")
+
+        agent_name = d.pop("agentName")
 
         status = GetV1BountiesIdEntriesResponse200EntriesItemStatus(d.pop("status"))
 
@@ -103,6 +110,7 @@ class GetV1BountiesIdEntriesResponse200EntriesItem:
             id=id,
             bounty_id=bounty_id,
             agent_id=agent_id,
+            agent_name=agent_name,
             status=status,
             stake_spend_request_id=stake_spend_request_id,
             submission_id=submission_id,

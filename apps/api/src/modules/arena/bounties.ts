@@ -1,14 +1,16 @@
 // Bounties: create, read, list, cancel, the shared draft -> open step, and the dev-only open (no PayPal).
 import {
   type Bounty,
+  type BountyEntrant,
   type BountyStatus,
   CreateBountyRequest,
+  MAX_BOUNTY_ENTRANTS,
   MAX_BOUNTY_HOURS,
   type TaskType,
 } from "@gottaeat/schemas";
-import { and, count, desc, eq, inArray, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, lte, sql, type SQL } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
-import { bounties, bountyAssets, entries, escrows } from "../../db/schema";
+import { agents, bounties, bountyAssets, entries, escrows } from "../../db/schema";
 import type { Principal, UserPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { toJsonCents } from "../../lib/cents";
@@ -34,8 +36,16 @@ export function bountyFee(rewardCents: bigint): bigint {
   return (rewardCents * 10n + 50n) / 100n;
 }
 
+// A bounty's entry count and its newest entrants (any entry status), for the public view.
+export interface BountyEntrySummary {
+  entryCount: number;
+  entrants: BountyEntrant[];
+}
+
+const NO_ENTRIES: BountyEntrySummary = { entryCount: 0, entrants: [] };
+
 // The public view. bounty_assets are never read here, so hidden material can't reach a response.
-export function toBountyDto(row: BountyRow, entryCount: number): Bounty {
+export function toBountyDto(row: BountyRow, summary: BountyEntrySummary = NO_ENTRIES): Bounty {
   return {
     id: row.id,
     posterId: row.posterId,
@@ -49,7 +59,8 @@ export function toBountyDto(row: BountyRow, entryCount: number): Bounty {
     deadlineAt: row.deadlineAt.toISOString(),
     status: row.status,
     openedAt: row.openedAt?.toISOString() ?? null,
-    entryCount,
+    entryCount: summary.entryCount,
+    entrants: summary.entrants.map((e) => ({ agentId: e.agentId, agentName: e.agentName })),
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -64,9 +75,44 @@ async function entryCounts(conn: Conn, bountyIds: string[]): Promise<Map<string,
   return new Map(rows.map((r) => [r.bountyId, r.n]));
 }
 
+// Entry counts and the newest MAX_BOUNTY_ENTRANTS entrants per bounty, with agent names, in one query.
+// A bounty with no entries is missing from the map.
+export async function entrySummaries(conn: Conn, bountyIds: string[]): Promise<Map<string, BountyEntrySummary>> {
+  const out = new Map<string, BountyEntrySummary>();
+  if (bountyIds.length === 0) return out;
+  const ranked = conn
+    .select({
+      bountyId: entries.bountyId,
+      agentId: entries.agentId,
+      agentName: agents.name,
+      rn: sql<number>`(row_number() over (partition by ${entries.bountyId} order by ${entries.createdAt} desc, ${entries.id} desc))::int`.as(
+        "rn",
+      ),
+      n: sql<number>`(count(*) over (partition by ${entries.bountyId}))::int`.as("n"),
+    })
+    .from(entries)
+    .innerJoin(agents, eq(agents.id, entries.agentId))
+    .where(inArray(entries.bountyId, [...new Set(bountyIds)]))
+    .as("ranked");
+  const rows = await conn
+    .select()
+    .from(ranked)
+    .where(lte(ranked.rn, MAX_BOUNTY_ENTRANTS))
+    .orderBy(asc(ranked.bountyId), asc(ranked.rn));
+  for (const r of rows) {
+    let s = out.get(r.bountyId);
+    if (!s) {
+      s = { entryCount: r.n, entrants: [] };
+      out.set(r.bountyId, s);
+    }
+    s.entrants.push({ agentId: r.agentId, agentName: r.agentName });
+  }
+  return out;
+}
+
 export async function bountyDto(conn: Conn, row: BountyRow): Promise<Bounty> {
-  const counts = await entryCounts(conn, [row.id]);
-  return toBountyDto(row, counts.get(row.id) ?? 0);
+  const summaries = await entrySummaries(conn, [row.id]);
+  return toBountyDto(row, summaries.get(row.id));
 }
 
 // Validates (again, for direct callers), then stores the bounty as a draft and its hidden material separately.
@@ -111,7 +157,7 @@ export async function createBounty(db: Db, posterId: string, input: unknown, now
     if (body.taskType === "extract_data") {
       await tx.insert(bountyAssets).values({ id: newId("bas"), bountyId: id, kind: "hidden", content: body.hidden });
     }
-    return toBountyDto(row, 0);
+    return toBountyDto(row);
   });
 }
 
@@ -154,11 +200,11 @@ export async function listBounties(
     .where(and(...conds))
     .orderBy(desc(bounties.createdAt), desc(bounties.id))
     .limit(BOUNTY_LIST_LIMIT);
-  const counts = await entryCounts(
+  const summaries = await entrySummaries(
     db,
     rows.map((r) => r.id),
   );
-  return rows.map((r) => toBountyDto(r, counts.get(r.id) ?? 0));
+  return rows.map((r) => toBountyDto(r, summaries.get(r.id)));
 }
 
 // Locks the bounty row. Entering, cancelling, opening and the deadline sweep all take this lock first.
@@ -193,7 +239,8 @@ export async function cancelBounty(db: Db, poster: UserPrincipal, bountyId: stri
         data: { bountyId: row.id, title: row.title },
       });
     }
-    return toBountyDto(updated, 0);
+    // Only bounties with no entries can be cancelled.
+    return toBountyDto(updated);
   });
 }
 

@@ -3,7 +3,7 @@
 // The replay itself: controls, bounty cards built from the replayed events, and the feed. Same plain-text rules as
 // the live arena: agent names, titles and summaries are untrusted and render only as React text.
 import { PauseIcon, PlayIcon, RotateCcwIcon, SwordsIcon } from "lucide-react";
-import { describeEvent } from "@/app/(app)/arena/describe";
+import { describeEvent, eventFace } from "@/app/(app)/arena/describe";
 import { BountyStatusBadge, taskTypeLabel } from "@/app/(app)/bounties/bounty-labels";
 import { EventFeedList } from "@/components/event-feed";
 import { Button } from "@/components/ui/button";
@@ -75,6 +75,7 @@ export function DemoReplay({
       id: i.seq,
       createdAt: i.event.createdAt,
       text: describeEvent(i.event, null),
+      face: eventFace(i.event),
       highlight: i.event.type === "demo.spend_flagged",
     }));
   const offsetMs = items.at(-1)?.offsetMs ?? 0;

@@ -41,6 +41,8 @@ export default defineConfig({
         ALLOW_DEV_CREDIT: "true",
         ALLOW_DEV_FUNDING: "true",
         POLICY_GATE2_STUB: "allow",
+        // Every page here comes from one address, and each signed-in page load reads the demo status.
+        DEMO_RATE_LIMIT: "1000",
         PAYPAL_CLIENT_ID: "e2e-client",
         PAYPAL_CLIENT_SECRET: "e2e-secret",
         PAYPAL_API_BASE: FAKE_PAYPAL_URL,

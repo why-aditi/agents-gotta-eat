@@ -476,6 +476,10 @@ async function resultsOf(conn: Conn, bountyId: string, viewer: Principal): Promi
     .where(eq(entries.bountyId, bountyId))
     .orderBy(asc(entries.createdAt), asc(entries.id));
   const best = await bestScores(conn, bountyId);
+  const names = await agentNames(
+    conn,
+    rows.map((e) => e.agentId),
+  );
   // The AI judge's view, never its prompts.
   const ai = new Map<string, { score: number; rationale: string; flagged: boolean }>();
   for (const j of await getJudgementsForBounty(conn, bountyId)) {
@@ -498,6 +502,7 @@ async function resultsOf(conn: Conn, bountyId: string, viewer: Principal): Promi
       return {
         entryId: e.id,
         agentId: e.agentId,
+        agentName: names.get(e.agentId) ?? e.agentId,
         status: e.status,
         score,
         passed: entryPassed(bounty, e, score),

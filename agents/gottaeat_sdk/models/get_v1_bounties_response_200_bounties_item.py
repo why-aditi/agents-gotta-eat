@@ -14,6 +14,9 @@ from typing import cast
 import datetime
 
 if TYPE_CHECKING:
+    from ..models.get_v1_bounties_response_200_bounties_item_entrants_item import (
+        GetV1BountiesResponse200BountiesItemEntrantsItem,
+    )
     from ..models.get_v1_bounties_response_200_bounties_item_spec import GetV1BountiesResponse200BountiesItemSpec
 
 
@@ -37,6 +40,8 @@ class GetV1BountiesResponse200BountiesItem:
         status (GetV1BountiesResponse200BountiesItemStatus):
         opened_at (datetime.datetime | None):
         entry_count (int):
+        entrants (list[GetV1BountiesResponse200BountiesItemEntrantsItem]): Up to 5 entrants, newest entry first (any
+            entry status). Names are agent-supplied text.
         created_at (datetime.datetime):
     """
 
@@ -53,9 +58,13 @@ class GetV1BountiesResponse200BountiesItem:
     status: GetV1BountiesResponse200BountiesItemStatus
     opened_at: datetime.datetime | None
     entry_count: int
+    entrants: list[GetV1BountiesResponse200BountiesItemEntrantsItem]
     created_at: datetime.datetime
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.get_v1_bounties_response_200_bounties_item_entrants_item import (
+            GetV1BountiesResponse200BountiesItemEntrantsItem,
+        )  # noqa: PLC0415
         from ..models.get_v1_bounties_response_200_bounties_item_spec import GetV1BountiesResponse200BountiesItemSpec  # noqa: PLC0415
 
         id = self.id
@@ -88,6 +97,11 @@ class GetV1BountiesResponse200BountiesItem:
 
         entry_count = self.entry_count
 
+        entrants = []
+        for entrants_item_data in self.entrants:
+            entrants_item = entrants_item_data.to_dict()
+            entrants.append(entrants_item)
+
         created_at = self.created_at.isoformat()
 
         field_dict: dict[str, Any] = {}
@@ -107,6 +121,7 @@ class GetV1BountiesResponse200BountiesItem:
                 "status": status,
                 "openedAt": opened_at,
                 "entryCount": entry_count,
+                "entrants": entrants,
                 "createdAt": created_at,
             }
         )
@@ -115,6 +130,9 @@ class GetV1BountiesResponse200BountiesItem:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.get_v1_bounties_response_200_bounties_item_entrants_item import (
+            GetV1BountiesResponse200BountiesItemEntrantsItem,
+        )  # noqa: PLC0415
         from ..models.get_v1_bounties_response_200_bounties_item_spec import GetV1BountiesResponse200BountiesItemSpec  # noqa: PLC0415
 
         d = dict(src_dict)
@@ -157,6 +175,13 @@ class GetV1BountiesResponse200BountiesItem:
 
         entry_count = d.pop("entryCount")
 
+        entrants = []
+        _entrants = d.pop("entrants")
+        for entrants_item_data in _entrants:
+            entrants_item = GetV1BountiesResponse200BountiesItemEntrantsItem.from_dict(entrants_item_data)
+
+            entrants.append(entrants_item)
+
         created_at = datetime.datetime.fromisoformat(d.pop("createdAt"))
 
         get_v1_bounties_response_200_bounties_item = cls(
@@ -173,6 +198,7 @@ class GetV1BountiesResponse200BountiesItem:
             status=status,
             opened_at=opened_at,
             entry_count=entry_count,
+            entrants=entrants,
             created_at=created_at,
         )
 

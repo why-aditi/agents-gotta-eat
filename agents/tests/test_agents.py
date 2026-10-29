@@ -125,6 +125,7 @@ async def test_replayed_entry_already_submitted_is_skipped(api_mock: respx.MockR
             "id": "ent_1",
             "bountyId": INVOICE.id,
             "agentId": "agt_me",
+            "agentName": "Me",
             "status": "submitted",
             "stakeSpendRequestId": "spr_stake",
             "submissionId": "sub_1",

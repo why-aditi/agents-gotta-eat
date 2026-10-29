@@ -78,7 +78,7 @@ async function world() {
     .where(eq(users.id, adminId));
   const ownerId = await createUserWithWallet(db);
   await topUp(db, ownerId, 5000n);
-  const { agentId, apiKey } = await createAgent(db, ownerId);
+  const { agentId, apiKey } = await createAgent(db, ownerId, { name: "Patch" });
   await createMandate(db, { agentId, createdBy: ownerId, rules: { allowedCategories: ["stake", "tool"] } });
   const strangerId = await createUserWithWallet(db);
   const { agentId: strangerAgentId, apiKey: strangerKey } = await createAgent(db, strangerId);
@@ -246,6 +246,45 @@ describe("GET /v1/bounties and /v1/bounties/:id", () => {
   });
 });
 
+describe("agent names on bounties and entries", () => {
+  it("entries carry agentName; list and get carry entrants (newest first); none is []", async () => {
+    const w = await world();
+    const id = await postOpenBounty(w);
+    const empty = await postOpenBounty(w, bountyRequest("creative_writing"));
+    const created = Bounty.parse((await get(`/v1/bounties/${empty}`, w.poster)).json());
+    expect(created.entrants).toEqual([]);
+
+    const { entry } = await enter(w, id);
+    expect(entry).toMatchObject({ agentId: w.agentId, agentName: "Patch" });
+    // A second agent enters later, so it comes first.
+    await createMandate(db, {
+      agentId: w.strangerAgentId,
+      createdBy: w.strangerId,
+      rules: { allowedCategories: ["stake"] },
+    });
+    await topUp(db, w.strangerId, 1000n);
+    const second = await post(`/v1/bounties/${id}/entries`, w.strangerAgent);
+    expect(second.statusCode, second.body).toBe(201);
+    expect(EnterBountyResponse.parse(second.json()).entry?.agentName).toBe("Test agent");
+
+    const one = Entry.parse((await get(`/v1/entries/${entry!.id}`, w.owner)).json());
+    expect(one.agentName).toBe("Patch");
+    const entrants = [
+      { agentId: w.strangerAgentId, agentName: "Test agent" },
+      { agentId: w.agentId, agentName: "Patch" },
+    ];
+    for (const auth of [w.poster, w.agent, w.stranger]) {
+      const b = Bounty.parse((await get(`/v1/bounties/${id}`, auth)).json());
+      expect(b).toMatchObject({ entryCount: 2, entrants });
+      const list = BountyList.parse((await get("/v1/bounties", auth)).json()).bounties;
+      expect(list.map((x) => [x.id, x.entrants])).toEqual([
+        [empty, []],
+        [id, entrants],
+      ]);
+    }
+  });
+});
+
 describe("GET /v1/bounties/:id/entries", () => {
   it("the poster sees every entry; owners and agents their own; drafts only for the poster", async () => {
     const w = await world();
@@ -260,8 +299,8 @@ describe("GET /v1/bounties/:id/entries", () => {
 
     for (const auth of [w.poster, w.owner, w.agent]) {
       const list = EntryList.parse((await get(url, auth)).json()).entries;
-      expect(list.map((e) => [e.id, e.agentId, e.submissionId])).toEqual([
-        [entry!.id, w.agentId, Submission.parse(sub.json()).id],
+      expect(list.map((e) => [e.id, e.agentId, e.agentName, e.submissionId])).toEqual([
+        [entry!.id, w.agentId, "Patch", Submission.parse(sub.json()).id],
       ]);
     }
     for (const auth of [w.stranger, w.strangerAgent]) {
@@ -442,6 +481,7 @@ describe("POST /v1/bounties/:id/pick", () => {
       {
         entryId: entry!.id,
         agentId: w.agentId,
+        agentName: "Patch",
         status: "submitted",
         score: 100,
         passed: true,
@@ -496,6 +536,7 @@ describe("GET /v1/bounties/:id/results", () => {
           {
             entryId: entry!.id,
             agentId: w.agentId,
+            agentName: "Patch",
             status: "submitted",
             score: 100,
             passed: true,

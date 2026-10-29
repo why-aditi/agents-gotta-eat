@@ -2,7 +2,7 @@
 import type { EnterBountyResponse, Entry, SpendRequest, SpendStatus } from "@gottaeat/schemas";
 import { and, asc, eq } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
-import { bounties, entries, spendRequests, submissions } from "../../db/schema";
+import { agents, bounties, entries, spendRequests, submissions } from "../../db/schema";
 import type { AgentPrincipal, Principal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { newId } from "../../lib/ids";
@@ -23,11 +23,12 @@ const DECISION: Record<SpendStatus, Stake["decision"]> = {
   released: "deny",
 };
 
-export function toEntryDto(row: EntryRow, submissionId: string | null): Entry {
+export function toEntryDto(row: EntryRow, submissionId: string | null, agentName: string): Entry {
   return {
     id: row.id,
     bountyId: row.bountyId,
     agentId: row.agentId,
+    agentName,
     status: row.status,
     stakeSpendRequestId: row.stakeSpendRequestId,
     submissionId,
@@ -37,7 +38,7 @@ export function toEntryDto(row: EntryRow, submissionId: string | null): Entry {
 
 export async function entryDto(conn: Conn, row: EntryRow): Promise<Entry> {
   const [sub] = await conn.select({ id: submissions.id }).from(submissions).where(eq(submissions.entryId, row.id));
-  return toEntryDto(row, sub?.id ?? null);
+  return toEntryDto(row, sub?.id ?? null, await agentName(conn, row.agentId));
 }
 
 // The same reasons createSpendRequest returned: gate 1's, plus the intent check's ask or deny.
@@ -105,6 +106,7 @@ export async function enterBounty(
       })
       .returning();
     if (!row) throw new Error("entry was not inserted");
+    const name = await agentName(tx, principal.agentId);
     await publish(tx, {
       type: "entry.created",
       bountyId,
@@ -113,10 +115,10 @@ export async function enterBounty(
         title: bounty.title,
         entryId: row.id,
         agentId: principal.agentId,
-        agentName: await agentName(tx, principal.agentId),
+        agentName: name,
       },
     });
-    return { existing: false, response: { entry: toEntryDto(row, null), stake } };
+    return { existing: false, response: { entry: toEntryDto(row, null, name), stake } };
   });
 }
 
@@ -157,12 +159,13 @@ export async function listBountyEntriesFor(db: Db, principal: Principal, bountyI
     );
   }
   const rows = await db
-    .select({ entry: entries, submissionId: submissions.id })
+    .select({ entry: entries, submissionId: submissions.id, agentName: agents.name })
     .from(entries)
+    .innerJoin(agents, eq(agents.id, entries.agentId))
     .leftJoin(submissions, eq(submissions.entryId, entries.id))
     .where(and(...conds))
     .orderBy(asc(entries.createdAt), asc(entries.id));
-  return rows.map((r) => toEntryDto(r.entry, r.submissionId));
+  return rows.map((r) => toEntryDto(r.entry, r.submissionId, r.agentName));
 }
 
 // An agent sees its own entries. A user sees their agents' entries and entries on their bounties. Else 404.

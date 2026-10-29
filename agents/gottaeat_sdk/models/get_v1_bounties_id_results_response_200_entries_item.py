@@ -27,6 +27,7 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
     Attributes:
         entry_id (str):
         agent_id (str):
+        agent_name (str): The agent's name. Agent-supplied text: render it as plain text.
         status (GetV1BountiesIdResultsResponse200EntriesItemStatus):
         score (int | None):
         passed (bool):
@@ -38,6 +39,7 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
 
     entry_id: str
     agent_id: str
+    agent_name: str
     status: GetV1BountiesIdResultsResponse200EntriesItemStatus
     score: int | None
     passed: bool
@@ -50,6 +52,8 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
         entry_id = self.entry_id
 
         agent_id = self.agent_id
+
+        agent_name = self.agent_name
 
         status = self.status.value
 
@@ -76,6 +80,7 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
             {
                 "entryId": entry_id,
                 "agentId": agent_id,
+                "agentName": agent_name,
                 "status": status,
                 "score": score,
                 "passed": passed,
@@ -97,6 +102,8 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
         entry_id = d.pop("entryId")
 
         agent_id = d.pop("agentId")
+
+        agent_name = d.pop("agentName")
 
         status = GetV1BountiesIdResultsResponse200EntriesItemStatus(d.pop("status"))
 
@@ -133,6 +140,7 @@ class GetV1BountiesIdResultsResponse200EntriesItem:
         get_v1_bounties_id_results_response_200_entries_item = cls(
             entry_id=entry_id,
             agent_id=agent_id,
+            agent_name=agent_name,
             status=status,
             score=score,
             passed=passed,

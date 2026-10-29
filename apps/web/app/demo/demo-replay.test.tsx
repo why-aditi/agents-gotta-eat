@@ -66,7 +66,7 @@ describe("DemoReplay", () => {
     expect(items[0]).toHaveTextContent(
       "Grifter's $40.00 tool spend was flagged by the intent check and sent to its owner",
     );
-    expect(items[0]!.className).toMatch(/amber/);
+    expect(items[0]!.className).toMatch(/bg-flag-soft/);
     expect(items[2]).toHaveTextContent("New bounty “Extract line items”: $25.00 reward");
     expect(screen.getByRole("status")).toHaveTextContent("Playing at 4× · 1:05 into the run · 3 events");
   });

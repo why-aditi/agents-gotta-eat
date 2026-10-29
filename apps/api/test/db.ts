@@ -82,14 +82,14 @@ export function newAgentKey(): string {
 export async function createAgent(
   db: Db,
   ownerId: string,
-  opts?: { status?: string; revoked?: boolean },
+  opts?: { status?: string; revoked?: boolean; name?: string },
 ): Promise<{ agentId: string; apiKey: string }> {
   const agentId = newId("agt");
   const apiKey = newAgentKey();
   await db.insert(agents).values({
     id: agentId,
     ownerId,
-    name: "Test agent",
+    name: opts?.name ?? "Test agent",
     kind: "external",
     apiKeyHash: hashApiKey(apiKey),
     apiKeyPrefix: apiKey.slice(0, 14),
