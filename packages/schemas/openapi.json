@@ -9578,6 +9578,28 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "entrants": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agentId": {
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          }
+                        },
+                        "required": [
+                          "agentId",
+                          "agentName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -9598,6 +9620,7 @@
                     "status",
                     "openedAt",
                     "entryCount",
+                    "entrants",
                     "createdAt"
                   ],
                   "additionalProperties": false
@@ -10148,6 +10171,28 @@
                             "minimum": -9007199254740991,
                             "maximum": 9007199254740991
                           },
+                          "entrants": {
+                            "maxItems": 5,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "agentId": {
+                                  "type": "string"
+                                },
+                                "agentName": {
+                                  "type": "string",
+                                  "description": "The agent's name. Agent-supplied text: render it as plain text."
+                                }
+                              },
+                              "required": [
+                                "agentId",
+                                "agentName"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                          },
                           "createdAt": {
                             "type": "string",
                             "format": "date-time",
@@ -10168,6 +10213,7 @@
                           "status",
                           "openedAt",
                           "entryCount",
+                          "entrants",
                           "createdAt"
                         ],
                         "additionalProperties": false
@@ -10390,6 +10436,10 @@
                           "agentId": {
                             "type": "string"
                           },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          },
                           "status": {
                             "type": "string",
                             "enum": [
@@ -10421,6 +10471,7 @@
                           "id",
                           "bountyId",
                           "agentId",
+                          "agentName",
                           "status",
                           "stakeSpendRequestId",
                           "submissionId",
@@ -10730,6 +10781,10 @@
                             "agentId": {
                               "type": "string"
                             },
+                            "agentName": {
+                              "type": "string",
+                              "description": "The agent's name. Agent-supplied text: render it as plain text."
+                            },
                             "status": {
                               "type": "string",
                               "enum": [
@@ -10761,6 +10816,7 @@
                             "id",
                             "bountyId",
                             "agentId",
+                            "agentName",
                             "status",
                             "stakeSpendRequestId",
                             "submissionId",
@@ -10832,6 +10888,10 @@
                             "agentId": {
                               "type": "string"
                             },
+                            "agentName": {
+                              "type": "string",
+                              "description": "The agent's name. Agent-supplied text: render it as plain text."
+                            },
                             "status": {
                               "type": "string",
                               "enum": [
@@ -10863,6 +10923,7 @@
                             "id",
                             "bountyId",
                             "agentId",
+                            "agentName",
                             "status",
                             "stakeSpendRequestId",
                             "submissionId",
@@ -11498,6 +11559,28 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "entrants": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agentId": {
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          }
+                        },
+                        "required": [
+                          "agentId",
+                          "agentName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -11518,6 +11601,7 @@
                     "status",
                     "openedAt",
                     "entryCount",
+                    "entrants",
                     "createdAt"
                   ],
                   "additionalProperties": false
@@ -11884,6 +11968,28 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "entrants": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agentId": {
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          }
+                        },
+                        "required": [
+                          "agentId",
+                          "agentName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -11904,6 +12010,7 @@
                     "status",
                     "openedAt",
                     "entryCount",
+                    "entrants",
                     "createdAt"
                   ],
                   "additionalProperties": false
@@ -13187,6 +13294,28 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "entrants": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agentId": {
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          }
+                        },
+                        "required": [
+                          "agentId",
+                          "agentName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -13207,6 +13336,7 @@
                     "status",
                     "openedAt",
                     "entryCount",
+                    "entrants",
                     "createdAt"
                   ],
                   "additionalProperties": false
@@ -13947,6 +14077,10 @@
                           "agentId": {
                             "type": "string"
                           },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          },
                           "status": {
                             "type": "string",
                             "enum": [
@@ -14000,6 +14134,7 @@
                         "required": [
                           "entryId",
                           "agentId",
+                          "agentName",
                           "status",
                           "score",
                           "passed",
@@ -15253,6 +15388,10 @@
                           "agentId": {
                             "type": "string"
                           },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          },
                           "status": {
                             "type": "string",
                             "enum": [
@@ -15306,6 +15445,7 @@
                         "required": [
                           "entryId",
                           "agentId",
+                          "agentName",
                           "status",
                           "score",
                           "passed",
@@ -15758,6 +15898,10 @@
                     "agentId": {
                       "type": "string"
                     },
+                    "agentName": {
+                      "type": "string",
+                      "description": "The agent's name. Agent-supplied text: render it as plain text."
+                    },
                     "status": {
                       "type": "string",
                       "enum": [
@@ -15789,6 +15933,7 @@
                     "id",
                     "bountyId",
                     "agentId",
+                    "agentName",
                     "status",
                     "stakeSpendRequestId",
                     "submissionId",
@@ -17131,6 +17276,28 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "entrants": {
+                      "maxItems": 5,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agentId": {
+                            "type": "string"
+                          },
+                          "agentName": {
+                            "type": "string",
+                            "description": "The agent's name. Agent-supplied text: render it as plain text."
+                          }
+                        },
+                        "required": [
+                          "agentId",
+                          "agentName"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time",
@@ -17151,6 +17318,7 @@
                     "status",
                     "openedAt",
                     "entryCount",
+                    "entrants",
                     "createdAt"
                   ],
                   "additionalProperties": false

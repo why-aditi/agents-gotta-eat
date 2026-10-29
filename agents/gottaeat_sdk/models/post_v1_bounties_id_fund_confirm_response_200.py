@@ -16,6 +16,9 @@ from typing import cast
 import datetime
 
 if TYPE_CHECKING:
+    from ..models.post_v1_bounties_id_fund_confirm_response_200_entrants_item import (
+        PostV1BountiesIdFundConfirmResponse200EntrantsItem,
+    )
     from ..models.post_v1_bounties_id_fund_confirm_response_200_spec import PostV1BountiesIdFundConfirmResponse200Spec
 
 
@@ -39,6 +42,8 @@ class PostV1BountiesIdFundConfirmResponse200:
         status (PostV1BountiesIdFundConfirmResponse200Status):
         opened_at (datetime.datetime | None):
         entry_count (int):
+        entrants (list[PostV1BountiesIdFundConfirmResponse200EntrantsItem]): Up to 5 entrants, newest entry first (any
+            entry status). Names are agent-supplied text.
         created_at (datetime.datetime):
     """
 
@@ -55,9 +60,13 @@ class PostV1BountiesIdFundConfirmResponse200:
     status: PostV1BountiesIdFundConfirmResponse200Status
     opened_at: datetime.datetime | None
     entry_count: int
+    entrants: list[PostV1BountiesIdFundConfirmResponse200EntrantsItem]
     created_at: datetime.datetime
 
     def to_dict(self) -> dict[str, Any]:
+        from ..models.post_v1_bounties_id_fund_confirm_response_200_entrants_item import (
+            PostV1BountiesIdFundConfirmResponse200EntrantsItem,
+        )  # noqa: PLC0415
         from ..models.post_v1_bounties_id_fund_confirm_response_200_spec import (
             PostV1BountiesIdFundConfirmResponse200Spec,
         )  # noqa: PLC0415
@@ -92,6 +101,11 @@ class PostV1BountiesIdFundConfirmResponse200:
 
         entry_count = self.entry_count
 
+        entrants = []
+        for entrants_item_data in self.entrants:
+            entrants_item = entrants_item_data.to_dict()
+            entrants.append(entrants_item)
+
         created_at = self.created_at.isoformat()
 
         field_dict: dict[str, Any] = {}
@@ -111,6 +125,7 @@ class PostV1BountiesIdFundConfirmResponse200:
                 "status": status,
                 "openedAt": opened_at,
                 "entryCount": entry_count,
+                "entrants": entrants,
                 "createdAt": created_at,
             }
         )
@@ -119,6 +134,9 @@ class PostV1BountiesIdFundConfirmResponse200:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.post_v1_bounties_id_fund_confirm_response_200_entrants_item import (
+            PostV1BountiesIdFundConfirmResponse200EntrantsItem,
+        )  # noqa: PLC0415
         from ..models.post_v1_bounties_id_fund_confirm_response_200_spec import (
             PostV1BountiesIdFundConfirmResponse200Spec,
         )  # noqa: PLC0415
@@ -163,6 +181,13 @@ class PostV1BountiesIdFundConfirmResponse200:
 
         entry_count = d.pop("entryCount")
 
+        entrants = []
+        _entrants = d.pop("entrants")
+        for entrants_item_data in _entrants:
+            entrants_item = PostV1BountiesIdFundConfirmResponse200EntrantsItem.from_dict(entrants_item_data)
+
+            entrants.append(entrants_item)
+
         created_at = datetime.datetime.fromisoformat(d.pop("createdAt"))
 
         post_v1_bounties_id_fund_confirm_response_200 = cls(
@@ -179,6 +204,7 @@ class PostV1BountiesIdFundConfirmResponse200:
             status=status,
             opened_at=opened_at,
             entry_count=entry_count,
+            entrants=entrants,
             created_at=created_at,
         )
 

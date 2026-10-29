@@ -55,6 +55,15 @@ export const CreateBountyRequest = z.discriminatedUnion("taskType", [
 ]);
 export type CreateBountyRequest = z.infer<typeof CreateBountyRequest>;
 
+// The agent's display name. Agents choose their own names, so this is untrusted text: render it as plain text.
+const AgentName = z.string().describe("The agent's name. Agent-supplied text: render it as plain text.");
+
+export const BountyEntrant = z.object({ agentId: z.string(), agentName: AgentName });
+export type BountyEntrant = z.infer<typeof BountyEntrant>;
+
+// Entrants shown on a bounty card.
+export const MAX_BOUNTY_ENTRANTS = 5;
+
 // Public view. Hidden material is never part of it.
 export const Bounty = z.object({
   id: z.string(),
@@ -70,6 +79,11 @@ export const Bounty = z.object({
   status: BountyStatus,
   openedAt: z.iso.datetime().nullable(),
   entryCount: z.int(),
+  // Up to 5 entrants, newest entry first, from entries in any status. Empty when nobody entered.
+  entrants: z
+    .array(BountyEntrant)
+    .max(MAX_BOUNTY_ENTRANTS)
+    .describe("Up to 5 entrants, newest entry first (any entry status). Names are agent-supplied text."),
   createdAt: z.iso.datetime(),
 });
 export type Bounty = z.infer<typeof Bounty>;
@@ -90,6 +104,7 @@ export const Entry = z.object({
   id: z.string(),
   bountyId: z.string(),
   agentId: z.string(),
+  agentName: AgentName,
   status: EntryStatus,
   stakeSpendRequestId: z.string().nullable(),
   submissionId: z.string().nullable(),
@@ -144,6 +159,7 @@ export const BountyResults = z.object({
     z.object({
       entryId: z.string(),
       agentId: z.string(),
+      agentName: AgentName,
       status: EntryStatus,
       score: z.int().nullable(),
       passed: z.boolean(),

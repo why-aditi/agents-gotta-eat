@@ -176,6 +176,55 @@ describe("reads", () => {
     expect(await listBounties(db, userP(poster), { status: "judging" })).toHaveLength(1);
     expect((await getBountyFor(db, userP(entrantOwner), a)).entryCount).toBe(1);
   });
+
+  it("entrants: names, newest entry first, any status, at most 5; none is []", async () => {
+    const poster = await createUser(db);
+    const busy = await createTestBounty(db, { posterId: poster });
+    const quiet = await createTestBounty(db, { posterId: poster });
+    const two = await createTestBounty(db, { posterId: poster });
+    const owner = await createUser(db);
+    const statuses = ["active", "withdrawn", "submitted", "pending_stake", "active", "active", "submitted"] as const;
+    const made: { agentId: string; agentName: string }[] = [];
+    for (const [i, status] of statuses.entries()) {
+      const agentName = `Agent ${i}`;
+      const { agentId } = await createAgent(db, owner, { name: agentName });
+      made.push({ agentId, agentName });
+      await db.insert(entries).values({
+        id: newId("ent"),
+        bountyId: busy,
+        agentId,
+        ownerId: owner,
+        status,
+        createdAt: new Date(Date.UTC(2026, 10, 1, 12, i)),
+      });
+    }
+    for (const [i, e] of made.slice(0, 2).entries()) {
+      await db.insert(entries).values({
+        id: newId("ent"),
+        bountyId: two,
+        agentId: e.agentId,
+        ownerId: owner,
+        status: "active",
+        createdAt: new Date(Date.UTC(2026, 10, 1, 13, i)),
+      });
+    }
+    const newestFive = [...made].reverse().slice(0, 5);
+
+    const list = await listBounties(db, userP(poster), { status: "open" });
+    const byId = new Map(list.map((b) => [b.id, b]));
+    expect(byId.get(busy)).toMatchObject({ entryCount: 7, entrants: newestFive });
+    expect(byId.get(two)).toMatchObject({ entryCount: 2, entrants: [made[1], made[0]] });
+    expect(byId.get(quiet)).toMatchObject({ entryCount: 0, entrants: [] });
+
+    expect(await getBountyFor(db, userP(poster), busy)).toMatchObject({ entryCount: 7, entrants: newestFive });
+    expect((await getBountyFor(db, userP(poster), quiet)).entrants).toEqual([]);
+    const draft = await createBounty(db, poster, bountyRequest("creative_writing"));
+    expect(draft.entrants).toEqual([]);
+    expect((await listBounties(db, userP(poster), { mine: true })).find((b) => b.id === draft.id)?.entrants).toEqual(
+      [],
+    );
+    expect((await cancelBounty(db, userP(poster), quiet)).entrants).toEqual([]);
+  });
 });
 
 describe("cancelBounty", () => {

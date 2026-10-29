@@ -51,6 +51,7 @@ def bounty_json(b: BountyView) -> dict[str, Any]:
         "status": "open",
         "openedAt": "2026-10-26T12:00:00.000Z",
         "entryCount": 0,
+        "entrants": [],
         "createdAt": "2026-10-26T11:00:00.000Z",
     }
 
@@ -60,6 +61,7 @@ def entry_json(entry_id: str, bounty_id: str, status: str = "active") -> dict[st
         "id": entry_id,
         "bountyId": bounty_id,
         "agentId": "agt_me",
+        "agentName": "Me",
         "status": status,
         "stakeSpendRequestId": "spr_stake",
         "submissionId": None,

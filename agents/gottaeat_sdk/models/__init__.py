@@ -349,6 +349,7 @@ from .get_v1_bounties_id_entries_response_404_error import GetV1BountiesIdEntrie
 from .get_v1_bounties_id_entries_response_404_error_code import GetV1BountiesIdEntriesResponse404ErrorCode
 from .get_v1_bounties_id_entries_response_404_error_detail import GetV1BountiesIdEntriesResponse404ErrorDetail
 from .get_v1_bounties_id_response_200 import GetV1BountiesIdResponse200
+from .get_v1_bounties_id_response_200_entrants_item import GetV1BountiesIdResponse200EntrantsItem
 from .get_v1_bounties_id_response_200_spec import GetV1BountiesIdResponse200Spec
 from .get_v1_bounties_id_response_200_status import GetV1BountiesIdResponse200Status
 from .get_v1_bounties_id_response_200_task_type import GetV1BountiesIdResponse200TaskType
@@ -396,6 +397,7 @@ from .get_v1_bounties_id_results_response_409_error_detail import GetV1BountiesI
 from .get_v1_bounties_mine import GetV1BountiesMine
 from .get_v1_bounties_response_200 import GetV1BountiesResponse200
 from .get_v1_bounties_response_200_bounties_item import GetV1BountiesResponse200BountiesItem
+from .get_v1_bounties_response_200_bounties_item_entrants_item import GetV1BountiesResponse200BountiesItemEntrantsItem
 from .get_v1_bounties_response_200_bounties_item_spec import GetV1BountiesResponse200BountiesItemSpec
 from .get_v1_bounties_response_200_bounties_item_status import GetV1BountiesResponse200BountiesItemStatus
 from .get_v1_bounties_response_200_bounties_item_task_type import GetV1BountiesResponse200BountiesItemTaskType
@@ -640,6 +642,7 @@ from .post_mcp_response_403_error_code import PostMcpResponse403ErrorCode
 from .post_mcp_response_403_error_detail import PostMcpResponse403ErrorDetail
 from .post_v1_admin_bounties_id_open_body import PostV1AdminBountiesIdOpenBody
 from .post_v1_admin_bounties_id_open_response_200 import PostV1AdminBountiesIdOpenResponse200
+from .post_v1_admin_bounties_id_open_response_200_entrants_item import PostV1AdminBountiesIdOpenResponse200EntrantsItem
 from .post_v1_admin_bounties_id_open_response_200_spec import PostV1AdminBountiesIdOpenResponse200Spec
 from .post_v1_admin_bounties_id_open_response_200_status import PostV1AdminBountiesIdOpenResponse200Status
 from .post_v1_admin_bounties_id_open_response_200_task_type import PostV1AdminBountiesIdOpenResponse200TaskType
@@ -1187,6 +1190,7 @@ from .post_v1_bounties_body_type_1 import PostV1BountiesBodyType1
 from .post_v1_bounties_body_type_1_spec import PostV1BountiesBodyType1Spec
 from .post_v1_bounties_body_type_1_task_type import PostV1BountiesBodyType1TaskType
 from .post_v1_bounties_id_cancel_response_200 import PostV1BountiesIdCancelResponse200
+from .post_v1_bounties_id_cancel_response_200_entrants_item import PostV1BountiesIdCancelResponse200EntrantsItem
 from .post_v1_bounties_id_cancel_response_200_spec import PostV1BountiesIdCancelResponse200Spec
 from .post_v1_bounties_id_cancel_response_200_status import PostV1BountiesIdCancelResponse200Status
 from .post_v1_bounties_id_cancel_response_200_task_type import PostV1BountiesIdCancelResponse200TaskType
@@ -1280,6 +1284,9 @@ from .post_v1_bounties_id_entries_response_422_error import PostV1BountiesIdEntr
 from .post_v1_bounties_id_entries_response_422_error_code import PostV1BountiesIdEntriesResponse422ErrorCode
 from .post_v1_bounties_id_entries_response_422_error_detail import PostV1BountiesIdEntriesResponse422ErrorDetail
 from .post_v1_bounties_id_fund_confirm_response_200 import PostV1BountiesIdFundConfirmResponse200
+from .post_v1_bounties_id_fund_confirm_response_200_entrants_item import (
+    PostV1BountiesIdFundConfirmResponse200EntrantsItem,
+)
 from .post_v1_bounties_id_fund_confirm_response_200_spec import PostV1BountiesIdFundConfirmResponse200Spec
 from .post_v1_bounties_id_fund_confirm_response_200_status import PostV1BountiesIdFundConfirmResponse200Status
 from .post_v1_bounties_id_fund_confirm_response_200_task_type import PostV1BountiesIdFundConfirmResponse200TaskType
@@ -1401,6 +1408,7 @@ from .post_v1_bounties_id_pick_response_422_error import PostV1BountiesIdPickRes
 from .post_v1_bounties_id_pick_response_422_error_code import PostV1BountiesIdPickResponse422ErrorCode
 from .post_v1_bounties_id_pick_response_422_error_detail import PostV1BountiesIdPickResponse422ErrorDetail
 from .post_v1_bounties_response_201 import PostV1BountiesResponse201
+from .post_v1_bounties_response_201_entrants_item import PostV1BountiesResponse201EntrantsItem
 from .post_v1_bounties_response_201_spec import PostV1BountiesResponse201Spec
 from .post_v1_bounties_response_201_status import PostV1BountiesResponse201Status
 from .post_v1_bounties_response_201_task_type import PostV1BountiesResponse201TaskType
@@ -2125,6 +2133,7 @@ __all__ = (
     "GetV1BountiesIdEntriesResponse404ErrorCode",
     "GetV1BountiesIdEntriesResponse404ErrorDetail",
     "GetV1BountiesIdResponse200",
+    "GetV1BountiesIdResponse200EntrantsItem",
     "GetV1BountiesIdResponse200Spec",
     "GetV1BountiesIdResponse200Status",
     "GetV1BountiesIdResponse200TaskType",
@@ -2166,6 +2175,7 @@ __all__ = (
     "GetV1BountiesMine",
     "GetV1BountiesResponse200",
     "GetV1BountiesResponse200BountiesItem",
+    "GetV1BountiesResponse200BountiesItemEntrantsItem",
     "GetV1BountiesResponse200BountiesItemSpec",
     "GetV1BountiesResponse200BountiesItemStatus",
     "GetV1BountiesResponse200BountiesItemTaskType",
@@ -2396,6 +2406,7 @@ __all__ = (
     "PostMcpResponse403ErrorDetail",
     "PostV1AdminBountiesIdOpenBody",
     "PostV1AdminBountiesIdOpenResponse200",
+    "PostV1AdminBountiesIdOpenResponse200EntrantsItem",
     "PostV1AdminBountiesIdOpenResponse200Spec",
     "PostV1AdminBountiesIdOpenResponse200Status",
     "PostV1AdminBountiesIdOpenResponse200TaskType",
@@ -2813,6 +2824,7 @@ __all__ = (
     "PostV1BountiesBodyType1Spec",
     "PostV1BountiesBodyType1TaskType",
     "PostV1BountiesIdCancelResponse200",
+    "PostV1BountiesIdCancelResponse200EntrantsItem",
     "PostV1BountiesIdCancelResponse200Spec",
     "PostV1BountiesIdCancelResponse200Status",
     "PostV1BountiesIdCancelResponse200TaskType",
@@ -2902,6 +2914,7 @@ __all__ = (
     "PostV1BountiesIdEntriesResponse422ErrorCode",
     "PostV1BountiesIdEntriesResponse422ErrorDetail",
     "PostV1BountiesIdFundConfirmResponse200",
+    "PostV1BountiesIdFundConfirmResponse200EntrantsItem",
     "PostV1BountiesIdFundConfirmResponse200Spec",
     "PostV1BountiesIdFundConfirmResponse200Status",
     "PostV1BountiesIdFundConfirmResponse200TaskType",
@@ -3003,6 +3016,7 @@ __all__ = (
     "PostV1BountiesIdPickResponse422ErrorCode",
     "PostV1BountiesIdPickResponse422ErrorDetail",
     "PostV1BountiesResponse201",
+    "PostV1BountiesResponse201EntrantsItem",
     "PostV1BountiesResponse201Spec",
     "PostV1BountiesResponse201Status",
     "PostV1BountiesResponse201TaskType",
