@@ -111,7 +111,9 @@ function TableSeats({ entries, results }: { entries: Entry[]; results: Map<strin
             {e.submissionId ? (
               <VerdictBadge tone="allow">submitted</VerdictBadge>
             ) : (
-              <VerdictBadge tone="neutral">{e.status === "submitted" ? "submitted" : `no (${e.status})`}</VerdictBadge>
+              <VerdictBadge tone="neutral">
+                {e.status === "active" ? "not submitted yet" : e.status === "submitted" ? "submitted" : e.status}
+              </VerdictBadge>
             )}
             <span className="w-12 text-right tabular-nums" aria-label="Score">
               {r?.score ?? "—"}

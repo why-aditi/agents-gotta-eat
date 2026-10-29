@@ -76,3 +76,12 @@ Builds on ui-03 and ui-04 (creatures, moods, the kitchen voice, sticker cards). 
   text never HTML), entries and results with names, the form preview, existing tests updated.
 - E2E: selector updates; poster, arena, paypal, dispute, subcontract and demo still pass; new `bounties.spec.ts`
   screenshots of the menu, a bounty, the form and the Arena in light, dark and on a phone (contexts closed at the end).
+
+## Changes during the build
+
+| Change | Why |
+| --- | --- |
+| `DishCard` lives in `app/(app)/bounties/dish-card.tsx`, not `components/app/` | It uses the bounty `Countdown`, which lives there |
+| The feed rows are built into `EventFeedList` (`components/event-feed.tsx`) plus `FeedAvatar` for Today | One list already served the Arena and the demo |
+| An entry that hasn't submitted says "not submitted yet" instead of "no (active)" | Clearer |
+| The api reads `DEMO_RATE_LIMIT` (default 30 a minute per IP); the e2e run sets 1000 | Every signed-in page load reads the demo status, and every e2e browser shares one address, so the new specs used up the demo budget before `demo.spec.ts` ran |
