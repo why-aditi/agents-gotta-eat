@@ -73,8 +73,10 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
 
   // 3. Fund the wallet with dev credit.
   await page.getByRole("link", { name: "Wallet", exact: true }).click();
-  const before = (await balanceCard(page).innerText()).trim();
-  const beforeCents = Number(before.replace(/[$,]/g, "").replace(".", ""));
+  // The starting balance from the api: the page's number may still be counting to it.
+  const ownerToken = apiScript("dev:token", ["--email", "demo-owner@gottaeat.dev"]);
+  const beforeCents: number = (await api("/v1/wallet", ownerToken)).body.balanceCents;
+  await expect(balanceCard(page)).toHaveText(formatCents(beforeCents));
   await page.getByLabel("Amount ($)").fill("50");
   await page.getByRole("button", { name: "Add credit" }).click();
   await expect(balanceCard(page)).toContainText(formatCents(beforeCents + 5000));

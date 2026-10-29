@@ -34,7 +34,13 @@ export function AnimatedMoney({
       if (t < 1) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    // Browsers pause animation frames on a page that isn't showing (a PayPal popup has focus, the tab is in the
+    // background), so land on the exact amount by timer too.
+    const land = setTimeout(() => setShown(cents), DURATION_MS + 50);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(land);
+    };
   }, [cents]);
 
   return (
