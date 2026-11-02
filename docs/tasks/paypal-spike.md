@@ -84,15 +84,17 @@ Run Oct 26, 2026 on app `gottaeat-us` (US sandbox business account). An earlier 
 | # | Question | Expected (docs) | Actual | Evidence (`out/` file) |
 | --- | --- | --- | --- | --- |
 | 1 | Reauthorize on day 0 | Rejected (only after honor period) | Rejected: `REAUTHORIZATION_TOO_SOON`, "only allowed once from Day 4 to Day 29 since the date of the original authorization". Authorize response has no honor-period field; `expiration_time` is +29 days | `2026-10-26T11-38-39-721Z-reauthorize-A.json` |
-| 2 | Reauthorize on day 4, capture on new id | Works; new authorization id | Pending, run Oct 30 (label A, auth `4XG73589EW427930X`) | |
-| 3 | Capture after honor period, no reauthorize | Works within 29 days (not guaranteed) | Pending, run Oct 30 (label C, auth `9NV86338G23618744`) | |
+| 2 | Reauthorize on day 4, capture on new id | Works; new authorization id | Works (run Nov 2, day 7). `POST .../authorizations/4XG73589EW427930X/reauthorize`: HTTP 201, status `CREATED`, **new id** `3XX36701A73078241`, `expiration_time` unchanged at `2026-11-24T11:38:11Z`. Capture on the new id: HTTP 201, capture `5FG158753Y6010901`, `COMPLETED` | `2026-11-02T13-18-20-068Z-reauthorize-A.json`, `2026-11-02T13-18-28-508Z-capture-A.json` |
+| 3 | Capture after honor period, no reauthorize | Works within 29 days (not guaranteed) | Works (run Nov 2, day 7, past the honor period, no reauthorize). `POST .../authorizations/9NV86338G23618744/capture`: HTTP 201, capture `24539811WU731642F`, `COMPLETED` | `2026-11-02T13-18-33-912Z-capture-C.json` |
 | 4 | Payouts batch of 3 | SUCCESS for registered payees | Batch `KV4SD67CU8LE6`: PENDING, then PROCESSING, then SUCCESS in under a minute. Both registered items SUCCESS | `2026-10-26T11-35-09-408Z-payout-batch.json`, `2026-10-26T11-36-12-376Z-payout-status.json` |
 | 5 | UNCLAIMED item, cancel | UNCLAIMED; cancel returns funds | Item is `UNCLAIMED` with `RECEIVER_UNREGISTERED` (funds return after 30 days if unclaimed); the batch status is still SUCCESS. Cancel returned `500 INTERNAL_SERVICE_ERROR` twice | `2026-10-26T11-35-41-539Z-payout-status.json`, `2026-10-26T11-36-24-526Z-cancel-item.json` |
 | 6 | Toolkit tools | Orders and invoices work; no payouts | `get_order` and `list_transactions` work. `create_invoice` returns 403 NOT_AUTHORIZED: the app token has no invoicing scopes even with Invoicing ticked, and a direct Invoicing API call also returns 403, so the toolkit is not at fault. `send_invoice` not run. No payouts or authorizations tools | `2026-10-26T11-45-01-077Z-toolkit-list_transactions.json`, `2026-10-26T11-44-59-890Z-toolkit-create_invoice.json` |
 
 Also: capture on a day-0 authorization works (label B, capture `6RS947591C801971F`, COMPLETED).
 
-**Decision:** _authorization escrow_ (provisional) — authorize, capture and void all work, and the 72-hour cap stays inside the day 4 reauthorize window, so no reauthorize is needed in the happy path. Confirm after the day 4 results (2 and 3). Fall back to capture-then-hold only if capture after day 3 fails.
+**Decision:** _authorization escrow_ (**final**, confirmed Nov 2, 2026) — authorize, capture and void all work; reauthorize works from day 4 and returns a new id that captures; and capture after the 3-day honor period works without a reauthorize. Findings 2 and 3 were run on day 7 (the original plan said day 4, Oct 30). The capture-then-hold fallback is not needed.
+
+Caveat: sandbox does not enforce the honor period as a hard cutoff on capture (it is only a guarantee in production), so capture past day 3 succeeding here does not prove production will honor it. The design keeps the 72-hour cap and the day 4 reauthorize job for that reason. Every spike authorization was consumed or reauthorized; none is left to void.
 
 **Implications for pm-04:**
 - Reauthorize is allowed once, from day 4 to day 29. The reauthorize job only matters for bounties that outlive 72 hours.

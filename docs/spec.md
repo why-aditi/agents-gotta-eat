@@ -122,7 +122,7 @@ Two money paths: **bounty escrow** lives on PayPal as an authorization until jud
 ### Bounty escrow
 
 - The poster's order uses `intent: AUTHORIZE` for reward + 10% fee.
-- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. Spike result (Oct 26): sandbox allows one reauthorize, from day 4 to day 29, and rejects it earlier with `REAUTHORIZATION_TOO_SOON`; the authorization response has no honor-period field, so we compute `honor_until` as authorized + 3 days. The platform business account must be a US account, or Payouts fails with `PAYOUT_NOT_AVAILABLE`.
+- PayPal guarantees an authorization for a 3-day honor period and allows capture for up to 29 days. Our 72-hour cap keeps every bounty inside the honor period, so we never need to reauthorize in the happy path. A reauthorize job exists anyway for disputes that run long. Spike result (Oct 26): sandbox allows one reauthorize, from day 4 to day 29, and rejects it earlier with `REAUTHORIZATION_TOO_SOON`; the authorization response has no honor-period field, so we compute `honor_until` as authorized + 3 days. Spike result (Nov 2, day 7): reauthorize returns a new authorization id that captures, and capture after the honor period without a reauthorize also works, so **authorization escrow is the final decision** (no capture-then-hold needed). The platform business account must be a US account, or Payouts fails with `PAYOUT_NOT_AVAILABLE`.
 - On a winner: capture the full amount → the money lands in the platform's PayPal account → the ledger credits the reward to the winner owner's wallet and the fee to `platform:fees`. Owners withdraw through Payouts.
 - On no passing entry, or the poster cancels before any entry: void the authorization.
 
@@ -337,7 +337,7 @@ This gives the judges a second, clearly AI-native PayPal integration beyond the 
 
 ### Verify in the week 1 spike
 
-- Authorization honor and validity periods in sandbox, and whether reauthorize is allowed in sandbox.
+- Authorization honor and validity periods in sandbox, and whether reauthorize is allowed in sandbox. Result: reauthorize works from day 4 and returns a new id; capture works on the new id and after the honor period without reauthorize.
 - Payouts enabled on the sandbox business account; batch of 3 items end to end; the `UNCLAIMED` path.
 - Agent Toolkit tool coverage for orders, payouts and invoices. Result: orders and transactions work, no payouts or authorizations tools, and invoices returned 403 on the sandbox app even with Invoicing enabled, so the Treasurer does not use invoices.
 
@@ -444,7 +444,7 @@ Daily: a 15-minute standup in the evening, and `main` must deploy green every ni
 | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- |
 | Free LLM limits hit during judging | High | High | Demo mode replays recorded real runs; budget counter switches to it automatically |
-| Payouts or reauthorize behave differently in sandbox | Medium | High | Week 1 spike; fall back to capture-then-hold in the ledger if authorizations don't work as needed |
+| Payouts or reauthorize behave differently in sandbox | Medium | High | Week 1 spike (done: authorizations, reauthorize and late capture all work in sandbox; the capture-then-hold fallback is not needed) |
 | GitHub Actions sandbox too slow (cold start \~30–60 s) | Medium | Medium | Acceptable for 72-hour bounties; pre-recorded runs in the video; Oracle free VM with Docker as backup |
 | Scope too big for 5½ weeks | Medium | High | Pocket Money standalone by Oct 18; cut order: Treasurer → creative writing → write-tests type |
 | Two products confuse the 3-minute pitch | Medium | Medium | One sentence, one story: a bounty that ends in a subcontract and a blocked attack |
