@@ -1,6 +1,7 @@
 // The admin dashboard in a real browser: a dev credit shows up as a journal with its lines, reconciliation is
 // green, and the LLM usage tab shows the daily budget.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -9,14 +10,10 @@ const DATABASE_URL = process.env.DATABASE_URL ?? "postgres://gottaeat:gottaeat@l
 const SHOTS = "tests/e2e/screenshots";
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync(
-    process.execPath,
-    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
-    {
-      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-      encoding: "utf8",
-    },
-  ).trim();
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
+    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+    encoding: "utf8",
+  }).trim();
 }
 
 async function shot(page: Page, name: string) {

@@ -2,6 +2,7 @@
 // list shows it as a creature card and its profile shows the diet and the meal on its timeline. Screenshots in light
 // and dark, on desktop and a phone.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -13,14 +14,10 @@ const DEMO_OWNER = "demo-owner@gottaeat.dev";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync(
-    process.execPath,
-    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
-    {
-      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-      encoding: "utf8",
-    },
-  ).trim();
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
+    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+    encoding: "utf8",
+  }).trim();
 }
 
 async function api(path: string, auth: string, init: { method?: string; body?: unknown; key?: string } = {}) {

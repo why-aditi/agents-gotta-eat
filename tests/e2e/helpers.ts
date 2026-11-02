@@ -1,6 +1,7 @@
 // Helpers shared by the PayPal and dispute e2e specs: the api over fetch, dev tokens, SQL, the fake PayPal's call log
 // and screenshots.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import type { Page } from "@playwright/test";
 
@@ -13,14 +14,10 @@ const DATABASE_URL = process.env.DATABASE_URL ?? "postgres://gottaeat:gottaeat@l
 
 // Runs pnpm through node (npm_execpath is set by `pnpm e2e`): a bare `pnpm` is a .cmd shim and fails to spawn on Windows.
 export function apiScript(script: string, args: string[]): string {
-  return execFileSync(
-    process.execPath,
-    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
-    {
-      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-      encoding: "utf8",
-    },
-  ).trim();
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
+    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+    encoding: "utf8",
+  }).trim();
 }
 
 // Runs one parameterised statement with the api's own pg driver (no psql needed on the runner).
@@ -31,19 +28,8 @@ export function sql(text: string, params: unknown[]): void {
     "c.connect().then(() => c.query(process.argv[1], JSON.parse(process.argv[2]))).then(() => c.end())" +
     ".catch((e) => { console.error(e); process.exit(1); });";
   execFileSync(
-    process.execPath,
-    [
-      process.env.npm_execpath!,
-      "--silent",
-      "--filter",
-      "@gottaeat/api",
-      "exec",
-      "node",
-      "-e",
-      script,
-      text,
-      JSON.stringify(params),
-    ],
+    PNPM[0],
+    [...PNPM[1], "--silent", "--filter", "@gottaeat/api", "exec", "node", "-e", script, text, JSON.stringify(params)],
     { env: { ...process.env, DATABASE_URL }, encoding: "utf8" },
   );
 }
