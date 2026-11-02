@@ -67,13 +67,22 @@ async function requireRecording(conn: Conn, id: string): Promise<Recording> {
 }
 
 // 409 recording_active when one is already running (the partial unique index backs this up under a race).
-export async function startRecording(db: Db, title: string, now: Date = new Date()): Promise<Recording> {
+// started_at is compared with events.created_at, which Postgres stamps with its own now(). So by default started_at
+// is the database clock too: a JS Date from an app host whose clock runs ahead of (or behind) the database would
+// otherwise drop the first events of the recording, or none. `now` is only for tests that need a fixed start.
+export async function startRecording(db: Db, title: string, now?: Date): Promise<Recording> {
   const id = newId("rec");
   try {
     await db.transaction(async (tx) => {
       const [active] = await tx.select({ id: recordings.id }).from(recordings).where(isNull(recordings.endedAt));
       if (active) throw new ApiError("recording_active", "A recording is already running; stop it first");
-      await tx.insert(recordings).values({ id, title, startedAt: now, source: "live", createdAt: now });
+      await tx.insert(recordings).values({
+        id,
+        title,
+        startedAt: now ?? sql`now()`,
+        source: "live",
+        createdAt: now ?? sql`now()`,
+      });
     });
   } catch (err) {
     if ((err as { code?: string }).code === "23505" || (err as { cause?: { code?: string } }).cause?.code === "23505")

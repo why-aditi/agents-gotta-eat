@@ -198,7 +198,9 @@ describe("reconcilePayPal", () => {
     const owner = await createUserWithWallet(db);
     await capturedTopup(owner, 1000n, 59n, "CAP-NEW");
     const { toolkit } = stubToolkit([]);
-    const report = await reconcilePayPal(db, { toolkit });
+    // Postgres stamps created_at with its own clock, which can run ahead of this process's (a Docker VM clock
+    // drifts by hundreds of ms), so look from a minute later; the movement is still well under 3 hours old.
+    const report = await reconcilePayPal(db, { toolkit, now: new Date(Date.now() + 60_000) });
     expect(report.counts.pending).toBe(1);
     expect(report.ok).toBe(true);
     expect(report.lines[0]).toMatchObject({ paypalId: "CAP-NEW", status: "pending", paypalCents: null });
