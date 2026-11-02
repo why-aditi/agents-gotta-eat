@@ -6,9 +6,9 @@
 
 <sub>20-second launch video ([MP4](docs/media/brag.mp4)). Click the image to play it.</sub>
 
-- Live demo: `<web-url>` (logged out, `/` is the marketing page and `/demo` replays a recorded run; "Continue as demo owner" signs you in)
+- Live demo: `https://agents-gotta-eat.vercel.app` (logged out, `/` is the marketing page and `/demo` replays a recorded run; "Continue as demo owner" signs you in)
 - Video (under 3 minutes): `<video-url>`
-- API: `<api-url>/v1/openapi.json` · MCP: `<api-url>/mcp`
+- API: `https://gottaeat-api.onrender.com/v1/openapi.json` · MCP: `https://gottaeat-api.onrender.com/mcp`
 - Demo script and runbook: [`docs/demo-script.md`](docs/demo-script.md) · Spec: [`docs/spec.md`](docs/spec.md) · Architecture: [`docs/architecture.md`](docs/architecture.md)
 
 Built for the PayPal AI Hackathon 2026. Sandbox only, USD only.
@@ -140,7 +140,7 @@ Every PayPal call sends a `PayPal-Request-Id`; every money-moving POST to our ap
 Needs Node 22 (see `.nvmrc`), pnpm 10 (`corepack enable`) and Docker with Docker Desktop running (or any Postgres 16). [uv](https://docs.astral.sh/uv/) is only needed for the optional house agents below. On Windows use Git Bash or WSL for the shell snippets.
 
 ```sh
-git clone <repo-url> && cd agents-gotta-eat
+git clone https://github.com/why-aditi/agents-gotta-eat.git && cd agents-gotta-eat
 corepack enable
 cp .env.example .env
 # In .env set at least (no openssl? use: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"):
@@ -178,7 +178,7 @@ pnpm --filter @gottaeat/api house:setup
 cd agents && uv sync && uv run --env-file ../.env uvicorn app:app --reload --port 8000
 ```
 
-Register the PayPal webhook at `<api-url>/webhooks/paypal` with these events: `CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.DENIED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `.FAILED`, `.RETURNED`, `.UNCLAIMED`, `.CANCELED`, and `PAYMENT.PAYOUTSBATCH.SUCCESS`.
+Register the PayPal webhook at `https://gottaeat-api.onrender.com/webhooks/paypal` with these events: `CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.DENIED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `.FAILED`, `.RETURNED`, `.UNCLAIMED`, `.CANCELED`, and `PAYMENT.PAYOUTSBATCH.SUCCESS`.
 
 Health checks: http://localhost:3000/health, http://localhost:3001/health, http://localhost:8000/health.
 
@@ -187,7 +187,7 @@ Health checks: http://localhost:3000/health, http://localhost:3001/health, http:
 Register an agent on the **Agents** page; its API key (`gte_agent_…`) is shown once.
 
 - **REST:** `Authorization: Bearer gte_agent_…` against `/v1`. The OpenAPI document is at `/v1/openapi.json`, and a Postman collection is in [`docs/postman/`](docs/postman/gottaeat.postman_collection.json) (set `baseUrl`, `agentKey`, `userToken`); a typed TS client is in `packages/sdk-ts` and a Python client in `agents/gottaeat_sdk`.
-- **MCP (Streamable HTTP):** `<api-url>/mcp` with the same bearer key.
+- **MCP (Streamable HTTP):** `https://gottaeat-api.onrender.com/mcp` with the same bearer key.
 - **MCP (stdio)**, for Claude Desktop or any MCP client:
 
 ```json
@@ -196,7 +196,7 @@ Register an agent on the **Agents** page; its API key (`gte_agent_…`) is shown
     "gottaeat": {
       "command": "npx",
       "args": ["-y", "@gottaeat/mcp"],
-      "env": { "GOTTAEAT_API_KEY": "gte_agent_...", "GOTTAEAT_API_URL": "<api-url>" }
+      "env": { "GOTTAEAT_API_KEY": "gte_agent_...", "GOTTAEAT_API_URL": "https://gottaeat-api.onrender.com" }
     }
   }
 }
