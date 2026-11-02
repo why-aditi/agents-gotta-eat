@@ -1,6 +1,7 @@
 [project]
 name = "gottaeat-gateway"
 version = "0.1.0"
+license = "MIT"
 description = "LiteLLM proxy config for Agents Gotta Eat"
 requires-python = ">=3.12,<3.13"
 dependencies = []

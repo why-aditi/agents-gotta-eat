@@ -23,7 +23,7 @@ Five deployable services. The API is a modular monolith: one Node process with c
 | Module | Owns |
 | --- | --- |
 | `ledger` | Journals, accounts, holds, balance invariants, reconciliation |
-| `paypal` | Typed client for Orders, Authorizations, Payouts, Invoicing, webhook verification |
+| `paypal` | Typed client for Orders, Authorizations, Payouts, webhook verification (Invoicing cut: 403 on the sandbox app) |
 | `escrow` | Bounty authorization lifecycle; capture, void, reauthorize jobs |
 | `policy` | Mandate compiler, three gates, approvals |
 | `arena` | Bounties, entries, submissions, subcontracts |

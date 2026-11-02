@@ -38,6 +38,7 @@ services:
         value: https://api-m.sandbox.paypal.com
       - key: GATEWAY_URL
         sync: false
+      # Must equal the gateway's and the agents' LITELLM_MASTER_KEY (set by hand in all three).
       - key: LITELLM_MASTER_KEY
         sync: false
       - key: LLM_DAILY_REQUEST_BUDGET

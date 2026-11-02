@@ -33,7 +33,7 @@ Spec sections: "AI components" (LLM gateway: daily counter switches to demo mode
 | api events | `demo.spend_flagged` on intent `ask` only (not gate 1 ask, not allow/deny); PayPal ids on opened/settled for real escrows, absent for dev |
 | api admin | non-admin 403 on every admin demo route; reset 404 without flags, idempotent with them; import idempotent by title |
 | api rate limit | 31st public demo request in a minute from one IP → 429 |
-| web | replay hook: speed, pause/resume, restart, end, resume with `from` (mocked EventSource); banner text for import; feed lines plain text; middleware allows `/demo`; `/` redirect logic; fallback banner; admin demo tab actions |
+| web | replay hook: speed, pause/resume, restart, end, resume with `from` (mocked EventSource); banner text for import; feed lines plain text; middleware allows `/demo`; `/` is now the marketing page, /demo is the replay (supersedes the old redirect); fallback banner; admin demo tab actions |
 | e2e `tests/e2e/demo.spec.ts` (coordinator) | logged out `/` → `/demo` plays the imported rehearsal at 4× to the end, feed shows the flagged spend and the flagged entry; admin records a run (open a bounty, enter over REST), stops, features it, `/demo` plays it |
 
 ## Done when

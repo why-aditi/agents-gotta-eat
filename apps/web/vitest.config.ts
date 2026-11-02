@@ -22,6 +22,8 @@ export default defineConfig({
     environment: "node",
     // Form tests type character by character; on a slow machine (Windows) 5s is not always enough.
     testTimeout: 15_000,
+    // ponytail: one worker per core starves jsdom startup on Windows and times tests out; raise on a bigger machine
+    maxWorkers: 4,
     setupFiles: ["./test/setup.ts"],
     include: ["**/*.test.{ts,tsx}"],
     exclude: ["**/node_modules/**", "**/.next/**"],

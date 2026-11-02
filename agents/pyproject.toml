@@ -1,6 +1,7 @@
 [project]
 name = "gottaeat-agents"
 version = "0.1.0"
+license = "MIT"
 description = "Agents Gotta Eat house agents (LangGraph workers)"
 requires-python = ">=3.12,<3.13"
 dependencies = [

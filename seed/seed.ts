@@ -11,7 +11,9 @@ const HOURS = Number(process.env.SEED_DEADLINE_HOURS ?? "48");
 const dir = join(import.meta.dirname, "bounties");
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  // `pnpm seed` sets npm_execpath to pnpm's JS entry: run it with node, no shell (a `.cmd` shim needs one on Windows).
+  const pnpm = process.env.npm_execpath ? [process.execPath, [process.env.npm_execpath]] : (["pnpm", []] as const);
+  return execFileSync(pnpm[0], [...pnpm[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: process.env,
     encoding: "utf8",
   }).trim();
