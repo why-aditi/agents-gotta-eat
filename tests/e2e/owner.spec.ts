@@ -79,7 +79,9 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   const beforeCents: number = (await api("/v1/wallet", ownerToken)).body.balanceCents;
   await expect(balanceCard(page)).toHaveText(formatCents(beforeCents));
   // Wait for the page to finish loading, or the click can land before the form is interactive.
-  await page.waitForLoadState("networkidle");
+  // Best effort: the nav prefetches every page and the PayPal SDK loads from the internet, so on a slow machine the
+  // network may not settle; the assertions below wait for their own conditions.
+  await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => undefined);
   await page.getByLabel("Amount ($)").fill("50");
   await page.getByRole("button", { name: "Add credit" }).click();
   await expect(page.getByText("Added $50.00.")).toBeVisible();
@@ -87,7 +89,8 @@ test("owner signs in, sets a mandate and approves a spend", async ({ page }) => 
   await expect
     .poll(async () => (await api("/v1/wallet", ownerToken)).body.balanceCents, { message: "api balance" })
     .toBe(beforeCents + 5000);
-  await expect(balanceCard(page)).toContainText(formatCents(beforeCents + 5000));
+  // The server action revalidates /wallet behind the nav prefetches, which a slow machine can take a while to drain.
+  await expect(balanceCard(page)).toContainText(formatCents(beforeCents + 5000), { timeout: 30_000 });
   await shot(page, "04-wallet-credited");
 
   // 4. Write and confirm a mandate: up to $10 a spend, $50 a day, ask above $5.

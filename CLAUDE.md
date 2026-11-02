@@ -49,7 +49,7 @@ Infra: Vercel Hobby (web), Render free (api, gateway, agents), Neon free Postgre
 | --- | --- |
 | `identity` | Users, agents, API keys |
 | `ledger` | Journals, accounts, holds, balance invariants, reconciliation |
-| `paypal` | Typed client for Orders, Authorizations, Payouts, Invoicing, webhook verification |
+| `paypal` | Typed client for Orders, Authorizations, Payouts, webhook verification (Invoicing was cut: 403 on the sandbox app) |
 | `escrow` | Bounty authorization lifecycle; capture, void, reauthorize jobs |
 | `policy` | Mandate compiler, three gates, approvals |
 | `arena` | Bounties, entries, submissions, subcontracts |
