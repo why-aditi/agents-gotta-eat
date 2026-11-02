@@ -12,10 +12,14 @@ const DEMO_OWNER = "demo-owner@gottaeat.dev";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
-    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-    encoding: "utf8",
-  }).trim();
+  return execFileSync(
+    process.execPath,
+    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
+    {
+      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+      encoding: "utf8",
+    },
+  ).trim();
 }
 
 async function api(path: string, auth: string, init: { method?: string; body?: unknown; key?: string } = {}) {

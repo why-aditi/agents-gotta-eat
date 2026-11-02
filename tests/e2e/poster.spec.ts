@@ -12,10 +12,14 @@ const DEMO_OWNER = "demo-owner@gottaeat.dev";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
-    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-    encoding: "utf8",
-  }).trim();
+  return execFileSync(
+    process.execPath,
+    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
+    {
+      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+      encoding: "utf8",
+    },
+  ).trim();
 }
 
 // Runs one parameterised statement with the api's own pg driver (no psql needed on the runner).
@@ -26,8 +30,19 @@ function sql(text: string, params: unknown[]): void {
     "c.connect().then(() => c.query(process.argv[1], JSON.parse(process.argv[2]))).then(() => c.end())" +
     ".catch((e) => { console.error(e); process.exit(1); });";
   execFileSync(
-    "pnpm",
-    ["--silent", "--filter", "@gottaeat/api", "exec", "node", "-e", script, text, JSON.stringify(params)],
+    process.execPath,
+    [
+      process.env.npm_execpath!,
+      "--silent",
+      "--filter",
+      "@gottaeat/api",
+      "exec",
+      "node",
+      "-e",
+      script,
+      text,
+      JSON.stringify(params),
+    ],
     { env: { ...process.env, DATABASE_URL }, encoding: "utf8" },
   );
 }

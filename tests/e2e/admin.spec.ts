@@ -9,10 +9,14 @@ const DATABASE_URL = process.env.DATABASE_URL ?? "postgres://gottaeat:gottaeat@l
 const SHOTS = "tests/e2e/screenshots";
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
-    env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
-    encoding: "utf8",
-  }).trim();
+  return execFileSync(
+    process.execPath,
+    [process.env.npm_execpath!, "--silent", "--filter", "@gottaeat/api", script, ...args],
+    {
+      env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
+      encoding: "utf8",
+    },
+  ).trim();
 }
 
 async function shot(page: Page, name: string) {
