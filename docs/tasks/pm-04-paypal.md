@@ -13,7 +13,7 @@ Spec sections: "Money model" (Bounty escrow, Wallets, Worked example), "PayPal i
 | Platform business account must be a US account (else Payouts returns `PAYOUT_NOT_AVAILABLE`) | Documented in `.env.example` |
 | Batch status can be SUCCESS while an item is UNCLAIMED | Payout state follows item events, never the batch event |
 | Cancel of an UNCLAIMED item returned 500 twice in sandbox | We do not rely on cancel. UNCLAIMED withdrawals stay `pending` until `RETURNED`/`CANCELED`/`SUCCEEDED` arrives |
-| Findings 2 and 3 (reauthorize on day 4, capture after the honor period) are pending (Oct 30) | Provisional decision: authorization escrow. Revisit if capture after day 3 fails |
+| Reauthorize on day 7 returns HTTP 201 with a new authorization id (`expiration_time` unchanged), and capture on the new id works. Capture after the honor period with no reauthorize also works (Nov 2) | Decision final: authorization escrow. Store the new `authorization_id` after reauthorize and capture on it |
 
 ## Decisions
 
