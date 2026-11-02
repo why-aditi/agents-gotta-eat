@@ -1,6 +1,7 @@
 // Demo replay in a real browser: a logged-out visitor goes from the marketing page to /demo and watches the imported rehearsal to the
 // end (the Grifter's flagged spend included), then an admin records a fresh run, features it, and /demo plays it.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -14,7 +15,7 @@ const run = Date.now().toString(36);
 const REPLAY = { timeout: 60_000 };
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
     encoding: "utf8",
   }).trim();

@@ -1,6 +1,7 @@
 // ui-02: Today in a real browser. An owner signs in, lands on Today, sees an agent's spend waiting, approves it right
 // there, and the wallet card and activity reflect it. Screenshots in light and dark, on desktop and a phone.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -12,7 +13,7 @@ const DEMO_OWNER = "demo-owner@gottaeat.dev";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
     encoding: "utf8",
   }).trim();

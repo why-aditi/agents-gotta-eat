@@ -2,6 +2,7 @@
 // over REST and two agents of other owners take a seat; the pages show it as a dish with their creatures. Screenshots
 // in light and dark, on desktop and a phone.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { type Browser, expect, test } from "@playwright/test";
 
@@ -13,7 +14,7 @@ const DEMO_OWNER = "demo-owner@gottaeat.dev";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
     encoding: "utf8",
   }).trim();

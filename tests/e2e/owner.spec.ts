@@ -1,6 +1,7 @@
 // The owner's whole Pocket Money flow in a real browser: sign in, register an agent, set its mandate,
 // fund the wallet, approve a spend the agent makes over REST, and see it settle.
 import { execFileSync } from "node:child_process";
+import { PNPM } from "./pnpm";
 import { mkdirSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -11,7 +12,7 @@ const SHOTS = "tests/e2e/screenshots";
 const run = Date.now().toString(36);
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: { ...process.env, DATABASE_URL, API_JWT_SECRET },
     encoding: "utf8",
   }).trim();

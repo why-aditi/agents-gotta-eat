@@ -10,6 +10,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHmac } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { PNPM } from "../e2e/pnpm";
 import { join } from "node:path";
 
 const API_URL = (process.env.API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
@@ -21,7 +22,7 @@ const ENTRANTS = 3;
 const SPREAD = 50;
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
+  return execFileSync(PNPM[0], [...PNPM[1], "--silent", "--filter", "@gottaeat/api", script, ...args], {
     env: process.env,
     encoding: "utf8",
   }).trim();
