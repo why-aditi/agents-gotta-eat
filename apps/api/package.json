@@ -1,6 +1,7 @@
 {
   "name": "@gottaeat/api",
   "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=../../.env src/migrate.ts",
     "typecheck": "tsc --noEmit",
-    "test": "CONTRACT_COVERAGE=1 vitest run",
+    "test": "cross-env CONTRACT_COVERAGE=1 vitest run",
     "dev:token": "tsx --env-file-if-exists=../../.env scripts/dev-token.ts",
     "openapi:export": "tsx scripts/openapi-export.ts",
     "grant-admin": "tsx --env-file-if-exists=../../.env scripts/grant-admin.ts",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@types/pg": "8.23.1",
+    "cross-env": "10.1.0",
     "drizzle-kit": "0.31.11",
     "fast-check": "4.10.2"
   }

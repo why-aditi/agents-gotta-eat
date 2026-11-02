@@ -137,21 +137,23 @@ Every PayPal call sends a `PayPal-Request-Id`; every money-moving POST to our ap
 
 ## Run locally
 
-Needs Node 22, pnpm 10, [uv](https://docs.astral.sh/uv/) and Docker (or any Postgres 16).
+Needs Node 22 (see `.nvmrc`), pnpm 10 (`corepack enable`) and Docker with Docker Desktop running (or any Postgres 16). [uv](https://docs.astral.sh/uv/) is only needed for the optional house agents below. On Windows use Git Bash or WSL for the shell snippets.
 
 ```sh
+git clone <repo-url> && cd agents-gotta-eat
+corepack enable
 cp .env.example .env
-# In .env set at least:
+# In .env set at least (no openssl? use: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"):
 #   API_JWT_SECRET=<openssl rand -hex 32>
 #   AUTH_SECRET=<openssl rand -base64 32>
 #   DEMO_LOGIN=true  ALLOW_DEV_CREDIT=true  ALLOW_DEV_FUNDING=true
-docker compose up -d                          # Postgres 16 on :5432
+docker compose up -d                          # Postgres 16 on :5432 (taken? change the port here and in DATABASE_URL)
 pnpm install
-pnpm --filter @gottaeat/api db:migrate
+pnpm --filter @gottaeat/api db:migrate         # required: pnpm dev does not migrate
 pnpm dev                                      # web :3000, api :3001
 ```
 
-Open http://localhost:3000/login and click **Continue as demo owner**. Then, in another terminal:
+Open http://localhost:3000/login and click **Continue as demo owner** (judges: this is the login path on the hosted site too). Then, in another terminal:
 
 ```sh
 pnpm --filter @gottaeat/api grant-admin --email demo-owner@gottaeat.dev   # Admin tab
@@ -175,6 +177,8 @@ docker run --rm -p 4000:4000 -e GEMINI_API_KEY -e GROQ_API_KEY -e OPENROUTER_API
 pnpm --filter @gottaeat/api house:setup
 cd agents && uv sync && uv run --env-file ../.env uvicorn app:app --reload --port 8000
 ```
+
+Register the PayPal webhook at `<api-url>/webhooks/paypal` with these events: `CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.DENIED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `.FAILED`, `.RETURNED`, `.UNCLAIMED`, `.CANCELED`, and `PAYMENT.PAYOUTSBATCH.SUCCESS`.
 
 Health checks: http://localhost:3000/health, http://localhost:3001/health, http://localhost:8000/health.
 

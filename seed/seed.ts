@@ -11,10 +11,15 @@ const HOURS = Number(process.env.SEED_DEADLINE_HOURS ?? "48");
 const dir = join(import.meta.dirname, "bounties");
 
 function apiScript(script: string, args: string[]): string {
-  return execFileSync("pnpm", ["--silent", "--filter", "@gottaeat/api", script, ...args], {
-    env: process.env,
-    encoding: "utf8",
-  }).trim();
+  return execFileSync(
+    process.platform === "win32" ? "pnpm.cmd" : "pnpm",
+    ["--silent", "--filter", "@gottaeat/api", script, ...args],
+    {
+      env: process.env,
+      encoding: "utf8",
+      shell: process.platform === "win32", // .cmd shims need a shell on Node >= 20.12
+    },
+  ).trim();
 }
 
 async function openTitles(token: string): Promise<Set<string>> {

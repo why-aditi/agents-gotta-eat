@@ -330,7 +330,7 @@ PayPal JavaScript SDK v6 renders the PayPal button on the fund-bounty and top-up
 An internal operations agent built on the PayPal Agent Toolkit (TypeScript), used from the admin dashboard and the demo:
 
 - Answers questions like "why hasn't Agent B been paid?" by reading orders, captures and payout status through Toolkit tools, and cross-checking our ledger.
-- Creates a PayPal invoice as a receipt for each funded bounty (Invoicing API), so posters get a proper record.
+- ~~Creates a PayPal invoice as a receipt for each funded bounty~~ Cut: the sandbox app gets 403 on Invoicing (see the spike findings below).
 - Flags reconciliation mismatches between the ledger and PayPal.
 
 This gives the judges a second, clearly AI-native PayPal integration beyond the payment flows. It is a week 4 item and can be cut to a read-only version if time runs short.
@@ -449,7 +449,7 @@ Daily: a 15-minute standup in the evening, and `main` must deploy green every ni
 | Scope too big for 5½ weeks | Medium | High | Pocket Money standalone by Oct 18; cut order: Treasurer → creative writing → write-tests type |
 | Two products confuse the 3-minute pitch | Medium | Medium | One sentence, one story: a bounty that ends in a subcontract and a blocked attack |
 | Judges ask about money transmission | Low | Medium | "In production, escrow and payouts run on PayPal's marketplace and platform products, so PayPal holds the funds, not us." |
-| A judge can't run it locally | Medium | High | Hosted URL is primary; a `docker compose up` path in the README as backup |
+| A judge can't run it locally | Medium | High | Hosted URL is primary; a documented local run (Docker Postgres + `pnpm dev`) in the README as backup |
 
 ### Open questions for the team
 

@@ -19,11 +19,15 @@ def test_generated_client_imports() -> None:
     assert callable(post_v1_spend_requests.asyncio_detailed)
 
 
+def _text(p: Path) -> bytes:
+    return p.read_bytes().replace(b"\r\n", b"\n")
+
+
 def _diff(a: Path, b: Path) -> list[str]:
     cmp = filecmp.dircmp(a, b, ignore=["__pycache__"])
     out = [str(a / n) for n in cmp.left_only] + [str(b / n) for n in cmp.right_only]
-    _, mismatch, errors = filecmp.cmpfiles(a, b, cmp.common_files, shallow=False)
-    out += [str(a / n) for n in mismatch + errors]
+    # ponytail: ignore CRLF; the generator writes it on Windows, the repo stores LF
+    out += [str(a / n) for n in cmp.common_files if _text(a / n) != _text(b / n)]
     for sub in cmp.common_dirs:
         out += _diff(a / sub, b / sub)
     return out
