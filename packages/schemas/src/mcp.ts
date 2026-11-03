@@ -17,9 +17,9 @@ export const IdempotencyKey = z.string().regex(/^[\x20-\x7E]{1,255}$/, "1-255 pr
 export const GetWalletInput = z.object({});
 export type GetWalletInput = z.infer<typeof GetWalletInput>;
 
-// The key is sent as the Idempotency-Key header. Left out, each call gets a fresh one (no retry protection).
+// The key is sent as the Idempotency-Key header. Required, like REST: a retry with the same key never repeats the call.
 export const RequestSpendInput = CreateSpendRequest.extend({
-  idempotencyKey: IdempotencyKey.optional().describe(
+  idempotencyKey: IdempotencyKey.describe(
     "Reuse the same key when retrying the same spend, so it happens at most once.",
   ),
 });
@@ -39,13 +39,13 @@ export type GetBountyInput = z.infer<typeof GetBountyInput>;
 
 export const EnterBountyInput = z.object({
   id: z.string().min(1).max(64).describe("Bounty id"),
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying, so the stake is paid once."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying, so the stake is paid once."),
 });
 export type EnterBountyInput = z.infer<typeof EnterBountyInput>;
 
 export const SubmitWorkInput = SubmitWorkRequest.extend({
   id: z.string().min(1).max(64).describe("Your entry id"),
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying the same submission."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying the same submission."),
 });
 export type SubmitWorkInput = z.infer<typeof SubmitWorkInput>;
 
@@ -53,12 +53,12 @@ export const GetResultsInput = z.object({ id: z.string().min(1).max(64).describe
 export type GetResultsInput = z.infer<typeof GetResultsInput>;
 
 export const LogRunStepInput = CreateAgentRunRequest.extend({
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying, so the step is logged once."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying, so the step is logged once."),
 });
 export type LogRunStepInput = z.infer<typeof LogRunStepInput>;
 
 export const HireAgentInput = CreateSubcontractRequest.extend({
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying, so you hire once."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying, so you hire once."),
 });
 export type HireAgentInput = z.infer<typeof HireAgentInput>;
 
@@ -70,13 +70,13 @@ export type GetJobInput = z.infer<typeof GetJobInput>;
 
 export const DeliverJobInput = DeliverSubcontractRequest.extend({
   id: z.string().min(1).max(64).describe("Subcontract id"),
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying the same delivery."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying the same delivery."),
 });
 export type DeliverJobInput = z.infer<typeof DeliverJobInput>;
 
 export const AcceptDeliveryInput = AcceptSubcontractRequest.extend({
   id: z.string().min(1).max(64).describe("Subcontract id"),
-  idempotencyKey: IdempotencyKey.optional().describe("Reuse the same key when retrying, so the worker is paid once."),
+  idempotencyKey: IdempotencyKey.describe("Reuse the same key when retrying, so the worker is paid once."),
 });
 export type AcceptDeliveryInput = z.infer<typeof AcceptDeliveryInput>;
 
@@ -126,7 +126,7 @@ export const McpTools = [
     name: "request_spend",
     title: "Request a spend",
     description:
-      "Ask to pay another agent from your owner's wallet. Amounts are integer cents. The policy outcome (allow, pending_approval or deny, with reasons) is a normal result, not an error. Pass an idempotencyKey and reuse it when you retry the same spend, so it is made at most once.",
+      "Ask to pay another agent from your owner's wallet. Amounts are integer cents. The policy outcome (allow, pending_approval or deny, with reasons) is a normal result, not an error. idempotencyKey is required: generate a unique one per spend and reuse it when you retry that spend, so it is made at most once.",
     input: RequestSpendInput,
     method: "POST",
     path: "/v1/spend-requests",
@@ -207,7 +207,7 @@ export const McpTools = [
     name: "hire_agent",
     title: "Hire an agent",
     description:
-      "Hire another agent for a task, paid from your owner's wallet. amountCents (integer cents) goes to the worker's owner when you accept the delivery; a 2% fee is added and the total is held now. It goes through your mandate like any spend: the result has spend.decision allow (job open), pending_approval (job offered, waiting for your owner) or deny (no job, with reasons). Pass an idempotencyKey and reuse it when you retry, so you hire once.",
+      "Hire another agent for a task, paid from your owner's wallet. amountCents (integer cents) goes to the worker's owner when you accept the delivery; a 2% fee is added and the total is held now. It goes through your mandate like any spend: the result has spend.decision allow (job open), pending_approval (job offered, waiting for your owner) or deny (no job, with reasons). idempotencyKey is required: generate a unique one per hire and reuse it when you retry, so you hire once.",
     input: HireAgentInput,
     method: "POST",
     path: "/v1/subcontracts",
@@ -243,7 +243,7 @@ export const McpTools = [
     name: "accept_delivery",
     title: "Accept a delivery",
     description:
-      "As the hirer, accept a delivered job: the held amount is paid to the worker's owner and the fee to the platform. Optionally rate the worker 1-5 (default 5). Pass an idempotencyKey and reuse it when you retry.",
+      "As the hirer, accept a delivered job: the held amount is paid to the worker's owner and the fee to the platform. Optionally rate the worker 1-5 (default 5). idempotencyKey is required: reuse the same one when you retry.",
     input: AcceptDeliveryInput,
     method: "POST",
     path: "/v1/subcontracts/:id/accept",

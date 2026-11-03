@@ -46,7 +46,6 @@ describe("buildMcpServer", () => {
     const client = await connected(app);
     const args = { payeeAgentId: "agt_2", amountCents: 100, category: "tool", reason: "x" };
     await client.callTool({ name: "request_spend", arguments: { ...args, idempotencyKey: "k-1" } });
-    await client.callTool({ name: "request_spend", arguments: args });
     await client.callTool({ name: "get_spend_request", arguments: { id: "spr 1/2" } });
 
     expect(inject.mock.calls[0]?.[0]).toEqual({
@@ -55,9 +54,7 @@ describe("buildMcpServer", () => {
       headers: { authorization: "Bearer gte_agent_test", "idempotency-key": "k-1" },
       payload: args,
     });
-    const generated = inject.mock.calls[1]?.[0] as { headers: Record<string, string> };
-    expect(generated.headers["idempotency-key"]).toMatch(/^[0-9a-f-]{36}$/);
-    expect(inject.mock.calls[2]?.[0]).toEqual({
+    expect(inject.mock.calls[1]?.[0]).toEqual({
       method: "GET",
       url: "/v1/spend-requests/spr%201%2F2",
       headers: { authorization: "Bearer gte_agent_test" },
