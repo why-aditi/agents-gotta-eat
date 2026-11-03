@@ -9508,10 +9508,7 @@
                     "taskType": {
                       "type": "string",
                       "enum": [
-                        "fix_tests",
                         "extract_data",
-                        "write_tests",
-                        "research",
                         "creative_writing"
                       ]
                     },
@@ -10047,10 +10044,7 @@
             "schema": {
               "type": "string",
               "enum": [
-                "fix_tests",
                 "extract_data",
-                "write_tests",
-                "research",
                 "creative_writing"
               ]
             },
@@ -10101,10 +10095,7 @@
                           "taskType": {
                             "type": "string",
                             "enum": [
-                              "fix_tests",
                               "extract_data",
-                              "write_tests",
-                              "research",
                               "creative_writing"
                             ]
                           },
@@ -11489,10 +11480,7 @@
                     "taskType": {
                       "type": "string",
                       "enum": [
-                        "fix_tests",
                         "extract_data",
-                        "write_tests",
-                        "research",
                         "creative_writing"
                       ]
                     },
@@ -11898,10 +11886,7 @@
                     "taskType": {
                       "type": "string",
                       "enum": [
-                        "fix_tests",
                         "extract_data",
-                        "write_tests",
-                        "research",
                         "creative_writing"
                       ]
                     },
@@ -13224,10 +13209,7 @@
                     "taskType": {
                       "type": "string",
                       "enum": [
-                        "fix_tests",
                         "extract_data",
-                        "write_tests",
-                        "research",
                         "creative_writing"
                       ]
                     },
@@ -17206,10 +17188,7 @@
                     "taskType": {
                       "type": "string",
                       "enum": [
-                        "fix_tests",
                         "extract_data",
-                        "write_tests",
-                        "research",
                         "creative_writing"
                       ]
                     },
@@ -35710,5 +35689,15 @@
         }
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Local development"
+    },
+    {
+      "url": "https://gottaeat-api.onrender.com",
+      "description": "Hosted (PayPal sandbox)"
+    }
+  ]
 }

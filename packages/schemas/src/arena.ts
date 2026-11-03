@@ -68,7 +68,7 @@ export const MAX_BOUNTY_ENTRANTS = 5;
 export const Bounty = z.object({
   id: z.string(),
   posterId: z.string(),
-  taskType: TaskType,
+  taskType: SupportedTaskType,
   title: z.string(),
   spec: z.record(z.string(), z.unknown()),
   rewardCents: z.int(),
@@ -95,7 +95,7 @@ export type BountyList = z.infer<typeof BountyList>;
 // own bounties in every status unless `status` narrows it. A string because it comes from the query string.
 export const ListBountiesQuery = z.object({
   status: BountyStatus.optional(),
-  type: TaskType.optional(),
+  type: SupportedTaskType.optional(),
   mine: z.enum(["true", "false"]).optional(),
 });
 export type ListBountiesQuery = z.infer<typeof ListBountiesQuery>;

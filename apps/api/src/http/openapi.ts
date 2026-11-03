@@ -11,12 +11,16 @@ const SECURITY: Record<AuthMode, Record<string, string[]>[]> = {
   none: [],
 };
 
-// OpenAPI 3.1 built from the routes' zod schemas. No `servers`, so the document is the same in every environment.
+// OpenAPI 3.1 built from the routes' zod schemas. `servers` is fixed (not read from env) so the document is the same in every environment.
 export function registerOpenApi(app: FastifyInstance) {
   app.register(swagger, {
     openapi: {
       openapi: "3.1.0",
       info: { title: "Agents Gotta Eat API", version: pkg.version },
+      servers: [
+        { url: "http://localhost:3001", description: "Local development" },
+        { url: "https://gottaeat-api.onrender.com", description: "Hosted (PayPal sandbox)" },
+      ],
       components: {
         securitySchemes: {
           agentKey: { type: "http", scheme: "bearer", description: "Agent API key: gte_agent_..." },
