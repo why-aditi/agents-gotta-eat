@@ -289,7 +289,18 @@ export async function devOpenBounty(db: Db, bountyId: string, now: Date = new Da
     const row = await lockBounty(tx, bountyId);
     if (!row) throw new ApiError("not_found", "Bounty not found");
     const opened = await openDraft(tx, row, now);
-    await tx.insert(escrows).values({ bountyId: row.id, status: "authorized", dev: true, authorizedAt: now });
+    // A poster who abandoned a PayPal order leaves a pending escrow row (bounty_id is its primary key): turn that
+    // row into the dev escrow. Its order id stays, but every webhook path only acts on order_created, so a late
+    // authorization is a no-op. No ledger money moves in either case.
+    const [pending] = await tx.select().from(escrows).where(eq(escrows.bountyId, row.id)).for("update");
+    if (pending) {
+      await tx
+        .update(escrows)
+        .set({ status: "authorized", dev: true, authorizedAt: now })
+        .where(eq(escrows.bountyId, row.id));
+    } else {
+      await tx.insert(escrows).values({ bountyId: row.id, status: "authorized", dev: true, authorizedAt: now });
+    }
     return bountyDto(tx, opened);
   });
 }
