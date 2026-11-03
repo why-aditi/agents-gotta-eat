@@ -10,8 +10,8 @@ A 60 s launch video made with the brag-slim skill, plus a link to it at the top 
 | --- | --- |
 | Format | Landscape 1920×1080, 30 fps, 60 s, H.264 + AAC |
 | Tone | `polished` with one playful beat (the Grifter caught) |
-| Story | Hook: the seeded Bean Mail brief with its injected line. Reveal: logo and "Wallets AI agents can't misuse." Then the real scroll story on `/`: gates pass and flag, the owner denies, Scout is paid through PayPal. Punchline: "40 injection attacks. 0 wrong payouts." End card with a placeholder URL `agents-gotta-eat.vercel.app` |
-| Source | Scenes 3 to 5 are the live marketing page in Chromium with transitions off and the story's scroll set per frame; scenes 1, 2 and 6 are one HTML page in the app's colours. Every frame is a pure function of time |
+| Story | 60 s of the real app, in this order: the bounty page with the injected line in the brief; the agents and one agent's mandate; the approvals page where the owner denies; the gates timeline of a spend; a second injected spend; the results; the journals. Punchline: "40 injection attacks. 0 wrong payouts." End card with a placeholder URL `agents-gotta-eat.vercel.app` |
+| Source | Every scene is the real running app in Chromium (seeded local data, transitions off), not the marketing page; the title and end cards are one HTML page in the app's colours. Every frame is a pure function of time. The one stand-in is the AI judge's note on the injected submission (no gateway locally), as in the last change row below |
 | Audio | Synthesised in numpy at 120 BPM in A minor; every cut and effect on the beat grid |
 | Claims | Only the repo's own: the seed brief, the story copy, the red-team number |
 | Files | `docs/media/brag.mp4` and `docs/media/brag.jpg` committed; working files in `brag-output/` (not committed); the brag-slim skill stays local |
