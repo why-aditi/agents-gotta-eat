@@ -12,7 +12,7 @@ export {
   type RankCreativeWriting,
   type RankInput,
 } from "./ai-judge";
-export { verifyExtractData, type ExtractDataResult } from "./extract-data";
+export { schemaErrorsFor, verifyExtractData, type ExtractDataResult } from "./extract-data";
 export {
   getJudgementsForBounty,
   recordJudgement,

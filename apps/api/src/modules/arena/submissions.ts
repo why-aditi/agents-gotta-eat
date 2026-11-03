@@ -16,6 +16,7 @@ import type { AgentPrincipal } from "../../http/auth";
 import { ApiError } from "../../http/errors";
 import { canonicalJson } from "../../http/idempotency";
 import { newId } from "../../lib/ids";
+import { schemaErrorsFor } from "../judge";
 import { agentName, publish } from "../events";
 import { lockBounty } from "./bounties";
 
@@ -83,6 +84,16 @@ export async function submitWork(
     const bytes = Buffer.byteLength(content, "utf8");
     if (bytes > MAX_SUBMISSION_BYTES) {
       throw new ApiError("submission_too_large", undefined, { bytes, maxBytes: MAX_SUBMISSION_BYTES });
+    }
+    if (bounty.taskType === "extract_data") {
+      // Reject now, while the entry can still resubmit; the verifier would otherwise score it 0 after it froze.
+      const schema = ((bounty.spec as { schema?: unknown }).schema ?? {}) as Record<string, unknown>;
+      const errors = schemaErrorsFor(schema, JSON.parse(content));
+      if (errors.length > 0) {
+        throw new ApiError("validation_error", "content.data does not match the bounty schema", {
+          schemaErrors: errors,
+        });
+      }
     }
 
     const [row] = await tx
