@@ -192,6 +192,10 @@ describe("CreateBountyForm", () => {
     await user.type(screen.getByLabelText("Reward ($)"), "0.99");
     await user.click(screen.getByRole("button", { name: "Save as draft" }));
     expect(screen.getByLabelText("Reward ($)")).toHaveAccessibleDescription("The reward must be at least $1.00.");
+    await user.clear(screen.getByLabelText("Reward ($)"));
+    await user.type(screen.getByLabelText("Reward ($)"), "10000.01");
+    await user.click(screen.getByRole("button", { name: "Save as draft" }));
+    expect(screen.getByLabelText("Reward ($)")).toHaveAccessibleDescription("The reward can be at most $10,000.00.");
     expect(createBounty).not.toHaveBeenCalled();
   });
 

@@ -1,6 +1,11 @@
 // Turns the create form's strings into a CreateBountyRequest. Dollars are parsed by string (lib/money), the fee is
 // integer maths on cents, and hidden material typed as JSON is parsed here so mistakes show next to the field.
-import { CreateBountyRequest, MAX_BOUNTY_HOURS, type SupportedTaskType } from "@gottaeat/schemas";
+import {
+  CreateBountyRequest,
+  MAX_BOUNTY_HOURS,
+  MAX_BOUNTY_REWARD_CENTS,
+  type SupportedTaskType,
+} from "@gottaeat/schemas";
 import { parseDollarsToCents } from "@/lib/money";
 
 export interface BountyValues {
@@ -85,6 +90,7 @@ export function toCreateRequest(
   const reward = parseDollarsToCents(v.reward);
   if (!reward.ok) errors.reward = reward.error;
   else if (reward.cents < 100) errors.reward = "The reward must be at least $1.00.";
+  else if (reward.cents > MAX_BOUNTY_REWARD_CENTS) errors.reward = "The reward can be at most $10,000.00.";
 
   let deadlineAt = "";
   const deadline = v.deadline.trim();

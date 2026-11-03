@@ -7,7 +7,6 @@ import {
   CreateBountyRequest,
   CreateDisputeRequest,
   Dispute,
-  DevFundRequest,
   EnterBountyResponse,
   Entry,
   EntryList,
@@ -409,7 +408,6 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Open a draft bounty without PayPal (dev only)",
         description: "Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true`. Records a dev escrow.",
         params: IdParams,
-        body: DevFundRequest,
         response: {
           200: Bounty,
           400: ErrorBody,

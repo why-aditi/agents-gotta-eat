@@ -24,8 +24,21 @@ export const Agent = z.object({
 });
 export type Agent = z.infer<typeof Agent>;
 
+// Bidi embedding, override and isolate controls can make a name display as something else.
+const BIDI_CONTROLS = /[\u202A-\u202E\u2066-\u2069]/;
+
+export const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+
+export const AgentNameInput = z
+  .string()
+  .trim()
+  .min(1)
+  .max(80)
+  .refine((s) => !BIDI_CONTROLS.test(s), "name must not contain bidirectional control characters")
+  .refine((s) => !LONE_SURROGATE.test(s), "name must be valid Unicode text");
+
 export const CreateAgentRequest = z.object({
-  name: z.string().trim().min(1).max(80),
+  name: AgentNameInput,
   kind: AgentKind.optional(),
 });
 export type CreateAgentRequest = z.infer<typeof CreateAgentRequest>;

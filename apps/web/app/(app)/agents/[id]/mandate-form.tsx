@@ -4,7 +4,13 @@
 // is saved). Every save adds a new, unconfirmed version; the review card then shows the owner's words next to
 // the rules they compile to, and "Confirm mandate" activates it. Amounts are parsed from strings into integer
 // cents (lib/money); no float maths.
-import type { Mandate, MandateRules, PutMandateRequest, SpendCategory } from "@gottaeat/schemas";
+import {
+  type Mandate,
+  type MandateRules,
+  mandateRulesProblems,
+  type PutMandateRequest,
+  type SpendCategory,
+} from "@gottaeat/schemas";
 import { useId, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -107,22 +113,23 @@ export function toRequest(
   }
 
   if (Object.keys(errors).length > 0 || !perTx.ok || !daily.ok) return { ok: false, errors };
-  return {
-    ok: true,
-    body: {
-      sourceText,
-      rules: {
-        perTxMaxCents: perTx.cents,
-        dailyMaxCents: daily.cents,
-        ...(askAbove?.ok ? { askAboveCents: askAbove.cents } : {}),
-        allowedCategories: categories,
-        payeeAllowlist: payees.length > 0 ? payees : null,
-        ...(rating?.ok ? { minPayeeRatingTenths: rating.tenths } : {}),
-        scope: v.scope,
-        expiresAt,
-      },
-    },
+  const rules: MandateRules = {
+    perTxMaxCents: perTx.cents,
+    dailyMaxCents: daily.cents,
+    ...(askAbove?.ok ? { askAboveCents: askAbove.cents } : {}),
+    allowedCategories: categories,
+    payeeAllowlist: payees.length > 0 ? payees : null,
+    ...(rating?.ok ? { minPayeeRatingTenths: rating.tenths } : {}),
+    scope: v.scope,
+    expiresAt,
   };
+  // The same coherence checks the api runs.
+  for (const p of mandateRulesProblems(rules, now.getTime())) {
+    if (p.path === "askAboveCents") errors.askAbove = "Ask-above must not be more than the per-transaction cap.";
+    if (p.path === "perTxMaxCents") errors.perTx = "The per-transaction cap must not be more than the daily cap.";
+  }
+  if (Object.keys(errors).length > 0) return { ok: false, errors };
+  return { ok: true, body: { sourceText, rules } };
 }
 
 function FieldError({ id, message }: { id: string; message?: string }) {

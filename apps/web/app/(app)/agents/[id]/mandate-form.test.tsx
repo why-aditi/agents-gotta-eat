@@ -108,6 +108,19 @@ describe("MandateForm", () => {
     expect(saveMandate).not.toHaveBeenCalled();
   });
 
+  it("rejects an ask-above over the per-spend cap and a per-spend cap over the daily cap", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await user.type(screen.getByLabelText("What should this agent be allowed to do?"), "x");
+    await user.type(screen.getByLabelText("Per-spend cap ($)"), "60");
+    await user.type(screen.getByLabelText("Daily cap ($)"), "50");
+    await user.type(screen.getByLabelText("Ask me above ($)"), "70");
+    await user.click(screen.getByRole("button", { name: "Save as new version" }));
+    expect(screen.getByText("The per-transaction cap must not be more than the daily cap.")).toBeInTheDocument();
+    expect(screen.getByText("Ask-above must not be more than the per-transaction cap.")).toBeInTheDocument();
+    expect(saveMandate).not.toHaveBeenCalled();
+  });
+
   it("requires the plain-English text", async () => {
     const user = userEvent.setup();
     render(<MandateForm agentId="agt_1" initial={null} />);

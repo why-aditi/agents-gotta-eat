@@ -5,7 +5,8 @@ import pkg from "../package.json" with { type: "json" };
 import type { Db } from "./db";
 import { registerAuth } from "./http/auth";
 import { registerCors } from "./http/cors";
-import { registerErrorHandlers } from "./http/errors";
+import { clientErrorHandler, frameworkErrorHandler, registerErrorHandlers } from "./http/errors";
+import { registerInputGuard } from "./http/input-guard";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { adminRoutes } from "./modules/admin";
@@ -80,6 +81,9 @@ export function buildApp(opts: BuildAppOptions) {
   const hops = Number.parseInt(opts.env.TRUST_PROXY_HOPS ?? "", 10);
   const app = Fastify({
     logger: opts.logger ?? true,
+    frameworkErrors: frameworkErrorHandler,
+    // Node calls this for requests it cannot parse (431 and the like), before Fastify sees them.
+    clientErrorHandler,
     // Trusts the first `hops` proxies in X-Forwarded-For (proxy-addr's hop count, as a function for the types).
     ...(Number.isInteger(hops) && hops > 0 ? { trustProxy: (_addr: string, i: number) => i < hops } : {}),
   }).withTypeProvider<ZodTypeProvider>();
@@ -95,6 +99,13 @@ export function buildApp(opts: BuildAppOptions) {
 
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
+  registerInputGuard(app);
+  // An empty body with a JSON content type (httpx and axios default) is "no body", not an error.
+  const defaultJson = app.getDefaultJsonParser("error", "error");
+  app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+    if (typeof body === "string" && body.trim() === "") return done(null, undefined);
+    defaultJson(req, body as string, done);
+  });
   registerAuth(app, { db: opts.db, jwtSecret: opts.env.API_JWT_SECRET });
   registerIdempotency(app, { db: opts.db });
 
