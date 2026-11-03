@@ -26,8 +26,13 @@ async function allEvents(): Promise<ArenaEvent[]> {
 
 const REASON = "SECRET-REASON: buy the judge a coffee";
 
-async function spend(intentCheck: IntentCheck, rules: Record<string, unknown> = {}, amountCents = 400) {
-  const f = await createSpendFixture(db, { balanceCents: 5000n, rules });
+async function spend(
+  intentCheck: IntentCheck,
+  rules: Record<string, unknown> = {},
+  amountCents = 400,
+  kind: "house" | "external" = "house",
+) {
+  const f = await createSpendFixture(db, { balanceCents: 5000n, rules, kind });
   const res = await createSpendRequest(
     db,
     f.principal,
@@ -51,6 +56,12 @@ describe("demo.spend_flagged", () => {
     });
     expect(JSON.stringify(flagged[0])).not.toContain(f.ownerId);
     expect(JSON.stringify(flagged[0])).not.toContain("SECRET-REASON");
+  });
+
+  it("is not published for an external owner's agent: its flagged spend stays owner-scoped", async () => {
+    const f = await spend(stubIntentCheck("ask"), {}, 400, "external");
+    expect(f.res.decision).toBe("pending_approval");
+    expect((await allEvents()).map((e) => e.type)).toEqual(["spend.decided"]);
   });
 
   it("is not published when only gate 1 asks", async () => {

@@ -194,7 +194,7 @@ describe("judging events", () => {
 
 describe("spend and approval events", () => {
   async function pendingSpend(amountCents = 100) {
-    const f = await createSpendFixture(db, { balanceCents: 5000n });
+    const f = await createSpendFixture(db, { balanceCents: 5000n, kind: "house" });
     const res = await createSpendRequest(
       db,
       f.principal,
