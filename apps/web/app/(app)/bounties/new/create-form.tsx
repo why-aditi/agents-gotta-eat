@@ -21,6 +21,8 @@ import {
   type BountyValues,
   bountyFeeCents,
   emptyValues,
+  MAX_REWARD_CENTS,
+  REWARD_MAX_ERROR,
   toCreateRequest,
 } from "./bounty-request";
 
@@ -35,7 +37,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 function Total({ reward }: { reward: string }) {
   const parsed = parseDollarsToCents(reward);
-  if (!parsed.ok || parsed.cents === 0) {
+  if (!parsed.ok || parsed.cents === 0 || parsed.cents > MAX_REWARD_CENTS) {
     return <p className="text-sm text-muted-foreground">Enter a reward to see the total. The fee is 10%.</p>;
   }
   const fee = bountyFeeCents(parsed.cents);
@@ -72,6 +74,12 @@ export function CreateBountyForm({ defaultDeadline }: { defaultDeadline: string 
   const [key, setKey] = useState(() => crypto.randomUUID());
   const [pending, startTransition] = useTransition();
 
+  // The reward cap shows as you type; the rest of the field errors wait for submit.
+  const reward = parseDollarsToCents(values.reward);
+  const shownErrors: BountyErrors = {
+    ...errors,
+    ...(reward.ok && reward.cents > MAX_REWARD_CENTS ? { reward: REWARD_MAX_ERROR } : {}),
+  };
   const id = (field: BountyField) => `${uid}-${field}`;
   const errId = (field: BountyField) => `${uid}-${field}-error`;
   const set = <K extends BountyField>(field: K, value: BountyValues[K]) => {
@@ -82,7 +90,7 @@ export function CreateBountyForm({ defaultDeadline }: { defaultDeadline: string 
     id: id(field),
     value: values[field],
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => set(field, e.target.value),
-    ...(errors[field] ? { "aria-invalid": true as const, "aria-describedby": errId(field) } : {}),
+    ...(shownErrors[field] ? { "aria-invalid": true as const, "aria-describedby": errId(field) } : {}),
   });
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -117,7 +125,7 @@ export function CreateBountyForm({ defaultDeadline }: { defaultDeadline: string 
         {...fieldProps(field)}
       />
       {opts.hint ? <p className="text-xs text-muted-foreground">{opts.hint}</p> : null}
-      <FieldError id={errId(field)} message={errors[field]} />
+      <FieldError id={errId(field)} message={shownErrors[field]} />
     </div>
   );
 
@@ -144,7 +152,7 @@ export function CreateBountyForm({ defaultDeadline }: { defaultDeadline: string 
           <div className="space-y-2">
             <Label htmlFor={id("title")}>Title</Label>
             <Input autoComplete="off" maxLength={200} {...fieldProps("title")} />
-            <FieldError id={errId("title")} message={errors.title} />
+            <FieldError id={errId("title")} message={shownErrors.title} />
           </div>
         </div>
 
@@ -176,29 +184,29 @@ export function CreateBountyForm({ defaultDeadline }: { defaultDeadline: string 
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor={id("reward")}>Reward ($)</Label>
             <Input inputMode="decimal" autoComplete="off" placeholder="15.00" {...fieldProps("reward")} />
-            <FieldError id={errId("reward")} message={errors.reward} />
+            <FieldError id={errId("reward")} message={shownErrors.reward} />
           </div>
           <div className="space-y-2">
             <Label htmlFor={id("deadline")}>Deadline (UTC)</Label>
             <Input type="datetime-local" {...fieldProps("deadline")} />
             <p className="text-xs text-muted-foreground">At most 72 hours away.</p>
-            <FieldError id={errId("deadline")} message={errors.deadline} />
+            <FieldError id={errId("deadline")} message={shownErrors.deadline} />
           </div>
           <div className="space-y-2">
             <Label htmlFor={id("spendRulePct")}>Spend rule (%)</Label>
             <Input inputMode="numeric" autoComplete="off" {...fieldProps("spendRulePct")} />
             <p className="text-xs text-muted-foreground">Share of the reward an entrant may spend. 0 to 50.</p>
-            <FieldError id={errId("spendRulePct")} message={errors.spendRulePct} />
+            <FieldError id={errId("spendRulePct")} message={shownErrors.spendRulePct} />
           </div>
           <div className="space-y-2">
             <Label htmlFor={id("passThreshold")}>Pass threshold</Label>
             <Input inputMode="numeric" autoComplete="off" {...fieldProps("passThreshold")} />
             <p className="text-xs text-muted-foreground">Minimum score (0 to 100) to win and get the stake back.</p>
-            <FieldError id={errId("passThreshold")} message={errors.passThreshold} />
+            <FieldError id={errId("passThreshold")} message={shownErrors.passThreshold} />
           </div>
         </div>
       </div>

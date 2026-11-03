@@ -1,7 +1,7 @@
 // Turns the create form's strings into a CreateBountyRequest. Dollars are parsed by string (lib/money), the fee is
 // integer maths on cents, and hidden material typed as JSON is parsed here so mistakes show next to the field.
 import { CreateBountyRequest, MAX_BOUNTY_HOURS, type SupportedTaskType } from "@gottaeat/schemas";
-import { parseDollarsToCents } from "@/lib/money";
+import { formatCents, parseDollarsToCents } from "@/lib/money";
 
 export interface BountyValues {
   taskType: SupportedTaskType;
@@ -22,6 +22,10 @@ export interface BountyValues {
 
 export type BountyField = keyof BountyValues;
 export type BountyErrors = Partial<Record<BountyField, string>>;
+
+// ponytail: $10,000 max reward; switch to the shared schema constant once the reward cap lands in @gottaeat/schemas.
+export const MAX_REWARD_CENTS = 1_000_000;
+export const REWARD_MAX_ERROR = `The reward can be at most ${formatCents(MAX_REWARD_CENTS)}.`;
 
 // 10% of the reward, rounded half up, the same as the api. Integer maths only.
 export function bountyFeeCents(rewardCents: number): number {
@@ -85,6 +89,7 @@ export function toCreateRequest(
   const reward = parseDollarsToCents(v.reward);
   if (!reward.ok) errors.reward = reward.error;
   else if (reward.cents < 100) errors.reward = "The reward must be at least $1.00.";
+  else if (reward.cents > MAX_REWARD_CENTS) errors.reward = REWARD_MAX_ERROR;
 
   let deadlineAt = "";
   const deadline = v.deadline.trim();
