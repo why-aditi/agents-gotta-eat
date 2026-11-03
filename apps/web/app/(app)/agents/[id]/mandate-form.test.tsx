@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import type { Mandate } from "@gottaeat/schemas";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -108,14 +108,56 @@ describe("MandateForm", () => {
     expect(saveMandate).not.toHaveBeenCalled();
   });
 
-  it("requires the plain-English text", async () => {
+  it("writes a summary of the rules as the source text when it is left blank (the api requires one)", async () => {
     const user = userEvent.setup();
     render(<MandateForm agentId="agt_1" initial={null} />);
     await user.type(screen.getByLabelText("Per-spend cap ($)"), "1");
-    await user.type(screen.getByLabelText("Daily cap ($)"), "1");
+    await user.type(screen.getByLabelText("Daily cap ($)"), "5");
     await user.click(screen.getByRole("button", { name: "Save as new version" }));
+    await waitFor(() => expect(saveMandate).toHaveBeenCalledTimes(1));
+    const [, body] = vi.mocked(saveMandate).mock.calls[0]!;
+    expect(body.sourceText).toContain("Up to $1.00 per spend");
+    expect(body.sourceText).toContain("Up to $5.00 a day");
+  });
+
+  it("still asks for words before compiling", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await user.click(screen.getByRole("button", { name: "Compile from my words" }));
     expect(screen.getByText(/in your own words/)).toBeInTheDocument();
+    expect(compileMandate).not.toHaveBeenCalled();
+  });
+
+  it("rejects a per-spend cap above the daily cap and an ask-above over the per-spend cap", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await user.type(screen.getByLabelText("Per-spend cap ($)"), "20");
+    await user.type(screen.getByLabelText("Daily cap ($)"), "10");
+    await user.type(screen.getByLabelText("Ask me above ($)"), "25");
+    await user.click(screen.getByRole("button", { name: "Save as new version" }));
+    expect(screen.getByText("The per-spend cap can't be above the daily cap.")).toBeInTheDocument();
+    expect(screen.getByText("Ask-above can't be higher than the per-spend cap.")).toBeInTheDocument();
     expect(saveMandate).not.toHaveBeenCalled();
+  });
+
+  it("rejects an expiry in the past", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await fillBasics(user);
+    fireEvent.change(screen.getByLabelText("Expires"), { target: { value: "2020-01-01T00:00" } });
+    await user.click(screen.getByRole("button", { name: "Save as new version" }));
+    expect(screen.getByText("Pick a time in the future.")).toBeInTheDocument();
+    expect(saveMandate).not.toHaveBeenCalled();
+  });
+
+  it("puts the save button back once the version is saved", async () => {
+    const user = userEvent.setup();
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    await fillBasics(user);
+    await user.click(screen.getByRole("button", { name: "Save as new version" }));
+    await waitFor(() => expect(toast.success).toHaveBeenCalled());
+    expect(screen.queryByText("Saving…")).toBeNull();
+    expect(screen.getByRole("button", { name: "Save as new version" })).toBeEnabled();
   });
 
   it("prefills from a mandate", () => {
@@ -151,7 +193,7 @@ describe("MandateForm", () => {
 
     expect(await screen.findByText("Your words")).toBeInTheDocument();
     expect(screen.getByText("Up to $10.00 per spend")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Confirm mandate" }));
+    await user.click(screen.getByRole("button", { name: "Confirm mandate version 3" }));
     await waitFor(() => expect(confirmMandate).toHaveBeenCalledWith("agt_1", 3));
     await waitFor(() => expect(screen.queryByText("Your words")).not.toBeInTheDocument());
   });

@@ -21,7 +21,7 @@ export function UserMenu({ name, email, className }: { name: string | null; emai
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className={cn("max-w-48 gap-2", className)} aria-label="Account menu">
+        <Button variant="ghost" size="sm" className={cn("max-w-48 gap-2", className)} aria-label={`${label}, account menu`}>
           <UserIcon className="size-4" />
           <span className="hidden truncate sm:inline">{label}</span>
         </Button>

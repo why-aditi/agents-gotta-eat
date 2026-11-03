@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { centsToInput, formatTenths, parseDollarsToCents, parseRatingToTenths } from "@/lib/money";
 import { compileMandate, saveMandate } from "./actions";
+import { describeRules } from "./describe-rules";
 import { MandateReview } from "./mandate-review";
 
 const CATEGORIES: SpendCategory[] = ["tool", "subcontract", "stake"];
@@ -74,9 +75,8 @@ export function toRequest(
   now: Date,
 ): { ok: true; body: PutMandateRequest } | { ok: false; errors: FieldErrors } {
   const errors: FieldErrors = {};
-  const sourceText = v.sourceText.trim();
-  if (!sourceText) errors.sourceText = "Describe what this agent may spend on, in your own words.";
-  else if (sourceText.length > 4000) errors.sourceText = "Keep it under 4,000 characters.";
+  let sourceText = v.sourceText.trim();
+  if (sourceText.length > 4000) errors.sourceText = "Keep it under 4,000 characters.";
 
   const perTx = parseDollarsToCents(v.perTx);
   if (!perTx.ok) errors.perTx = perTx.error;
@@ -84,6 +84,11 @@ export function toRequest(
   if (!daily.ok) errors.daily = daily.error;
   const askAbove = v.askAbove.trim() ? parseDollarsToCents(v.askAbove) : null;
   if (askAbove && !askAbove.ok) errors.askAbove = askAbove.error;
+  // ponytail: per-spend <= daily and ask-above <= per-spend; switch to the schema's refinement once it lands.
+  if (perTx.ok && daily.ok && perTx.cents > daily.cents) errors.perTx = "The per-spend cap can't be above the daily cap.";
+  if (perTx.ok && askAbove?.ok && askAbove.cents > perTx.cents) {
+    errors.askAbove = "Ask-above can't be higher than the per-spend cap.";
+  }
 
   const categories = CATEGORIES.filter((c) => v.categories.includes(c));
   if (categories.length === 0) errors.categories = "Pick at least one category.";
@@ -107,22 +112,19 @@ export function toRequest(
   }
 
   if (Object.keys(errors).length > 0 || !perTx.ok || !daily.ok) return { ok: false, errors };
-  return {
-    ok: true,
-    body: {
-      sourceText,
-      rules: {
-        perTxMaxCents: perTx.cents,
-        dailyMaxCents: daily.cents,
-        ...(askAbove?.ok ? { askAboveCents: askAbove.cents } : {}),
-        allowedCategories: categories,
-        payeeAllowlist: payees.length > 0 ? payees : null,
-        ...(rating?.ok ? { minPayeeRatingTenths: rating.tenths } : {}),
-        scope: v.scope,
-        expiresAt,
-      },
-    },
+  const rules: MandateRules = {
+    perTxMaxCents: perTx.cents,
+    dailyMaxCents: daily.cents,
+    ...(askAbove?.ok ? { askAboveCents: askAbove.cents } : {}),
+    allowedCategories: categories,
+    payeeAllowlist: payees.length > 0 ? payees : null,
+    ...(rating?.ok ? { minPayeeRatingTenths: rating.tenths } : {}),
+    scope: v.scope,
+    expiresAt,
   };
+  // The api needs the owner's words with every version. Rules filled in by hand get a plain summary of themselves.
+  if (!sourceText) sourceText = describeRules(rules).join(". ").slice(0, 4000);
+  return { ok: true, body: { sourceText, rules } };
 }
 
 function FieldError({ id, message }: { id: string; message?: string }) {
@@ -140,7 +142,7 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
   const [errors, setErrors] = useState<FieldErrors>({});
   const [review, setReview] = useState<Mandate | null>(null);
   const [notes, setNotes] = useState<string[] | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [saving, setSaving] = useState(false);
   const [compiling, startCompile] = useTransition();
 
   const id = (field: Field) => `${uid}-${field}`;
@@ -184,15 +186,19 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
       return;
     }
     setErrors({});
-    startTransition(async () => {
-      const result = await saveMandate(agentId, parsed.body);
-      if (!result.ok) {
-        toast.error(result.message);
-        return;
-      }
-      setReview(result.data);
-      toast.success(`Saved as version ${result.data.version}. Review and confirm it to make it active.`);
-    });
+    // Not a transition: the label must go back the moment the action settles, not when the page refresh behind it ends.
+    setSaving(true);
+    saveMandate(agentId, parsed.body)
+      .then((result) => {
+        if (!result.ok) {
+          toast.error(result.message);
+          return;
+        }
+        setReview(result.data);
+        toast.success(`Saved as version ${result.data.version}. Review and confirm it to make it active.`);
+      })
+      .catch(() => toast.error("Couldn't save the mandate. Try again."))
+      .finally(() => setSaving(false));
   }
 
   return (
@@ -204,7 +210,6 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
           <Label htmlFor={id("sourceText")}>What should this agent be allowed to do?</Label>
           <Textarea
             id={id("sourceText")}
-            required
             rows={4}
             maxLength={4000}
             placeholder="Buy tools up to $10 each, at most $50 a day. Ask me about anything over $5."
@@ -214,10 +219,13 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
           />
           <FieldError id={errId("sourceText")} message={errors.sourceText} />
           <div className="flex flex-wrap items-center gap-3">
-            <Button type="button" variant="secondary" size="sm" onClick={onCompile} disabled={compiling || pending}>
+            <Button type="button" variant="secondary" size="sm" onClick={onCompile} disabled={compiling || saving}>
               {compiling ? "Compiling…" : "Compile from my words"}
             </Button>
-            <p className="text-xs text-muted-foreground">Fills in the fields below. Nothing is saved until you save.</p>
+            <p className="text-xs text-muted-foreground">
+              Fills in the fields below. Nothing is saved until you save. Leave the words blank to fill the rules in by
+              hand; we&apos;ll save a plain summary of them.
+            </p>
           </div>
           {notes && notes.length > 0 ? (
             <div role="note" aria-label="Compiler notes" className="rounded-md border bg-muted/40 p-3 text-sm">
@@ -333,8 +341,8 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
           </div>
         </div>
 
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save as new version"}
+        <Button type="submit" disabled={saving}>
+          {saving ? "Saving…" : "Save as new version"}
         </Button>
       </form>
     </div>
