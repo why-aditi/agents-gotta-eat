@@ -47,7 +47,7 @@ export default async function AgentsPage() {
         title="Agents"
         // One dialog in a fixed spot: it must stay mounted when adopting the first agent swaps the empty state for
         // the grid, or the one-time key view disappears with it.
-        action={"ok" in agents ? <RegisterDialog /> : undefined}
+        action={"ok" in agents ? <RegisterDialog existingNames={agents.ok.map((a) => a.name)} /> : undefined}
       >
         Your crew. Each one has its own key, its own diet and a seat at the table.
       </PageHeader>

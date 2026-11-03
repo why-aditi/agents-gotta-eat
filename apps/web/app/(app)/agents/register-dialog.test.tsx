@@ -77,6 +77,18 @@ describe("RegisterDialog", () => {
     expect(registerAgent).not.toHaveBeenCalled();
   });
 
+  it("warns, without blocking, when the owner already has an agent with that name", async () => {
+    vi.mocked(registerAgent).mockResolvedValue(response(KEY));
+    const user = userEvent.setup();
+    render(<RegisterDialog existingNames={["Chef Bot"]} />);
+    await user.click(screen.getByRole("button", { name: "Adopt an agent" }));
+    await user.type(screen.getByLabelText("Agent name"), " chef bot ");
+    expect(screen.getByText(/You already have an agent called/)).toBeInTheDocument();
+    expect(screen.getByLabelText("Agent name")).not.toHaveAttribute("aria-invalid");
+    await user.click(screen.getByRole("button", { name: "Adopt" }));
+    expect(registerAgent).toHaveBeenCalledWith("chef bot", expect.any(String));
+  });
+
   it("rejects a name over 80 characters", async () => {
     const { user } = setup();
     await openAndRegister(user, "x".repeat(81));
