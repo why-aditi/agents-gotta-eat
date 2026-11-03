@@ -66,6 +66,9 @@ function getInstance(clientId: string): Promise<SdkInstance> {
   return sdkInstance.promise;
 }
 
+// The follow-up refresh after a confirmed payment.
+const REFRESH_AGAIN_MS = 1500;
+
 type Setup = "loading" | "ready" | "not_eligible" | "failed";
 type Busy = null | "creating" | "awaiting" | "confirming";
 
@@ -91,6 +94,13 @@ export function PayPalButton({
   const latest = useRef({ onApproved, router });
   latest.current = { onApproved, router };
   const reported = useRef(false);
+  const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (refreshTimer.current) clearTimeout(refreshTimer.current);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!clientId) return;
@@ -109,8 +119,10 @@ export function PayPalButton({
         const created = await sdk.createPayPalOneTimePaymentSession({
           onApprove: async ({ orderId }) => {
             setBusy("confirming");
+            let approved = false;
             try {
               const result = await latest.current.onApproved(orderId);
+              approved = result.ok;
               if (result.ok) toast.success(result.message);
               else toast.error(result.message);
             } catch {
@@ -118,6 +130,9 @@ export function PayPalButton({
             }
             setBusy(null);
             latest.current.router.refresh();
+            // A second pass shortly after: the credit of a payment that was still settling lands from a webhook, and
+            // a refresh issued while PayPal's window was closing can be dropped. Data only ever comes from the api.
+            if (approved) refreshTimer.current = setTimeout(() => latest.current.router.refresh(), REFRESH_AGAIN_MS);
           },
           onCancel: () => {
             setBusy(null);
