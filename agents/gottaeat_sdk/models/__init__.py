@@ -640,7 +640,6 @@ from .post_mcp_response_403 import PostMcpResponse403
 from .post_mcp_response_403_error import PostMcpResponse403Error
 from .post_mcp_response_403_error_code import PostMcpResponse403ErrorCode
 from .post_mcp_response_403_error_detail import PostMcpResponse403ErrorDetail
-from .post_v1_admin_bounties_id_open_body import PostV1AdminBountiesIdOpenBody
 from .post_v1_admin_bounties_id_open_response_200 import PostV1AdminBountiesIdOpenResponse200
 from .post_v1_admin_bounties_id_open_response_200_entrants_item import PostV1AdminBountiesIdOpenResponse200EntrantsItem
 from .post_v1_admin_bounties_id_open_response_200_spec import PostV1AdminBountiesIdOpenResponse200Spec
@@ -2404,7 +2403,6 @@ __all__ = (
     "PostMcpResponse403Error",
     "PostMcpResponse403ErrorCode",
     "PostMcpResponse403ErrorDetail",
-    "PostV1AdminBountiesIdOpenBody",
     "PostV1AdminBountiesIdOpenResponse200",
     "PostV1AdminBountiesIdOpenResponse200EntrantsItem",
     "PostV1AdminBountiesIdOpenResponse200Spec",

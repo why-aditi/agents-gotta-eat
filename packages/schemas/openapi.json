@@ -9314,7 +9314,7 @@
                       "rewardCents": {
                         "type": "integer",
                         "minimum": 100,
-                        "maximum": 9007199254740991
+                        "maximum": 1000000
                       },
                       "deadlineAt": {
                         "type": "string",
@@ -9415,7 +9415,7 @@
                       "rewardCents": {
                         "type": "integer",
                         "minimum": 100,
-                        "maximum": 9007199254740991
+                        "maximum": 1000000
                       },
                       "deadlineAt": {
                         "type": "string",
@@ -17149,18 +17149,6 @@
           "admin"
         ],
         "description": "Admins only. 404 unless the server runs with `ALLOW_DEV_FUNDING=true`. Records a dev escrow.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          }
-        },
         "parameters": [
           {
             "schema": {
