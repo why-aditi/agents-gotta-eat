@@ -8,6 +8,7 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 from typing import cast
 
 if TYPE_CHECKING:
@@ -25,11 +26,13 @@ class PostV1AgentsResponse201:
         agent (PostV1AgentsResponse201Agent):
         api_key (None | str):
         mcp_config (PostV1AgentsResponse201McpConfig):
+        api_key_unavailable (bool | Unset):
     """
 
     agent: PostV1AgentsResponse201Agent
     api_key: None | str
     mcp_config: PostV1AgentsResponse201McpConfig
+    api_key_unavailable: bool | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.post_v1_agents_response_201_agent import PostV1AgentsResponse201Agent  # noqa: PLC0415
@@ -42,6 +45,8 @@ class PostV1AgentsResponse201:
 
         mcp_config = self.mcp_config.to_dict()
 
+        api_key_unavailable = self.api_key_unavailable
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -51,6 +56,8 @@ class PostV1AgentsResponse201:
                 "mcpConfig": mcp_config,
             }
         )
+        if api_key_unavailable is not UNSET:
+            field_dict["apiKeyUnavailable"] = api_key_unavailable
 
         return field_dict
 
@@ -71,10 +78,13 @@ class PostV1AgentsResponse201:
 
         mcp_config = PostV1AgentsResponse201McpConfig.from_dict(d.pop("mcpConfig"))
 
+        api_key_unavailable = d.pop("apiKeyUnavailable", UNSET)
+
         post_v1_agents_response_201 = cls(
             agent=agent,
             api_key=api_key,
             mcp_config=mcp_config,
+            api_key_unavailable=api_key_unavailable,
         )
 
         return post_v1_agents_response_201

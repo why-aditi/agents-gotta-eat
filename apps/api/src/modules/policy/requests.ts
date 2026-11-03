@@ -6,7 +6,7 @@ import { spendDecisions, spendRequests } from "../../db/schema";
 import { toJsonCents } from "../../lib/cents";
 import { newId } from "../../lib/ids";
 import { agentNames } from "../events";
-import { RATE_LIMIT_WINDOW_MS } from "./gate1";
+import { RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS } from "./gate1";
 
 type Conn = Db | Tx;
 export type SpendRow = typeof spendRequests.$inferSelect;
@@ -129,6 +129,26 @@ export async function todaySpentCents(conn: Conn, agentId: string, now: Date): P
       ),
     );
   return BigInt(row?.cents ?? 0);
+}
+
+// Seconds until this agent may spend again after a rate_limited denial: when enough of its requests in the window
+// have aged out to leave room for one more (at least 1). Call before the denied request is inserted.
+export async function rateLimitRetryAfterSeconds(conn: Conn, agentId: string, now: Date): Promise<number> {
+  const recent = await recentRequestCount(conn, agentId, now);
+  const [row] = await conn
+    .select({ createdAt: spendRequests.createdAt })
+    .from(spendRequests)
+    .where(
+      and(
+        eq(spendRequests.agentId, agentId),
+        gt(spendRequests.createdAt, new Date(now.getTime() - RATE_LIMIT_WINDOW_MS)),
+      ),
+    )
+    .orderBy(asc(spendRequests.createdAt))
+    .limit(1)
+    .offset(Math.max(0, recent - RATE_LIMIT_MAX));
+  const frees = (row?.createdAt.getTime() ?? now.getTime()) + RATE_LIMIT_WINDOW_MS;
+  return Math.max(1, Math.ceil((frees - now.getTime()) / 1000));
 }
 
 // This agent's spend requests (any outcome) in the last 60 s.

@@ -8,6 +8,7 @@ import { registerCors } from "./http/cors";
 import { registerErrorHandlers } from "./http/errors";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { registerRateLimit } from "./http/rate-limit";
 import { adminRoutes } from "./modules/admin";
 import { demoRoutes } from "./modules/demo";
 import { arenaRoutes, registerArenaHooks } from "./modules/arena";
@@ -41,6 +42,10 @@ export interface AppEnv {
   AGENTS_WAKE_SECRET?: string;
   // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
   TRUST_PROXY_HOPS?: string;
+  // Requests a minute per caller (agent key, else IP) and failed-auth responses a minute per IP. Defaults 1200 and 30;
+  // "0" turns a limit off. Tests and load runs set 0.
+  RATE_LIMIT_PER_MINUTE?: string;
+  RATE_LIMIT_AUTH_FAIL_PER_MINUTE?: string;
   // Email (Resend). Unset key: no email is sent. EMAIL_FROM and WEB_URL (link target) have defaults;
   // RESEND_API_URL is for tests.
   RESEND_API_KEY?: string;
@@ -95,6 +100,11 @@ export function buildApp(opts: BuildAppOptions) {
 
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
+  // Before auth, so a flood of bad credentials is cut off before they are checked.
+  registerRateLimit(app, {
+    perMinute: opts.env.RATE_LIMIT_PER_MINUTE,
+    authFailPerMinute: opts.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
+  });
   registerAuth(app, { db: opts.db, jwtSecret: opts.env.API_JWT_SECRET });
   registerIdempotency(app, { db: opts.db });
 

@@ -154,6 +154,8 @@ export const CreateSpendResponse = z.object({
   status: SpendStatus,
   decision: SpendOutcome,
   reasons: z.array(PolicyReason),
+  // Only with the `rate_limited` reason: seconds until the agent may try again (also the 429-style hint).
+  retryAfterSeconds: z.number().int().positive().optional(),
 });
 export type CreateSpendResponse = z.infer<typeof CreateSpendResponse>;
 

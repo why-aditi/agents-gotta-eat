@@ -6,7 +6,7 @@ Spec sections: "Testing and verification" (Load: k6, 50 concurrent spend request
 
 ## What it is
 
-- `tests/load/spend.js` (k6), run by `pnpm load` (`tests/load/run.ts`) against a running api with `ALLOW_DEV_CREDIT=true`, `ALLOW_DEV_FUNDING=true`, `POLICY_GATE2_STUB=allow`, and k6 (`K6_BIN` or on PATH).
+- `tests/load/spend.js` (k6), run by `pnpm load` (`tests/load/run.ts`) against a running api with `ALLOW_DEV_CREDIT=true`, `ALLOW_DEV_FUNDING=true`, `POLICY_GATE2_STUB=allow`, `RATE_LIMIT_PER_MINUTE=0` (the api limits requests per IP; k6 is one IP), and k6 (`K6_BIN` or on PATH).
 - `run.ts` seeds everything over the public api (user tokens are signed like `dev:token`; one `grant-admin` call), runs k6, then checks the ledger over REST. A latency miss is reported after the correctness checks, which always run.
 
 | Scenario | Fixture | Pass when |

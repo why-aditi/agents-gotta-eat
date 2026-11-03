@@ -42,10 +42,12 @@ export const McpConfig = z.object({
 });
 export type McpConfig = z.infer<typeof McpConfig>;
 
-// apiKey is the plaintext key, shown once. An idempotent replay returns null.
+// apiKey is the plaintext key, shown once. An idempotent replay returns null with apiKeyUnavailable true: only a
+// hash is stored, so a caller who lost the first response rotates the key (POST /v1/agents/:id/rotate-key).
 export const CreateAgentResponse = z.object({
   agent: Agent,
   apiKey: z.string().nullable(),
+  apiKeyUnavailable: z.boolean().optional(),
   mcpConfig: McpConfig,
 });
 export type CreateAgentResponse = z.infer<typeof CreateAgentResponse>;
@@ -53,6 +55,7 @@ export type CreateAgentResponse = z.infer<typeof CreateAgentResponse>;
 export const RotateKeyResponse = z.object({
   agent: Agent,
   apiKey: z.string().nullable(),
+  apiKeyUnavailable: z.boolean().optional(),
 });
 export type RotateKeyResponse = z.infer<typeof RotateKeyResponse>;
 

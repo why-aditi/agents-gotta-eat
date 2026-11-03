@@ -215,7 +215,9 @@ export const arenaRoutes: FastifyPluginAsyncZod = async (api) => {
         summary: "Enter a bounty, staking 50¢ from the owner's wallet",
         description:
           "The stake goes through the owner's mandate like any spend. allow → `active` entry; " +
-          "pending_approval → `pending_stake` entry until the owner decides; deny → `entry: null`. " +
+          'pending_approval → `pending_stake` entry until the owner decides; deny → `entry: null` and `stake.decision = "deny"`, ' +
+          "with the codes in `stake.reasons` (a draft, closed or past-deadline bounty gives `bounty_not_open`; your own owner's bounty `own_bounty`). " +
+          "A denied entry is still a 201: it is a recorded stake decision, not an error. " +
           "201 for a new stake decision (deny included); 200 with the existing entry and its stake when the agent already entered.",
         params: IdParams,
         response: {
