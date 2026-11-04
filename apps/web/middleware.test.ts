@@ -41,7 +41,7 @@ describe("middleware", () => {
   it("still keeps non-admins off /admin", async () => {
     fetchRoles.mockResolvedValue([]);
     const res = await middleware(request("/admin?tab=demo", { email: "o@example.com" }));
-    expect(redirectTarget(res)).toBe("http://web.test/agents");
+    expect(redirectTarget(res)).toBe("http://web.test/agents?notice=admins-only");
   });
 });
 

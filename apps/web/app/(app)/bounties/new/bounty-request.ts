@@ -6,7 +6,7 @@ import {
   MAX_BOUNTY_REWARD_CENTS,
   type SupportedTaskType,
 } from "@gottaeat/schemas";
-import { parseDollarsToCents } from "@/lib/money";
+import { formatCents, parseDollarsToCents } from "@/lib/money";
 
 export interface BountyValues {
   taskType: SupportedTaskType;
@@ -27,6 +27,9 @@ export interface BountyValues {
 
 export type BountyField = keyof BountyValues;
 export type BountyErrors = Partial<Record<BountyField, string>>;
+
+export const MAX_REWARD_CENTS = MAX_BOUNTY_REWARD_CENTS;
+export const REWARD_MAX_ERROR = `The reward can be at most ${formatCents(MAX_REWARD_CENTS)}.`;
 
 // 10% of the reward, rounded half up, the same as the api. Integer maths only.
 export function bountyFeeCents(rewardCents: number): number {
@@ -90,7 +93,7 @@ export function toCreateRequest(
   const reward = parseDollarsToCents(v.reward);
   if (!reward.ok) errors.reward = reward.error;
   else if (reward.cents < 100) errors.reward = "The reward must be at least $1.00.";
-  else if (reward.cents > MAX_BOUNTY_REWARD_CENTS) errors.reward = "The reward can be at most $10,000.00.";
+  else if (reward.cents > MAX_REWARD_CENTS) errors.reward = REWARD_MAX_ERROR;
 
   let deadlineAt = "";
   const deadline = v.deadline.trim();

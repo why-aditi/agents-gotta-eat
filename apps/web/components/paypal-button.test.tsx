@@ -61,6 +61,14 @@ describe("PayPalButton", () => {
     expect(refresh).toHaveBeenCalled();
   });
 
+  it("refreshes again shortly after a confirmed payment, for a credit that lands late", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await user.click(await readyButton());
+    await waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(refresh).toHaveBeenCalledTimes(2), { timeout: 4000 });
+  });
+
   it("toasts a failed confirmation as an error", async () => {
     const user = userEvent.setup();
     const { onApproved } = renderButton();

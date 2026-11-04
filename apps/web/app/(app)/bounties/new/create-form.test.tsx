@@ -61,6 +61,14 @@ describe("toCreateRequest", () => {
     expect(ok.ok).toBe(true);
   });
 
+  it("caps the reward at $10,000.00", () => {
+    const v = { ...emptyValues("2026-10-27T12:00"), title: "t", brief: "b", rubric: "r" };
+    const over = toCreateRequest({ ...v, reward: "10000.01" }, now);
+    expect(over.ok).toBe(false);
+    if (!over.ok) expect(over.errors.reward).toBe("The reward can be at most $10,000.00.");
+    expect(toCreateRequest({ ...v, reward: "10000" }, now).ok).toBe(true);
+  });
+
   it("maps a malformed source to the sources field", () => {
     const v = {
       ...emptyValues("2026-10-27T12:00"),
@@ -93,6 +101,15 @@ describe("CreateBountyForm", () => {
     await user.clear(screen.getByLabelText("Reward ($)"));
     await user.type(screen.getByLabelText("Reward ($)"), "15");
     expect(screen.getByTestId("bounty-total")).toHaveTextContent("Reward $15.00 + fee $1.50 = $16.50");
+  });
+
+  it("flags a reward above the cap as you type, instead of showing a total", async () => {
+    const user = userEvent.setup();
+    render(<CreateBountyForm defaultDeadline={deadline()} />);
+    await user.type(screen.getByLabelText("Reward ($)"), "99999999");
+    expect(screen.getByText("The reward can be at most $10,000.00.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Reward ($)")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.queryByTestId("bounty-total")).toBeNull();
   });
 
   it("previews the dish card as you type", async () => {

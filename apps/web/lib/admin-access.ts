@@ -4,7 +4,8 @@
 import { Me } from "@gottaeat/schemas";
 import { signApiToken } from "./api-token";
 
-export const ADMIN_FALLBACK_PATH = "/agents";
+// Non-admins land here; the app shell turns ?notice=admins-only into a toast.
+export const ADMIN_FALLBACK_PATH = "/agents?notice=admins-only";
 
 export function isAdminPath(pathname: string): boolean {
   return pathname === "/admin" || pathname.startsWith("/admin/");

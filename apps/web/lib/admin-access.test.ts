@@ -4,10 +4,10 @@ import { adminRedirect, fetchRoles, isAdminPath } from "./admin-access";
 
 describe("adminRedirect", () => {
   it("sends a non-admin away from /admin and its subpaths", () => {
-    expect(adminRedirect("/admin", [])).toBe("/agents");
-    expect(adminRedirect("/admin/anything", ["owner"])).toBe("/agents");
+    expect(adminRedirect("/admin", [])).toBe("/agents?notice=admins-only");
+    expect(adminRedirect("/admin/anything", ["owner"])).toBe("/agents?notice=admins-only");
     // Roles unknown (api down): fail closed.
-    expect(adminRedirect("/admin", null)).toBe("/agents");
+    expect(adminRedirect("/admin", null)).toBe("/agents?notice=admins-only");
   });
 
   it("lets admins through and ignores other paths", () => {

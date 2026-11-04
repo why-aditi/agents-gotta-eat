@@ -80,6 +80,11 @@ describe("ApprovalCard", () => {
     expect(container.querySelector("b")).toBeNull();
   });
 
+  it("shows the end of the agent id so two agents with one name can be told apart", () => {
+    render(<ApprovalCard spend={spend({ agentId: "agt_01M6GWD6P3SVXAZTY8AGYDQP63", agentName: "Chef Bot" })} />);
+    expect(screen.getByTestId("agent-tag")).toHaveTextContent("Chef Bot #QP63");
+  });
+
   it("stamps the card with the owner's decision", async () => {
     vi.mocked(approveSpend).mockResolvedValue({ ok: true, data: spend({ status: "allowed" }) });
     render(<ApprovalCard spend={spend()} />);
