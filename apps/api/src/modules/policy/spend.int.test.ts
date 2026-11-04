@@ -313,12 +313,12 @@ describe("mandates", () => {
     expect(v3.version).toBe(3);
     await confirmMandate(db, f.ownerId, f.agentId, 3);
     expect((await getActiveMandate(db, f.agentId))?.version).toBe(3);
-    // Confirming an older version doesn't override a higher confirmed one.
-    const confirmed2 = await confirmMandate(db, f.ownerId, f.agentId, 2);
-    expect(confirmed2.confirmedAt).not.toBeNull();
+    // Confirming an older version is refused once a higher one is confirmed; the active mandate is unchanged.
+    await expect(confirmMandate(db, f.ownerId, f.agentId, 2)).rejects.toMatchObject({ code: "invalid_transition" });
     expect((await getActiveMandate(db, f.agentId))?.version).toBe(3);
-    // Re-confirming keeps the first timestamp.
-    expect((await confirmMandate(db, f.ownerId, f.agentId, 2)).confirmedAt).toBe(confirmed2.confirmedAt);
+    // Re-confirming the active version keeps the first timestamp.
+    const first = await confirmMandate(db, f.ownerId, f.agentId, 3);
+    expect((await confirmMandate(db, f.ownerId, f.agentId, 3)).confirmedAt).toBe(first.confirmedAt);
 
     expect((await listMandates(db, f.ownerId, f.agentId)).map((m) => m.version)).toEqual([3, 2, 1]);
   });

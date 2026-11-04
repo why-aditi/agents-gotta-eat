@@ -183,6 +183,7 @@ describe("log_run_step (MCP)", () => {
       bountyId: f.bountyId,
       step: "submit",
       summary: "Submitted",
+      idempotencyKey: "run-step-1",
     });
     expect(result.isError).toBeUndefined();
     expect(result.structuredContent).toMatchObject({ id: expect.stringMatching(/^run_/) });

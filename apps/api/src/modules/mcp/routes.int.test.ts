@@ -188,7 +188,7 @@ describe("MCP over Streamable HTTP", () => {
   it("returns a policy deny as a normal result with reasons", async () => {
     const f = await fixture(5000n, { perTxMaxCents: 100 });
     const client = await connect(f.apiKey);
-    const res = await call(client, "request_spend", spendArgs(f.payeeAgentId, 500));
+    const res = await call(client, "request_spend", { ...spendArgs(f.payeeAgentId, 500), idempotencyKey: "deny-1" });
     expect(res.isError).toBeFalsy();
     expect(CreateSpendResponse.parse(bodyOf(res))).toMatchObject({
       status: "denied",
