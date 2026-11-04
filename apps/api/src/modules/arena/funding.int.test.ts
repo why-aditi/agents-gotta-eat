@@ -21,6 +21,7 @@ import {
   applyAuthorizationVoided,
   cancelBounty,
   confirmFunding,
+  devOpenBounty,
   escrowWebhookHandlers,
   fundBounty,
   registerArenaHooks,
@@ -63,6 +64,28 @@ async function escrowOf(bountyId: string) {
   const [row] = await db.select().from(escrows).where(eq(escrows.bountyId, bountyId));
   return row;
 }
+
+describe("devOpenBounty after an abandoned PayPal order", () => {
+  it("reuses the pending escrow row instead of a duplicate key, moves no money, and a late webhook is a no-op", async () => {
+    const { id, poster } = await draft();
+    await fundBounty(db, poster, id);
+    expect((await escrowOf(id))?.status).toBe("order_created");
+    const opened = await devOpenBounty(db, id);
+    expect(opened.status).toBe("open");
+    expect(await escrowOf(id)).toMatchObject({ status: "authorized", dev: true });
+    await applyAuthorization(db, { orderId: "ORDER1", authorizationId: "AUTH1" });
+    expect(await escrowOf(id)).toMatchObject({ status: "authorized", dev: true, authorizationId: null });
+    expect((await reconcile(db)).ok).toBe(true);
+  });
+
+  it("an abandoned escrow row is reused too", async () => {
+    const { id, poster } = await draft();
+    await fundBounty(db, poster, id);
+    await db.update(escrows).set({ status: "abandoned" }).where(eq(escrows.bountyId, id));
+    expect((await devOpenBounty(db, id)).status).toBe("open");
+    expect(await escrowOf(id)).toMatchObject({ status: "authorized", dev: true });
+  });
+});
 
 describe("fundBounty", () => {
   it("creates an AUTHORIZE order for reward + fee read from the bounty and returns only the order id", async () => {

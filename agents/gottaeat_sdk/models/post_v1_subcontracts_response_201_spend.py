@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 from ..models.post_v1_subcontracts_response_201_spend_decision import PostV1SubcontractsResponse201SpendDecision
 from ..models.post_v1_subcontracts_response_201_spend_reasons_item import PostV1SubcontractsResponse201SpendReasonsItem
 from ..models.post_v1_subcontracts_response_201_spend_status import PostV1SubcontractsResponse201SpendStatus
+from ..types import UNSET, Unset
 from typing import cast
 
 
@@ -25,12 +26,14 @@ class PostV1SubcontractsResponse201Spend:
         status (PostV1SubcontractsResponse201SpendStatus):
         decision (PostV1SubcontractsResponse201SpendDecision):
         reasons (list[PostV1SubcontractsResponse201SpendReasonsItem]):
+        retry_after_seconds (int | Unset):
     """
 
     id: str
     status: PostV1SubcontractsResponse201SpendStatus
     decision: PostV1SubcontractsResponse201SpendDecision
     reasons: list[PostV1SubcontractsResponse201SpendReasonsItem]
+    retry_after_seconds: int | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
@@ -44,6 +47,8 @@ class PostV1SubcontractsResponse201Spend:
             reasons_item = reasons_item_data.value
             reasons.append(reasons_item)
 
+        retry_after_seconds = self.retry_after_seconds
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -54,6 +59,8 @@ class PostV1SubcontractsResponse201Spend:
                 "reasons": reasons,
             }
         )
+        if retry_after_seconds is not UNSET:
+            field_dict["retryAfterSeconds"] = retry_after_seconds
 
         return field_dict
 
@@ -73,11 +80,14 @@ class PostV1SubcontractsResponse201Spend:
 
             reasons.append(reasons_item)
 
+        retry_after_seconds = d.pop("retryAfterSeconds", UNSET)
+
         post_v1_subcontracts_response_201_spend = cls(
             id=id,
             status=status,
             decision=decision,
             reasons=reasons,
+            retry_after_seconds=retry_after_seconds,
         )
 
         return post_v1_subcontracts_response_201_spend

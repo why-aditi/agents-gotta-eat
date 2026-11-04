@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 from ..models.post_v1_spend_requests_response_201_decision import PostV1SpendRequestsResponse201Decision
 from ..models.post_v1_spend_requests_response_201_reasons_item import PostV1SpendRequestsResponse201ReasonsItem
 from ..models.post_v1_spend_requests_response_201_status import PostV1SpendRequestsResponse201Status
+from ..types import UNSET, Unset
 from typing import cast
 
 
@@ -25,12 +26,14 @@ class PostV1SpendRequestsResponse201:
         status (PostV1SpendRequestsResponse201Status):
         decision (PostV1SpendRequestsResponse201Decision):
         reasons (list[PostV1SpendRequestsResponse201ReasonsItem]):
+        retry_after_seconds (int | Unset):
     """
 
     id: str
     status: PostV1SpendRequestsResponse201Status
     decision: PostV1SpendRequestsResponse201Decision
     reasons: list[PostV1SpendRequestsResponse201ReasonsItem]
+    retry_after_seconds: int | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
@@ -44,6 +47,8 @@ class PostV1SpendRequestsResponse201:
             reasons_item = reasons_item_data.value
             reasons.append(reasons_item)
 
+        retry_after_seconds = self.retry_after_seconds
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -54,6 +59,8 @@ class PostV1SpendRequestsResponse201:
                 "reasons": reasons,
             }
         )
+        if retry_after_seconds is not UNSET:
+            field_dict["retryAfterSeconds"] = retry_after_seconds
 
         return field_dict
 
@@ -73,11 +80,14 @@ class PostV1SpendRequestsResponse201:
 
             reasons.append(reasons_item)
 
+        retry_after_seconds = d.pop("retryAfterSeconds", UNSET)
+
         post_v1_spend_requests_response_201 = cls(
             id=id,
             status=status,
             decision=decision,
             reasons=reasons,
+            retry_after_seconds=retry_after_seconds,
         )
 
         return post_v1_spend_requests_response_201

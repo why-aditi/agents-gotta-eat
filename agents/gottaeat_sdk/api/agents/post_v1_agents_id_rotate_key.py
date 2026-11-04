@@ -126,7 +126,8 @@ def sync_detailed(
     """Replace an agent's API key
 
      The old key stops working at once. Also restores a revoked key. An idempotent replay returns
-    `apiKey: null`.
+    `apiKey: null` with `apiKeyUnavailable: true`: the key is never stored in plaintext, so rotate again
+    with a new Idempotency-Key to get a fresh one.
 
     Args:
         id (str):
@@ -170,7 +171,8 @@ def sync(
     """Replace an agent's API key
 
      The old key stops working at once. Also restores a revoked key. An idempotent replay returns
-    `apiKey: null`.
+    `apiKey: null` with `apiKeyUnavailable: true`: the key is never stored in plaintext, so rotate again
+    with a new Idempotency-Key to get a fresh one.
 
     Args:
         id (str):
@@ -208,7 +210,8 @@ async def asyncio_detailed(
     """Replace an agent's API key
 
      The old key stops working at once. Also restores a revoked key. An idempotent replay returns
-    `apiKey: null`.
+    `apiKey: null` with `apiKeyUnavailable: true`: the key is never stored in plaintext, so rotate again
+    with a new Idempotency-Key to get a fresh one.
 
     Args:
         id (str):
@@ -250,7 +253,8 @@ async def asyncio(
     """Replace an agent's API key
 
      The old key stops working at once. Also restores a revoked key. An idempotent replay returns
-    `apiKey: null`.
+    `apiKey: null` with `apiKeyUnavailable: true`: the key is never stored in plaintext, so rotate again
+    with a new Idempotency-Key to get a fresh one.
 
     Args:
         id (str):

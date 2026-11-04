@@ -187,6 +187,8 @@ describe("gate 1 inputs", () => {
       allow,
     );
     expect(r).toMatchObject({ status: "denied", reasons: ["rate_limited"] });
+    expect(r.retryAfterSeconds).toBeGreaterThanOrEqual(1);
+    expect(r.retryAfterSeconds).toBeLessThanOrEqual(60);
     // A minute later the window is clear.
     const later = new Date(Date.now() + 61_000);
     const ok = await createSpendRequest(

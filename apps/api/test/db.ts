@@ -61,7 +61,14 @@ export function buildTestApp(
   const app = buildApp({
     db,
     logger: false,
-    env: { API_JWT_SECRET: TEST_JWT_SECRET, API_URL: "http://localhost:3001", ...env },
+    // Rate limits off unless a test asks for them.
+    env: {
+      API_JWT_SECRET: TEST_JWT_SECRET,
+      API_URL: "http://localhost:3001",
+      RATE_LIMIT_PER_MINUTE: "0",
+      RATE_LIMIT_AUTH_FAIL_PER_MINUTE: "0",
+      ...env,
+    },
     ...opts,
   });
   // Route coverage (contract-01): the route each response came from, checked in test/global-setup.ts.
@@ -146,12 +153,13 @@ export async function createMandate(
 // An owner with a funded wallet, a spending agent with a confirmed mandate, and a payee agent of another owner.
 export async function createSpendFixture(
   db: Db,
-  opts?: { balanceCents?: bigint; rules?: Partial<MandateRules>; payeeRating?: number },
+  opts?: { balanceCents?: bigint; rules?: Partial<MandateRules>; payeeRating?: number; kind?: "house" | "external" },
 ) {
   const ownerId = await createUserWithWallet(db);
   const payeeOwnerId = await createUserWithWallet(db);
   const { agentId } = await createAgent(db, ownerId);
   const { agentId: payeeAgentId } = await createAgent(db, payeeOwnerId);
+  if (opts?.kind) await db.update(agents).set({ kind: opts.kind }).where(eq(agents.id, agentId));
   if (opts?.payeeRating !== undefined) {
     await db.update(agents).set({ rating: opts.payeeRating }).where(eq(agents.id, payeeAgentId));
   }

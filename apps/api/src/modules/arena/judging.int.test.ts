@@ -121,7 +121,7 @@ describe("judgeBounty (extract_data)", () => {
     const two = await enter(db, bountyId);
     const idle = await enter(db, bountyId);
     await submit(db, one, { data: dataMatching(2) }, 1);
-    await submit(db, two, { data: { total: "not an integer" } }, 2);
+    await submit(db, two, { data: { total: 1 } }, 2);
     const feesBefore = await accountBalance(db, PLATFORM_FEES);
 
     expect(await sweepDeadlines(db, AFTER)).toBe(1);
