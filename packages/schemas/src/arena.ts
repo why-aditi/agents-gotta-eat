@@ -126,6 +126,8 @@ export const EnterBountyResponse = z.object({
     spendRequestId: z.string(),
     decision: z.enum(["allow", "pending_approval", "deny"]),
     reasons: z.array(z.string()),
+    // Plain-English hint for the agent and its owner; set when the reasons include `category_not_allowed`.
+    message: z.string().optional(),
   }),
 });
 export type EnterBountyResponse = z.infer<typeof EnterBountyResponse>;

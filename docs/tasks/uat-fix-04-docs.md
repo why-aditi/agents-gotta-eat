@@ -28,6 +28,6 @@ Status: fix list from QA, built directly (no plan review round).
 
 ## Follow-ups (not done here)
 
-- The mandate compiler prompt (`apps/api/src/modules/policy/compile.ts`) lists `stake` as a category but does not tell the model that entering bounties needs it, so "buy tools up to $10" compiles without `stake`. Suggest: add to the prompt that an agent that should enter bounties must include `stake`, and show it in the web mandate examples.
+- The mandate compiler prompt (`apps/api/src/modules/policy/compile.ts`) lists `stake` as a category but does not tell the model that entering bounties needs it, so "buy tools up to $10" compiles without `stake`. Suggest: add to the prompt that an agent that should enter bounties must include `stake`, and show it in the web mandate examples. Done in `uat-fix-05-compiler-stake.md`.
 - `POST /v1/agents` returns `mcpConfig.stdio` using `npx -y @gottaeat/mcp` (`identity/routes.ts`); it works only after the owner publishes the package.
 - Child scripts (`grant-admin`, `dev:token`, `db:migrate`) still use `--env-file-if-exists=../../.env`; they are fine when run through pnpm (cwd is `apps/api`) and only print a notice when no `.env` exists.

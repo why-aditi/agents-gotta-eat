@@ -10850,6 +10850,9 @@
                           "items": {
                             "type": "string"
                           }
+                        },
+                        "message": {
+                          "type": "string"
                         }
                       },
                       "required": [
@@ -10957,6 +10960,9 @@
                           "items": {
                             "type": "string"
                           }
+                        },
+                        "message": {
+                          "type": "string"
                         }
                       },
                       "required": [

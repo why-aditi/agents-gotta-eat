@@ -108,6 +108,11 @@ describe("MandateForm", () => {
     expect(saveMandate).not.toHaveBeenCalled();
   });
 
+  it("explains the stake category next to the checkboxes", () => {
+    render(<MandateForm agentId="agt_1" initial={null} />);
+    expect(screen.getByText(/stake: lets this agent enter bounties/)).toBeInTheDocument();
+  });
+
   it("rejects an ask-above over the per-spend cap and a per-spend cap over the daily cap", async () => {
     const user = userEvent.setup();
     render(<MandateForm agentId="agt_1" initial={null} />);
