@@ -101,11 +101,13 @@ export function buildApp(opts: BuildAppOptions) {
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
   // Before auth, so a flood of bad credentials is cut off before they are checked.
-  registerRateLimit(app, {
+  const registerPrincipalLimit = registerRateLimit(app, {
     perMinute: opts.env.RATE_LIMIT_PER_MINUTE,
     authFailPerMinute: opts.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
   });
   registerAuth(app, { db: opts.db, jwtSecret: opts.env.API_JWT_SECRET });
+  // After auth, so the limit is per verified agent or user.
+  registerPrincipalLimit();
   registerIdempotency(app, { db: opts.db });
 
   // Both are fastify-plugin wrapped, so they apply at the root. Plugins load in order:
