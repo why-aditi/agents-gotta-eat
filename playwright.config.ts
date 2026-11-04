@@ -43,6 +43,9 @@ export default defineConfig({
         POLICY_GATE2_STUB: "allow",
         // Every page here comes from one address, and each signed-in page load reads the demo status.
         DEMO_RATE_LIMIT: "1000",
+        // One address for every browser and server-side call here: no general or auth-failure limits.
+        RATE_LIMIT_PER_MINUTE: "0",
+        RATE_LIMIT_AUTH_FAIL_PER_MINUTE: "0",
         PAYPAL_CLIENT_ID: "e2e-client",
         PAYPAL_CLIENT_SECRET: "e2e-secret",
         PAYPAL_API_BASE: FAKE_PAYPAL_URL,

@@ -1,7 +1,7 @@
 // Mandates: the owner's rules for one agent. PUT adds an unconfirmed version; confirm activates it.
 // Active = the highest confirmed version. Old versions are kept.
 import { type Mandate, MandateRules, type PutMandateRequest } from "@gottaeat/schemas";
-import { and, desc, eq, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
 import type { Db, Tx } from "../../db";
 import { agents, mandates } from "../../db/schema";
 import { ApiError } from "../../http/errors";
@@ -63,6 +63,19 @@ export async function putMandate(db: Db, ownerId: string, agentId: string, input
 // higher version is confirmed.
 export async function confirmMandate(db: Db, ownerId: string, agentId: string, version: number): Promise<Mandate> {
   await requireOwnedAgent(db, ownerId, agentId);
+  // A superseded version can't be made active again; say so instead of returning it unchanged.
+  const [higher] = await db
+    .select({ version: mandates.version })
+    .from(mandates)
+    .where(and(eq(mandates.agentId, agentId), isNotNull(mandates.confirmedAt), gt(mandates.version, version)))
+    .orderBy(desc(mandates.version))
+    .limit(1);
+  if (higher) {
+    throw new ApiError(
+      "invalid_transition",
+      `Mandate version ${version} is superseded: version ${higher.version} is already confirmed and active. Add a new version instead.`,
+    );
+  }
   const [row] = await db
     .update(mandates)
     .set({ confirmedAt: sql`coalesce(${mandates.confirmedAt}, now())` })

@@ -33,6 +33,7 @@ import {
   COUNTED_STATUSES,
   insertDecision,
   ledgerKey,
+  rateLimitRetryAfterSeconds,
   recentRequestCount,
   todaySpentCents,
 } from "./requests";
@@ -227,6 +228,9 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
   const reasons: PolicyReason[] = [...gate1.reasons];
   if (gate2?.verdict === "ask") reasons.push("intent_ask");
   if (gate2?.verdict === "deny") reasons.push("intent_deny");
+  const retryAfterSeconds = reasons.includes("rate_limited")
+    ? await rateLimitRetryAfterSeconds(tx, principal.agentId, now)
+    : undefined;
 
   await tx.insert(spendRequests).values({
     id,
@@ -309,8 +313,13 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
     },
   });
   // The public demo-moment line: the intent check (gate 2) sent this spend to its owner. Not when only gate 1
-  // asked. No reason text and no owner id.
-  if (gate2?.verdict === "ask") {
+  // asked. No reason text and no owner id. Only for house (demo) agents: an external owner's flagged spend
+  // (real agent name, amount, category) stays in their owner-scoped spend.decided and never reaches the public stream.
+  const [kindRow] =
+    gate2?.verdict === "ask"
+      ? await tx.select({ kind: agents.kind }).from(agents).where(eq(agents.id, principal.agentId))
+      : [];
+  if (gate2?.verdict === "ask" && kindRow?.kind === "house") {
     await publish(tx, {
       type: "demo.spend_flagged",
       bountyId,
@@ -318,7 +327,13 @@ async function runSpend(tx: Tx, principal: AgentPrincipal, core: SpendCore, deps
     });
   }
 
-  return { id, status, decision: OUTCOME[status], reasons } satisfies CreateSpendResponse;
+  return {
+    id,
+    status,
+    decision: OUTCOME[status],
+    reasons,
+    ...(retryAfterSeconds ? { retryAfterSeconds } : {}),
+  } satisfies CreateSpendResponse;
 }
 
 // `afterSpend` runs inside the decision's transaction, after the hold: the subcontract slice records its job there,

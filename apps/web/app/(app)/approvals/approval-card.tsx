@@ -15,7 +15,7 @@ import { VerdictBadge } from "@/components/app/verdict-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatCents } from "@/lib/money";
-import { beggingHeadline, spendFacts } from "@/lib/kitchen";
+import { agentTag, beggingHeadline, spendFacts } from "@/lib/kitchen";
 import { cn } from "@/lib/utils";
 import { formatCountdown } from "../_lib/format";
 import { spendRequestReasons } from "../_lib/reasons";
@@ -97,6 +97,9 @@ export function ApprovalCard({ spend, agentName }: { spend: SpendRequest; agentN
             <h3 id={titleId} className="font-display text-xl leading-snug font-semibold">
               {beggingHeadline(name, spend.amountCents, spend.category)}
             </h3>
+            <p className="mt-0.5 text-xs text-muted-foreground" data-testid="agent-tag">
+              {name} {agentTag(spend.agentId)}
+            </p>
             <p className="mt-1 text-sm text-muted-foreground tabular-nums" data-testid="spend-facts">
               {spendFacts(spend.amountCents, spend.feeCents, spend.category, spend.payeeAgentName)}
             </p>

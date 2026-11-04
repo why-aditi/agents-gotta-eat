@@ -1,4 +1,5 @@
 // Every error leaves the api as { error: { code, message, detail? } }.
+import type { Duplex } from "node:stream";
 import type { ErrorBody, ErrorCode } from "@gottaeat/schemas";
 import type { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
@@ -142,6 +143,8 @@ export function toApiError(err: unknown): ApiError {
   }
   // Fastify's own client errors (bad JSON, wrong content type, body too large) have safe messages.
   if (isFastifyError(err) && err.code.startsWith("FST_") && err.statusCode && err.statusCode < 500) {
+    if (err.statusCode === 404) return new ApiError("not_found", err.message);
+    if (err.statusCode === 405) return new ApiError("method_not_allowed", err.message);
     return new ApiError("validation_error", err.message, undefined, err.statusCode);
   }
   return new ApiError("internal");
@@ -151,10 +154,43 @@ export function errorBody(e: ApiError): ErrorBody {
   return { error: { code: e.code, message: e.message, ...(e.detail ? { detail: e.detail } : {}) } };
 }
 
+// Fastify answers some errors before routing (malformed URL); Node answers some before Fastify (oversized
+// headers). Both go through these so the envelope holds everywhere.
+export function frameworkErrorHandler(err: FastifyError, _req: FastifyRequest, reply: FastifyReply) {
+  const e = toApiError(err);
+  return reply
+    .code(e.status)
+    .type("application/json")
+    .send(JSON.stringify(errorBody(e)));
+}
+
+// http.Server clientError: a request Node could not parse (431 for oversized headers, 400 otherwise).
+export function clientErrorHandler(err: Error & { code?: string }, socket: Duplex) {
+  if (err.code === "ECONNRESET" || !socket.writable) {
+    socket.destroy(err);
+    return;
+  }
+  const e =
+    err.code === "HPE_HEADER_OVERFLOW"
+      ? new ApiError("validation_error", "Request headers are too large", undefined, 431)
+      : new ApiError("validation_error", "Malformed request", undefined, 400);
+  const body = JSON.stringify(errorBody(e));
+  const reason = e.status === 431 ? "Request Header Fields Too Large" : "Bad Request";
+  socket.end(
+    `HTTP/1.1 ${e.status} ${reason}\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.byteLength(body)}\r\nConnection: close\r\n\r\n${body}`,
+  );
+}
+
 export function registerErrorHandlers(app: FastifyInstance) {
   app.setErrorHandler((err: unknown, req: FastifyRequest, reply: FastifyReply) => {
     const e = toApiError(err);
-    if (e.status >= 500) req.log.error({ err }, "request failed");
+    if (e.status >= 500) {
+      // A deliberate ApiError (compile_failed with the gateway down, paypal_error) is an expected outcome:
+      // warn, no stack. Anything else is a bug.
+      if (err instanceof ApiError && e.code !== "internal") {
+        req.log.warn({ code: e.code, status: e.status, detail: e.detail }, e.message);
+      } else req.log.error({ err }, "request failed");
+    }
     return reply
       .code(e.status)
       .type("application/json")

@@ -30,13 +30,22 @@ export function validateName(raw: string): string | null {
   return null;
 }
 
-export function RegisterDialog({ triggerLabel = "Adopt an agent" }: { triggerLabel?: string }) {
+export function RegisterDialog({
+  triggerLabel = "Adopt an agent",
+  existingNames = [],
+}: {
+  triggerLabel?: string;
+  // The owner's current agents. The api allows duplicate names, so a match only warns.
+  existingNames?: string[];
+}) {
   const [open, setOpen] = useState(false);
   const [idempotencyKey, setIdempotencyKey] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<CreateAgentResponse | null>(null);
   const [pending, startTransition] = useTransition();
+
+  const duplicate = existingNames.some((n) => n.trim().toLowerCase() === name.trim().toLowerCase()) && name.trim() !== "";
 
   function onOpenChange(next: boolean) {
     if (next) {
@@ -112,6 +121,12 @@ export function RegisterDialog({ triggerLabel = "Adopt an agent" }: { triggerLab
                 aria-describedby={error ? "agent-name-error" : undefined}
                 disabled={pending}
               />
+              {duplicate && !error ? (
+                <p className="text-sm text-muted-foreground">
+                  You already have an agent called {name.trim()}. You can still adopt another; each shows the end
+                  of its id (like #QP63) to tell them apart.
+                </p>
+              ) : null}
               {error && (
                 <p id="agent-name-error" role="alert" className="text-sm text-destructive">
                   {error}

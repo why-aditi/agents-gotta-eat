@@ -8,7 +8,7 @@ import { VerdictBadge } from "@/components/app/verdict-badge";
 import { Creature } from "@/components/creature/creature";
 import { MOOD_EMOJI, MOOD_LABEL, type Mood } from "@/components/creature/mood";
 import { unrated } from "@/lib/crew";
-import { MOOD_LINE } from "@/lib/kitchen";
+import { agentTag, MOOD_LINE } from "@/lib/kitchen";
 import { formatTenths } from "@/lib/money";
 import { AgentActions } from "./agent-actions";
 
@@ -40,6 +40,9 @@ export function AgentCard({ agent, mood }: { agent: Agent; mood: Mood }) {
             {agent.name}
           </Link>
         </h2>
+        <p className="text-xs text-muted-foreground" data-testid="agent-tag">
+          {agentTag(agent.id)}
+        </p>
         <p className="text-sm text-muted-foreground">
           <span aria-hidden>{MOOD_EMOJI[mood]} </span>
           <span className="sr-only">{MOOD_LABEL[mood]}: </span>

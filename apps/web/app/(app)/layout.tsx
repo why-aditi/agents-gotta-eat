@@ -1,8 +1,10 @@
 // Signed-in shell. Middleware already redirects signed-out users; this guard covers anything it misses.
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { auth } from "@/auth";
 import { DemoFallbackBanner } from "@/components/demo-fallback-banner";
 import { AppShell } from "@/components/nav";
+import { NoticeToast } from "@/components/notice-toast";
 import { fetchDemoStatus } from "@/lib/demo";
 
 export default async function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -14,6 +16,9 @@ export default async function AppLayout({ children }: Readonly<{ children: React
   return (
     <AppShell user={{ name: session.user?.name ?? null, email }}>
       <DemoFallbackBanner status={status} />
+      <Suspense>
+        <NoticeToast />
+      </Suspense>
       <main>{children}</main>
     </AppShell>
   );

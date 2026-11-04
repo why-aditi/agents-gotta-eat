@@ -60,7 +60,8 @@ export function MandateReview({ agentId, mandate, onDone }: { agentId: string; m
         </section>
       </CardContent>
       <CardFooter>
-        <Button onClick={confirm} disabled={pending}>
+        {/* Distinct from the "Confirm version N" rows in the history below. */}
+        <Button onClick={confirm} disabled={pending} aria-label={`Confirm mandate version ${mandate.version}`}>
           {pending ? "Confirming…" : "Confirm mandate"}
         </Button>
       </CardFooter>

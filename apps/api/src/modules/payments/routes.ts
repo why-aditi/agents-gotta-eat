@@ -140,6 +140,8 @@ export const paymentsRoutes: FastifyPluginAsyncZod = async (api) => {
 
   // Its own plugin, so the raw-body parser applies to this route only.
   await api.register(async (hook) => {
+    // The root app has its own JSON parser (empty body = no body); this one replaces it here.
+    hook.removeContentTypeParser("application/json");
     hook.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
       try {
         rawBodies.set(req, body as string);

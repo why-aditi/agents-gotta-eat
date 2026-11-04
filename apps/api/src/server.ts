@@ -37,6 +37,8 @@ function envFromProcess(): AppEnv {
     AGENTS_WAKE_URL: process.env.AGENTS_WAKE_URL,
     AGENTS_WAKE_SECRET: process.env.AGENTS_WAKE_SECRET,
     TRUST_PROXY_HOPS: process.env.TRUST_PROXY_HOPS,
+    RATE_LIMIT_PER_MINUTE: process.env.RATE_LIMIT_PER_MINUTE,
+    RATE_LIMIT_AUTH_FAIL_PER_MINUTE: process.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
     WEB_URL: process.env.WEB_URL,

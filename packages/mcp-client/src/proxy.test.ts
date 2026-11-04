@@ -4,7 +4,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { JSONRPCMessage } from "@modelcontextprotocol/sdk/types.js";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { main } from "./main.ts";
 import { createProxy, mcpUrl, type Proxy } from "./proxy.ts";
 
@@ -141,8 +141,11 @@ describe("createProxy", () => {
     cleanups.push(() => new Promise((resolve) => http.close(resolve)));
     const { port } = http.address() as AddressInfo;
 
-    const { client } = await startProxy({ apiUrl: `http://127.0.0.1:${port}/` });
+    const { client, logs } = await startProxy({ apiUrl: `http://127.0.0.1:${port}/` });
     await expect(client.listTools()).rejects.toThrow();
+    await vi.waitFor(() => expect(logs.join(" ")).toContain("unauthorized (check your API key)"));
+    expect(logs.join(" ")).not.toContain("cannot reach");
+    expect(logs.join(" ")).not.toContain("gte_agent_test");
     expect(seen.length).toBeGreaterThan(0);
     expect(seen[0]?.authorization).toBe("Bearer gte_agent_test");
   });

@@ -89,7 +89,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           LLM usage and the demo recordings.
         </p>
       </div>
-      <nav aria-label="Admin sections" className="inline-flex max-w-full overflow-x-auto rounded-lg bg-muted p-[3px]">
+      <nav aria-label="Admin sections" className="flex w-fit max-w-full flex-wrap gap-1 rounded-lg bg-muted p-[3px]">
         {ADMIN_TABS.map((t) => (
           <Link
             key={t.id}

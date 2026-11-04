@@ -76,17 +76,35 @@ describe("submitWork", () => {
     expect(sub.contentHash).toBe(sha256(text));
   });
 
+  it("extract_data: data that breaks the bounty schema is a 400 and the entry stays submittable", async () => {
+    const f = await entered();
+    const err = await submitWork(db, f.principal, f.entryId, { content: { data: { total: "12" } } }).then(
+      () => null,
+      (e: unknown) => e,
+    );
+    expect(err).toBeInstanceOf(ApiError);
+    expect((err as ApiError).code).toBe("validation_error");
+    expect((err as ApiError).status).toBe(400);
+    expect((err as ApiError).detail).toMatchObject({ schemaErrors: [expect.stringContaining("/total")] });
+    expect(await db.select().from(submissions)).toHaveLength(0);
+    expect((await db.select().from(entries).where(eq(entries.id, f.entryId)))[0]?.status).toBe("active");
+    const ok = await submitWork(db, f.principal, f.entryId, { content: { data: { total: 12 } } });
+    expect(ok.entryId).toBe(f.entryId);
+  });
+
   it("a second submission → 409 already_submitted", async () => {
     const f = await entered();
-    await submitWork(db, f.principal, f.entryId, { content: { data: 1 } });
-    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: 2 } }))).toBe("already_submitted");
+    await submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } });
+    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: { total: 2 } } }))).toBe(
+      "already_submitted",
+    );
     expect(await db.select().from(submissions)).toHaveLength(1);
   });
 
   it("concurrent submissions → exactly one wins", async () => {
     const f = await entered();
     const results = await Promise.allSettled(
-      [1, 2, 3].map((n) => submitWork(db, f.principal, f.entryId, { content: { data: n } })),
+      [1, 2, 3].map((n) => submitWork(db, f.principal, f.entryId, { content: { data: { total: n } } })),
     );
     expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
     expect(await db.select().from(submissions)).toHaveLength(1);
@@ -95,11 +113,13 @@ describe("submitWork", () => {
   it("at or after the deadline → 409 deadline_passed (open or already judging)", async () => {
     const f = await entered();
     const [b] = await db.select().from(bounties).where(eq(bounties.id, f.bountyId));
-    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: 1 } }, b!.deadlineAt))).toBe(
+    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } }, b!.deadlineAt))).toBe(
       "deadline_passed",
     );
     await db.update(bounties).set({ status: "judging" }).where(eq(bounties.id, f.bountyId));
-    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: 1 } }))).toBe("deadline_passed");
+    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } }))).toBe(
+      "deadline_passed",
+    );
     expect(await db.select().from(submissions)).toHaveLength(0);
   });
 
@@ -133,21 +153,27 @@ describe("submitWork", () => {
     const f = await entered({ askAboveCents: 0 });
     const [entry] = await db.select().from(entries).where(eq(entries.id, f.entryId));
     expect(entry?.status).toBe("pending_stake");
-    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: 1 } }))).toBe("entry_not_active");
+    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } }))).toBe(
+      "entry_not_active",
+    );
     await db.update(entries).set({ status: "withdrawn" }).where(eq(entries.id, f.entryId));
-    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: 1 } }))).toBe("entry_not_active");
+    expect(await code(submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } }))).toBe(
+      "entry_not_active",
+    );
   });
 
   it("someone else's entry or an unknown id → 404", async () => {
     const f = await entered();
     const g = await entered();
-    expect(await code(submitWork(db, g.principal, f.entryId, { content: { data: 1 } }))).toBe("not_found");
-    expect(await code(submitWork(db, f.principal, "ent_missing", { content: { data: 1 } }))).toBe("not_found");
+    expect(await code(submitWork(db, g.principal, f.entryId, { content: { data: { total: 1 } } }))).toBe("not_found");
+    expect(await code(submitWork(db, f.principal, "ent_missing", { content: { data: { total: 1 } } }))).toBe(
+      "not_found",
+    );
   });
 
   it("submissions are immutable: raw UPDATE and DELETE are rejected by the trigger", async () => {
     const f = await entered();
-    const sub = await submitWork(db, f.principal, f.entryId, { content: { data: 1 } });
+    const sub = await submitWork(db, f.principal, f.entryId, { content: { data: { total: 1 } } });
     // Drizzle wraps the driver error; the trigger's message is on its cause.
     const failure = (q: Promise<unknown>) =>
       q.then(
@@ -159,6 +185,6 @@ describe("submitWork", () => {
     );
     expect(await failure(db.execute(sql`delete from submissions where id = ${sub.id}`))).toMatch(/immutable/);
     const [row] = await db.select().from(submissions).where(eq(submissions.id, sub.id));
-    expect(row?.content).toBe("1");
+    expect(row?.content).toBe('{"total":1}');
   });
 });

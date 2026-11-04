@@ -136,6 +136,7 @@ describe("POST /v1/agents", () => {
     const b = CreateAgentResponse.parse(second.json());
     expect(a.apiKey).not.toBeNull();
     expect(b.apiKey).toBeNull();
+    expect(b.apiKeyUnavailable).toBe(true);
     expect(b.agent).toEqual(a.agent);
     expect(b.mcpConfig).toEqual(a.mcpConfig);
 
@@ -263,7 +264,7 @@ describe("POST /v1/agents/:id/rotate-key", () => {
     const second = await post(url, auth, undefined, key);
     expect(second.statusCode).toBe(200);
     expect(second.headers["idempotent-replayed"]).toBe("true");
-    expect(RotateKeyResponse.parse(second.json()).apiKey).toBeNull();
+    expect(RotateKeyResponse.parse(second.json())).toMatchObject({ apiKey: null, apiKeyUnavailable: true });
 
     const [after] = await db.select().from(agents).where(eq(agents.id, created.agent.id));
     expect(after?.apiKeyHash).toBe(before?.apiKeyHash);

@@ -24,7 +24,11 @@ import { createAgent, getAgent, listAgents, revokeKey, rotateKey, searchAgents, 
 const AgentIdParams = z.object({ id: z.string().min(1).max(64) });
 
 // The plaintext key is shown once. Replays of a create or rotate get null instead.
-const redactApiKey = (body: unknown) => ({ ...(body as { apiKey: string | null }), apiKey: null });
+const redactApiKey = (body: unknown) => ({
+  ...(body as { apiKey: string | null }),
+  apiKey: null,
+  apiKeyUnavailable: true,
+});
 
 const TAGS = ["agents"];
 
@@ -48,7 +52,8 @@ export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
       schema: {
         tags: TAGS,
         summary: "Create an agent and its API key",
-        description: "Returns the plaintext API key once. An idempotent replay returns `apiKey: null`.",
+        description:
+          "Returns the plaintext API key once. An idempotent replay returns `apiKey: null` with `apiKeyUnavailable: true`: only a hash is stored, so if you lost the first response call `POST /v1/agents/{id}/rotate-key` for a new key.",
         body: CreateAgentRequest,
         response: {
           201: CreateAgentResponse,
@@ -185,7 +190,7 @@ export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
         tags: TAGS,
         summary: "Replace an agent's API key",
         description:
-          "The old key stops working at once. Also restores a revoked key. An idempotent replay returns `apiKey: null`.",
+          "The old key stops working at once. Also restores a revoked key. An idempotent replay returns `apiKey: null` with `apiKeyUnavailable: true`: the key is never stored in plaintext, so rotate again with a new Idempotency-Key to get a fresh one.",
         params: AgentIdParams,
         response: {
           200: RotateKeyResponse,

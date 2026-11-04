@@ -5,9 +5,11 @@ import pkg from "../package.json" with { type: "json" };
 import type { Db } from "./db";
 import { registerAuth } from "./http/auth";
 import { registerCors } from "./http/cors";
-import { registerErrorHandlers } from "./http/errors";
+import { clientErrorHandler, frameworkErrorHandler, registerErrorHandlers } from "./http/errors";
+import { registerInputGuard } from "./http/input-guard";
 import { registerIdempotency } from "./http/idempotency";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { registerRateLimit } from "./http/rate-limit";
 import { adminRoutes } from "./modules/admin";
 import { demoRoutes } from "./modules/demo";
 import { arenaRoutes, registerArenaHooks } from "./modules/arena";
@@ -41,6 +43,10 @@ export interface AppEnv {
   AGENTS_WAKE_SECRET?: string;
   // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
   TRUST_PROXY_HOPS?: string;
+  // Requests a minute per caller (agent key, else IP) and failed-auth responses a minute per IP. Defaults 1200 and 30;
+  // "0" turns a limit off. Tests and load runs set 0.
+  RATE_LIMIT_PER_MINUTE?: string;
+  RATE_LIMIT_AUTH_FAIL_PER_MINUTE?: string;
   // Email (Resend). Unset key: no email is sent. EMAIL_FROM and WEB_URL (link target) have defaults;
   // RESEND_API_URL is for tests.
   RESEND_API_KEY?: string;
@@ -80,6 +86,9 @@ export function buildApp(opts: BuildAppOptions) {
   const hops = Number.parseInt(opts.env.TRUST_PROXY_HOPS ?? "", 10);
   const app = Fastify({
     logger: opts.logger ?? true,
+    frameworkErrors: frameworkErrorHandler,
+    // Node calls this for requests it cannot parse (431 and the like), before Fastify sees them.
+    clientErrorHandler,
     // Trusts the first `hops` proxies in X-Forwarded-For (proxy-addr's hop count, as a function for the types).
     ...(Number.isInteger(hops) && hops > 0 ? { trustProxy: (_addr: string, i: number) => i < hops } : {}),
   }).withTypeProvider<ZodTypeProvider>();
@@ -95,7 +104,21 @@ export function buildApp(opts: BuildAppOptions) {
 
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
+  registerInputGuard(app);
+  // An empty body with a JSON content type (httpx and axios default) is "no body", not an error.
+  const defaultJson = app.getDefaultJsonParser("error", "error");
+  app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+    if (typeof body === "string" && body.trim() === "") return done(null, undefined);
+    defaultJson(req, body as string, done);
+  });
+  // Before auth, so a flood of bad credentials is cut off before they are checked.
+  const registerPrincipalLimit = registerRateLimit(app, {
+    perMinute: opts.env.RATE_LIMIT_PER_MINUTE,
+    authFailPerMinute: opts.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
+  });
   registerAuth(app, { db: opts.db, jwtSecret: opts.env.API_JWT_SECRET });
+  // After auth, so the limit is per verified agent or user.
+  registerPrincipalLimit();
   registerIdempotency(app, { db: opts.db });
 
   // Both are fastify-plugin wrapped, so they apply at the root. Plugins load in order:

@@ -66,9 +66,34 @@ export const MandateRules = z.object({
 });
 export type MandateRules = z.infer<typeof MandateRules>;
 
+export interface MandateProblem {
+  path: "askAboveCents" | "perTxMaxCents" | "expiresAt";
+  message: string;
+}
+
+// Coherence checks for new rules (the owner form and PUT use them; stored rows are not re-checked, since an
+// expired mandate is legitimate history).
+export function mandateRulesProblems(rules: MandateRules, now: number = Date.now()): MandateProblem[] {
+  const problems: MandateProblem[] = [];
+  if (rules.askAboveCents !== undefined && rules.askAboveCents > rules.perTxMaxCents) {
+    problems.push({ path: "askAboveCents", message: "askAboveCents must not exceed perTxMaxCents" });
+  }
+  if (rules.perTxMaxCents > rules.dailyMaxCents) {
+    problems.push({ path: "perTxMaxCents", message: "perTxMaxCents must not exceed dailyMaxCents" });
+  }
+  if (rules.expiresAt && Date.parse(rules.expiresAt) <= now) {
+    problems.push({ path: "expiresAt", message: "expiresAt must be in the future" });
+  }
+  return problems;
+}
+
+export const NewMandateRules = MandateRules.superRefine((rules, ctx) => {
+  for (const p of mandateRulesProblems(rules)) ctx.addIssue({ code: "custom", path: [p.path], message: p.message });
+});
+
 export const PutMandateRequest = z.object({
   sourceText: z.string().trim().min(1).max(4000),
-  rules: MandateRules,
+  rules: NewMandateRules,
 });
 export type PutMandateRequest = z.infer<typeof PutMandateRequest>;
 
@@ -154,6 +179,8 @@ export const CreateSpendResponse = z.object({
   status: SpendStatus,
   decision: SpendOutcome,
   reasons: z.array(PolicyReason),
+  // Only with the `rate_limited` reason: seconds until the agent may try again (also the 429-style hint).
+  retryAfterSeconds: z.number().int().positive().optional(),
 });
 export type CreateSpendResponse = z.infer<typeof CreateSpendResponse>;
 

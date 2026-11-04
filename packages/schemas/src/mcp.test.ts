@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { z } from "zod";
 import {
   AcceptDeliveryInput,
   AcceptSubcontractRequest,
@@ -46,11 +47,11 @@ describe("McpTools", () => {
 });
 
 describe("RequestSpendInput", () => {
-  it("is CreateSpendRequest plus an optional idempotencyKey", () => {
+  it("is CreateSpendRequest plus a required idempotencyKey", () => {
     expect(Object.keys(RequestSpendInput.shape).sort()).toEqual(
       [...Object.keys(CreateSpendRequest.shape), "idempotencyKey"].sort(),
     );
-    expect(RequestSpendInput.parse(spend)).toEqual(spend);
+    expect(RequestSpendInput.safeParse(spend).success).toBe(false);
     expect(RequestSpendInput.parse({ ...spend, idempotencyKey: "retry-1" })).toEqual({
       ...spend,
       idempotencyKey: "retry-1",
@@ -77,7 +78,7 @@ describe("GetSpendRequestInput", () => {
 });
 
 describe("subcontract tools", () => {
-  it("are the REST bodies plus an id and an optional idempotencyKey", () => {
+  it("are the REST bodies plus an id and a required idempotencyKey", () => {
     const keys = (o: { shape: object }) => Object.keys(o.shape).sort();
     expect(keys(HireAgentInput)).toEqual([...Object.keys(CreateSubcontractRequest.shape), "idempotencyKey"].sort());
     expect(keys(DeliverJobInput)).toEqual(
@@ -89,6 +90,14 @@ describe("subcontract tools", () => {
     expect(keys(GetJobInput)).toEqual(["id"]);
     expect(keys(ListJobsInput)).toEqual([]);
     expect(keys(FindAgentsInput)).toEqual(["minRating", "skill"]);
+  });
+
+  it("every POST tool requires an idempotencyKey", () => {
+    for (const t of McpTools) {
+      const key = (t.input.shape as Record<string, z.ZodType | undefined>).idempotencyKey;
+      expect(key !== undefined).toBe(t.method === "POST");
+      if (key) expect(key.safeParse(undefined).success).toBe(false);
+    }
   });
 
   it("each maps to its route", () => {

@@ -5,6 +5,13 @@ import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+// Load the repo-root .env by absolute path: a cwd-relative --env-file breaks when pnpm runs this from another directory.
+try {
+  process.loadEnvFile(join(import.meta.dirname, "..", ".env"));
+} catch {
+  // no .env: use the process environment
+}
+
 const API_URL = (process.env.API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
 const POSTER = process.env.SEED_POSTER_EMAIL ?? "demo-poster@gottaeat.dev";
 const HOURS = Number(process.env.SEED_DEADLINE_HOURS ?? "48");

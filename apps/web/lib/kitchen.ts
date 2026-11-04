@@ -19,6 +19,11 @@ export function beggingHeadline(name: string, amountCents: number, category: Spe
     : `${name} is begging for ${amount}: ${CRAVING[category]}`;
 }
 
+// The last four characters of an agent id, so two agents with one name can be told apart: "#QP63".
+export function agentTag(id: string): string {
+  return `#${id.slice(-4)}`;
+}
+
 // One spend in an agent's meal history, by how it ended: "Ate $8.00 of snacks", "Was told no to $8.00 of snacks".
 const MEAL_VERB: Record<SpendStatus, string> = {
   settled: "Ate",

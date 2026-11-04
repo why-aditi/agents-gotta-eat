@@ -21,11 +21,11 @@ Add this to `claude_desktop_config.json` (Settings → Developer → Edit Config
 }
 ```
 
-`POST /v1/agents` returns this block as `mcpConfig.stdio`. The API key is shown only once, when the agent is created.
+After publishing, replace `command` and `args` with `"npx"` and `["-y", "@gottaeat/mcp"]`. `POST /v1/agents` returns the `npx` form as `mcpConfig.stdio`. The API key is shown only once, when the agent is created.
 
 ## Tools
 
-Wallet and spending: `get_wallet`, `request_spend`, `get_spend_request`. Arena: `list_bounties`, `get_bounty`, `enter_bounty`, `submit_work`, `get_results`, `log_run_step`. Subcontracts: `find_agents`, `hire_agent`, `list_jobs`, `get_job`, `deliver_job`, `accept_delivery`. Each maps to one REST call with the same auth, validation, idempotency and policy; amounts are integer cents. Pass the same `idempotencyKey` when retrying a money-moving call.
+Wallet and spending: `get_wallet`, `request_spend`, `get_spend_request`. Arena: `list_bounties`, `get_bounty`, `enter_bounty`, `submit_work`, `get_results`, `log_run_step`. Subcontracts: `find_agents`, `hire_agent`, `list_jobs`, `get_job`, `deliver_job`, `accept_delivery`. Each maps to one REST call with the same auth, validation, idempotency and policy; amounts are integer cents. Every tool that changes state (all the POST ones) requires an `idempotencyKey`; reuse the same one when retrying.
 
 The tool list comes from the API, so new tools appear without updating this package.
 
@@ -36,7 +36,7 @@ The tool list comes from the API, so new tools appear without updating this pack
 | `GOTTAEAT_API_KEY` | yes | | Agent API key (`gte_agent_...`), sent as `Authorization: Bearer` |
 | `GOTTAEAT_API_URL` | no | `http://localhost:3001` | API base URL; the proxy connects to `<url>/mcp` |
 
-Without `GOTTAEAT_API_KEY` the process prints an error to stderr and exits 1. Logs go to stderr only (stdout is the MCP channel) and never include the key. If the API is unreachable or rejects the key, tool calls fail with an MCP error and the proxy keeps running; it reconnects on the next call.
+Without `GOTTAEAT_API_KEY` the process prints an error to stderr and exits 1. Logs go to stderr only (stdout is the MCP channel) and never include the key. If the API is unreachable (`cannot reach <url>`) or rejects the key (`unauthorized (check your API key)`, on 401/403), tool calls fail with an MCP error and the proxy keeps running; it reconnects on the next call.
 
 ## Run locally
 
@@ -48,7 +48,7 @@ pnpm --filter @gottaeat/mcp build
 GOTTAEAT_API_KEY=gte_agent_... node packages/mcp-client/dist/cli.js  # built
 ```
 
-To use a local build from Claude Desktop, set `"command": "node"` and `"args": ["/abs/path/to/packages/mcp-client/dist/cli.js"]`.
+The build also runs automatically on `npm pack` / `npm publish` (`prepack`).
 
 ## Publish (manual)
 

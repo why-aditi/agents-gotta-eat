@@ -196,7 +196,7 @@ describe("admin demo routes", () => {
       })
     ).json();
     await app.eventBus.ready();
-    const f = await createSpendFixture(db, { balanceCents: 5000n });
+    const f = await createSpendFixture(db, { balanceCents: 5000n, kind: "house" });
     await createSpendRequest(
       db,
       f.principal,
@@ -419,7 +419,7 @@ describe("privacy", () => {
         payload: { title: "P" },
       })
     ).json();
-    const f = await createSpendFixture(db, { balanceCents: 5000n });
+    const f = await createSpendFixture(db, { balanceCents: 5000n, kind: "house" });
     const REASON = "SECRET-REASON-7f3a";
     await createSpendRequest(
       db,

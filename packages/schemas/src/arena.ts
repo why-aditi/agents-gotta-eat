@@ -1,6 +1,7 @@
 // Arena: bounties, entries and submissions. Cents are JSON integers here and bigint inside the api.
 import { z } from "zod";
 import { BountyDispute } from "./disputes";
+import { MAX_TOPUP_CENTS } from "./payments";
 
 export const TaskType = z.enum(["fix_tests", "extract_data", "write_tests", "research", "creative_writing"]);
 export type TaskType = z.infer<typeof TaskType>;
@@ -40,9 +41,12 @@ export const CreativeWritingSpec = z.object({
 });
 export type CreativeWritingSpec = z.infer<typeof CreativeWritingSpec>;
 
+// $10,000 (1_000_000 cents), the same ceiling as a wallet top-up. The api and the web form both use it.
+export const MAX_BOUNTY_REWARD_CENTS = MAX_TOPUP_CENTS;
+
 const BountyBase = z.object({
   title: z.string().trim().min(1).max(200),
-  rewardCents: z.int().min(100),
+  rewardCents: z.int().min(100).max(MAX_BOUNTY_REWARD_CENTS, "rewardCents must be at most 1000000 (US$10,000)"),
   deadlineAt: z.iso.datetime(),
   // Max share of the reward an entrant may spend on subcontracts and tools for this bounty.
   spendRulePct: z.int().min(0).max(50),
@@ -68,7 +72,7 @@ export const MAX_BOUNTY_ENTRANTS = 5;
 export const Bounty = z.object({
   id: z.string(),
   posterId: z.string(),
-  taskType: TaskType,
+  taskType: SupportedTaskType,
   title: z.string(),
   spec: z.record(z.string(), z.unknown()),
   rewardCents: z.int(),
@@ -95,7 +99,7 @@ export type BountyList = z.infer<typeof BountyList>;
 // own bounties in every status unless `status` narrows it. A string because it comes from the query string.
 export const ListBountiesQuery = z.object({
   status: BountyStatus.optional(),
-  type: TaskType.optional(),
+  type: SupportedTaskType.optional(),
   mine: z.enum(["true", "false"]).optional(),
 });
 export type ListBountiesQuery = z.infer<typeof ListBountiesQuery>;
@@ -140,8 +144,6 @@ export const Submission = z.object({
   submittedAt: z.iso.datetime(),
 });
 export type Submission = z.infer<typeof Submission>;
-
-export const DevFundRequest = z.object({}).strict();
 
 export const StakeOutcome = z.enum(["refunded", "forfeited"]);
 export type StakeOutcome = z.infer<typeof StakeOutcome>;

@@ -8,7 +8,6 @@ from ...client import AuthenticatedClient, Client
 from ...types import Response, UNSET
 from ... import errors
 
-from ...models.post_v1_admin_bounties_id_open_body import PostV1AdminBountiesIdOpenBody
 from ...models.post_v1_admin_bounties_id_open_response_200 import PostV1AdminBountiesIdOpenResponse200
 from ...models.post_v1_admin_bounties_id_open_response_400 import PostV1AdminBountiesIdOpenResponse400
 from ...models.post_v1_admin_bounties_id_open_response_401 import PostV1AdminBountiesIdOpenResponse401
@@ -22,7 +21,6 @@ from typing import cast
 def _get_kwargs(
     id: str,
     *,
-    body: PostV1AdminBountiesIdOpenBody,
     idempotency_key: str,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
@@ -34,10 +32,6 @@ def _get_kwargs(
             id=quote(str(id), safe=""),
         ),
     }
-
-    _kwargs["json"] = body.to_dict()
-
-    headers["Content-Type"] = "application/json"
 
     _kwargs["headers"] = headers
     return _kwargs
@@ -119,7 +113,6 @@ def sync_detailed(
     id: str,
     *,
     client: AuthenticatedClient,
-    body: PostV1AdminBountiesIdOpenBody,
     idempotency_key: str,
 ) -> Response[
     PostV1AdminBountiesIdOpenResponse200
@@ -137,7 +130,6 @@ def sync_detailed(
     Args:
         id (str):
         idempotency_key (str):
-        body (PostV1AdminBountiesIdOpenBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,7 +141,6 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         id=id,
-        body=body,
         idempotency_key=idempotency_key,
     )
 
@@ -164,7 +155,6 @@ def sync(
     id: str,
     *,
     client: AuthenticatedClient,
-    body: PostV1AdminBountiesIdOpenBody,
     idempotency_key: str,
 ) -> (
     PostV1AdminBountiesIdOpenResponse200
@@ -183,7 +173,6 @@ def sync(
     Args:
         id (str):
         idempotency_key (str):
-        body (PostV1AdminBountiesIdOpenBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -196,7 +185,6 @@ def sync(
     return sync_detailed(
         id=id,
         client=client,
-        body=body,
         idempotency_key=idempotency_key,
     ).parsed
 
@@ -205,7 +193,6 @@ async def asyncio_detailed(
     id: str,
     *,
     client: AuthenticatedClient,
-    body: PostV1AdminBountiesIdOpenBody,
     idempotency_key: str,
 ) -> Response[
     PostV1AdminBountiesIdOpenResponse200
@@ -223,7 +210,6 @@ async def asyncio_detailed(
     Args:
         id (str):
         idempotency_key (str):
-        body (PostV1AdminBountiesIdOpenBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -235,7 +221,6 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         id=id,
-        body=body,
         idempotency_key=idempotency_key,
     )
 
@@ -248,7 +233,6 @@ async def asyncio(
     id: str,
     *,
     client: AuthenticatedClient,
-    body: PostV1AdminBountiesIdOpenBody,
     idempotency_key: str,
 ) -> (
     PostV1AdminBountiesIdOpenResponse200
@@ -267,7 +251,6 @@ async def asyncio(
     Args:
         id (str):
         idempotency_key (str):
-        body (PostV1AdminBountiesIdOpenBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -281,7 +264,6 @@ async def asyncio(
         await asyncio_detailed(
             id=id,
             client=client,
-            body=body,
             idempotency_key=idempotency_key,
         )
     ).parsed

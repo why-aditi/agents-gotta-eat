@@ -116,7 +116,11 @@ describe("Arena over MCP", () => {
       contentHash: expect.stringMatching(/^[0-9a-f]{64}$/),
     });
 
-    const twice = await call(client, "submit_work", { id: body.entry.id, content: { text: "Second go" } });
+    const twice = await call(client, "submit_work", {
+      id: body.entry.id,
+      content: { text: "Second go" },
+      idempotencyKey: "submit-2",
+    });
     expect(twice.isError).toBe(true);
     expect(bodyOf(twice)).toMatchObject({ error: { code: "already_submitted" } });
     expect(await reconcile(db)).toMatchObject({ ok: true });
@@ -155,7 +159,7 @@ describe("MCP over Streamable HTTP", () => {
     expect(spend?.inputSchema.required).toEqual(
       expect.arrayContaining(["payeeAgentId", "amountCents", "category", "reason"]),
     );
-    expect(spend?.inputSchema.required).not.toContain("idempotencyKey");
+    expect(spend?.inputSchema.required).toContain("idempotencyKey");
     expect(tools.find((t) => t.name === "get_spend_request")?.inputSchema.required).toEqual(["id"]);
     expect(tools.find((t) => t.name === "get_wallet")?.inputSchema.properties ?? {}).toEqual({});
   });
@@ -184,7 +188,7 @@ describe("MCP over Streamable HTTP", () => {
   it("returns a policy deny as a normal result with reasons", async () => {
     const f = await fixture(5000n, { perTxMaxCents: 100 });
     const client = await connect(f.apiKey);
-    const res = await call(client, "request_spend", spendArgs(f.payeeAgentId, 500));
+    const res = await call(client, "request_spend", { ...spendArgs(f.payeeAgentId, 500), idempotencyKey: "deny-1" });
     expect(res.isError).toBeFalsy();
     expect(CreateSpendResponse.parse(bodyOf(res))).toMatchObject({
       status: "denied",
@@ -227,14 +231,14 @@ describe("MCP over Streamable HTTP", () => {
     expect(await db.select().from(spendRequests)).toHaveLength(1);
   });
 
-  it("makes two spends when no idempotencyKey is given", async () => {
+  it("refuses a money-moving tool call without an idempotencyKey, spending nothing", async () => {
     const f = await fixture(5000n);
     const client = await connect(f.apiKey);
-    const a = CreateSpendResponse.parse(bodyOf(await call(client, "request_spend", spendArgs(f.payeeAgentId, 250))));
-    const b = CreateSpendResponse.parse(bodyOf(await call(client, "request_spend", spendArgs(f.payeeAgentId, 250))));
-    expect(a.id).not.toBe(b.id);
-    expect(Wallet.parse(bodyOf(await call(client, "get_wallet"))).balanceCents).toBe(4500);
-    expect(await db.select().from(spendRequests)).toHaveLength(2);
+    const res = await call(client, "request_spend", spendArgs(f.payeeAgentId, 250));
+    expect(res.isError).toBe(true);
+    expect(textOf(res)).toMatch(/idempotencyKey/);
+    expect(Wallet.parse(bodyOf(await call(client, "get_wallet"))).balanceCents).toBe(5000);
+    expect(await db.select().from(spendRequests)).toHaveLength(0);
   });
 });
 

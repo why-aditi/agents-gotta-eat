@@ -129,6 +129,16 @@ function zero(rationale: string, detail: Partial<ExtractDataResult["detail"]>): 
   };
 }
 
+// Submit-time check: the schema errors for `data` ([] when valid or when the bounty schema can't be compiled,
+// which the verifier scores later). Same Ajv options as the verifier, so the two never disagree.
+export function schemaErrorsFor(schema: Record<string, unknown>, data: unknown): string[] {
+  const compiled = compileSchema(schema);
+  if (!compiled.ok || compiled.validate(data)) return [];
+  return (compiled.validate.errors ?? [])
+    .slice(0, MAX_SCHEMA_ERRORS)
+    .map((e) => `${e.instancePath || "/"} ${e.message ?? "is invalid"}`);
+}
+
 export function verifyExtractData(input: {
   schema: Record<string, unknown>;
   answerKey: unknown;

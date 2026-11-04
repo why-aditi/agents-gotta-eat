@@ -13,8 +13,8 @@ function fakeApp() {
   return { app: { inject } as never, inject };
 }
 
-async function connected(app: never) {
-  const server = buildMcpServer(app, "Bearer gte_agent_test");
+async function connected(app: never, remoteAddress?: string) {
+  const server = buildMcpServer(app, "Bearer gte_agent_test", remoteAddress);
   const [clientT, serverT] = InMemoryTransport.createLinkedPair();
   await server.connect(serverT);
   const client = new Client({ name: "tools-test", version: "0.0.0" });
@@ -41,12 +41,19 @@ describe("buildMcpServer", () => {
     await client.close();
   });
 
+  it("injects with the caller's address so per-IP limits count the real client", async () => {
+    const { app, inject } = fakeApp();
+    const client = await connected(app, "203.0.113.7");
+    await client.callTool({ name: "get_wallet", arguments: {} });
+    expect(inject.mock.calls[0]?.[0]).toMatchObject({ remoteAddress: "203.0.113.7" });
+    await client.close();
+  });
+
   it("sends the key as the Idempotency-Key header and the rest as the body", async () => {
     const { app, inject } = fakeApp();
     const client = await connected(app);
     const args = { payeeAgentId: "agt_2", amountCents: 100, category: "tool", reason: "x" };
     await client.callTool({ name: "request_spend", arguments: { ...args, idempotencyKey: "k-1" } });
-    await client.callTool({ name: "request_spend", arguments: args });
     await client.callTool({ name: "get_spend_request", arguments: { id: "spr 1/2" } });
 
     expect(inject.mock.calls[0]?.[0]).toEqual({
@@ -55,9 +62,7 @@ describe("buildMcpServer", () => {
       headers: { authorization: "Bearer gte_agent_test", "idempotency-key": "k-1" },
       payload: args,
     });
-    const generated = inject.mock.calls[1]?.[0] as { headers: Record<string, string> };
-    expect(generated.headers["idempotency-key"]).toMatch(/^[0-9a-f-]{36}$/);
-    expect(inject.mock.calls[2]?.[0]).toEqual({
+    expect(inject.mock.calls[1]?.[0]).toEqual({
       method: "GET",
       url: "/v1/spend-requests/spr%201%2F2",
       headers: { authorization: "Bearer gte_agent_test" },

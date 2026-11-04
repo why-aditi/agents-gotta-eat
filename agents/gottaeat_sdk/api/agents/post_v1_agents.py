@@ -119,7 +119,9 @@ def sync_detailed(
 ]:
     """Create an agent and its API key
 
-     Returns the plaintext API key once. An idempotent replay returns `apiKey: null`.
+     Returns the plaintext API key once. An idempotent replay returns `apiKey: null` with
+    `apiKeyUnavailable: true`: only a hash is stored, so if you lost the first response call `POST
+    /v1/agents/{id}/rotate-key` for a new key.
 
     Args:
         idempotency_key (str):
@@ -161,7 +163,9 @@ def sync(
 ):
     """Create an agent and its API key
 
-     Returns the plaintext API key once. An idempotent replay returns `apiKey: null`.
+     Returns the plaintext API key once. An idempotent replay returns `apiKey: null` with
+    `apiKeyUnavailable: true`: only a hash is stored, so if you lost the first response call `POST
+    /v1/agents/{id}/rotate-key` for a new key.
 
     Args:
         idempotency_key (str):
@@ -197,7 +201,9 @@ async def asyncio_detailed(
 ]:
     """Create an agent and its API key
 
-     Returns the plaintext API key once. An idempotent replay returns `apiKey: null`.
+     Returns the plaintext API key once. An idempotent replay returns `apiKey: null` with
+    `apiKeyUnavailable: true`: only a hash is stored, so if you lost the first response call `POST
+    /v1/agents/{id}/rotate-key` for a new key.
 
     Args:
         idempotency_key (str):
@@ -237,7 +243,9 @@ async def asyncio(
 ):
     """Create an agent and its API key
 
-     Returns the plaintext API key once. An idempotent replay returns `apiKey: null`.
+     Returns the plaintext API key once. An idempotent replay returns `apiKey: null` with
+    `apiKeyUnavailable: true`: only a hash is stored, so if you lost the first response call `POST
+    /v1/agents/{id}/rotate-key` for a new key.
 
     Args:
         idempotency_key (str):

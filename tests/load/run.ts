@@ -1,5 +1,5 @@
 // `pnpm load` (load-01): seeds a fixture over the public api, runs tests/load/spend.js with k6, then checks the
-// ledger. Needs a running api with ALLOW_DEV_CREDIT=true, ALLOW_DEV_FUNDING=true and POLICY_GATE2_STUB=allow, the
+// ledger. Needs a running api with ALLOW_DEV_CREDIT=true, ALLOW_DEV_FUNDING=true and POLICY_GATE2_STUB=allow, RATE_LIMIT_PER_MINUTE=0 and RATE_LIMIT_AUTH_FAIL_PER_MINUTE=0 (k6 is one IP), the
 // same API_JWT_SECRET and DATABASE_URL (for the dev scripts), and k6 (K6_BIN, or k6 on PATH).
 //
 // 1. Spends (tests/load/spend.js): "burst" fires 50 × $1.00 at once from one agent with $10.00: exactly 10 may
