@@ -49,7 +49,7 @@ export function toBountyDto(row: BountyRow, summary: BountyEntrySummary = NO_ENT
   return {
     id: row.id,
     posterId: row.posterId,
-    taskType: row.taskType,
+    taskType: row.taskType as Bounty["taskType"], // create only accepts the supported types
     title: row.title,
     spec: row.spec as Record<string, unknown>,
     rewardCents: toJsonCents(row.rewardCents),

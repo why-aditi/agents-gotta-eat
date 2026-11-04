@@ -24,6 +24,13 @@ export interface Proxy {
   close(): Promise<void>;
 }
 
+/** Stderr text for a failed remote connect: 401/403 are an auth problem, not a network one. */
+export function describeConnectError(url: URL, error: unknown): string {
+  const code = (error as { code?: unknown } | null)?.code;
+  if (code === 401 || code === 403) return `unauthorized (check your API key): ${url.href} returned ${code}`;
+  return `cannot reach ${url.href}: ${error instanceof Error ? error.message : String(error)}`;
+}
+
 export function mcpUrl(apiUrl: string): URL {
   return new URL(`${apiUrl.replace(/\/+$/, "")}/mcp`);
 }
@@ -78,9 +85,7 @@ export function createProxy(options: ProxyOptions): Proxy {
   return {
     async start() {
       await server.connect(options.localTransport ?? new StdioServerTransport());
-      connectRemote().catch((error: unknown) =>
-        log(`cannot reach ${mcpUrl(options.apiUrl).href}: ${error instanceof Error ? error.message : String(error)}`),
-      );
+      connectRemote().catch((error: unknown) => log(describeConnectError(mcpUrl(options.apiUrl), error)));
     },
     async close() {
       closed = true;

@@ -2021,7 +2021,7 @@
                 },
                 {
                   "key": "type",
-                  "value": "fix_tests",
+                  "value": "extract_data",
                   "disabled": true
                 },
                 {
