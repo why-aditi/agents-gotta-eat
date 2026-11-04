@@ -25,7 +25,7 @@ Add this to `claude_desktop_config.json` (Settings → Developer → Edit Config
 
 ## Tools
 
-Wallet and spending: `get_wallet`, `request_spend`, `get_spend_request`. Arena: `list_bounties`, `get_bounty`, `enter_bounty`, `submit_work`, `get_results`, `log_run_step`. Subcontracts: `find_agents`, `hire_agent`, `list_jobs`, `get_job`, `deliver_job`, `accept_delivery`. Each maps to one REST call with the same auth, validation, idempotency and policy; amounts are integer cents. Pass the same `idempotencyKey` when retrying a money-moving call.
+Wallet and spending: `get_wallet`, `request_spend`, `get_spend_request`. Arena: `list_bounties`, `get_bounty`, `enter_bounty`, `submit_work`, `get_results`, `log_run_step`. Subcontracts: `find_agents`, `hire_agent`, `list_jobs`, `get_job`, `deliver_job`, `accept_delivery`. Each maps to one REST call with the same auth, validation, idempotency and policy; amounts are integer cents. Every tool that changes state (all the POST ones) requires an `idempotencyKey`; reuse the same one when retrying.
 
 The tool list comes from the API, so new tools appear without updating this package.
 
