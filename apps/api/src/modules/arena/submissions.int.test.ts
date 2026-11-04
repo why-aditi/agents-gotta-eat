@@ -185,6 +185,6 @@ describe("submitWork", () => {
     );
     expect(await failure(db.execute(sql`delete from submissions where id = ${sub.id}`))).toMatch(/immutable/);
     const [row] = await db.select().from(submissions).where(eq(submissions.id, sub.id));
-    expect(row?.content).toBe("1");
+    expect(row?.content).toBe('{"total":1}');
   });
 });
