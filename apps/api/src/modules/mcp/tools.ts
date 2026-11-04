@@ -51,6 +51,7 @@ export async function callTool(
   tool: McpTool,
   authorization: string,
   args: Record<string, unknown>,
+  remoteAddress?: string,
 ): Promise<CallToolResult> {
   const { idempotencyKey, ...input } = args;
   // The tool schemas require the key on every POST; this guards a caller that skips them.
@@ -65,6 +66,8 @@ export async function callTool(
   const res = await app.inject({
     method: tool.method,
     url,
+    // The caller's address, so the per-IP rate limits count the real client, not 127.0.0.1 for every MCP call.
+    ...(remoteAddress ? { remoteAddress } : {}),
     headers: {
       authorization,
       ...(tool.method === "POST" ? { [IDEMPOTENCY_HEADER]: idempotencyKey as string } : {}),
@@ -75,13 +78,13 @@ export async function callTool(
   return toToolResult(res.statusCode, res.body);
 }
 
-export function buildMcpServer(app: Injector, authorization: string): McpServer {
+export function buildMcpServer(app: Injector, authorization: string, remoteAddress?: string): McpServer {
   const server = new McpServer({ name: "gottaeat", version: pkg.version });
   for (const tool of McpTools as readonly McpTool[]) {
     server.registerTool(
       tool.name,
       { title: tool.title, description: tool.description, inputSchema: tool.input },
-      (args) => callTool(app, tool, authorization, args),
+      (args) => callTool(app, tool, authorization, args, remoteAddress),
     );
   }
   return server;

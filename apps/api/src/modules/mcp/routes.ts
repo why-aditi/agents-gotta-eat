@@ -32,7 +32,7 @@ export const mcpRoutes: FastifyPluginAsyncZod = async (api) => {
     async (req, reply) => {
       // The transport writes the response itself.
       reply.hijack();
-      const server = buildMcpServer(api, req.headers.authorization ?? "");
+      const server = buildMcpServer(api, req.headers.authorization ?? "", req.ip);
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       reply.raw.on("close", () => {
         void transport.close();

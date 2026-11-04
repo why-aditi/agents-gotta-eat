@@ -13,8 +13,8 @@ function fakeApp() {
   return { app: { inject } as never, inject };
 }
 
-async function connected(app: never) {
-  const server = buildMcpServer(app, "Bearer gte_agent_test");
+async function connected(app: never, remoteAddress?: string) {
+  const server = buildMcpServer(app, "Bearer gte_agent_test", remoteAddress);
   const [clientT, serverT] = InMemoryTransport.createLinkedPair();
   await server.connect(serverT);
   const client = new Client({ name: "tools-test", version: "0.0.0" });
@@ -38,6 +38,14 @@ describe("buildMcpServer", () => {
     const { tools } = await client.listTools();
     const props = Object.keys(tools.find((t) => t.name === "request_spend")?.inputSchema.properties ?? {});
     expect(props.sort()).toEqual([...Object.keys(CreateSpendRequest.shape), "idempotencyKey"].sort());
+    await client.close();
+  });
+
+  it("injects with the caller's address so per-IP limits count the real client", async () => {
+    const { app, inject } = fakeApp();
+    const client = await connected(app, "203.0.113.7");
+    await client.callTool({ name: "get_wallet", arguments: {} });
+    expect(inject.mock.calls[0]?.[0]).toMatchObject({ remoteAddress: "203.0.113.7" });
     await client.close();
   });
 
