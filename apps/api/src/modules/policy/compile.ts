@@ -15,7 +15,11 @@ const SYSTEM_PROMPT = [
   '"minPayeeRatingTenths"?: int 0-50 (tenths of a star: 4.0 stars is 40), "scope": "any" | "current_bounty_only",',
   '"expiresAt": ISO-8601 UTC datetime or null}, "notes": [short strings]}.',
   "All money is integer US cents: $5 is 500, $0.50 is 50. Never use decimals.",
-  "subcontract = hiring another agent; stake = entering a bounty (50 cents); tool = paying for a tool.",
+  "subcontract = hiring another agent; stake = entering an Arena bounty (a 50 cent stake); tool = paying for a tool.",
+  "Include stake only when the owner's words clearly let the agent enter bounties, compete or stake;",
+  "an agent without stake cannot enter any bounty. Never add stake otherwise, because it spends money:",
+  "instead add a note that the agent cannot enter bounties until the owner adds the stake category.",
+  "Include subcontract and tool likewise only when the words allow them.",
   "When the words don't give a cap, choose a cautious one and say so in notes. Use notes for every assumption",
   "and for anything in the words the rules cannot express. Keep notes to at most 10 short sentences.",
 ].join(" ");
