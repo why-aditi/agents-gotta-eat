@@ -141,6 +141,7 @@ describe("enterBounty", () => {
     const { response } = await enterBounty(db, f.principal, f.bountyId, allow);
     expect(response.entry).toBeNull();
     expect(response.stake.reasons).toContain("category_not_allowed");
+    expect(response.stake.message).toMatch(/add the stake category to the agent's mandate/);
   });
 
   it("an agent can't enter its owner's own bounty", async () => {

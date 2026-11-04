@@ -41,6 +41,14 @@ export async function entryDto(conn: Conn, row: EntryRow): Promise<Entry> {
   return toEntryDto(row, sub?.id ?? null, await agentName(conn, row.agentId));
 }
 
+// A stake the mandate's categories don't cover is the common first-time failure; say how to fix it.
+export const STAKE_CATEGORY_MESSAGE =
+  "This agent's mandate does not allow the stake category, so it cannot enter bounties. Ask the owner to add the stake category to the agent's mandate.";
+
+function withMessage(stake: Stake): Stake {
+  return stake.reasons.includes("category_not_allowed") ? { ...stake, message: STAKE_CATEGORY_MESSAGE } : stake;
+}
+
 // The same reasons createSpendRequest returned: gate 1's, plus the intent check's ask or deny.
 function stakeFromRequest(sr: SpendRequest): Stake {
   const reasons: string[] = [];
@@ -49,7 +57,7 @@ function stakeFromRequest(sr: SpendRequest): Stake {
     if (d.gate === "intent" && d.verdict === "ask") reasons.push("intent_ask");
     if (d.gate === "intent" && d.verdict === "deny") reasons.push("intent_deny");
   }
-  return { spendRequestId: sr.id, decision: DECISION[sr.status], reasons };
+  return withMessage({ spendRequestId: sr.id, decision: DECISION[sr.status], reasons });
 }
 
 async function existingStake(tx: Tx, spendRequestId: string): Promise<Stake> {
@@ -91,7 +99,7 @@ export async function enterBounty(
 
     // Policy moves the stake (or holds it, or denies) and calls our hooks, all in this transaction.
     const res = await createStakeSpendRequest(tx, principal, { bountyId }, deps);
-    const stake: Stake = { spendRequestId: res.id, decision: res.decision, reasons: res.reasons };
+    const stake = withMessage({ spendRequestId: res.id, decision: res.decision, reasons: res.reasons });
     if (res.decision === "deny") return { existing: false, response: { entry: null, stake } };
 
     const [row] = await tx

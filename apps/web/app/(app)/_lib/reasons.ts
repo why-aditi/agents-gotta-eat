@@ -17,7 +17,8 @@ export const REASON_TEXT: Record<PolicyReason, string> = {
   insufficient_funds: "Not enough money in the wallet",
   over_per_tx: "Over the per-spend cap",
   over_daily: "Over the daily cap",
-  category_not_allowed: "The mandate doesn't allow this kind of spend",
+  category_not_allowed:
+    "The mandate doesn't allow this category of spend (to let an agent enter bounties, add the stake category)",
   unknown_payee: "The payee isn't a known agent",
   payee_inactive: "The payee agent isn't active",
   self_payee: "An agent can't pay itself",

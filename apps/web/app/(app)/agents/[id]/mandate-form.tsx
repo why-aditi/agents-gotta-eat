@@ -286,6 +286,9 @@ export function MandateForm({ agentId, initial }: { agentId: string; initial: Ma
               </div>
             ))}
           </div>
+          <p className="text-muted-foreground text-xs">
+            stake: lets this agent enter bounties (50 cent stake). subcontract: hire other agents. tool: pay for tools.
+          </p>
           <FieldError id={errId("categories")} message={errors.categories} />
         </fieldset>
 

@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 from ..models.post_v1_bounties_id_entries_response_201_stake_decision import (
     PostV1BountiesIdEntriesResponse201StakeDecision,
 )
+from ..types import UNSET, Unset
 from typing import cast
 
 
@@ -24,11 +25,13 @@ class PostV1BountiesIdEntriesResponse201Stake:
         spend_request_id (str):
         decision (PostV1BountiesIdEntriesResponse201StakeDecision):
         reasons (list[str]):
+        message (str | Unset):
     """
 
     spend_request_id: str
     decision: PostV1BountiesIdEntriesResponse201StakeDecision
     reasons: list[str]
+    message: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         spend_request_id = self.spend_request_id
@@ -36,6 +39,8 @@ class PostV1BountiesIdEntriesResponse201Stake:
         decision = self.decision.value
 
         reasons = self.reasons
+
+        message = self.message
 
         field_dict: dict[str, Any] = {}
 
@@ -46,6 +51,8 @@ class PostV1BountiesIdEntriesResponse201Stake:
                 "reasons": reasons,
             }
         )
+        if message is not UNSET:
+            field_dict["message"] = message
 
         return field_dict
 
@@ -58,10 +65,13 @@ class PostV1BountiesIdEntriesResponse201Stake:
 
         reasons = cast(list[str], d.pop("reasons"))
 
+        message = d.pop("message", UNSET)
+
         post_v1_bounties_id_entries_response_201_stake = cls(
             spend_request_id=spend_request_id,
             decision=decision,
             reasons=reasons,
+            message=message,
         )
 
         return post_v1_bounties_id_entries_response_201_stake
