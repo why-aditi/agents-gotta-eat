@@ -45,10 +45,17 @@ export class FixedWindowCounter {
     return 1;
   }
 
-  // Gives one event back (a reservation that turned out fine).
-  remove(key: string, now: number): void {
+  // Start of the key's current window, or undefined when it has none.
+  windowStart(key: string, now: number): number | undefined {
     const w = this.windows.get(key);
-    if (w && now - w.start < WINDOW_MS && w.count > 0) w.count -= 1;
+    return w && now - w.start < WINDOW_MS ? w.start : undefined;
+  }
+
+  // Gives one event back (a reservation that turned out fine), only if the window it was counted in is still the
+  // current one: a release after the window rolled must not eat into the new window's count.
+  remove(key: string, now: number, windowStart: number): void {
+    const w = this.windows.get(key);
+    if (w && w.start === windowStart && now - w.start < WINDOW_MS && w.count > 0) w.count -= 1;
   }
 
   count(key: string, now: number): number {
@@ -102,7 +109,7 @@ export function registerRateLimit(
   const principals = new FixedWindowCounter();
   const failures = new FixedWindowCounter();
   // Requests holding an auth-attempt reservation for their IP.
-  const reserved = new WeakSet<FastifyRequest>();
+  const reserved = new WeakMap<FastifyRequest, number>();
 
   const exempt = (req: FastifyRequest) => EXEMPT(req.url.split("?")[0] ?? req.url);
 
@@ -127,13 +134,14 @@ export function registerRateLimit(
         );
       }
       failures.add(req.ip, now);
-      reserved.add(req);
+      reserved.set(req, failures.windowStart(req.ip, now) ?? now);
     }
   });
 
   // A credentialed request that didn't end in 401 gives its reservation back; a 401 keeps it as a failure.
   app.addHook("onResponse", async (req, reply) => {
-    if (reserved.has(req) && reply.statusCode !== 401) failures.remove(req.ip, Date.now());
+    const start = reserved.get(req);
+    if (start !== undefined && reply.statusCode !== 401) failures.remove(req.ip, Date.now(), start);
   });
 
   // Call right after registerAuth: hooks run in registration order, so req.principal is verified by then.

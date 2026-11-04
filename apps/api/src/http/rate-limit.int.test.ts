@@ -31,8 +31,18 @@ describe("FixedWindowCounter", () => {
     const c = new FixedWindowCounter();
     c.add("k", 0);
     c.add("k", 0);
-    c.remove("k", 0);
+    c.remove("k", 0, c.windowStart("k", 0)!);
     expect(c.count("k", 0)).toBe(1);
+  });
+
+  it("remove across a window boundary leaves the new window alone", () => {
+    const c = new FixedWindowCounter();
+    c.add("k", 0);
+    const start = c.windowStart("k", 0)!;
+    c.add("k", 61_000);
+    c.add("k", 61_000);
+    c.remove("k", 62_000, start);
+    expect(c.count("k", 62_000)).toBe(2);
   });
 });
 
