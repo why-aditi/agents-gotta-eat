@@ -87,7 +87,8 @@ describe("TreasurerPanel", () => {
     expect(screen.getByText("None.")).toBeInTheDocument();
     expect(screen.getByText("No tools were called.", { exact: false })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Ask" }));
+    // The answer can render a moment before the transition ends and the button reads "Ask" again: wait for it.
+    await user.click(await screen.findByRole("button", { name: "Ask" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("At most 10 Treasurer questions a minute");
   });
 });
@@ -257,5 +258,31 @@ describe("PayPalReconcileCard", () => {
     await user.click(screen.getByRole("button", { name: "Run against PayPal" }));
     await waitFor(() => expect(card).toHaveAttribute("data-state", "error"));
     expect(screen.getByTestId("paypal-reconcile-summary")).toHaveTextContent("PayPal is not configured");
+  });
+
+  it("says when PayPal skipped the check instead of claiming a match", async () => {
+    vi.mocked(runPayPalReconcile).mockResolvedValueOnce({
+      ok: true,
+      data: report({
+        skipped: "Transaction Search isn't enabled for this PayPal app",
+        counts: {
+          matched: 0,
+          missing_in_paypal: 0,
+          missing_in_ledger: 0,
+          amount_mismatch: 0,
+          pending: 0,
+          unrelated: 0,
+        },
+      }),
+    });
+    const user = userEvent.setup();
+    render(<PayPalReconcileCard />);
+    await user.click(screen.getByRole("button", { name: "Run against PayPal" }));
+    const card = screen.getByTestId("paypal-reconcile");
+    await waitFor(() => expect(card).toHaveAttribute("data-state", "skipped"));
+    const summary = screen.getByTestId("paypal-reconcile-summary");
+    expect(summary).toHaveTextContent("Skipped: Transaction Search isn't enabled for this PayPal app.");
+    expect(summary).not.toHaveTextContent("Ledger matches PayPal");
+    expect(screen.queryByTestId("count-matched")).toBeNull();
   });
 });

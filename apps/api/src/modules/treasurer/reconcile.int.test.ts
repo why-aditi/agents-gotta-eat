@@ -5,8 +5,17 @@ import { createTestBounty, createTestDb, createUserWithWallet, resetDb, topUp } 
 import { escrows, payouts, topups } from "../../db/schema";
 import { newId } from "../../lib/ids";
 import { clawbackTopup, creditTopup, holdWithdrawal, payBountyReward, settleWithdrawal } from "../ledger";
-import type { PayPalToolkit, PayPalTransaction } from "../paypal";
+import { PayPalReconcileReport } from "@gottaeat/schemas";
+import {
+  configurePayPalToolkit,
+  PayPalError,
+  TRANSACTION_SEARCH_DISABLED,
+  TransactionSearchDisabled,
+  type PayPalToolkit,
+  type PayPalTransaction,
+} from "../paypal";
 import { clearPayPalReconcileCache, reconcilePayPal } from "./reconcile";
+import { runTool } from "./tools";
 
 const { db, pool } = createTestDb();
 afterAll(() => pool.end());
@@ -79,11 +88,13 @@ async function rewardedBounty(posterId: string, winnerId: string, captureId: str
   return bountyId;
 }
 
-async function settledWithdrawal(ownerId: string, cents: bigint, itemId: string) {
+async function settledWithdrawal(ownerId: string, cents: bigint, itemId: string, transactionId: string | null = null) {
   const id = `pay_${newId("jnl").slice(4)}`;
   await db.transaction(async (tx) => {
     await holdWithdrawal(tx, { payoutId: id, ownerId, cents, idempotencyKey: `withdrawal-hold:${id}` });
-    await tx.insert(payouts).values({ id, userId: ownerId, amountCents: cents, status: "pending", itemId });
+    await tx
+      .insert(payouts)
+      .values({ id, userId: ownerId, amountCents: cents, status: "pending", itemId, transactionId });
     await settleWithdrawal(tx, { payoutId: id, cents, idempotencyKey: `withdrawal-settle:${id}` });
   });
   await db.update(payouts).set({ status: "succeeded" }).where(eq(payouts.id, id));
@@ -204,6 +215,101 @@ describe("reconcilePayPal", () => {
     expect(report.counts.pending).toBe(1);
     expect(report.ok).toBe(true);
     expect(report.lines[0]).toMatchObject({ paypalId: "CAP-NEW", status: "pending", paypalCents: null });
+  });
+
+  it("matches a withdrawal by PayPal's transaction id, falling back to the payout item id", async () => {
+    const owner = await createUserWithWallet(db);
+    await topUp(db, owner, 5000n);
+    // PayPal lists payouts by transaction id, which differs from the item id.
+    const byTxn = await settledWithdrawal(owner, 600n, "HHPMJB5DQT8JE", "32D07202SB7101447");
+    // No transaction id recorded yet (an older row): the item id.
+    const byItem = await settledWithdrawal(owner, 700n, "ITEM-OLD");
+    // Both recorded, but PayPal shows the item id: still matched.
+    const itemShown = await settledWithdrawal(owner, 800n, "ITEM-SHOWN", "TXN-NOT-SHOWN");
+    // Both recorded and nothing in PayPal: reported under the transaction id.
+    await settledWithdrawal(owner, 900n, "ITEM-GONE", "TXN-GONE");
+    const { toolkit } = stubToolkit([
+      { id: "32D07202SB7101447", amountCents: -600n, eventCode: "T0000" },
+      { id: "ITEM-OLD", amountCents: -700n, eventCode: "T0000" },
+      { id: "ITEM-SHOWN", amountCents: -800n, eventCode: "T0000" },
+    ]);
+    const report = await reconcilePayPal(db, { toolkit, now: later() });
+    const byId = Object.fromEntries(report.lines.map((l) => [l.paypalId, l]));
+    expect(byId["32D07202SB7101447"]).toMatchObject({ status: "matched", refs: [`payout:${byTxn}`] });
+    expect(byId["ITEM-OLD"]).toMatchObject({ status: "matched", refs: [`payout:${byItem}`] });
+    expect(byId["ITEM-SHOWN"]).toMatchObject({ status: "matched", refs: [`payout:${itemShown}`] });
+    expect(byId["TXN-GONE"]).toMatchObject({ status: "missing_in_paypal" });
+    expect(byId["HHPMJB5DQT8JE"]).toBeUndefined();
+    expect(report.counts).toMatchObject({ matched: 3, missing_in_paypal: 1, missing_in_ledger: 0, unrelated: 0 });
+  });
+
+  it("counts a payout transaction id of ours with no journal as missing in the ledger", async () => {
+    const owner = await createUserWithWallet(db);
+    await db
+      .insert(payouts)
+      .values({ id: "pay_ORPHAN", userId: owner, amountCents: 500n, status: "pending", transactionId: "TXN-ORPHAN" });
+    const { toolkit } = stubToolkit([{ id: "TXN-ORPHAN", amountCents: -500n }]);
+    const report = await reconcilePayPal(db, { toolkit, now: later() });
+    expect(report.lines).toEqual([expect.objectContaining({ paypalId: "TXN-ORPHAN", status: "missing_in_ledger" })]);
+  });
+
+  it("reports the check as skipped when Transaction Search isn't enabled (403), and the Treasurer says the same", async () => {
+    const owner = await createUserWithWallet(db);
+    await capturedTopup(owner, 1000n, 59n, "CAP-ANY");
+    let calls = 0;
+    const toolkit: PayPalToolkit = {
+      mode: "toolkit",
+      getOrder: async () => {
+        throw new Error("not used");
+      },
+      listTransactions: async () => {
+        calls += 1;
+        throw new TransactionSearchDisabled();
+      },
+    };
+    const report = await reconcilePayPal(db, { toolkit, now: later() });
+    expect(report).toMatchObject({
+      ok: true,
+      cached: false,
+      skipped: "Transaction Search isn't enabled for this PayPal app",
+      lines: [],
+      counts: { matched: 0, missing_in_paypal: 0, missing_in_ledger: 0, amount_mismatch: 0, pending: 0, unrelated: 0 },
+    });
+    expect(PayPalReconcileReport.parse(report)).toEqual(report);
+
+    // Any other PayPal failure still fails.
+    clearPayPalReconcileCache();
+    const failing: PayPalToolkit = {
+      ...toolkit,
+      listTransactions: async () => {
+        throw new PayPalError(500, "INTERNAL_SERVER_ERROR", "INTERNAL_SERVER_ERROR", null, "boom");
+      },
+    };
+    await expect(reconcilePayPal(db, { toolkit: failing, now: later() })).rejects.toThrow("boom");
+
+    // The Treasurer's tools return the same plain message instead of an error.
+    clearPayPalReconcileCache();
+    configurePayPalToolkit(toolkit);
+    try {
+      const ctx = { db, now: () => later() };
+      const list = await runTool(ctx, "list_transactions", JSON.stringify({ days: 7 }));
+      expect(list).toMatchObject({
+        ok: true,
+        output: {
+          summary: TRANSACTION_SEARCH_DISABLED,
+          data: { skipped: true, message: TRANSACTION_SEARCH_DISABLED },
+          ids: [],
+        },
+      });
+      const rec = await runTool(ctx, "reconcile_paypal", "{}");
+      expect(rec).toMatchObject({
+        ok: true,
+        output: { summary: TRANSACTION_SEARCH_DISABLED, data: { skipped: true, message: TRANSACTION_SEARCH_DISABLED } },
+      });
+    } finally {
+      configurePayPalToolkit(null);
+    }
+    expect(calls).toBe(3);
   });
 
   it("caches for 15 minutes per window; fresh runs again", async () => {

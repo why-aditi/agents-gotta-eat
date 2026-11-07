@@ -5,21 +5,33 @@ import type { Db } from "../../db";
 import { payouts, webhookEvents } from "../../db/schema";
 import { escrowWebhookHandlers } from "../arena";
 import { valueToCents, type PayPalWebhookEvent } from "../paypal";
-import { handlersFor, registerWebhookHandler } from "./registry";
+import { handlersFor, registerWebhookHandler, type WebhookContext, type WebhookLog } from "./registry";
 import { onCaptureDenied, onCaptureRefunded } from "./clawbacks";
 import { finishTopup } from "./topups";
 import { applyPayoutOutcome, type PayoutOutcome } from "./withdrawals";
 
+const silent: WebhookLog = { warn: () => {} };
+
 // Runs every handler for the event and records the result. Throws the first failure so the job retries;
-// handlers are idempotent, so the ones that already succeeded repeat harmlessly.
-export async function processWebhookEvent(db: Db, eventRowId: string) {
+// handlers are idempotent, so the ones that already succeeded repeat harmlessly. An event a handler ignored on
+// purpose is processed, with "ignored: <reason>" kept in its error column for the admin list.
+export async function processWebhookEvent(db: Db, eventRowId: string, log: WebhookLog = silent) {
   const [row] = await db.select().from(webhookEvents).where(eq(webhookEvents.id, eventRowId));
   if (!row || row.processedAt) return;
   const event = row.payload as PayPalWebhookEvent;
+  const ignored: string[] = [];
+  const base = { webhookEventId: eventRowId, paypalEventId: row.paypalEventId, type: row.type };
+  const ctx: WebhookContext = {
+    warn: (message, fields) => log.warn({ ...base, ...fields }, `webhook: ${message}`),
+    ignore: (reason, fields) => {
+      ignored.push(reason);
+      log.warn({ ...base, ...fields }, `webhook ignored: ${reason}`);
+    },
+  };
   let failure: unknown;
   for (const handler of handlersFor(row.type)) {
     try {
-      await handler(db, event);
+      await handler(db, event, ctx);
     } catch (err) {
       failure ??= err;
     }
@@ -29,7 +41,8 @@ export async function processWebhookEvent(db: Db, eventRowId: string) {
     await db.update(webhookEvents).set({ error }).where(eq(webhookEvents.id, eventRowId));
     throw failure;
   }
-  await db.update(webhookEvents).set({ processedAt: new Date(), error: null }).where(eq(webhookEvents.id, eventRowId));
+  const note = ignored.length ? `ignored: ${ignored.join("; ")}`.slice(0, 500) : null;
+  await db.update(webhookEvents).set({ processedAt: new Date(), error: note }).where(eq(webhookEvents.id, eventRowId));
 }
 
 // Captures whose custom_id is not topup:{id} belong to the escrow handlers.
@@ -59,7 +72,8 @@ const ITEM_EVENTS: Record<string, PayoutOutcome> = {
 const str = (v: unknown) => (typeof v === "string" && v ? v : null);
 
 // The payout is found by sender_item_id (our payout id) or PayPal's payout_item_id. Unknown items are ignored.
-async function onPayoutItem(db: Db, event: PayPalWebhookEvent) {
+// PayPal's transaction_id (what the transaction search lists, unlike the item id) is kept once it appears.
+async function onPayoutItem(db: Db, event: PayPalWebhookEvent, ctx: WebhookContext) {
   const outcome = ITEM_EVENTS[event.event_type];
   const r = event.resource;
   const senderItemId = str(r.sender_item_id) ?? str(r.payout_item?.sender_item_id);
@@ -67,7 +81,15 @@ async function onPayoutItem(db: Db, event: PayPalWebhookEvent) {
   const key = senderItemId ? eq(payouts.id, senderItemId) : itemId ? eq(payouts.itemId, itemId) : null;
   if (!outcome || !key) return;
   const [row] = await db.select({ id: payouts.id }).from(payouts).where(key);
-  if (row) await applyPayoutOutcome(db, row.id, outcome, { batchId: str(r.payout_batch_id), itemId });
+  if (!row) {
+    ctx.warn("payout item we don't know", { senderItemId, itemId });
+    return;
+  }
+  await applyPayoutOutcome(db, row.id, outcome, {
+    batchId: str(r.payout_batch_id),
+    itemId,
+    transactionId: str(r.transaction_id),
+  });
 }
 
 registerWebhookHandler("PAYMENT.CAPTURE.COMPLETED", onCaptureCompleted);

@@ -40,6 +40,7 @@ function envFromProcess(): AppEnv {
     TRUST_PROXY_HOPS: process.env.TRUST_PROXY_HOPS,
     RATE_LIMIT_PER_MINUTE: process.env.RATE_LIMIT_PER_MINUTE,
     RATE_LIMIT_AUTH_FAIL_PER_MINUTE: process.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
+    AUTH_FAIL_LIMIT: process.env.AUTH_FAIL_LIMIT,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
     WEB_URL: process.env.WEB_URL,
@@ -116,7 +117,12 @@ try {
     llm ? { rankCreativeWriting: aiRanker(llm) } : undefined,
   );
   if (paypalConfigured) {
-    stopPaymentJobs = await startPaymentJobs(db, requireDatabaseUrl(), (err) => app.log.error({ err }, "payment jobs"));
+    stopPaymentJobs = await startPaymentJobs(
+      db,
+      requireDatabaseUrl(),
+      (err) => app.log.error({ err }, "payment jobs"),
+      app.log,
+    );
     // Moves authorizations older than 4 days to a fresh one (allowed once, day 4 to day 29).
     stopReauthorizeSweep = startReauthorizeSweep(db, 60 * 60_000, (err, bountyId) =>
       app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),

@@ -358,6 +358,9 @@ export const payouts = pgTable("payouts", {
   id: text().primaryKey(),
   paypalBatchId: text("paypal_batch_id"),
   itemId: text("item_id"),
+  // PayPal's transaction id, once the item is processed (item webhook or status poll). The transaction search
+  // lists this, not the item id, so reconciliation matches by it and falls back to the item id.
+  transactionId: text("transaction_id"),
   userId: text("user_id")
     .notNull()
     .references(() => users.id),

@@ -81,16 +81,35 @@ export async function createWithdrawal(db: Db, userId: string, amountCents: bigi
 }
 
 // Moves the payout to `outcome` and settles or returns its hold, in one transaction. Terminal states never change;
-// the journal keys make a repeat harmless even if the status guard were bypassed.
+// the journal keys make a repeat harmless even if the status guard were bypassed. PayPal ids we did not have yet
+// (batch, item, transaction) are filled in even when the status stays, so a transaction id that only shows up on
+// a later event or poll is still kept.
+//
+// UNCLAIMED (e.g. RECEIVER_UNREGISTERED: the address has no PayPal account) is neither paid nor failed: the hold
+// stays, the owner sees it waiting for the receiver to claim it, and a later SUCCEEDED settles it or RETURNED
+// (unclaimed for 30 days) gives the money back to the wallet.
 export async function applyPayoutOutcome(
   db: Db,
   payoutId: string,
   outcome: PayoutOutcome,
-  ids: { batchId?: string | null; itemId?: string | null } = {},
+  ids: { batchId?: string | null; itemId?: string | null; transactionId?: string | null } = {},
 ) {
   await db.transaction(async (tx) => {
     const [row] = await tx.select().from(payouts).where(eq(payouts.id, payoutId)).for("update");
-    if (!row || TERMINAL.has(row.status) || row.status === outcome) return;
+    if (!row) return;
+    const filled = {
+      paypalBatchId: row.paypalBatchId ?? ids.batchId ?? null,
+      itemId: row.itemId ?? ids.itemId ?? null,
+      transactionId: row.transactionId ?? ids.transactionId ?? null,
+    };
+    if (TERMINAL.has(row.status) || row.status === outcome) {
+      const changed =
+        filled.paypalBatchId !== row.paypalBatchId ||
+        filled.itemId !== row.itemId ||
+        filled.transactionId !== row.transactionId;
+      if (changed) await tx.update(payouts).set(filled).where(eq(payouts.id, payoutId));
+      return;
+    }
     if (outcome === "succeeded") {
       await settleWithdrawal(tx, { payoutId, cents: row.amountCents, idempotencyKey: `withdrawal-settle:${payoutId}` });
     } else if (outcome !== "unclaimed") {
@@ -103,12 +122,7 @@ export async function applyPayoutOutcome(
     }
     await tx
       .update(payouts)
-      .set({
-        status: outcome,
-        paypalBatchId: row.paypalBatchId ?? ids.batchId ?? null,
-        itemId: row.itemId ?? ids.itemId ?? null,
-        updatedAt: new Date(),
-      })
+      .set({ status: outcome, ...filled, updatedAt: new Date() })
       .where(eq(payouts.id, payoutId));
   });
 }
@@ -131,9 +145,16 @@ export async function sendPayout(db: Db, payoutId: string) {
       items: [{ senderItemId: payoutId, email: row.email, amountCents: row.payout.amountCents }],
       requestId: `payout:${payoutId}`,
     });
+    const item = batch.items[0];
     await db
       .update(payouts)
-      .set({ paypalBatchId: batch.batchId, itemId: batch.items[0]?.payoutItemId ?? null, updatedAt: new Date() })
+      .set({
+        paypalBatchId: batch.batchId,
+        itemId: item?.payoutItemId ?? null,
+        // Usually absent on the create answer; the item webhook or the poll fills it in.
+        transactionId: item?.transactionId ?? null,
+        updatedAt: new Date(),
+      })
       .where(eq(payouts.id, payoutId));
   } catch (err) {
     // A duplicate sender_batch_id means an earlier send already reached PayPal (crash before we stored the

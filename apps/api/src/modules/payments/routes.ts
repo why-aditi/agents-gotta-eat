@@ -177,7 +177,7 @@ export const paymentsRoutes: FastifyPluginAsyncZod = async (api) => {
       // 200 either way: a replay was already stored, and a failed run is retried from the stored row.
       if (inserted.length) {
         try {
-          await enqueueWebhook(api.db, rowId);
+          await enqueueWebhook(api.db, rowId, req.log);
         } catch (err) {
           req.log.error({ err, eventId: event.id }, "webhook processing failed");
         }

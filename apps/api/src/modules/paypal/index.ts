@@ -1,4 +1,10 @@
-export { PayPalError, PayPalNotConfigured } from "./errors";
+export {
+  isTransactionSearchForbidden,
+  PayPalError,
+  PayPalNotConfigured,
+  TRANSACTION_SEARCH_DISABLED,
+  TransactionSearchDisabled,
+} from "./errors";
 export { centsToValue, signedValueToCents, valueToCents } from "./cents";
 export {
   checkApiBase,

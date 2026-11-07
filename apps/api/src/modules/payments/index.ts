@@ -6,7 +6,13 @@ export {
   startPaymentJobs,
   type PaymentQueue,
 } from "./jobs";
-export { handlersFor, registerWebhookHandler, type WebhookHandler } from "./registry";
+export {
+  handlersFor,
+  registerWebhookHandler,
+  type WebhookContext,
+  type WebhookHandler,
+  type WebhookLog,
+} from "./registry";
 export { paymentsRoutes } from "./routes";
 export { confirmTopup, createTopup, finishTopup } from "./topups";
 export { processWebhookEvent } from "./webhooks";
@@ -17,11 +23,12 @@ export {
   latestTopup,
   listWebhookEvents,
   LOOKUP_LIMIT,
-  payoutItemIds,
+  payoutPayPalIds,
   payoutsForUser,
   topupCaptureIds,
   topupsForUser,
   WEBHOOK_PAGE,
+  type PayoutPayPalIds,
   type PayoutRow,
   type TopupRow,
   type WebhookEventSummary,

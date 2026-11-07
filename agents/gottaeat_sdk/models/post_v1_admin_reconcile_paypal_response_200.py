@@ -8,6 +8,7 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
+from ..types import UNSET, Unset
 from typing import cast
 import datetime
 
@@ -32,6 +33,7 @@ class PostV1AdminReconcilePaypalResponse200:
         window (PostV1AdminReconcilePaypalResponse200Window):
         counts (PostV1AdminReconcilePaypalResponse200Counts):
         lines (list[PostV1AdminReconcilePaypalResponse200LinesItem]):
+        skipped (str | Unset):
     """
 
     ok: bool
@@ -40,6 +42,7 @@ class PostV1AdminReconcilePaypalResponse200:
     window: PostV1AdminReconcilePaypalResponse200Window
     counts: PostV1AdminReconcilePaypalResponse200Counts
     lines: list[PostV1AdminReconcilePaypalResponse200LinesItem]
+    skipped: str | Unset = UNSET
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.post_v1_admin_reconcile_paypal_response_200_counts import (
@@ -67,6 +70,8 @@ class PostV1AdminReconcilePaypalResponse200:
             lines_item = lines_item_data.to_dict()
             lines.append(lines_item)
 
+        skipped = self.skipped
+
         field_dict: dict[str, Any] = {}
 
         field_dict.update(
@@ -79,6 +84,8 @@ class PostV1AdminReconcilePaypalResponse200:
                 "lines": lines,
             }
         )
+        if skipped is not UNSET:
+            field_dict["skipped"] = skipped
 
         return field_dict
 
@@ -112,6 +119,8 @@ class PostV1AdminReconcilePaypalResponse200:
 
             lines.append(lines_item)
 
+        skipped = d.pop("skipped", UNSET)
+
         post_v1_admin_reconcile_paypal_response_200 = cls(
             ok=ok,
             checked_at=checked_at,
@@ -119,6 +128,7 @@ class PostV1AdminReconcilePaypalResponse200:
             window=window,
             counts=counts,
             lines=lines,
+            skipped=skipped,
         )
 
         return post_v1_admin_reconcile_paypal_response_200

@@ -8,6 +8,7 @@ import { registerCors } from "./http/cors";
 import { clientErrorHandler, frameworkErrorHandler, registerErrorHandlers } from "./http/errors";
 import { registerInputGuard } from "./http/input-guard";
 import { registerIdempotency } from "./http/idempotency";
+import { registerJsonBodyParser } from "./http/json-body";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { registerRateLimit } from "./http/rate-limit";
 import { adminRoutes } from "./modules/admin";
@@ -45,10 +46,13 @@ export interface AppEnv {
   AGENTS_WAKE_SECRET?: string;
   // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
   TRUST_PROXY_HOPS?: string;
-  // Requests a minute per caller (agent key, else IP) and failed-auth responses a minute per IP. Defaults 1200 and 30;
+  // Requests a minute per caller (agent key, else IP) and failed-auth responses a minute per IP. Defaults 1200 and 20;
   // "0" turns a limit off. Tests and load runs set 0.
   RATE_LIMIT_PER_MINUTE?: string;
   RATE_LIMIT_AUTH_FAIL_PER_MINUTE?: string;
+  // hard-01's name for the failed-auth limit (default 20). RATE_LIMIT_AUTH_FAIL_PER_MINUTE wins when both are set,
+  // so the e2e and load configs (which set it to 0) keep working.
+  AUTH_FAIL_LIMIT?: string;
   // Email (Resend). Unset key: no email is sent. EMAIL_FROM and WEB_URL (link target) have defaults;
   // RESEND_API_URL is for tests.
   RESEND_API_KEY?: string;
@@ -107,16 +111,12 @@ export function buildApp(opts: BuildAppOptions) {
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
   registerInputGuard(app);
-  // An empty body with a JSON content type (httpx and axios default) is "no body", not an error.
-  const defaultJson = app.getDefaultJsonParser("error", "error");
-  app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
-    if (typeof body === "string" && body.trim() === "") return done(null, undefined);
-    defaultJson(req, body as string, done);
-  });
+  // Empty JSON body = no body; bodies nested past MAX_JSON_DEPTH are a 400 before anything walks them.
+  registerJsonBodyParser(app);
   // Before auth, so a flood of bad credentials is cut off before they are checked.
   const registerPrincipalLimit = registerRateLimit(app, {
     perMinute: opts.env.RATE_LIMIT_PER_MINUTE,
-    authFailPerMinute: opts.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
+    authFailPerMinute: opts.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE?.trim() || opts.env.AUTH_FAIL_LIMIT,
   });
   registerAuth(app, { db: opts.db, jwtSecret: opts.env.API_JWT_SECRET });
   // After auth, so the limit is per verified agent or user.
