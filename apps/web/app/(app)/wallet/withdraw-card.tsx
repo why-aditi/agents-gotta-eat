@@ -103,15 +103,15 @@ export function WithdrawCard({ payoutEmail, payouts }: { payoutEmail: string | n
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <form onSubmit={onSaveEmail} noValidate className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <div className="space-y-2">
+            <form onSubmit={onSaveEmail} noValidate className="flex flex-wrap items-end gap-3">
+              <div className="min-w-0 max-w-full flex-1 space-y-2 sm:flex-none">
                 <Label htmlFor={`${uid}-email`}>PayPal email</Label>
                 <Input
                   id={`${uid}-email`}
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
-                  className="sm:w-72"
+                  className="sm:w-72 sm:max-w-full"
                   value={emailInput}
                   onChange={(e) => {
                     setEmailInput(e.target.value);
@@ -136,8 +136,8 @@ export function WithdrawCard({ payoutEmail, payouts }: { payoutEmail: string | n
           </div>
 
           <div className="space-y-2">
-            <form onSubmit={onWithdraw} noValidate className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <div className="space-y-2">
+            <form onSubmit={onWithdraw} noValidate className="flex flex-wrap items-end gap-3">
+              <div className="min-w-0 max-w-full flex-1 space-y-2 sm:flex-none">
                 <Label htmlFor={`${uid}-amount`}>Amount (USD)</Label>
                 <Input
                   id={`${uid}-amount`}
