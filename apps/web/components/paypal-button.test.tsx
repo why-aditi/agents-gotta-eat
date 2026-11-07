@@ -40,7 +40,7 @@ describe("PayPalButton", () => {
   it("says PayPal is not configured, with a disabled button, when there is no client id", () => {
     vi.stubEnv("NEXT_PUBLIC_PAYPAL_CLIENT_ID", "");
     renderButton();
-    expect(screen.getByText("PayPal is not configured")).toBeInTheDocument();
+    expect(screen.getByTestId("paypal-not-configured")).toHaveTextContent(/NEXT_PUBLIC_PAYPAL_CLIENT_ID/);
     expect(screen.getByRole("button", { name: "Pay with PayPal" })).toBeDisabled();
   });
 

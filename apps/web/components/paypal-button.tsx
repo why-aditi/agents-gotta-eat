@@ -159,7 +159,10 @@ export function PayPalButton({
         <Button type="button" disabled>
           {label}
         </Button>
-        <p className="text-sm text-muted-foreground">PayPal is not configured</p>
+        <p className="text-sm text-muted-foreground" data-testid="paypal-not-configured">
+          PayPal is not configured: NEXT_PUBLIC_PAYPAL_CLIENT_ID was empty when this site was built. Set it on the web
+          host and redeploy.
+        </p>
       </div>
     );
   }

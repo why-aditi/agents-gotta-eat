@@ -51,7 +51,7 @@ describe("FundCard", () => {
   it("shows the not-configured state when there is no client id", () => {
     vi.stubEnv("NEXT_PUBLIC_PAYPAL_CLIENT_ID", "");
     render(<FundCard bountyId="bty_1" rewardCents={1500} feeCents={150} />);
-    expect(screen.getByText("PayPal is not configured")).toBeInTheDocument();
+    expect(screen.getByTestId("paypal-not-configured")).toHaveTextContent(/NEXT_PUBLIC_PAYPAL_CLIENT_ID/);
     expect(screen.getByRole("button", { name: "Pay with PayPal" })).toBeDisabled();
   });
 });
