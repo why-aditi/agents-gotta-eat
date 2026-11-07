@@ -4,11 +4,14 @@
 //     gets no new budget).
 //   - principal: the general limit a minute per authenticated agent or user, counted after auth ran, so agents
 //     behind one address keep separate budgets.
-//   - auth failures: credentialed requests are counted per IP when they arrive and the count is given back when
-//     they don't end in a 401. Counting up front closes the race where a burst of concurrent bad-credential
-//     requests all pass the check before any has failed. Past the cap the IP gets 429 before credentials are
-//     even checked. (A legitimate burst of more than the cap of in-flight credentialed requests from one IP
-//     also waits: raise the cap, or set 0, for load runs.)
+//   - auth failures (hard-01 item 6): failed agent-key and bearer-token authentications (401s) per client IP.
+//     Past the cap (default 20 a minute) the IP gets 429 before credentials are even checked, valid or not,
+//     until its window ends. Credentialed requests are also counted when they arrive and given back when they
+//     don't end in a 401, which closes the race where a burst of concurrent bad-credential requests all pass the
+//     check before any has failed. That in-flight count only applies to an IP that already has a confirmed
+//     failure this window, so valid traffic alone, however bursty, is never throttled; the price is that the
+//     first concurrent burst from a clean IP is bounded only by the IP ceiling (keys are 256-bit and JWTs are
+//     HMAC-signed, so it buys no guessing advantage).
 // All answer 429 `rate_limited` in the usual error envelope with a Retry-After header. A value of 0 disables a
 // layer (tests, load runs). /health and the PayPal webhook are never limited. Every counter map has a hard size
 // cap: when full, expired windows are dropped and then the oldest key is evicted.
@@ -17,7 +20,7 @@ import { principalKey } from "./auth";
 import { ApiError } from "./errors";
 
 export const DEFAULT_RATE_LIMIT_PER_MINUTE = 1200;
-export const DEFAULT_AUTH_FAIL_PER_MINUTE = 30;
+export const DEFAULT_AUTH_FAIL_PER_MINUTE = 20;
 export const IP_CEILING_FACTOR = 5;
 export const MAX_TRACKED_KEYS = 10_000;
 const WINDOW_MS = 60_000;
@@ -107,7 +110,10 @@ export function registerRateLimit(
   const ipLimit = general * IP_CEILING_FACTOR;
   const ips = new FixedWindowCounter();
   const principals = new FixedWindowCounter();
+  // Confirmed failures plus in-flight credentialed requests (the check), and confirmed failures alone (whether
+  // the in-flight part applies yet).
   const failures = new FixedWindowCounter();
+  const confirmed = new FixedWindowCounter();
   // Requests holding an auth-attempt reservation for their IP.
   const reserved = new WeakMap<FastifyRequest, number>();
 
@@ -125,10 +131,10 @@ export function registerRateLimit(
       );
     }
     if (authFail > 0 && req.headers.authorization !== undefined) {
-      if (failures.count(req.ip, now) >= authFail) {
+      if (confirmed.count(req.ip, now) > 0 && failures.count(req.ip, now) >= authFail) {
         throw limited(
           reply,
-          "Too many failed or simultaneous authentication attempts; try again shortly",
+          "Too many failed authentication attempts from this address; try again shortly",
           authFail,
           failures.retryAfterSeconds(req.ip, now),
         );
@@ -141,7 +147,9 @@ export function registerRateLimit(
   // A credentialed request that didn't end in 401 gives its reservation back; a 401 keeps it as a failure.
   app.addHook("onResponse", async (req, reply) => {
     const start = reserved.get(req);
-    if (start !== undefined && reply.statusCode !== 401) failures.remove(req.ip, Date.now(), start);
+    if (start === undefined) return;
+    if (reply.statusCode === 401) confirmed.add(req.ip, Date.now());
+    else failures.remove(req.ip, Date.now(), start);
   });
 
   // Call right after registerAuth: hooks run in registration order, so req.principal is verified by then.
