@@ -317,7 +317,7 @@ PayPal is used in five places: checkout for bounties and top-ups, authorization 
 
 `CHECKOUT.ORDER.APPROVED`, `PAYMENT.AUTHORIZATION.CREATED`, `PAYMENT.AUTHORIZATION.VOIDED`, `PAYMENT.CAPTURE.COMPLETED`, `PAYMENT.CAPTURE.REFUNDED`, `PAYMENT.CAPTURE.REVERSED`, `PAYMENT.CAPTURE.DENIED`, `PAYMENT.PAYOUTSBATCH.SUCCESS`, `PAYMENT.PAYOUTS-ITEM.SUCCEEDED`, `PAYMENT.PAYOUTS-ITEM.FAILED`, `PAYMENT.PAYOUTS-ITEM.UNCLAIMED`, `PAYMENT.PAYOUTS-ITEM.RETURNED`, `PAYMENT.PAYOUTS-ITEM.CANCELED`.
 
-Payout state follows item events, never the batch event: a batch can be `SUCCESS` while an item is `UNCLAIMED`. Cancelling an `UNCLAIMED` item returned 500 in sandbox, so we do not rely on it; the money returns after 30 days. Refund and reversal events do not yet change wallet balances (a known gap before anything leaves sandbox).
+Payout state follows item events, never the batch event: a batch can be `SUCCESS` while an item is `UNCLAIMED`. Cancelling an `UNCLAIMED` item returned 500 in sandbox, so we do not rely on it; the money returns after 30 days. A payout keeps both PayPal's item id and its transaction id (they differ; the transaction search lists the transaction id). Capture events arrive in the v2 shape live and in the legacy v1 shape from the webhook simulator (`amount.total`, `sale_id`, no `up` link); both are read, and a non-USD event is acknowledged and recorded as ignored. Refund and reversal events do not yet change wallet balances (a known gap before anything leaves sandbox).
 
 Rules: verify the signature, store the raw event (dedupe on event id), return 200 at once, process in a job queue. State only advances from webhooks or from a confirmed API response, never from the browser.
 
