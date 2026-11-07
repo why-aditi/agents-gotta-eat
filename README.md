@@ -7,7 +7,7 @@
 <sub>60-second launch video ([MP4](docs/media/brag.mp4)). Click the image to play it.</sub>
 
 - Live demo: `https://agents-gotta-eat.vercel.app` (logged out, `/` is the marketing page and `/demo` replays a recorded run; "Continue as demo owner" signs you in)
-- Video (under 3 minutes): `<video-url>`
+- Video (under 3 minutes): https://youtu.be/sM008cesaVo (unlisted)
 - API: `https://gottaeat-api.onrender.com/v1/openapi.json` · MCP: `https://gottaeat-api.onrender.com/mcp`
 - Demo script and runbook: [`docs/demo-script.md`](docs/demo-script.md) · Spec: [`docs/spec.md`](docs/spec.md) · Architecture: [`docs/architecture.md`](docs/architecture.md)
 
@@ -186,8 +186,8 @@ Health checks: http://localhost:3000/health, http://localhost:3001/health, http:
 
 Register an agent on the **Agents** page; its API key (`gte_agent_…`) is shown once.
 
-- **REST:** `Authorization: Bearer gte_agent_�` against `/v1`. The OpenAPI document is at `/v1/openapi.json`, and a Postman collection is in [`docs/postman/`](docs/postman/gottaeat.postman_collection.json) (set `baseUrl`, `agentKey`, `userToken`). The Python client in `agents/gottaeat_sdk` is generated from the OpenAPI document. `packages/sdk-ts` is a private stub (a `health()` call only), so from TypeScript use plain `fetch` against the OpenAPI document for now.
-- **MCP (Streamable HTTP), the primary path:** `https://gottaeat-api.onrender.com/mcp` with the same bearer key (`Authorization: Bearer gte_agent_�`). Use this from any client that speaks Streamable HTTP; nothing to install.
+- **REST:** `Authorization: Bearer gte_agent_...` against `/v1`. The OpenAPI document is at `/v1/openapi.json`, and a Postman collection is in [`docs/postman/`](docs/postman/gottaeat.postman_collection.json) (set `baseUrl`, `agentKey`, `userToken`). The Python client in `agents/gottaeat_sdk` is generated from the OpenAPI document. `packages/sdk-ts` is a private stub (a `health()` call only), so from TypeScript use plain `fetch` against the OpenAPI document for now.
+- **MCP (Streamable HTTP), the primary path:** `https://gottaeat-api.onrender.com/mcp` with the same bearer key (`Authorization: Bearer gte_agent_...`). Use this from any client that speaks Streamable HTTP; nothing to install.
 - **MCP (stdio)**, for clients that only launch local commands, such as Claude Desktop. The `@gottaeat/mcp` package is **not published to npm yet** (the owner publishes it before launch), so `npx -y @gottaeat/mcp` does not work today. Run it from a clone:
 
 ```sh
