@@ -3,7 +3,7 @@
 // One card per reconciliation check, green or red. "Run again" re-renders the page, which runs it again.
 // Below them, the ledger-vs-PayPal card, run on demand.
 import type { PayPalReconcileReport, ReconcileReport } from "@gottaeat/schemas";
-import { CircleCheckIcon, CircleXIcon, RefreshCwIcon } from "lucide-react";
+import { CircleAlertIcon, CircleCheckIcon, CircleXIcon, RefreshCwIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -99,7 +99,8 @@ export function PayPalReconcileCard() {
       }
     });
   const unmatched = report?.lines.filter((l) => l.status !== "matched") ?? [];
-  const state = error ? "error" : !report ? "idle" : report.ok ? "ok" : "mismatch";
+  // "skipped": PayPal refused the search (Transaction Search not enabled for the app), so nothing was compared.
+  const state = error ? "error" : !report ? "idle" : report.skipped ? "skipped" : report.ok ? "ok" : "mismatch";
   return (
     <Card
       data-testid="paypal-reconcile"
@@ -108,6 +109,7 @@ export function PayPalReconcileCard() {
         "border-l-4",
         state === "ok" && "border-l-emerald-600 dark:border-l-emerald-400",
         (state === "mismatch" || state === "error") && "border-l-destructive",
+        state === "skipped" && "border-l-amber-500",
       )}
     >
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3">
@@ -115,6 +117,8 @@ export function PayPalReconcileCard() {
           <CardTitle className="flex items-center gap-2 text-base">
             {state === "ok" ? (
               <CircleCheckIcon className="size-5 text-emerald-600 dark:text-emerald-400" aria-hidden />
+            ) : state === "skipped" ? (
+              <CircleAlertIcon className="size-5 text-amber-600 dark:text-amber-400" aria-hidden />
             ) : state === "mismatch" || state === "error" ? (
               <CircleXIcon className="size-5 text-destructive" aria-hidden />
             ) : null}
@@ -123,7 +127,10 @@ export function PayPalReconcileCard() {
           <CardDescription aria-live="polite" data-testid="paypal-reconcile-summary">
             {state === "idle" && "Matches every PayPal movement in the ledger with PayPal's transaction search."}
             {state === "error" && error}
-            {report && state !== "error"
+            {report?.skipped && state === "skipped"
+              ? `Skipped: ${report.skipped}. Turn it on under the app's Features in the PayPal developer dashboard.`
+              : null}
+            {report && state !== "error" && state !== "skipped"
               ? `${report.ok ? "Ledger matches PayPal" : "Ledger and PayPal disagree"} · last ${report.window.days} days · checked ${formatDateTime(report.checkedAt)}${report.cached ? " (cached)" : ""}`
               : null}
           </CardDescription>
@@ -133,7 +140,7 @@ export function PayPalReconcileCard() {
           {pending ? "Running…" : "Run against PayPal"}
         </Button>
       </CardHeader>
-      {report ? (
+      {report && state !== "skipped" ? (
         <CardContent className="space-y-3">
           <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
             {COUNT_ORDER.map((k) => (
