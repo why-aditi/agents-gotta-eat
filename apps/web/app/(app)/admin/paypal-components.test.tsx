@@ -87,7 +87,8 @@ describe("TreasurerPanel", () => {
     expect(screen.getByText("None.")).toBeInTheDocument();
     expect(screen.getByText("No tools were called.", { exact: false })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Ask" }));
+    // The answer can render a moment before the transition ends and the button reads "Ask" again: wait for it.
+    await user.click(await screen.findByRole("button", { name: "Ask" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("At most 10 Treasurer questions a minute");
   });
 });
