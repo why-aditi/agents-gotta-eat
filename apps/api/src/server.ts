@@ -27,6 +27,7 @@ function envFromProcess(): AppEnv {
     WEB_ORIGINS: process.env.WEB_ORIGINS,
     API_URL: process.env.API_URL,
     PUBLIC_API_URL: process.env.PUBLIC_API_URL,
+    RENDER_EXTERNAL_URL: process.env.RENDER_EXTERNAL_URL,
     POLICY_GATE2_STUB: process.env.POLICY_GATE2_STUB,
     GATEWAY_URL: process.env.GATEWAY_URL,
     LITELLM_MASTER_KEY: process.env.LITELLM_MASTER_KEY,
