@@ -42,7 +42,12 @@ describe("jsonDepthExceeds", () => {
 describe("legitimate bodies", () => {
   it("the deepest seed bounty, even wrapped in an MCP tools/call, stays well under the limit", () => {
     const seed = readFileSync(new URL("../../../../seed/bounties/extract-invoices.json", import.meta.url), "utf8");
-    const mcp = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { arguments: JSON.parse(seed) } });
+    const mcp = JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "tools/call",
+      params: { arguments: JSON.parse(seed) },
+    });
     expect(jsonDepthExceeds(seed, MAX_JSON_DEPTH - 16)).toBe(false);
     expect(jsonDepthExceeds(mcp, MAX_JSON_DEPTH - 16)).toBe(false);
   });
