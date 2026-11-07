@@ -48,24 +48,27 @@ export async function topupCaptureIds(db: Db, topupIds: string[]): Promise<Map<s
   return new Map(rows.map((r) => [r.id, r.captureId]));
 }
 
-// payout id -> its PayPal payout item id (null until sent).
-export async function payoutItemIds(db: Db, payoutIds: string[]): Promise<Map<string, string | null>> {
+export type PayoutPayPalIds = { transactionId: string | null; itemId: string | null };
+
+// payout id -> its PayPal transaction id (null until the item is processed) and payout item id (null until sent).
+export async function payoutPayPalIds(db: Db, payoutIds: string[]): Promise<Map<string, PayoutPayPalIds>> {
   if (payoutIds.length === 0) return new Map();
   const rows = await db
-    .select({ id: payouts.id, itemId: payouts.itemId })
+    .select({ id: payouts.id, transactionId: payouts.transactionId, itemId: payouts.itemId })
     .from(payouts)
     .where(inArray(payouts.id, payoutIds));
-  return new Map(rows.map((r) => [r.id, r.itemId]));
+  return new Map(rows.map((r) => [r.id, { transactionId: r.transactionId, itemId: r.itemId }]));
 }
 
-// Which of these PayPal ids are top-up captures or payout items of ours.
+// Which of these PayPal ids are top-up captures, payout items or payout transactions of ours.
 export async function knownPaymentIds(db: Db, paypalIds: string[]): Promise<Set<string>> {
   if (paypalIds.length === 0) return new Set();
-  const [caps, items] = await Promise.all([
+  const [caps, items, txns] = await Promise.all([
     db.select({ id: topups.captureId }).from(topups).where(inArray(topups.captureId, paypalIds)),
     db.select({ id: payouts.itemId }).from(payouts).where(inArray(payouts.itemId, paypalIds)),
+    db.select({ id: payouts.transactionId }).from(payouts).where(inArray(payouts.transactionId, paypalIds)),
   ]);
-  return new Set([...caps, ...items].map((r) => r.id).filter((id): id is string => id !== null));
+  return new Set([...caps, ...items, ...txns].map((r) => r.id).filter((id): id is string => id !== null));
 }
 
 // The admin list of stored webhook events, newest first. Never the payload.

@@ -3,6 +3,7 @@
 // dropped except custom_id / custom_field, which are ours.
 import type { PayPalClient } from "./client";
 import { signedValueToCents, valueToCents } from "./cents";
+import { isTransactionSearchForbidden, TransactionSearchDisabled, type PayPalError } from "./errors";
 
 const str = (v: unknown): string | null => (typeof v === "string" && v ? v : null);
 
@@ -150,6 +151,12 @@ export async function listTransactionsDirect(
     page_size: "500",
     page: String(page),
   });
-  const raw = await client.request({ method: "GET", path: `/v1/reporting/transactions?${q.toString()}` });
+  let raw: unknown;
+  try {
+    raw = await client.request({ method: "GET", path: `/v1/reporting/transactions?${q.toString()}` });
+  } catch (err) {
+    if (isTransactionSearchForbidden(err)) throw new TransactionSearchDisabled((err as PayPalError).debugId);
+    throw err;
+  }
   return toTransactionPage(raw, page);
 }

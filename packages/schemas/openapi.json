@@ -31311,6 +31311,9 @@
                         ],
                         "additionalProperties": false
                       }
+                    },
+                    "skipped": {
+                      "type": "string"
                     }
                   },
                   "required": [

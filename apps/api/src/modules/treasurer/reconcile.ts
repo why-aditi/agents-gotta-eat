@@ -1,7 +1,10 @@
 // Ledger-vs-PayPal reconciliation. Every journal touching paypal:clearing in the window is mapped to the PayPal id
-// it belongs to (top-up -> capture, bounty reward -> escrow capture, withdrawal -> payout item, clawback -> refund,
-// overturned dispute -> the escrow's dispute refund),
+// it belongs to (top-up -> capture, bounty reward -> escrow capture, withdrawal -> payout transaction id, falling
+// back to the payout item id, clawback -> refund, overturned dispute -> the escrow's dispute refund),
 // then matched against PayPal's transaction search (through the Agent Toolkit) by that id and signed amount.
+//
+// When PayPal answers 403 (Transaction Search isn't enabled for the app) the check is reported as skipped, with
+// that reason, instead of failing: no lines, zero counts, ok true and `skipped` set.
 //
 // Classes: matched, missing_in_paypal, missing_in_ledger, amount_mismatch, and pending (nothing in PayPal yet
 // but the ledger side is under 3 hours old: the transaction search lags). PayPal activity counts as
@@ -13,8 +16,8 @@ import type { Db } from "../../db";
 import { toJsonCents } from "../../lib/cents";
 import { escrowCaptures, knownEscrowCaptureIds } from "../escrow";
 import { clearingMovements, type ClearingMovement } from "../ledger";
-import { knownPaymentIds, payoutItemIds, topupCaptureIds } from "../payments";
-import { requirePayPalToolkit, type PayPalToolkit, type PayPalTransaction } from "../paypal";
+import { knownPaymentIds, payoutPayPalIds, topupCaptureIds } from "../payments";
+import { requirePayPalToolkit, TransactionSearchDisabled, type PayPalToolkit, type PayPalTransaction } from "../paypal";
 
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
@@ -53,8 +56,13 @@ export function clearPayPalReconcileCache() {
 }
 
 // The PayPal id each movement belongs to: null when it moved no PayPal money (dev stand-ins), "" when it should
-// have one but none is recorded.
-async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string | null)[]> {
+// have one but none is recorded. A withdrawal goes by its transaction id (what the search lists), or its item id
+// when that is what PayPal shows or no transaction id is recorded yet.
+async function paypalIds(
+  db: Db,
+  movements: ClearingMovement[],
+  inPayPal: (id: string) => boolean,
+): Promise<(string | null)[]> {
   const ids = (pred: (m: ClearingMovement) => boolean) => [
     ...new Set(movements.filter(pred).map((m) => m.refId ?? "")),
   ];
@@ -68,7 +76,7 @@ async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string
       db,
       ids((m) => isReward(m) || isDisputeRefund(m)),
     ),
-    payoutItemIds(db, ids(isWithdrawal)),
+    payoutPayPalIds(db, ids(isWithdrawal)),
   ]);
   return movements.map((m) => {
     const ref = m.refId ?? "";
@@ -83,7 +91,11 @@ async function paypalIds(db: Db, movements: ClearingMovement[]): Promise<(string
       if (!e || e.dev) return null;
       return e.disputeRefundId ?? "";
     }
-    if (isWithdrawal(m)) return items.get(ref) ?? "";
+    if (isWithdrawal(m)) {
+      const p = items.get(ref);
+      if (p?.transactionId && (inPayPal(p.transactionId) || !p.itemId || !inPayPal(p.itemId))) return p.transactionId;
+      return p?.itemId ?? "";
+    }
     if (m.kind === "clawback") {
       if (m.idempotencyKey.startsWith("clawback:denied:")) return m.idempotencyKey.slice("clawback:denied:".length);
       if (m.idempotencyKey.startsWith("clawback:")) return m.idempotencyKey.slice("clawback:".length);
@@ -124,13 +136,39 @@ export async function reconcilePayPal(db: Db, opts: ReconcileOptions = {}): Prom
   const to = now;
   const from = new Date(now.getTime() - days * DAY_MS);
 
-  const [movements, transactions] = await Promise.all([
-    clearingMovements(db, { from: new Date(from.getTime() - LEDGER_LOOKBACK_MS), to: new Date(now.getTime() + 1) }),
-    fetchTransactions(toolkit, from, to),
-  ]);
+  const window = { from: from.toISOString(), to: to.toISOString(), days };
+  let transactions: PayPalTransaction[];
+  try {
+    transactions = await fetchTransactions(toolkit, from, to);
+  } catch (err) {
+    if (!(err instanceof TransactionSearchDisabled)) throw err;
+    const report: PayPalReconcileReport = {
+      ok: true,
+      checkedAt: now.toISOString(),
+      cached: false,
+      window,
+      counts: { matched: 0, missing_in_paypal: 0, missing_in_ledger: 0, amount_mismatch: 0, pending: 0, unrelated: 0 },
+      lines: [],
+      skipped: err.message,
+    };
+    cache.set(days, { at: now.getTime(), report });
+    return report;
+  }
+  const movements = await clearingMovements(db, {
+    from: new Date(from.getTime() - LEDGER_LOOKBACK_MS),
+    to: new Date(now.getTime() + 1),
+  });
+
+  // PayPal side, grouped by transaction id.
+  const paypal = new Map<string, PayPalGroup>();
+  for (const t of transactions) {
+    // The same id twice (paging overlap) counts once.
+    if (paypal.has(t.id)) continue;
+    paypal.set(t.id, { cents: t.amountCents, eventCode: t.eventCode, at: t.initiatedAt, customField: t.customField });
+  }
 
   // Ledger side, grouped by PayPal id.
-  const ids = await paypalIds(db, movements);
+  const ids = await paypalIds(db, movements, (id) => paypal.has(id));
   const ledger = new Map<string, LedgerGroup>();
   movements.forEach((m, i) => {
     const id = ids[i];
@@ -152,14 +190,6 @@ export async function reconcilePayPal(db: Db, opts: ReconcileOptions = {}): Prom
     if (m.idempotencyKey.startsWith("clawback:denied:")) g.denied = true;
     ledger.set(key, g);
   });
-
-  // PayPal side, grouped by transaction id.
-  const paypal = new Map<string, PayPalGroup>();
-  for (const t of transactions) {
-    // The same id twice (paging overlap) counts once.
-    if (paypal.has(t.id)) continue;
-    paypal.set(t.id, { cents: t.amountCents, eventCode: t.eventCode, at: t.initiatedAt, customField: t.customField });
-  }
 
   const lines: PayPalReconcileLine[] = [];
   const pendingCutoff = now.getTime() - PENDING_MS;
@@ -247,7 +277,7 @@ export async function reconcilePayPal(db: Db, opts: ReconcileOptions = {}): Prom
     ok: counts.missing_in_paypal + counts.missing_in_ledger + counts.amount_mismatch === 0,
     checkedAt: now.toISOString(),
     cached: false,
-    window: { from: from.toISOString(), to: to.toISOString(), days },
+    window,
     counts,
     lines: lines.slice(0, MAX_LINES),
   };

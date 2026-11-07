@@ -36,6 +36,7 @@ describe("payouts", () => {
         items: [
           {
             payout_item_id: "I1",
+            transaction_id: "32D07202SB7101447",
             transaction_status: "UNCLAIMED",
             payout_item: { sender_item_id: "w1", amount: { value: "5.00" } },
           },
@@ -47,11 +48,17 @@ describe("payouts", () => {
     expect(batch.status).toBe("SUCCESS");
     expect(batch.items[0]).toEqual({
       payoutItemId: "I1",
+      transactionId: "32D07202SB7101447",
       senderItemId: "w1",
       status: "UNCLAIMED",
       amountCents: 500n,
       errors: null,
     });
-    expect(batch.items[1]).toMatchObject({ status: "FAILED", errors: { name: "X" }, amountCents: null });
+    expect(batch.items[1]).toMatchObject({
+      status: "FAILED",
+      errors: { name: "X" },
+      amountCents: null,
+      transactionId: null,
+    });
   });
 });

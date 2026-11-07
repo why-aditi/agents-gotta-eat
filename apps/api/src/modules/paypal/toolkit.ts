@@ -14,7 +14,7 @@ import { randomUUID } from "node:crypto";
 import { ApiError } from "../../http/errors";
 import type { PayPalCallRecord } from "./call-log";
 import { checkApiBase, type PayPalClient } from "./client";
-import { PayPalError } from "./errors";
+import { isTransactionSearchForbidden, PayPalError, TransactionSearchDisabled } from "./errors";
 import { getOrder, toOrder, type PayPalOrder, type RawOrder } from "./orders";
 import { isoSeconds, isoSecondsCeil, listTransactionsDirect, toTransactionPage, type TransactionPage } from "./reads";
 
@@ -154,12 +154,18 @@ export function createPayPalToolkit(cfg: PayPalToolkitConfig): PayPalToolkit {
       return toOrder(raw as RawOrder);
     },
     async listTransactions({ start, end, page = 1 }) {
-      const raw = await call("list_transactions", "/v1/reporting/transactions?start_date&end_date&page", "GET", {
-        start_date: isoSeconds(start),
-        end_date: isoSecondsCeil(end),
-        page_size: 500,
-        page,
-      });
+      let raw: unknown;
+      try {
+        raw = await call("list_transactions", "/v1/reporting/transactions?start_date&end_date&page", "GET", {
+          start_date: isoSeconds(start),
+          end_date: isoSecondsCeil(end),
+          page_size: 500,
+          page,
+        });
+      } catch (err) {
+        if (isTransactionSearchForbidden(err)) throw new TransactionSearchDisabled();
+        throw err;
+      }
       return toTransactionPage(raw, page);
     },
   };

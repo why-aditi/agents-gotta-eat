@@ -2,7 +2,7 @@
 // the typed client's direct calls. The real toolkit can't run here (no PayPal), so a fake stands in for it.
 import { afterEach, describe, expect, it } from "vitest";
 import type { PayPalCallRecord } from "./call-log";
-import { PayPalError } from "./errors";
+import { PayPalError, TRANSACTION_SEARCH_DISABLED, TransactionSearchDisabled } from "./errors";
 import { json, makeClient } from "./test-utils";
 import {
   configurePayPalToolkit,
@@ -157,6 +157,75 @@ describe("createPayPalToolkit", () => {
       },
     });
     await expect(thrown.listTransactions({ start: new Date(), end: new Date() })).rejects.toBeInstanceOf(PayPalError);
+  });
+
+  it("a 403 from list_transactions means Transaction Search isn't enabled, through the toolkit and directly", async () => {
+    // What the toolkit's handleAxiosError makes of PayPal's 403: PayPal's error name is lost, the status kept.
+    const forbidden = {
+      ok: false,
+      status: 403,
+      code: "PAYPAL_API_HTTP_ERROR",
+      message: "Authorization failed due to insufficient permissions.: You do not have permission to access",
+    };
+    const { client } = makeClient(() => json(500, {}));
+    const viaToolkit = createPayPalToolkit({
+      clientId: "id",
+      clientSecret: "s",
+      apiBase: SANDBOX,
+      client,
+      makeToolkit: fakeToolkit(() => forbidden).make,
+    });
+    const err = await viaToolkit.listTransactions({ start: new Date(), end: new Date() }).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(TransactionSearchDisabled);
+    expect(err).toBeInstanceOf(PayPalError);
+    expect((err as Error).message).toBe("Transaction Search isn't enabled for this PayPal app");
+    expect((err as Error).message).toBe(TRANSACTION_SEARCH_DISABLED);
+    // Other tools keep the plain error.
+    const orderErr = await viaToolkit.getOrder("ORDER1").catch((e: unknown) => e);
+    expect(orderErr).toBeInstanceOf(PayPalError);
+    expect(orderErr).not.toBeInstanceOf(TransactionSearchDisabled);
+    // A status-less toolkit error that names NOT_AUTHORIZED counts too; any other failure does not.
+    const named = createPayPalToolkit({
+      clientId: "id",
+      clientSecret: "s",
+      apiBase: SANDBOX,
+      client,
+      makeToolkit: fakeToolkit(() => ({ error: { message: "NOT_AUTHORIZED", type: "paypal_error" } })).make,
+    });
+    await expect(named.listTransactions({ start: new Date(), end: new Date() })).rejects.toBeInstanceOf(
+      TransactionSearchDisabled,
+    );
+    const broken = createPayPalToolkit({
+      clientId: "id",
+      clientSecret: "s",
+      apiBase: SANDBOX,
+      client,
+      makeToolkit: fakeToolkit(() => ({ ok: false, status: 500, message: "boom" })).make,
+    });
+    const other = await broken.listTransactions({ start: new Date(), end: new Date() }).catch((e: unknown) => e);
+    expect(other).toBeInstanceOf(PayPalError);
+    expect(other).not.toBeInstanceOf(TransactionSearchDisabled);
+
+    // The direct call (loopback base) against PayPal's own 403 body.
+    const { client: local } = makeClient(
+      () =>
+        json(403, {
+          name: "NOT_AUTHORIZED",
+          message: "Authorization failed due to insufficient permissions.",
+          debug_id: "f00d",
+          details: [{ issue: "PERMISSION_DENIED", description: "You do not have permission" }],
+        }),
+      { apiBase: "http://localhost:4010" },
+    );
+    const direct = createPayPalToolkit({
+      clientId: "id",
+      clientSecret: "s",
+      apiBase: "http://localhost:4010",
+      client: local,
+    });
+    const directErr = await direct.listTransactions({ start: new Date(), end: new Date() }).catch((e: unknown) => e);
+    expect(directErr).toBeInstanceOf(TransactionSearchDisabled);
+    expect((directErr as PayPalError).status).toBe(403);
   });
 
   it("falls back to the client's direct calls for a loopback base", async () => {

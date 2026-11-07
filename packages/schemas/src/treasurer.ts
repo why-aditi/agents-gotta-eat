@@ -97,6 +97,9 @@ export const PayPalReconcileReport = z.object({
   counts: PayPalReconcileCounts,
   // Problems first, then pending, then matched.
   lines: z.array(PayPalReconcileLine),
+  // Set when the PayPal side could not be checked, in plain English (e.g. "Transaction Search isn't enabled for
+  // this PayPal app"): the check was skipped, so counts are zero and lines empty. Not a failure, and not a match.
+  skipped: z.string().optional(),
 });
 export type PayPalReconcileReport = z.infer<typeof PayPalReconcileReport>;
 

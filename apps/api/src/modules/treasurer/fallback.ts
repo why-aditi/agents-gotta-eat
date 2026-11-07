@@ -143,16 +143,21 @@ export async function fallbackReport(db: Db, question: string, reason: string): 
   try {
     const report = await reconcilePayPal(db, { days: 7 });
     const c = report.counts;
-    summary =
-      `${report.ok ? "Clean" : "Needs attention"} (${report.window.from.slice(0, 10)} to ${report.window.to.slice(0, 10)}): ` +
-      `${c.matched} matched, ${c.pending} pending, ${c.missing_in_paypal} missing in PayPal, ` +
-      `${c.missing_in_ledger} missing in the ledger, ${c.amount_mismatch} amount mismatches, ${c.unrelated} unrelated.`;
-    const problems = report.lines.filter((l) => l.status !== "matched" && l.status !== "pending").slice(0, 10);
-    for (const l of problems) {
-      summary += `\n  ${l.status} | ${l.paypalId} | ${l.detail}`;
-      cite(l.paypalId);
+    if (report.skipped) {
+      summary = `Skipped: ${report.skipped}.`;
+    } else {
+      summary =
+        `${report.ok ? "Clean" : "Needs attention"} (${report.window.from.slice(0, 10)} to ${report.window.to.slice(0, 10)}): ` +
+        `${c.matched} matched, ${c.pending} pending, ${c.missing_in_paypal} missing in PayPal, ` +
+        `${c.missing_in_ledger} missing in the ledger, ${c.amount_mismatch} amount mismatches, ${c.unrelated} unrelated.`;
+      const problems = report.lines.filter((l) => l.status !== "matched" && l.status !== "pending").slice(0, 10);
+      for (const l of problems) {
+        summary += `\n  ${l.status} | ${l.paypalId} | ${l.detail}`;
+        cite(l.paypalId);
+      }
     }
-    trace.push({ tool: "reconcile_paypal", args: { days: 7 }, ok: true, summary: report.ok ? "clean" : "mismatches" });
+    const traced = report.skipped ? "skipped" : report.ok ? "clean" : "mismatches";
+    trace.push({ tool: "reconcile_paypal", args: { days: 7 }, ok: true, summary: traced });
   } catch (err) {
     summary = `The reconciliation could not run: ${err instanceof Error ? err.message : String(err)}`;
     trace.push({ tool: "reconcile_paypal", args: { days: 7 }, ok: false, summary: summary.slice(0, 200) });
