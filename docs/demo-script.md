@@ -138,5 +138,5 @@ Scenes 2, 3 and 7 need no LLM for their key moments: the mandate form can be fil
 ### After recording
 
 - Admin → Demo: make sure the new recording is **featured**.
-- Edit the video to under 3:00, upload to YouTube as public, and put the link in the README (`<video-url>`).
+- Edit the video to under 3:00, upload to YouTube (done: unlisted, https://youtu.be/sM008cesaVo; Devpost accepts public or unlisted) and put the link in the README.
 - Fill in `<web-url>` and `<api-url>` in the README.
