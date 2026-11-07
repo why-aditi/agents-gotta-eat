@@ -6,6 +6,7 @@ import { PgBoss } from "pg-boss";
 import type { Db } from "../../db";
 import { payouts } from "../../db/schema";
 import { getPayoutBatch, requirePayPal } from "../paypal";
+import type { WebhookLog } from "./registry";
 import { processWebhookEvent } from "./webhooks";
 import { applyPayoutOutcome, sendPayout, type PayoutOutcome } from "./withdrawals";
 
@@ -20,8 +21,8 @@ export function setPaymentQueue(q: PaymentQueue | null) {
   queue = q;
 }
 
-export const enqueueWebhook = (db: Db, eventRowId: string) =>
-  queue ? queue.webhook(eventRowId) : processWebhookEvent(db, eventRowId);
+export const enqueueWebhook = (db: Db, eventRowId: string, log?: WebhookLog) =>
+  queue ? queue.webhook(eventRowId) : processWebhookEvent(db, eventRowId, log);
 export const enqueuePayout = (db: Db, payoutId: string) => (queue ? queue.payout(payoutId) : sendPayout(db, payoutId));
 
 const POLL_AFTER_MS = 5 * 60_000;
@@ -67,7 +68,11 @@ export async function pollPayouts(db: Db, now: Date): Promise<number> {
       for (const item of batch.items) {
         const outcome = item.status ? ITEM_STATUS[item.status] : undefined;
         if (outcome && item.senderItemId && ids.includes(item.senderItemId)) {
-          await applyPayoutOutcome(db, item.senderItemId, outcome, { batchId, itemId: item.payoutItemId });
+          await applyPayoutOutcome(db, item.senderItemId, outcome, {
+            batchId,
+            itemId: item.payoutItemId,
+            transactionId: item.transactionId,
+          });
         }
       }
     } catch (err) {
@@ -79,7 +84,7 @@ export async function pollPayouts(db: Db, now: Date): Promise<number> {
 }
 
 // Starts pg-boss on the same database (2 connections, its own schema). Resolves to a stop function.
-export async function startPaymentJobs(db: Db, databaseUrl: string, onError: (err: unknown) => void) {
+export async function startPaymentJobs(db: Db, databaseUrl: string, onError: (err: unknown) => void, log?: WebhookLog) {
   const boss = new PgBoss({ connectionString: databaseUrl, max: 2, schema: "pgboss" });
   boss.on("error", onError);
   await boss.start();
@@ -87,7 +92,7 @@ export async function startPaymentJobs(db: Db, databaseUrl: string, onError: (er
   for (const name of ["webhook.process", "payout.send", "payout.poll"]) await boss.createQueue(name, retry);
 
   await boss.work<{ eventId: string }>("webhook.process", async (jobs) => {
-    for (const job of jobs) await processWebhookEvent(db, job.data.eventId);
+    for (const job of jobs) await processWebhookEvent(db, job.data.eventId, log);
   });
   await boss.work<{ payoutId: string }>("payout.send", async (jobs) => {
     for (const job of jobs) await sendPayout(db, job.data.payoutId);

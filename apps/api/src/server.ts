@@ -116,7 +116,12 @@ try {
     llm ? { rankCreativeWriting: aiRanker(llm) } : undefined,
   );
   if (paypalConfigured) {
-    stopPaymentJobs = await startPaymentJobs(db, requireDatabaseUrl(), (err) => app.log.error({ err }, "payment jobs"));
+    stopPaymentJobs = await startPaymentJobs(
+      db,
+      requireDatabaseUrl(),
+      (err) => app.log.error({ err }, "payment jobs"),
+      app.log,
+    );
     // Moves authorizations older than 4 days to a fresh one (allowed once, day 4 to day 29).
     stopReauthorizeSweep = startReauthorizeSweep(db, 60 * 60_000, (err, bountyId) =>
       app.log.error({ err, bountyId }, "escrow reauthorize sweep failed"),

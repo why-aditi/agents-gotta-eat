@@ -11,7 +11,13 @@ import { findPayees } from "../identity";
 import { journalsForRef } from "../ledger";
 import type { ToolDefinition } from "../llm";
 import { payoutsForUser, topupsForUser } from "../payments";
-import { getCapture, requirePayPal, toolkitGetOrder, toolkitListTransactions } from "../paypal";
+import {
+  getCapture,
+  requirePayPal,
+  toolkitGetOrder,
+  toolkitListTransactions,
+  TransactionSearchDisabled,
+} from "../paypal";
 import { reconcilePayPal } from "./reconcile";
 
 const DAY_MS = 86_400_000;
@@ -84,7 +90,8 @@ export const TOOLS = {
     },
   }),
   payouts_for: define({
-    description: "A user's withdrawals (PayPal payouts), newest first: status, amount, PayPal batch and item ids.",
+    description:
+      "A user's withdrawals (PayPal payouts), newest first: status, amount, PayPal batch, item and transaction ids.",
     parameters: object({ userId: stringParam("The user id (usr_...)") }, ["userId"]),
     args: z.object({ userId: Id }),
     async run({ db }, { userId }) {
@@ -97,12 +104,13 @@ export const TOOLS = {
             status: p.status,
             paypalBatchId: p.paypalBatchId,
             paypalItemId: p.itemId,
+            paypalTransactionId: p.transactionId,
             createdAt: p.createdAt,
             updatedAt: p.updatedAt,
           })),
         },
         summary: rows.length ? `${rows.length} payouts (${countBy(rows.map((r) => r.status))})` : "no payouts",
-        ids: rows.flatMap((p) => present([p.id, p.paypalBatchId, p.itemId])),
+        ids: rows.flatMap((p) => present([p.id, p.paypalBatchId, p.itemId, p.transactionId])),
       };
     },
   }),
@@ -201,7 +209,14 @@ export const TOOLS = {
     async run({ now }, { days }) {
       const end = now();
       const start = new Date(end.getTime() - days * DAY_MS);
-      const page = await toolkitListTransactions({ start, end });
+      let page: Awaited<ReturnType<typeof toolkitListTransactions>>;
+      try {
+        page = await toolkitListTransactions({ start, end });
+      } catch (err) {
+        // A 403: not an error the model should retry or report as a PayPal outage.
+        if (!(err instanceof TransactionSearchDisabled)) throw err;
+        return { data: { skipped: true, message: err.message }, summary: err.message, ids: [] };
+      }
       const shown = page.transactions.slice(0, 50);
       return {
         data: { transactions: shown, total: page.transactions.length, morePages: page.totalPages > 1 },
@@ -244,6 +259,13 @@ export const TOOLS = {
     args: z.object({ days: z.coerce.number().int().min(1).max(31).optional() }),
     async run({ db, now }, { days }) {
       const report = await reconcilePayPal(db, { days, now: now() });
+      if (report.skipped) {
+        return {
+          data: { skipped: true, message: report.skipped, window: report.window },
+          summary: report.skipped,
+          ids: [],
+        };
+      }
       const problems = report.lines.filter((l) => l.status !== "matched").slice(0, 20);
       return {
         data: { ok: report.ok, window: report.window, counts: report.counts, unmatched: problems },

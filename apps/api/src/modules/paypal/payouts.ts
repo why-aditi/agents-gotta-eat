@@ -10,6 +10,8 @@ export interface PayoutItemInput {
 
 export interface PayoutItemStatus {
   payoutItemId: string | null;
+  // PayPal's transaction id once the item is processed (what the transaction search lists); differs from the item id.
+  transactionId: string | null;
   senderItemId: string | null;
   status: string | null;
   amountCents: bigint | null;
@@ -26,6 +28,7 @@ interface RawBatch {
   batch_header: { payout_batch_id: string; batch_status: string };
   items?: {
     payout_item_id?: string;
+    transaction_id?: string;
     transaction_status?: string;
     errors?: unknown;
     payout_item?: { sender_item_id?: string; amount?: { value: string } };
@@ -38,6 +41,7 @@ function toBatch(raw: RawBatch): PayoutBatch {
     status: raw.batch_header.batch_status,
     items: (raw.items ?? []).map((i) => ({
       payoutItemId: i.payout_item_id ?? null,
+      transactionId: i.transaction_id || null,
       senderItemId: i.payout_item?.sender_item_id ?? null,
       status: i.transaction_status ?? null,
       amountCents: i.payout_item?.amount ? valueToCents(i.payout_item.amount.value) : null,

@@ -16,7 +16,7 @@ import {
 } from "../../../test/db";
 import { escrows, events, payouts, topups, users, webhookEvents } from "../../db/schema";
 import { accountBalance } from "../ledger/wallets";
-import { getBalances, owedCents, PLATFORM_FEES, reconcile } from "../ledger";
+import { getBalances, owedCents, PLATFORM_FEES, reconcile, withdrawalAccount } from "../ledger";
 import { createSpendRequest, stubIntentCheck } from "../policy";
 import { configurePayPal } from "../paypal";
 import { apiCalls, type Call, json, makeClient } from "../paypal/test-utils";
@@ -496,6 +496,69 @@ describe("withdrawals", () => {
     await expectReconciled();
   });
 
+  it("keeps PayPal's transaction id, which differs from the item id, even when it arrives after the outcome", async () => {
+    const owner = await newOwner({ cents: 2000n });
+    const payout = await withdraw(owner, 1000);
+    await webhook(
+      "PAYMENT.PAYOUTS-ITEM.SUCCEEDED",
+      item(payout.id, { payout_item_id: "HHPMJB5DQT8JE", transaction_id: "32D07202SB7101447" }),
+    );
+    let [row] = await db.select().from(payouts).where(eq(payouts.id, payout.id));
+    expect(row).toMatchObject({ status: "succeeded", itemId: "HHPMJB5DQT8JE", transactionId: "32D07202SB7101447" });
+
+    // The first event had no transaction id; a replay of the same outcome with one fills it in, and moves nothing.
+    const second = await withdraw(owner, 1000);
+    await webhook("PAYMENT.PAYOUTS-ITEM.SUCCEEDED", item(second.id, { payout_item_id: "ITEM-2" }));
+    [row] = await db.select().from(payouts).where(eq(payouts.id, second.id));
+    expect(row).toMatchObject({ status: "succeeded", transactionId: null });
+    await webhook(
+      "PAYMENT.PAYOUTS-ITEM.SUCCEEDED",
+      item(second.id, { payout_item_id: "ITEM-2", transaction_id: "TXN-2" }),
+    );
+    [row] = await db.select().from(payouts).where(eq(payouts.id, second.id));
+    expect(row).toMatchObject({ status: "succeeded", itemId: "ITEM-2", transactionId: "TXN-2" });
+    expect(await balance(owner)).toBe(0n);
+    await expectReconciled();
+  });
+
+  it("an UNCLAIMED payout (RECEIVER_UNREGISTERED) stays held and shown as unclaimed until RETURNED gives it back", async () => {
+    const owner = await newOwner({ cents: 1500n });
+    const payout = await withdraw(owner, 1000);
+    // The shape PayPal sends for an address with no PayPal account.
+    await webhook(
+      "PAYMENT.PAYOUTS-ITEM.UNCLAIMED",
+      item(payout.id, {
+        transaction_id: "8RT57412XA0612345",
+        transaction_status: "UNCLAIMED",
+        errors: {
+          name: "RECEIVER_UNREGISTERED",
+          message: "Receiver is unregistered",
+          information_link: "https://developer.paypal.com/docs/api/payments.payouts-batch/#errors",
+        },
+      }),
+    );
+    expect(await statusOf(payout.id)).toBe("unclaimed");
+    // Held in the payout's withdrawal account, not spendable and not paid.
+    expect(await balance(owner)).toBe(500n);
+    expect(await accountBalance(db, withdrawalAccount(payout.id))).toBe(1000n);
+    const list = await app.inject({
+      method: "GET",
+      url: "/v1/wallet/withdrawals",
+      headers: { authorization: await authFor(owner) },
+    });
+    expect(list.json().payouts).toEqual([expect.objectContaining({ id: payout.id, status: "unclaimed" })]);
+    await expectReconciled();
+
+    // Thirty days later PayPal returns it.
+    await webhook("PAYMENT.PAYOUTS-ITEM.RETURNED", item(payout.id, { transaction_id: "8RT57412XA0612345" }));
+    expect(await statusOf(payout.id)).toBe("returned");
+    expect(await balance(owner)).toBe(1500n);
+    expect(await accountBalance(db, withdrawalAccount(payout.id))).toBe(0n);
+    const [row] = await db.select().from(payouts).where(eq(payouts.id, payout.id));
+    expect(row!.transactionId).toBe("8RT57412XA0612345");
+    await expectReconciled();
+  });
+
   it("finds the payout by payout_item_id when sender_item_id is absent", async () => {
     const owner = await newOwner({ cents: 1000n });
     const payout = await withdraw(owner, 1000);
@@ -525,11 +588,20 @@ describe("withdrawals", () => {
       const fresh = await withdraw(owner, 1000);
       await age(old.id, 10);
       paypal.batchItems = [
-        { payout_item_id: "ITEM-1", transaction_status: "SUCCESS", payout_item: { sender_item_id: old.id } },
+        {
+          payout_item_id: "ITEM-1",
+          transaction_id: "TXN-1",
+          transaction_status: "SUCCESS",
+          payout_item: { sender_item_id: old.id },
+        },
         { payout_item_id: "ITEM-2", transaction_status: "SUCCESS", payout_item: { sender_item_id: fresh.id } },
       ];
       expect(await pollPayouts(db, new Date())).toBe(1);
       expect(await statusOf(old.id)).toBe("succeeded");
+      expect((await db.select().from(payouts).where(eq(payouts.id, old.id)))[0]).toMatchObject({
+        itemId: "ITEM-1",
+        transactionId: "TXN-1",
+      });
       expect(await statusOf(fresh.id)).toBe("pending");
       await expectReconciled();
     });
@@ -857,29 +929,181 @@ describe("refunds, reversals and denials (pm-04c)", () => {
     await expectReconciled();
   });
 
-  it("ignores unknown captures and records an error for payloads it can't read", async () => {
+  const byId = async (id: string) =>
+    (await db.select().from(webhookEvents).where(eq(webhookEvents.paypalEventId, id)))[0]!;
+
+  it("acknowledges unknown captures and events naming no capture; records an error for an unreadable amount", async () => {
     const owner = await newOwner();
     const { captureId } = await capturedTopup(owner);
     await refunded("CAP-UNKNOWN", "REF-X", "5.00", "UNK-1");
-    const byId = async (id: string) =>
-      (await db.select().from(webhookEvents).where(eq(webhookEvents.paypalEventId, id)))[0]!;
     let row = await byId("UNK-1");
     expect(row.processedAt).not.toBeNull();
     expect(row.error).toBeNull();
 
-    await webhook(
+    // Names no capture at all: retrying cannot help, so it is processed and recorded as ignored.
+    const res = await webhook(
       "PAYMENT.CAPTURE.REFUNDED",
       { id: "REF-Y", amount: { currency_code: "USD", value: "5.00" } },
       "BAD-1",
     );
+    expect(res.statusCode).toBe(200);
     row = await byId("BAD-1");
-    expect(row.processedAt).toBeNull();
-    expect(row.error).toMatch(/names no refund or capture/);
+    expect(row.processedAt).not.toBeNull();
+    expect(row.error).toBe("ignored: names no capture");
 
+    // A capture of ours with no amount we can read: an error, retried.
     await webhook("PAYMENT.CAPTURE.REFUNDED", { ...refund(captureId, "REF-Z", "5.00"), amount: undefined }, "BAD-2");
     row = await byId("BAD-2");
     expect(row.processedAt).toBeNull();
     expect(row.error).toMatch(/no USD amount/);
     expect(await balance(owner)).toBe(2500n);
+  });
+
+  describe("v1 (webhook simulator) and v2 (live) payload shapes", () => {
+    // What PayPal's webhook simulator sends: the legacy v1 refund resource. No "up" link; the capture is the sale.
+    const v1Refund = (saleId: string, refundId: string, total: string, currency = "USD") => ({
+      id: refundId,
+      create_time: "2026-11-07T10:00:00Z",
+      update_time: "2026-11-07T10:00:00Z",
+      state: "completed",
+      amount: { total, currency },
+      sale_id: saleId,
+      parent_payment: "PAY-1B56960729604235TKQQIYVY",
+      links: [
+        { href: `https://api.sandbox.paypal.com/v1/payments/refund/${refundId}`, rel: "self", method: "GET" },
+        {
+          href: "https://api.sandbox.paypal.com/v1/payments/payment/PAY-1B56960729604235TKQQIYVY",
+          rel: "parent_payment",
+          method: "GET",
+        },
+      ],
+    });
+
+    it("a v1 refund with a negative total claws back its size from the sale's top-up", async () => {
+      const owner = await newOwner();
+      const { topupId, captureId } = await capturedTopup(owner);
+      const res = await webhook("PAYMENT.CAPTURE.REFUNDED", v1Refund(captureId, "1Y107995YT783435V", "-10.00"), "V1-1");
+      expect(res.statusCode).toBe(200);
+      expect((await byId("V1-1")).error).toBeNull();
+      expect(await balance(owner)).toBe(1500n);
+      expect(await topupRow(topupId)).toMatchObject({ status: "captured", refundedCents: 1000n });
+      // A positive total is read the same way.
+      await webhook("PAYMENT.CAPTURE.REFUNDED", v1Refund(captureId, "1Y107995YT783435W", "16.42"), "V1-2");
+      expect(await topupRow(topupId)).toMatchObject({ status: "refunded", refundedCents: 2642n });
+      await expectReconciled();
+    });
+
+    it("a v1 refund naming its sale only in a link, or only by parent_payment, is followed", async () => {
+      const owner = await newOwner();
+      const { topupId, captureId } = await capturedTopup(owner);
+      const { sale_id: _sale, ...noSale } = v1Refund(captureId, "REF-L", "1.00");
+      void _sale;
+      const linked = {
+        ...noSale,
+        links: [
+          ...noSale.links,
+          { href: `https://api.sandbox.paypal.com/v1/payments/sale/${captureId}`, rel: "sale", method: "GET" },
+        ],
+      };
+      await webhook("PAYMENT.CAPTURE.REFUNDED", linked, "V1-L");
+      expect(await topupRow(topupId)).toMatchObject({ refundedCents: 100n });
+      // parent_payment names a v1 payment, not a capture of ours: acknowledged, nothing moves.
+      await webhook("PAYMENT.CAPTURE.REFUNDED", noSale, "V1-P");
+      const row = await byId("V1-P");
+      expect(row.processedAt).not.toBeNull();
+      expect(row.error).toBeNull();
+      expect(await topupRow(topupId)).toMatchObject({ refundedCents: 100n });
+    });
+
+    it("a v1 reversal of a bounty escrow sale puts the loss on the poster", async () => {
+      const poster = await newOwner();
+      const bountyId = await createTestBounty(db, { posterId: poster, status: "settled" });
+      await db
+        .update(escrows)
+        .set({ status: "captured", captureId: "SALE-BTY", dev: false })
+        .where(eq(escrows.bountyId, bountyId));
+      await webhook("PAYMENT.CAPTURE.REVERSED", v1Refund("SALE-BTY", "REV-V1", "-55.00"), "V1-REV");
+      expect((await byId("V1-REV")).error).toBeNull();
+      expect(await owedCents(db, poster)).toBe(5500n);
+      await expectReconciled();
+    });
+
+    it("a v2 refund and reversal with the up link and amount.value still work", async () => {
+      const owner = await newOwner();
+      const { topupId, captureId } = await capturedTopup(owner);
+      await webhook("PAYMENT.CAPTURE.REFUNDED", refund(captureId, "REF-V2", "2.00"), "V2-1");
+      await webhook("PAYMENT.CAPTURE.REVERSED", refund(captureId, "REV-V2", "-3.00"), "V2-2");
+      expect(await topupRow(topupId)).toMatchObject({ refundedCents: 500n });
+      expect((await byId("V2-1")).error).toBeNull();
+      expect((await byId("V2-2")).error).toBeNull();
+      await expectReconciled();
+    });
+
+    it.each([
+      ["v1", "PAYMENT.CAPTURE.REFUNDED", (cap: string) => v1Refund(cap, "REF-EUR", "-10.00", "EUR")],
+      [
+        "v2",
+        "PAYMENT.CAPTURE.REVERSED",
+        (cap: string) => ({ ...refund(cap, "REV-EUR", "10.00"), amount: { currency_code: "EUR", value: "10.00" } }),
+      ],
+    ])("a non-USD %s %s is acknowledged and recorded as ignored", async (_shape, type, body) => {
+      const owner = await newOwner();
+      const { topupId, captureId } = await capturedTopup(owner);
+      const res = await webhook(type, body(captureId), `EUR-${type}`);
+      expect(res.statusCode).toBe(200);
+      const row = await byId(`EUR-${type}`);
+      expect(row.processedAt).not.toBeNull();
+      expect(row.error).toBe("ignored: EUR amount; we are USD only");
+      expect(await balance(owner)).toBe(2500n);
+      expect(await topupRow(topupId)).toMatchObject({ refundedCents: 0n });
+    });
+
+    it("the simulator's EUR denied capture (v1 shape) is acknowledged and ignored; a v2 USD denial still applies", async () => {
+      const owner = await newOwner();
+      const { topupId, captureId } = await capturedTopup(owner);
+      const simulator = {
+        id: captureId,
+        state: "denied",
+        amount: { total: "7.47", currency: "EUR" },
+        parent_payment: "PAY-1PA12106FU478450MKRETS4A",
+        links: [{ href: `https://api.sandbox.paypal.com/v1/payments/capture/${captureId}`, rel: "self" }],
+      };
+      expect((await webhook("PAYMENT.CAPTURE.DENIED", simulator, "DEN-V1")).statusCode).toBe(200);
+      const row = await byId("DEN-V1");
+      expect(row.processedAt).not.toBeNull();
+      expect(row.error).toBe("ignored: EUR amount; we are USD only");
+      expect(await topupRow(topupId)).toMatchObject({ status: "captured", refundedCents: 0n });
+
+      await webhook(
+        "PAYMENT.CAPTURE.DENIED",
+        { id: captureId, status: "DENIED", amount: { currency_code: "USD", value: "26.42" } },
+        "DEN-V2",
+      );
+      expect((await byId("DEN-V2")).error).toBeNull();
+      expect(await topupRow(topupId)).toMatchObject({ status: "denied", refundedCents: 2642n });
+      await expectReconciled();
+    });
+
+    it("warns through the logger it is given", async () => {
+      const queued: string[] = [];
+      setPaymentQueue({ webhook: async (id) => void queued.push(id), payout: async () => {} });
+      await webhook("PAYMENT.CAPTURE.REFUNDED", v1Refund("SALE-X", "REF-W", "1.00", "GBP"), "LOG-1");
+      await webhook("PAYMENT.CAPTURE.REFUNDED", v1Refund("SALE-UNKNOWN", "REF-U", "1.00"), "LOG-2");
+      const warnings: { fields: Record<string, unknown>; message: string }[] = [];
+      const log = {
+        warn: (fields: Record<string, unknown>, message: string) => void warnings.push({ fields, message }),
+      };
+      for (const id of queued) await processWebhookEvent(db, id, log);
+      expect(warnings).toEqual([
+        {
+          message: "webhook ignored: GBP amount; we are USD only",
+          fields: expect.objectContaining({ paypalEventId: "LOG-1", refundId: "REF-W", captureId: "SALE-X" }),
+        },
+        {
+          message: "webhook: refund or reversal of a capture we don't know",
+          fields: expect.objectContaining({ paypalEventId: "LOG-2", captureId: "SALE-UNKNOWN" }),
+        },
+      ]);
+    });
   });
 });

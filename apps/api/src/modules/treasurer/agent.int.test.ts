@@ -241,6 +241,25 @@ describe("askTreasurer without a gateway", () => {
     expect(res.trace).toEqual([expect.objectContaining({ tool: "reconcile_paypal", ok: true })]);
   });
 
+  it("says the check was skipped when Transaction Search isn't enabled (PayPal answers 403)", async () => {
+    const { client } = makeClient(
+      () =>
+        json(403, {
+          name: "NOT_AUTHORIZED",
+          message: "Authorization failed due to insufficient permissions.",
+          details: [{ issue: "PERMISSION_DENIED" }],
+        }),
+      { apiBase: "http://localhost:4999" },
+    );
+    configurePayPalToolkit(
+      createPayPalToolkit({ clientId: "id", clientSecret: "s", apiBase: "http://localhost:4999", client }),
+    );
+    const res = await askTreasurer(db, null, "Does the ledger match PayPal this week?");
+    expect(res.answer).toContain("Skipped: Transaction Search isn't enabled for this PayPal app.");
+    expect(res.answer).not.toContain("could not run");
+    expect(res.trace).toEqual([expect.objectContaining({ tool: "reconcile_paypal", ok: true, summary: "skipped" })]);
+  });
+
   it("says so when the reconciliation can't run (PayPal not configured)", async () => {
     configurePayPalToolkit(null);
     const res = await askTreasurer(db, null, "Does the ledger match PayPal this week?");
