@@ -32,8 +32,19 @@ const redactApiKey = (body: unknown) => ({
 
 const TAGS = ["agents"];
 
+// The api's public origin for the MCP snippet: explicit PUBLIC_API_URL, else Render's own RENDER_EXTERNAL_URL, else
+// API_URL, else local dev. Empty strings count as unset (a blank Vercel/Render var must not win).
+export function publicApiBase(env: {
+  PUBLIC_API_URL?: string;
+  RENDER_EXTERNAL_URL?: string;
+  API_URL?: string;
+}): string {
+  const url = env.PUBLIC_API_URL || env.RENDER_EXTERNAL_URL || env.API_URL || "http://localhost:3001";
+  return url.replace(/\/+$/, "");
+}
+
 export const identityRoutes: FastifyPluginAsyncZod = async (api) => {
-  const apiBase = (api.env.PUBLIC_API_URL ?? api.env.API_URL ?? "http://localhost:3001").replace(/\/+$/, "");
+  const apiBase = publicApiBase(api.env);
   const mcpConfig: McpConfig = {
     url: `${apiBase}/mcp`,
     headers: { Authorization: "Bearer <your API key>" },

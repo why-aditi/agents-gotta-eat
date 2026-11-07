@@ -25,6 +25,8 @@ export interface AppEnv {
   WEB_ORIGINS?: string;
   API_URL?: string;
   PUBLIC_API_URL?: string;
+  // Render sets this to the service's public URL; the fallback for links when PUBLIC_API_URL is unset.
+  RENDER_EXTERNAL_URL?: string;
   // Gate 2 stub: "allow", or anything else for "ask". When set it wins over the LLM intent check.
   POLICY_GATE2_STUB?: string;
   // LLM gateway (LiteLLM proxy). Unset: no compile (502), gate 2 asks, no AI ranking.
