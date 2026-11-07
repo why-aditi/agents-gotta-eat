@@ -8,6 +8,7 @@ import { registerCors } from "./http/cors";
 import { clientErrorHandler, frameworkErrorHandler, registerErrorHandlers } from "./http/errors";
 import { registerInputGuard } from "./http/input-guard";
 import { registerIdempotency } from "./http/idempotency";
+import { registerJsonBodyParser } from "./http/json-body";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
 import { registerRateLimit } from "./http/rate-limit";
 import { adminRoutes } from "./modules/admin";
@@ -107,12 +108,8 @@ export function buildApp(opts: BuildAppOptions) {
   // Root-level hooks, so they apply to every route registered below or later.
   registerErrorHandlers(app);
   registerInputGuard(app);
-  // An empty body with a JSON content type (httpx and axios default) is "no body", not an error.
-  const defaultJson = app.getDefaultJsonParser("error", "error");
-  app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
-    if (typeof body === "string" && body.trim() === "") return done(null, undefined);
-    defaultJson(req, body as string, done);
-  });
+  // Empty JSON body = no body; bodies nested past MAX_JSON_DEPTH are a 400 before anything walks them.
+  registerJsonBodyParser(app);
   // Before auth, so a flood of bad credentials is cut off before they are checked.
   const registerPrincipalLimit = registerRateLimit(app, {
     perMinute: opts.env.RATE_LIMIT_PER_MINUTE,
