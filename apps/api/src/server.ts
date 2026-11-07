@@ -40,6 +40,7 @@ function envFromProcess(): AppEnv {
     TRUST_PROXY_HOPS: process.env.TRUST_PROXY_HOPS,
     RATE_LIMIT_PER_MINUTE: process.env.RATE_LIMIT_PER_MINUTE,
     RATE_LIMIT_AUTH_FAIL_PER_MINUTE: process.env.RATE_LIMIT_AUTH_FAIL_PER_MINUTE,
+    AUTH_FAIL_LIMIT: process.env.AUTH_FAIL_LIMIT,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     EMAIL_FROM: process.env.EMAIL_FROM,
     WEB_URL: process.env.WEB_URL,
