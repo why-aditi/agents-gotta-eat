@@ -70,7 +70,7 @@ services:
         sync: false
       - key: AGENTS_WAKE_SECRET
         sync: false
-      # Render's proxy plus the web server, which forwards the visitor's address on /v1/demo/* calls
+      # Any positive number turns on proxy trust (by address: private + Cloudflare ranges), see http/client-ip.ts
       - key: TRUST_PROXY_HOPS
         value: "2"
 
