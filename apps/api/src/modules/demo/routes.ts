@@ -13,6 +13,7 @@ import {
 } from "@gottaeat/schemas";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { demoClientIp, proxyTrustEnabled } from "../../http/client-ip";
 import { ApiError } from "../../http/errors";
 import { dailyBudgetFromEnv, requestsToday } from "../llm";
 import { RateLimiter } from "./rate-limit";
@@ -61,9 +62,11 @@ export function moneyLinks(events: ReplayEvent[]): MoneyLink[] {
 export const demoRoutes: FastifyPluginAsyncZod<DemoRoutesOptions> = async (api, opts) => {
   const limit = opts.rateLimit ?? DEMO_RATE_LIMIT;
   const limiter = new RateLimiter(limit);
+  const proxyTrusted = proxyTrustEnabled(api.env.TRUST_PROXY_HOPS);
   // Encapsulated: only the routes below. Before validation, so a flood of bad requests is limited too.
   api.addHook("onRequest", async (req) => {
-    if (!limiter.hit(req.ip)) throw new ApiError("rate_limited", `At most ${limit} demo requests a minute`);
+    if (!limiter.hit(demoClientIp(req, proxyTrusted)))
+      throw new ApiError("rate_limited", `At most ${limit} demo requests a minute`);
   });
 
   // The recorder. Appends run one at a time, in delivery order.

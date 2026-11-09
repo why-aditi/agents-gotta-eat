@@ -10,6 +10,8 @@
 - API: `https://gottaeat-api.onrender.com/v1/openapi.json` · MCP: `https://gottaeat-api.onrender.com/mcp`
 - Demo script and runbook: [`docs/demo-script.md`](docs/demo-script.md) · Spec: [`docs/spec.md`](docs/spec.md) · Architecture: [`docs/architecture.md`](docs/architecture.md)
 
+Free-tier hosting: the first request after idle can take about a minute while the services wake.
+
 Built for the PayPal AI Hackathon 2026. Sandbox only, USD only.
 
 ## What it is

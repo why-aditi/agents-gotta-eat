@@ -10,6 +10,7 @@ import { registerInputGuard } from "./http/input-guard";
 import { registerIdempotency } from "./http/idempotency";
 import { registerJsonBodyParser } from "./http/json-body";
 import { registerOpenApi, registerOpenApiRoute } from "./http/openapi";
+import { proxyTrustEnabled, proxyTrustFn } from "./http/client-ip";
 import { registerRateLimit } from "./http/rate-limit";
 import { adminRoutes } from "./modules/admin";
 import { demoRoutes } from "./modules/demo";
@@ -44,8 +45,12 @@ export interface AppEnv {
   // The agents service's wake URL (POSTed when a bounty opens) and its shared secret. Unset URL → no call.
   AGENTS_WAKE_URL?: string;
   AGENTS_WAKE_SECRET?: string;
-  // Proxy hops in front of the api (Render: 1), so req.ip is the client for the demo rate limit. Unset: none.
+  // Any positive number turns on proxy trust (Render: 2); its size no longer matters. Then req.ip is the first
+  // X-Forwarded-For entry, from the right, that is not a private or Cloudflare address (or in TRUST_PROXY_CIDRS).
+  // Unset: no proxy is trusted and req.ip is the socket address.
   TRUST_PROXY_HOPS?: string;
+  // Extra trusted proxy addresses or CIDRs, comma-separated, on top of private ranges and Cloudflare's.
+  TRUST_PROXY_CIDRS?: string;
   // Requests a minute per caller (agent key, else IP) and failed-auth responses a minute per IP. Defaults 1200 and 20;
   // "0" turns a limit off. Tests and load runs set 0.
   RATE_LIMIT_PER_MINUTE?: string;
@@ -89,14 +94,13 @@ declare module "fastify" {
 }
 
 export function buildApp(opts: BuildAppOptions) {
-  const hops = Number.parseInt(opts.env.TRUST_PROXY_HOPS ?? "", 10);
   const app = Fastify({
     logger: opts.logger ?? true,
     frameworkErrors: frameworkErrorHandler,
     // Node calls this for requests it cannot parse (431 and the like), before Fastify sees them.
     clientErrorHandler,
-    // Trusts the first `hops` proxies in X-Forwarded-For (proxy-addr's hop count, as a function for the types).
-    ...(Number.isInteger(hops) && hops > 0 ? { trustProxy: (_addr: string, i: number) => i < hops } : {}),
+    // Trust by address (private + Cloudflare + TRUST_PROXY_CIDRS), not by hop count: see http/client-ip.ts.
+    ...(proxyTrustEnabled(opts.env.TRUST_PROXY_HOPS) ? { trustProxy: proxyTrustFn(opts.env.TRUST_PROXY_CIDRS) } : {}),
   }).withTypeProvider<ZodTypeProvider>();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
