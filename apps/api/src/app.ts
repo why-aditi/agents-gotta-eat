@@ -36,6 +36,8 @@ export interface AppEnv {
   LITELLM_MASTER_KEY?: string;
   // Global daily cap on gateway requests (default 1000).
   LLM_DAILY_REQUEST_BUDGET?: string;
+  // Provider model id sent instead of the gateway alias (direct OpenAI-compatible mode).
+  LLM_MODEL_OVERRIDE?: string;
   // "true" enables POST /v1/admin/wallets/:userId/credit (dev money until pm-04).
   ALLOW_DEV_CREDIT?: string;
   // "true" enables POST /v1/admin/bounties/:id/open (dev escrow until pm-04).

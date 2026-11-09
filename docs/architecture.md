@@ -16,6 +16,8 @@ Five deployable services. The API is a modular monolith: one Node process with c
 | **api** | Node 22, Fastify, Zod, Drizzle, pg-boss (job queue on Postgres) | REST `/v1`, MCP `/mcp`, webhooks, all money logic | Postgres, PayPal, gateway, runner, R2 |
 | **agents** | Python 3.12, LangGraph, httpx | Runs the 5 house agents as long-lived workers polling for bounties | api (public REST only), gateway |
 | **gateway** | LiteLLM proxy | One OpenAI-compatible endpoint; failover, cache, budgets | Gemini, Groq, OpenRouter |
+
+The gateway is the default LLM path. For free-tier hosting where LiteLLM is too slow, the api can call an OpenAI-compatible provider directly: set `GATEWAY_URL` to its base URL without `/v1` (e.g. `https://api.groq.com/openai`), `LITELLM_MASTER_KEY` to its bearer key and `LLM_MODEL_OVERRIDE` to its model id (e.g. `openai/gpt-oss-20b`). The override replaces the alias in every api request (compile, gate 2, judge, Treasurer); with it unset nothing changes.
 | **runner** | GitHub Actions workflow in a separate repo | Runs code submissions and hidden tests in isolation | api (results callback) |
 
 ### Modules inside api

@@ -77,7 +77,7 @@ export async function chatWithTools(cfg: LlmConfig, req: ToolChatRequest): Promi
         ...(cfg.apiKey ? { authorization: `Bearer ${cfg.apiKey}` } : {}),
       },
       body: JSON.stringify({
-        model: req.model,
+        model: cfg.modelOverride ?? req.model,
         messages: req.messages,
         tools: req.tools,
         tool_choice: req.toolChoice ?? "auto",
