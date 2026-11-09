@@ -31,3 +31,11 @@ def test_no_literal_secrets() -> None:
 def test_cache_enabled() -> None:
     assert CONFIG["litellm_settings"]["cache"] is True
     assert CONFIG["litellm_settings"]["cache_params"]["type"] == "local"
+
+
+def test_router_fails_over_fast() -> None:
+    r = CONFIG["router_settings"]
+    # Callers wait 5-20 s: a slow primary must give up and fail over well inside that.
+    assert r["timeout"] <= 15
+    assert r["num_retries"] == 0
+    assert r["cooldown_time"] > 0
