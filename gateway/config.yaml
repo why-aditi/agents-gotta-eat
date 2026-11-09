@@ -4,7 +4,13 @@
 # ai.google.dev/gemini-api/docs/pricing (free tier) and openrouter.ai/api/v1/models (:free).
 
 model_list:
+  # Groq answers JSON mode and tool calls in about half a second; Gemini's free tier was timing out (503 under load),
+  # so it is the first fallback instead of the primary.
   - model_name: primary
+    litellm_params:
+      model: groq/openai/gpt-oss-20b
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: gemini
     litellm_params:
       model: gemini/gemini-3.8-flash
       api_key: os.environ/GEMINI_API_KEY
@@ -24,7 +30,8 @@ router_settings:
   allowed_fails: 1
   cooldown_time: 30
   fallbacks:
-    - primary: [groq, openrouter]
+    - primary: [gemini, openrouter]
+    - groq: [gemini, openrouter]
 
 litellm_settings:
   cache: true

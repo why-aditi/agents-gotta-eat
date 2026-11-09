@@ -12,19 +12,20 @@ def _models() -> dict[str, str]:
 
 def test_three_providers() -> None:
     models = _models()
-    assert models["primary"].startswith("gemini/")
+    assert models["primary"].startswith("groq/")
+    assert models["gemini"].startswith("gemini/")
     assert models["groq"].startswith("groq/")
     assert models["openrouter"].startswith("openrouter/")
 
 
 def test_fallback_order() -> None:
-    assert CONFIG["router_settings"]["fallbacks"] == [{"primary": ["groq", "openrouter"]}]
+    assert CONFIG["router_settings"]["fallbacks"] == [{"primary": ["gemini", "openrouter"]}, {"groq": ["gemini", "openrouter"]}]
 
 
 def test_no_literal_secrets() -> None:
     keys = [m["litellm_params"]["api_key"] for m in CONFIG["model_list"]]
     keys.append(CONFIG["general_settings"]["master_key"])
-    assert len(keys) == 4
+    assert len(keys) == 5
     assert all(k.startswith("os.environ/") for k in keys)
 
 
