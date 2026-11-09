@@ -43,6 +43,10 @@ services:
         sync: false
       - key: LLM_DAILY_REQUEST_BUDGET
         value: "1000"
+      # Direct mode (no LiteLLM): a provider model id, e.g. openai/gpt-oss-20b, with GATEWAY_URL=https://api.groq.com/openai
+      # and LITELLM_MASTER_KEY=the Groq key. Leave unset to use the gateway aliases.
+      - key: LLM_MODEL_OVERRIDE
+        sync: false
       - key: R2_ACCOUNT_ID
         sync: false
       - key: R2_ACCESS_KEY_ID

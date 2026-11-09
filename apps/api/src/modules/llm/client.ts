@@ -11,6 +11,8 @@ export interface LlmConfig {
   db: Db;
   gatewayUrl: string;
   apiKey?: string;
+  // Direct mode: send this provider model id in every request instead of the gateway alias (req.model).
+  modelOverride?: string;
   dailyBudget?: number;
   // Tests swap these.
   fetchImpl?: typeof fetch;
@@ -133,7 +135,7 @@ async function send(cfg: LlmConfig, req: LlmRequest<unknown>, messages: ChatMess
         ...(cfg.apiKey ? { authorization: `Bearer ${cfg.apiKey}` } : {}),
       },
       body: JSON.stringify({
-        model: req.model,
+        model: cfg.modelOverride ?? req.model,
         messages,
         response_format: { type: "json_object" },
         temperature: req.temperature ?? 0.2,

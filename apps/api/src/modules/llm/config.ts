@@ -6,6 +6,9 @@ export interface LlmEnv {
   GATEWAY_URL?: string;
   LITELLM_MASTER_KEY?: string;
   LLM_DAILY_REQUEST_BUDGET?: string;
+  // Optional provider model id (e.g. openai/gpt-oss-20b). Set: sent instead of the gateway alias, so GATEWAY_URL can
+  // be any OpenAI-compatible base URL (https://api.groq.com/openai) and LITELLM_MASTER_KEY its bearer key.
+  LLM_MODEL_OVERRIDE?: string;
 }
 
 // LLM_DAILY_REQUEST_BUDGET as a non-negative integer, else the default.
@@ -22,6 +25,7 @@ export function llmConfigFromEnv(db: Db, env: LlmEnv): LlmConfig | null {
     db,
     gatewayUrl,
     apiKey: env.LITELLM_MASTER_KEY || undefined,
+    modelOverride: env.LLM_MODEL_OVERRIDE?.trim() || undefined,
     dailyBudget: dailyBudgetFromEnv(env),
   };
 }
